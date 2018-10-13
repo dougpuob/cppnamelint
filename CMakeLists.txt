@@ -12,6 +12,8 @@ link_directories(${LLVM_PREBUILD_DIR}/build/Debug/lib)
 
 
 add_library(cpptoml 
+            Module/cpp-ctoml.git/src/include/toml.h
+            Module/cpp-ctoml.git/src/include/tomlvalue.h
             Module/cpp-ctoml.git/src/toml.cc
             Module/cpp-ctoml.git/src/tomlvalue.cc)
             

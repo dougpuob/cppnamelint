@@ -32,9 +32,11 @@
 *.app
 
 # Microsoft Project Solution Files
+*.vc
 *.vcxproj
 *.filters
 *.sln
+*.user
 
 # CMake
 *.cmake
@@ -42,3 +44,5 @@ CMakeCache.txt
 CMakeFiles
 
 # Directory
+Build
+Debug
