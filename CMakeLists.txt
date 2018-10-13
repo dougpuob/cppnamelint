@@ -16,6 +16,7 @@ add_library(cpptoml
             Module/cpp-ctoml.git/src/tomlvalue.cc)
             
 add_executable(namelint
+               Source/ParseAST.h
                Source/ParseAST.cpp
                Source/Main.cpp)
                
