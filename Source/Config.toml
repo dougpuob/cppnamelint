@@ -1,0 +1,26 @@
+[General]
+FileExtName         = *.c,*.h,*.cpp
+CheckVariableName   = 1 # 0:Off; 1:On
+CheckFunctionName   = 1 # 0:Off; 1:On
+CheckFileName       = 1 # 0:Off; 1:On
+
+[Rules]
+FileName            = 0 # 0: Default (UpperCamelCase)
+                        # 1: UpperCamelCase
+						# 2: lower-seperated
+
+FunctionName        = 0 # 0: Default (UpperCamelCase)
+                        # 1: UpperCamelCase
+                        # 2: lowerCamelCase
+                        # 3: lower-seperated
+
+VariableName        = 0 # 0: Default ()
+                        # 1: Hungarian
+
+[LeagleFunctionNamePrefix]
+Prefix = [
+_,
+__,
+___,
+m_
+]
