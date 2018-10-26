@@ -1,28 +1,47 @@
 cmake_minimum_required(VERSION 3.12)
 project(namelint)
 
-set(LLVM_PREBUILD_DIR "D:/data/my-drive/@mydata/software/data/devtls/llvm")
+set(PREBUILD_DIR $ENV{NAMELINT_DEVTLS} )
+set(PREBUILD_DIR_LLVM  ${PREBUILD_DIR}/llvm)
+set(PREBUILD_DIR_GTEST ${PREBUILD_DIR}/gtest)
 
-include_directories(${LLVM_PREBUILD_DIR}/include
-                    ${LLVM_PREBUILD_DIR}/build/include
-                    ${LLVM_PREBUILD_DIR}/build/tools/clang/include
-                    ${LLVM_PREBUILD_DIR}/tools/clang/include)
-                    
-link_directories(${LLVM_PREBUILD_DIR}/build/Debug/lib)
+IF (MSVC)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4141")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4146")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4291")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4227")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4099")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")   
+ENDIF (MSVC)
 
+IF (UNIX)
+ENDIF (UNIX)
 
-add_library(cpptoml 
-            Module/cpp-ctoml.git/src/include/toml.h
-            Module/cpp-ctoml.git/src/include/tomlvalue.h
-            Module/cpp-ctoml.git/src/toml.cc
-            Module/cpp-ctoml.git/src/tomlvalue.cc)
-            
+include_directories(${PREBUILD_DIR_LLVM}/include
+                    ${PREBUILD_DIR_LLVM}/build/include
+                    ${PREBUILD_DIR_LLVM}/build/tools/clang/include
+                    ${PREBUILD_DIR_LLVM}/tools/clang/include
+                    ${PREBUILD_DIR_GTEST}/v1.8.1/include)
+
+link_directories(${PREBUILD_DIR_LLVM}/build/Debug/lib
+                 ${PREBUILD_DIR_GTEST}/v1.8.1/msvc2017/32-bit)
+
 add_executable(namelint
+               Module/tinytoml.git/include/toml/toml.h               
+               Source/Detection.h
+               Source/Detection.cpp
+               Source/Common.h
+               Source/Common.cpp
                Source/ParseAST.h
                Source/ParseAST.cpp
-               Source/Main.cpp)
-               
-target_link_libraries(namelint cpptoml
+               Source/Config.h
+               Source/Config.cpp
+               Source/Main.cpp
+               Source/Test/TestConfig.cpp)
+
+target_link_libraries(namelint
+                      gtestd.lib
                       Version.lib
                       clangAnalysis.lib
                       clangARCMigrate.lib

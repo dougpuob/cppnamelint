@@ -43,6 +43,9 @@
 CMakeCache.txt
 CMakeFiles
 
+# Files
+*.txt
+
 # Directory
 Build
 Debug
