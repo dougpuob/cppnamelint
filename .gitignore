@@ -45,7 +45,9 @@ CMakeFiles
 
 # Files
 *.txt
+*.log
 
 # Directory
 Build
 Debug
+.vscode

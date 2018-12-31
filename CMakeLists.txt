@@ -1,234 +1,347 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 project(namelint)
 
-set(PREBUILD_DIR $ENV{NAMELINT_DEVTLS} )
-set(PREBUILD_DIR_LLVM  ${PREBUILD_DIR}/llvm)
-set(PREBUILD_DIR_GTEST ${PREBUILD_DIR}/gtest)
+message("CMAKE_SYSTEM           : ${CMAKE_SYSTEM}"           )
+message("CMAKE_SYSTEM_NAME      : ${CMAKE_SYSTEM_NAME}"      )
+message("CMAKE_SYSTEM_VERSION   : ${CMAKE_SYSTEM_VERSION}"   )
+message("CMAKE_SYSTEM_PROCESSOR : ${CMAKE_SYSTEM_PROCESSOR}" )
 
-IF (MSVC)
+set(CMAKE_CXX_STANDARD          14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS        OFF)
+
+set(PREBUILD_DIR $ENV{NAMELINT_DEVTLS} )
+set(PREBUILD_DIR_LLVM   ${PREBUILD_DIR}/llvm/7.0.1)
+
+
+###############################################################################
+if(WIN32)
+    message("Platform               : WIN32" )
+elseif(UNIX AND NOT APPLE)
+    message("Platform               : UNIX AND NOT APPLE" )
+elseif(APPLE)
+    message("Platform               : APPLE" )
+else()
+    message("Platform               : None" )
+endif()
+
+
+
+
+###############################################################################
+if(WIN32)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4141")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4146")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4291")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4227")
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4099")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")   
-ENDIF (MSVC)
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")
+   set( gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )
+elseif(UNIX AND NOT APPLE)
+elseif(APPLE)
+    #set(CMAKE_CXX_COMPILER /usr/local/bin/gcc-8)
+endif()
 
-IF (UNIX)
-ENDIF (UNIX)
+message("CMAKE_CXX_FLAGS        : ${CMAKE_CXX_FLAGS}" )
 
-include_directories(${PREBUILD_DIR_LLVM}/include
-                    ${PREBUILD_DIR_LLVM}/build/include
-                    ${PREBUILD_DIR_LLVM}/build/tools/clang/include
-                    ${PREBUILD_DIR_LLVM}/tools/clang/include
-                    ${PREBUILD_DIR_GTEST}/v1.8.1/include)
+include_directories(
+    ${PREBUILD_DIR_LLVM}/include
+    ${PREBUILD_DIR_LLVM}/build/include
+    ${PREBUILD_DIR_LLVM}/build/tools/clang/include
+    ${PREBUILD_DIR_LLVM}/tools/clang/include
+    Module/googletest.git/googletest/include
+    Module/docopt.cpp
+    )
 
-link_directories(${PREBUILD_DIR_LLVM}/build/Debug/lib
-                 ${PREBUILD_DIR_GTEST}/v1.8.1/msvc2017/32-bit)
 
-add_executable(namelint
-               Module/tinytoml.git/include/toml/toml.h               
-               Source/Detection.h
-               Source/Detection.cpp
-               Source/Common.h
-               Source/Common.cpp
-               Source/ParseAST.h
-               Source/ParseAST.cpp
-               Source/Config.h
-               Source/Config.cpp
-               Source/Main.cpp
-               Source/Test/TestConfig.cpp)
+###############################################################################
+if(WIN32)
+    set(LINK_LIB1 "Build/win32/Module/docopt.cpp/Debug")
+    set(LINK_LIB2 "Build/win32/lib/Debug")
+elseif(UNIX AND NOT APPLE)
+    set(LINK_LIB1 "Build/linux/Module/docopt.cpp")
+    set(LINK_LIB2 "Build/linux/lib")
+elseif(APPLE)
+    set(LINK_LIB1 "Build/darwin/Module/docopt.cpp")
+    set(LINK_LIB2 "Build/darwin/lib")
+else()
+    set(LINK_LIB1 "None")
+    set(LINK_LIB2 "None")
+endif()
 
-target_link_libraries(namelint
-                      gtestd.lib
-                      Version.lib
-                      clangAnalysis.lib
-                      clangARCMigrate.lib
-                      clangAST.lib
-                      clangASTMatchers.lib
-                      clangBasic.lib
-                      clangCodeGen.lib
-                      clangCrossTU.lib
-                      clangDriver.lib
-                      clangDynamicASTMatchers.lib
-                      clangEdit.lib
-                      clangFormat.lib
-                      clangFrontend.lib
-                      clangFrontendTool.lib
-                      clangHandleCXX.lib
-                      clangHandleLLVM.lib
-                      clangIndex.lib
-                      clangLex.lib
-                      clangParse.lib
-                      clangRewrite.lib
-                      clangRewriteFrontend.lib
-                      clangSema.lib
-                      clangSerialization.lib
-                      clangStaticAnalyzerCheckers.lib
-                      clangStaticAnalyzerCore.lib
-                      clangStaticAnalyzerFrontend.lib
-                      clangTooling.lib
-                      clangToolingASTDiff.lib
-                      clangToolingCore.lib
-                      clangToolingInclusions.lib
-                      clangToolingRefactor.lib
-                      gtest.lib
-                      gtest_main.lib
-                      Kaleidoscope-Ch4.lib
-                      Kaleidoscope-Ch5.lib
-                      Kaleidoscope-Ch6.lib
-                      Kaleidoscope-Ch7.lib
-                      Kaleidoscope-Ch8.lib
-                      Kaleidoscope-Ch9.lib
-                      libclang.lib
-                      LLVMAArch64AsmParser.lib
-                      LLVMAArch64AsmPrinter.lib
-                      LLVMAArch64CodeGen.lib
-                      LLVMAArch64Desc.lib
-                      LLVMAArch64Disassembler.lib
-                      LLVMAArch64Info.lib
-                      LLVMAArch64Utils.lib
-                      LLVMAggressiveInstCombine.lib
-                      LLVMAMDGPUAsmParser.lib
-                      LLVMAMDGPUAsmPrinter.lib
-                      LLVMAMDGPUCodeGen.lib
-                      LLVMAMDGPUDesc.lib
-                      LLVMAMDGPUDisassembler.lib
-                      LLVMAMDGPUInfo.lib
-                      LLVMAMDGPUUtils.lib
-                      LLVMAnalysis.lib
-                      LLVMARMAsmParser.lib
-                      LLVMARMAsmPrinter.lib
-                      LLVMARMCodeGen.lib
-                      LLVMARMDesc.lib
-                      LLVMARMDisassembler.lib
-                      LLVMARMInfo.lib
-                      LLVMARMUtils.lib
-                      LLVMAsmParser.lib
-                      LLVMAsmPrinter.lib
-                      LLVMBinaryFormat.lib
-                      LLVMBitReader.lib
-                      LLVMBitWriter.lib
-                      LLVMBPFAsmParser.lib
-                      LLVMBPFAsmPrinter.lib
-                      LLVMBPFCodeGen.lib
-                      LLVMBPFDesc.lib
-                      LLVMBPFDisassembler.lib
-                      LLVMBPFInfo.lib
-                      LLVMCodeGen.lib
-                      LLVMCore.lib
-                      LLVMCoroutines.lib
-                      LLVMCoverage.lib
-                      LLVMDebugInfoCodeView.lib
-                      LLVMDebugInfoDWARF.lib
-                      LLVMDebugInfoMSF.lib
-                      LLVMDebugInfoPDB.lib
-                      LLVMDemangle.lib
-                      LLVMDlltoolDriver.lib
-                      LLVMExecutionEngine.lib
-                      LLVMFuzzMutate.lib
-                      LLVMGlobalISel.lib
-                      LLVMHexagonAsmParser.lib
-                      LLVMHexagonCodeGen.lib
-                      LLVMHexagonDesc.lib
-                      LLVMHexagonDisassembler.lib
-                      LLVMHexagonInfo.lib
-                      LLVMInstCombine.lib
-                      LLVMInstrumentation.lib
-                      LLVMInterpreter.lib
-                      LLVMipo.lib
-                      LLVMIRReader.lib
-                      LLVMLanaiAsmParser.lib
-                      LLVMLanaiAsmPrinter.lib
-                      LLVMLanaiCodeGen.lib
-                      LLVMLanaiDesc.lib
-                      LLVMLanaiDisassembler.lib
-                      LLVMLanaiInfo.lib
-                      LLVMLibDriver.lib
-                      LLVMLineEditor.lib
-                      LLVMLinker.lib
-                      LLVMLTO.lib
-                      LLVMMC.lib
-                      LLVMMCDisassembler.lib
-                      LLVMMCJIT.lib
-                      LLVMMCParser.lib
-                      LLVMMipsAsmParser.lib
-                      LLVMMipsAsmPrinter.lib
-                      LLVMMipsCodeGen.lib
-                      LLVMMipsDesc.lib
-                      LLVMMipsDisassembler.lib
-                      LLVMMipsInfo.lib
-                      LLVMMIRParser.lib
-                      LLVMMSP430AsmPrinter.lib
-                      LLVMMSP430CodeGen.lib
-                      LLVMMSP430Desc.lib
-                      LLVMMSP430Info.lib
-                      LLVMNVPTXAsmPrinter.lib
-                      LLVMNVPTXCodeGen.lib
-                      LLVMNVPTXDesc.lib
-                      LLVMNVPTXInfo.lib
-                      LLVMObjCARCOpts.lib
-                      LLVMObject.lib
-                      LLVMObjectYAML.lib
-                      LLVMOption.lib
-                      LLVMOrcJIT.lib
-                      LLVMPasses.lib
-                      LLVMPowerPCAsmParser.lib
-                      LLVMPowerPCAsmPrinter.lib
-                      LLVMPowerPCCodeGen.lib
-                      LLVMPowerPCDesc.lib
-                      LLVMPowerPCDisassembler.lib
-                      LLVMPowerPCInfo.lib
-                      LLVMProfileData.lib
-                      LLVMRuntimeDyld.lib
-                      LLVMScalarOpts.lib
-                      LLVMSelectionDAG.lib
-                      LLVMSparcAsmParser.lib
-                      LLVMSparcAsmPrinter.lib
-                      LLVMSparcCodeGen.lib
-                      LLVMSparcDesc.lib
-                      LLVMSparcDisassembler.lib
-                      LLVMSparcInfo.lib
-                      LLVMSupport.lib
-                      LLVMSymbolize.lib
-                      LLVMSystemZAsmParser.lib
-                      LLVMSystemZAsmPrinter.lib
-                      LLVMSystemZCodeGen.lib
-                      LLVMSystemZDesc.lib
-                      LLVMSystemZDisassembler.lib
-                      LLVMSystemZInfo.lib
-                      LLVMTableGen.lib
-                      LLVMTarget.lib
-                      LLVMTestingSupport.lib
-                      LLVMTransformUtils.lib
-                      LLVMVectorize.lib
-                      LLVMWindowsManifest.lib
-                      LLVMX86AsmParser.lib
-                      LLVMX86AsmPrinter.lib
-                      LLVMX86CodeGen.lib
-                      LLVMX86Desc.lib
-                      LLVMX86Disassembler.lib
-                      LLVMX86Info.lib
-                      LLVMX86Utils.lib
-                      LLVMXCoreAsmPrinter.lib
-                      LLVMXCoreCodeGen.lib
-                      LLVMXCoreDesc.lib
-                      LLVMXCoreDisassembler.lib
-                      LLVMXCoreInfo.lib
-                      LLVMXRay.lib
-                      LTO.lib
-                      clangParse.lib
-                      clangSerialization.lib
-                      clangDriver.lib
-                      clangIndex.lib
-                      clangSema.lib
-                      clangAnalysis.lib
-                      clangAST.lib
-                      clangFrontend.lib
-                      clangEdit.lib
-                      clangLex.lib
-                      clangBasic.lib
-                      LLVMSupport.lib
-                      LLVMCore.lib
-                      LLVMMC.lib)
+message("LINK_LIB1              : ${LINK_LIB1}" )
+message("LINK_LIB2              : ${LINK_LIB2}" )
+
+# link_directories(
+#     ${PREBUILD_DIR_LLVM}/build/debug/lib
+#     $(LINK_LIB1)
+#     $(LINK_LIB2)
+#     )
+
+
+###############################################################################
+if(WIN32)
+    link_directories(
+        ${PREBUILD_DIR_LLVM}/build/debug/lib
+        Build/win32/Module/docopt.cpp/Debug
+        Build/win32/lib/Debug
+        )
+elseif(UNIX AND NOT APPLE)
+    link_directories(
+        ${PREBUILD_DIR_LLVM}/build/debug/lib
+        Build/linux/Module/docopt.cpp
+        Build/linux/lib
+        )
+elseif(APPLE)
+    link_directories(
+        ${PREBUILD_DIR_LLVM}/build/debug/lib
+        Build/darwin/Module/docopt.cpp
+        Build/darwin/lib
+        )
+else()
+    link_directories(
+        ${PREBUILD_DIR_LLVM}/build/debug/lib
+        Build/darwin/Module/docopt.cpp
+        Build/darwin/lib
+        )
+endif()
+
+
+
+###############################################################################
+add_subdirectory(Module/docopt.cpp)
+add_subdirectory(Module/googletest.git)
+
+
+###############################################################################
+if(WIN32)
+elseif(UNIX AND NOT APPLE)
+    set(CMAKE_CXX_FLAGS "-fno-rtti")
+elseif(APPLE)
+    set(CMAKE_CXX_FLAGS "-fno-rtti -lz")
+endif()
+
+message("CMAKE_CXX_FLAGS        : ${CMAKE_CXX_FLAGS}" )
+
+add_executable(
+    namelint
+    Module/tinytoml.git/include/toml/toml.h
+    Module/docopt.cpp/docopt.h
+    Source/Detection.h
+    Source/Detection.cpp
+    Source/Common.h
+    Source/Common.cpp
+    Source/ParseAST.h
+    Source/ParseAST.cpp
+    Source/Config.h
+    Source/Config.cpp
+    Source/Main.cpp
+    Source/Test/TestDetect.cpp
+    )
+
+
+###############################################################################
+
+if(WIN32)
+    set(EXTERNAL_LIB Version)
+elseif(UNIX AND NOT APPLE)
+elseif(APPLE)
+    set(EXTERNAL_LIB ncurses)
+endif()
+
+target_link_libraries(
+    namelint
+    docopt
+    gtest
+    ${EXTERNAL_LIB}
+    clangAnalysis
+    clangARCMigrate
+    clangAST
+    clangASTMatchers
+    clangBasic
+    clangCodeGen
+    clangCrossTU
+    clangDriver
+    clangDynamicASTMatchers
+    clangEdit
+    clangFormat
+    clangFrontend
+    clangFrontendTool
+    clangHandleCXX
+    clangHandleLLVM
+    clangIndex
+    clangLex
+    clangParse
+    clangRewrite
+    clangRewriteFrontend
+    clangSema
+    clangSerialization
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangStaticAnalyzerFrontend
+    clangTooling
+    clangToolingASTDiff
+    clangToolingCore
+    clangToolingInclusions
+    clangToolingRefactor
+    gtest
+    gtest_main
+    #Kaleidoscope-Ch4
+    #Kaleidoscope-Ch5
+    #Kaleidoscope-Ch6
+    #Kaleidoscope-Ch7
+    #Kaleidoscope-Ch8
+    #Kaleidoscope-Ch9
+    #libclang
+    LLVMAArch64AsmParser
+    LLVMAArch64AsmPrinter
+    LLVMAArch64CodeGen
+    LLVMAArch64Desc
+    LLVMAArch64Disassembler
+    LLVMAArch64Info
+    LLVMAArch64Utils
+    LLVMAggressiveInstCombine
+    LLVMAMDGPUAsmParser
+    LLVMAMDGPUAsmPrinter
+    LLVMAMDGPUCodeGen
+    LLVMAMDGPUDesc
+    LLVMAMDGPUDisassembler
+    LLVMAMDGPUInfo
+    LLVMAMDGPUUtils
+    LLVMAnalysis
+    LLVMARMAsmParser
+    LLVMARMAsmPrinter
+    LLVMARMCodeGen
+    LLVMARMDesc
+    LLVMARMDisassembler
+    LLVMARMInfo
+    LLVMARMUtils
+    LLVMAsmParser
+    LLVMAsmPrinter
+    LLVMBinaryFormat
+    LLVMBitReader
+    LLVMBitWriter
+    LLVMBPFAsmParser
+    LLVMBPFAsmPrinter
+    LLVMBPFCodeGen
+    LLVMBPFDesc
+    LLVMBPFDisassembler
+    LLVMBPFInfo
+    LLVMCodeGen
+    LLVMCore
+    LLVMCoroutines
+    LLVMCoverage
+    LLVMDebugInfoCodeView
+    LLVMDebugInfoDWARF
+    LLVMDebugInfoMSF
+    LLVMDebugInfoPDB
+    LLVMDemangle
+    LLVMDlltoolDriver
+    LLVMExecutionEngine
+    LLVMFuzzMutate
+    LLVMGlobalISel
+    LLVMHexagonAsmParser
+    LLVMHexagonCodeGen
+    LLVMHexagonDesc
+    LLVMHexagonDisassembler
+    LLVMHexagonInfo
+    LLVMInstCombine
+    LLVMInstrumentation
+    LLVMInterpreter
+    LLVMipo
+    LLVMIRReader
+    LLVMLanaiAsmParser
+    LLVMLanaiAsmPrinter
+    LLVMLanaiCodeGen
+    LLVMLanaiDesc
+    LLVMLanaiDisassembler
+    LLVMLanaiInfo
+    LLVMLibDriver
+    LLVMLineEditor
+    LLVMLinker
+    LLVMLTO
+    LLVMMC
+    LLVMMCDisassembler
+    LLVMMCJIT
+    LLVMMCParser
+    LLVMMipsAsmParser
+    LLVMMipsAsmPrinter
+    LLVMMipsCodeGen
+    LLVMMipsDesc
+    LLVMMipsDisassembler
+    LLVMMipsInfo
+    LLVMMIRParser
+    LLVMMSP430AsmPrinter
+    LLVMMSP430CodeGen
+    LLVMMSP430Desc
+    LLVMMSP430Info
+    LLVMNVPTXAsmPrinter
+    LLVMNVPTXCodeGen
+    LLVMNVPTXDesc
+    LLVMNVPTXInfo
+    LLVMObjCARCOpts
+    LLVMObject
+    LLVMObjectYAML
+    LLVMOption
+    LLVMOrcJIT
+    LLVMPasses
+    LLVMPowerPCAsmParser
+    LLVMPowerPCAsmPrinter
+    LLVMPowerPCCodeGen
+    LLVMPowerPCDesc
+    LLVMPowerPCDisassembler
+    LLVMPowerPCInfo
+    LLVMProfileData
+    LLVMRuntimeDyld
+    LLVMScalarOpts
+    LLVMSelectionDAG
+    LLVMSparcAsmParser
+    LLVMSparcAsmPrinter
+    LLVMSparcCodeGen
+    LLVMSparcDesc
+    LLVMSparcDisassembler
+    LLVMSparcInfo
+    LLVMSupport
+    LLVMSymbolize
+    LLVMSystemZAsmParser
+    LLVMSystemZAsmPrinter
+    LLVMSystemZCodeGen
+    LLVMSystemZDesc
+    LLVMSystemZDisassembler
+    LLVMSystemZInfo
+    LLVMTableGen
+    LLVMTarget
+    LLVMTestingSupport
+    LLVMTransformUtils
+    LLVMVectorize
+    LLVMWindowsManifest
+    LLVMX86AsmParser
+    LLVMX86AsmPrinter
+    LLVMX86CodeGen
+    LLVMX86Desc
+    LLVMX86Disassembler
+    LLVMX86Info
+    LLVMX86Utils
+    LLVMXCoreAsmPrinter
+    LLVMXCoreCodeGen
+    LLVMXCoreDesc
+    LLVMXCoreDisassembler
+    LLVMXCoreInfo
+    LLVMXRay
+    LTO
+    clangParse
+    clangSerialization
+    clangDriver
+    clangIndex
+    clangSema
+    clangAnalysis
+    clangAST
+    clangFrontend
+    clangEdit
+    clangLex
+    clangBasic
+    LLVMSupport
+    LLVMCore
+    LLVMMC
+    )

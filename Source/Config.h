@@ -9,7 +9,8 @@
 using namespace std;
 
 namespace namelint {
-typedef enum _RULETYPE {
+typedef enum _RULETYPE
+{
     RULETYPE_DEFAULT = 0,
     RULETYPE_UPPER_CAMEL_CASE,
     RULETYPE_LOWER_CAMEL_CASE,
@@ -55,10 +56,10 @@ class HungarianList {
 
 class ConfigData {
    public:
-    Rule Rule;
-    General General;
-    WhiteList WhiteList;
-    HungarianList HungarianList;
+    Rule m_Rule;
+    General m_General;
+    WhiteList m_WhiteList;
+    HungarianList m_HungarianList;
 };
 
 class Config {
@@ -69,6 +70,7 @@ class Config {
     Config();
     bool Load(string SrcPath);
     bool Save(string DstPath);
+    bool Print(string SrcPath);
     ConfigData &GetData() const;
 };
 }  // namespace namelint

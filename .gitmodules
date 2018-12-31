@@ -1,3 +1,6 @@
 [submodule "Module/tinytoml.git"]
 	path = Module/tinytoml.git
 	url = https://github.com/mayah/tinytoml.git
+[submodule "Module/googletest.git"]
+	path = Module/googletest.git
+	url = https://github.com/abseil/googletest.git

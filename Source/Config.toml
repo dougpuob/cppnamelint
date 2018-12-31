@@ -1,22 +1,24 @@
 [General]
 FileExtName         = ["*.c","*.h","*.cpp"]
 CheckVariableName   = true
-CheckFunctionName   = false
-CheckFileName       = true
+CheckFunctionName   = true
+CheckFileName       = false
 
 [Rule]
-FileName            = 1 # 0: Default (UpperCamelCase)
+FileName            = 0 # 0: Default (UpperCamelCase)
                         # 1: UpperCamelCase
-                        # 2: lower-seperated
+                        # 3: lower-seperated
 
-FunctionName        = 3 # 0: Default (UpperCamelCase)
+FunctionName        = 0 # 0: Default (UpperCamelCase)
                         # 1: UpperCamelCase
                         # 2: lowerCamelCase
                         # 3: lower-seperated
 
-VariableName        = 2 # 0: Default ()
-                        # 1: Hungarian
-
+VariableName        = 4 # 0: Default (UpperCamelCase)
+                        # 1: UpperCamelCase
+                        # 2: lowerCamelCase
+                        # 3: lower-seperated
+                        # 4: Hungarian
 [WhiteList]
 FunctionPrefix      = [ "_",
                         "__" ]
@@ -24,54 +26,60 @@ VariablePrefix      = [ "m_" ]
 
 [HungarianList]
 # C Primitive Type
-int8_t                 = "i8"
-int16_t                = "i16"
-int32_t                = "i32"
-uint8_t                = "u8"
-uint16_t               = "u16"
-uint32_t               = "u32"
-char                   = "c"
-signed-char            = "sc"
-unsigned-char          = "uc"
-short                  = "s"
-short-int              = "si"
-signed-short           = "ss"
-signed-short-int       = "ssi"
-unsigned-short         = "us"
-unsigned-short-int     = "usi"
-int                    = "i"
-signed                 = "s"
-signed-int             = "si"
-unsigned               = "u"
-unsigned-int           = "ui"
-long                   = "l"
-long-int               = "li"
-signed-long            = "sl"
-signed-long-int        = "sli"
-unsigned-long          = "ul"
-unsigned-long-int      = "uli"
-long-long              = "ll"
-long-long-int          = "lli"
-signed-long-long       = "sll"
-signed-long-long-int   = "slli"
-unsigned-long-long     = "ull"
-unsigned-long-long-int = "ulli"
-float                  = "f"
-double                 = "d"
-long-double            = "ld"
-_Bool                  = "b"
-bool                   = "b"
-wchar_t                = "wc"
+"size_t"                 = "n"
+"int8_t"                 = "i8"
+"int16_t"                = "i16"
+"int32_t"                = "i32"
+"int64_t"                = "i64"
+"uint8_t"                = "u8"
+"uint16_t"               = "u16"
+"uint32_t"               = "u32"
+"uint64_t"               = "u64"
+"char"                   = "c"
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"_Bool"                  = "b"
+"bool"                   = "b"
+"wchar_t"                = "wc"
+"signed char"            = "sc"
+"unsigned char"          = "uc"
+"short"                  = "s"
+"short int"              = "si"
+"signed short"           = "ss"
+"signed short int"       = "ssi"
+"unsigned short"         = "us"
+"unsigned short int"     = "usi"
+"int"                    = "i"
+"signed"                 = "s"
+"signed int"             = "si"
+"unsigned"               = "u"
+"unsigned int"           = "ui"
+"long"                   = "l"
+"long int"               = "li"
+"signed long"            = "sl"
+"signed long int"        = "sli"
+"unsigned long"          = "ul"
+"unsigned long int"      = "uli"
+"long long"              = "ll"
+"long long int"          = "lli"
+"signed long long"       = "sll"
+"signed long long int"   = "slli"
+"unsigned long long"     = "ull"
+"unsigned long long int" = "ulli"
+"float"                  = "f"
+"double"                 = "d"
+"long double"            = "ld"
 
 # Windows Type
-ULONG                  = "ul"
-DWORD                  = "dw"
-DWORD64                = "dw64"
-WORD                   = "w"
-CHAR                   = "c"
-BYTE                   = "by"
-HANDLE                 = "h"
-BOOLEAN                = "b"
-LONGLONG               = "ll"
+"ULONG"                  = "ul"
+"DWORD"                  = "dw"
+"DWORD64"                = "dw64"
+"WORD"                   = "w"
+"CHAR"                   = "c"
+"BYTE"                   = "by"
+"HANDLE"                 = "h"
+"BOOLEAN"                = "b"
+"LONGLONG"               = "ll"
+
 
 

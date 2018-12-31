@@ -11,11 +11,14 @@
 namespace namelint {
 bool Detection::captureLowerCasePrefix(string &Name)
 {
-    bool bStatus              = false;
-    const string NewRegexPatn = "^[a-z0-9]+";
-    std::regex re(NewRegexPatn);
+    bool bStatus = false;
+
     std::smatch match;
     std::string result;
+
+    const string NewRegexPatn = "^[a-z0-9]+";
+    std::regex re(NewRegexPatn);
+
     if (std::regex_search(Name, match, re) && match.size() >= 1)
     {
         bStatus = true;
@@ -27,13 +30,11 @@ bool Detection::captureLowerCasePrefix(string &Name)
 
 bool Detection::isUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs)
 {
-    bool bStatus = false;
-    if (0 == IgnorePrefixs.size())
-    {
-        IgnorePrefixs.push_back("");
-    }
+    bool bStatus                    = false;
+    vector<string> NewIgnorePrefixs = IgnorePrefixs;
+    NewIgnorePrefixs.push_back("");
 
-    for (string Prefix : IgnorePrefixs)
+    for (string Prefix : NewIgnorePrefixs)
     {
         const string NewRegexPatn = "^" + Prefix + "[A-Z]";
         std::regex re(NewRegexPatn);
@@ -51,13 +52,11 @@ bool Detection::isUpperCamelCaseString(const string &Name, vector<string> Ignore
 
 bool Detection::isLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs)
 {
-    bool bStatus = false;
-    if (0 == IgnorePrefixs.size())
-    {
-        IgnorePrefixs.push_back("");
-    }
+    bool bStatus                    = false;
+    vector<string> NewIgnorePrefixs = IgnorePrefixs;
+    NewIgnorePrefixs.push_back("");
 
-    for (string Prefix : IgnorePrefixs)
+    for (string Prefix : NewIgnorePrefixs)
     {
         const string NewRegexPatn = "^" + Prefix + "[a-z]";
         std::regex re(NewRegexPatn);
@@ -76,17 +75,14 @@ bool Detection::isLowerCamelCaseString(const string &Name, vector<string> Ignore
 bool Detection::isLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs)
 {
     bool bStatus = false;
-    if (!::FileSystem::IsLowerString(Name))
+    if (!::MyString::IsLower(Name))
     {
         return false;
     }
+    vector<string> NewIgnorePrefixs = IgnorePrefixs;
+    NewIgnorePrefixs.push_back("");
 
-    if (0 == IgnorePrefixs.size())
-    {
-        IgnorePrefixs.push_back("");
-    }
-
-    for (string Prefix : IgnorePrefixs)
+    for (string Prefix : NewIgnorePrefixs)
     {
         const string NewRegexPatn = Prefix + "^[a-z_]*";
         std::regex re(NewRegexPatn);
@@ -102,38 +98,86 @@ bool Detection::isLowerSeperatedString(const string &Name, vector<string> Ignore
     return bStatus;
 }
 
-bool Detection::isHungarianNotationString(const string &Type, const string &Name, const vector<string> &IgnorePrefixs,
+bool Detection::isHungarianNotationString(const string &Type,
+                                          const string &Name,
+                                          const vector<string> &IgnorePrefixs,
                                           const map<string, string> &MappedList)
 {
-    // RULETYPE_HUNGARIAN
-    bool bStatus = false;
+    bool bStatus   = true;
+    string NewName = Name;
+    string NewType = Type;
 
-    string NewStr = Name;
-    for (vector<string>::const_iterator iter = IgnorePrefixs.begin(); iter != IgnorePrefixs.end(); iter++)
+    if ((Type == "char*") /* sz */ || (Type == "wchar_t*") /* wsz */)
     {
-        const size_t nPos = NewStr.find_first_of(*iter);
-        if (0 == nPos)
+    }
+    else
+    {
+        size_t nPointerNumb = this->findHowManyChar(NewType, '*');
+        for (size_t nIdx = 0; nIdx < nPointerNumb; nIdx++)
         {
-            NewStr = NewStr.substr(nPos, NewStr.length() - nPos);
-            break;
+            if ('p' != NewName[nIdx])
+            {
+                bStatus = false;
+                break;
+            }
+        }
+
+        if (bStatus && (nPointerNumb > 0))
+        {
+            NewName = NewName.substr(nPointerNumb, NewName.length() - nPointerNumb);
+            MyString::Replace(NewType, "*", "");
         }
     }
 
-    if (this->captureLowerCasePrefix(NewStr))
+    if (bStatus)
     {
-        map<string, string>::const_iterator iter = MappedList.find(Type);
-        if (MappedList.end() != iter)
+        for (vector<string>::const_iterator iter = IgnorePrefixs.begin();
+             iter != IgnorePrefixs.end(); iter++)
         {
-            const auto str1 = iter->first;
-            const auto str2 = iter->second;
-            if ((str2 == NewStr) && (str1 == Type))
+            const size_t nPos = NewName.find_first_of(*iter);
+            if (0 == nPos)
             {
-                bStatus = true;
+                NewName = NewName.substr(nPos, NewName.length() - nPos);
+                break;
             }
+        }
+
+        map<string, string>::const_iterator Iter = MappedList.find(NewType);
+
+        bStatus = MappedList.end() != Iter;
+        if (bStatus)
+        {
+            string HungarianHead = NewName;
+
+            bStatus = this->captureLowerCasePrefix(HungarianHead);
+            if (bStatus)
+            {
+                const auto Str1 = Iter->first;
+                const auto Str2 = Iter->second;
+
+                bStatus = ((Str2 == HungarianHead) && (Str1 == NewType));
+            }
+        }
+        else
+        {
+            bStatus = this->isUpperCamelCaseString(NewName, IgnorePrefixs);
         }
     }
 
     return bStatus;
+}
+
+size_t Detection::findHowManyChar(const string &InputStr, char cChar)
+{
+    size_t nCount = 0;
+    for (string::const_iterator iter1 = InputStr.begin(); iter1 != InputStr.end(); iter1++)
+    {
+        if (*iter1 == cChar)
+        {
+            nCount++;
+        }
+    }
+    return nCount;
 }
 
 }  // namespace namelint
@@ -169,7 +213,9 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name)
     return bStatus;
 }
 
-bool Detection::CheckFunction(const RULETYPE Rule, const string &Name, const vector<string> &IgnorePrefixs)
+bool Detection::CheckFunction(const RULETYPE Rule,
+                              const string &Name,
+                              const vector<string> &IgnorePrefixs)
 {
     if (Name.length() == 0)
     {
@@ -195,14 +241,16 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name, const vec
     return bStatus;
 }
 
-bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const string &Name,
-                              const vector<string> &IgnorePrefixs, const map<string, string> &MappedList)
+bool Detection::CheckVariable(const RULETYPE Rule,
+                              const string &Type,
+                              const string &Name,
+                              const vector<string> &IgnorePrefixs,
+                              const map<string, string> &MappedList)
 {
     if (Name.length() == 0)
     {
         return false;
     }
-    Type;
 
     bool bStatus = false;
     switch (Rule)
