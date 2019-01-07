@@ -259,7 +259,7 @@ def main():
         input_target_path = arguments['<PATH>']
         input_output_path = arguments['<OUTPUT>']
         
-        input_build_type  = 'release'
+        input_build_type  = 'Release'
         if arguments['BUILD']:
             if   'RELEASE' == arguments['BUILD'].upper():
                 input_build_type  = 'Release'
