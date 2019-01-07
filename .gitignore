@@ -51,3 +51,5 @@ CMakeFiles
 Build
 Debug
 .vscode
+.idea
+*.pyc

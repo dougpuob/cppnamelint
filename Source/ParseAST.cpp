@@ -1,4 +1,5 @@
 #include "ParseAST.h"
+#include <assert.h>
 #include "Common.h"
 
 using namespace namelint;
@@ -307,11 +308,18 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pVarDecl)
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt)
 {
-    clang::QualType qualType = pRetStmt->getRetValue()->getType();
-    std::string strType      = qualType.getAsString();
+    assert(pRetStmt);
+
+    const Expr *pExpr = pRetStmt->getRetValue();
+    if (pExpr)
+    {
+        clang::QualType qualType = pExpr->getType();
+        std::string strType      = qualType.getAsString();
+        return true;
+    }
 
     // printf("VisitReturnStmt:  %s \n", strType.c_str());
-    return true;
+    return false;
 }
 
 //==---------------------------------------------------------------------------------------------==

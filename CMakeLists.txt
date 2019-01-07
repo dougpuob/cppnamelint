@@ -1,49 +1,55 @@
 cmake_minimum_required(VERSION 3.10)
 project(namelint)
 
-message("CMAKE_SYSTEM           : ${CMAKE_SYSTEM}"           )
-message("CMAKE_SYSTEM_NAME      : ${CMAKE_SYSTEM_NAME}"      )
-message("CMAKE_SYSTEM_VERSION   : ${CMAKE_SYSTEM_VERSION}"   )
-message("CMAKE_SYSTEM_PROCESSOR : ${CMAKE_SYSTEM_PROCESSOR}" )
+message("CMAKE_CURRENT_SOURCE_DIR   : ${CMAKE_CURRENT_SOURCE_DIR}"  )
+message("CMAKE_BUILD_TYPE           : ${CMAKE_BUILD_TYPE}"          )
+message("CMAKE_SYSTEM               : ${CMAKE_SYSTEM}"              )
+message("CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}"         )
+message("CMAKE_SYSTEM_VERSION       : ${CMAKE_SYSTEM_VERSION}"      )
+message("CMAKE_SYSTEM_PROCESSOR     : ${CMAKE_SYSTEM_PROCESSOR}"    )
 
 set(CMAKE_CXX_STANDARD          14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
+
+###############################################################################
+# Linux:    export NAMELINT_DEVTLS=/home/dougpuob/working-folder/devtls/@Linux/3party-lib
+# macOS:    export NAMELINT_DEVTLS=/home/dougpuob/working-folder/devtls/@MacOS/3party-lib
+# Windows:  SETX   NAMELINT_DEVTLS=D:\devtls\@Win32\3party-lib
 set(PREBUILD_DIR $ENV{NAMELINT_DEVTLS} )
 set(PREBUILD_DIR_LLVM   ${PREBUILD_DIR}/llvm/7.0.1)
 
 
 ###############################################################################
 if(WIN32)
-    message("Platform               : WIN32" )
+    message("Platform                   : WIN32" )
 elseif(UNIX AND NOT APPLE)
-    message("Platform               : UNIX AND NOT APPLE" )
+    message("Platform                   : UNIX AND NOT APPLE" )
 elseif(APPLE)
-    message("Platform               : APPLE" )
+    message("Platform                   : APPLE" )
 else()
-    message("Platform               : None" )
+    message("Platform                   : ERROR HERE" )
 endif()
-
-
 
 
 ###############################################################################
 if(WIN32)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4141")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4146")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4291")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4227")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4099")
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")
-   set( gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4141")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4146")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4291")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4227")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4099")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")
+    set( gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )
 elseif(UNIX AND NOT APPLE)
+    # None.
 elseif(APPLE)
-    #set(CMAKE_CXX_COMPILER /usr/local/bin/gcc-8)
+    # None.
 endif()
 
-message("CMAKE_CXX_FLAGS        : ${CMAKE_CXX_FLAGS}" )
+message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
 
 include_directories(
     ${PREBUILD_DIR_LLVM}/include
@@ -56,62 +62,38 @@ include_directories(
 
 
 ###############################################################################
-if(WIN32)
-    set(LINK_LIB1 "Build/win32/Module/docopt.cpp/Debug")
-    set(LINK_LIB2 "Build/win32/lib/Debug")
-elseif(UNIX AND NOT APPLE)
-    set(LINK_LIB1 "Build/linux/Module/docopt.cpp")
-    set(LINK_LIB2 "Build/linux/lib")
-elseif(APPLE)
-    set(LINK_LIB1 "Build/darwin/Module/docopt.cpp")
-    set(LINK_LIB2 "Build/darwin/lib")
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    SET (BUILD_TYPE debug)
+elseif(CMAKE_BUILD_TYPE STREQUAL Release)
+    SET (BUILD_TYPE release)
 else()
-    set(LINK_LIB1 "None")
-    set(LINK_LIB2 "None")
+    SET (BUILD_TYPE None)
 endif()
 
-message("LINK_LIB1              : ${LINK_LIB1}" )
-message("LINK_LIB2              : ${LINK_LIB2}" )
-
-# link_directories(
-#     ${PREBUILD_DIR_LLVM}/build/debug/lib
-#     $(LINK_LIB1)
-#     $(LINK_LIB2)
-#     )
-
-
-###############################################################################
-if(WIN32)
-    link_directories(
-        ${PREBUILD_DIR_LLVM}/build/debug/lib
-        Build/win32/Module/docopt.cpp/Debug
-        Build/win32/lib/Debug
-        )
-elseif(UNIX AND NOT APPLE)
-    link_directories(
-        ${PREBUILD_DIR_LLVM}/build/debug/lib
-        Build/linux/Module/docopt.cpp
-        Build/linux/lib
-        )
-elseif(APPLE)
-    link_directories(
-        ${PREBUILD_DIR_LLVM}/build/debug/lib
-        Build/darwin/Module/docopt.cpp
-        Build/darwin/lib
-        )
-else()
-    link_directories(
-        ${PREBUILD_DIR_LLVM}/build/debug/lib
-        Build/darwin/Module/docopt.cpp
-        Build/darwin/lib
-        )
-endif()
-
+link_directories(${PREBUILD_DIR_LLVM}/build/${BUILD_TYPE}/lib)
+message("LLVM PATH                  : ${PREBUILD_DIR_LLVM}/build/${BUILD_TYPE}/lib" )
 
 
 ###############################################################################
 add_subdirectory(Module/docopt.cpp)
 add_subdirectory(Module/googletest.git)
+
+
+###############################################################################
+set(OUTPUT_OS "")
+if(WIN32)
+    set(OUTPUT_OS "win32")
+elseif(UNIX AND NOT APPLE)
+    set(OUTPUT_OS "linux")
+elseif(APPLE)
+    set(OUTPUT_OS "darwin")
+else()
+    set(OUTPUT_OS "error")
+endif()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${OUTPUT_OS}/Output)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${OUTPUT_OS}/Output)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${OUTPUT_OS}/Output)
 
 
 ###############################################################################
@@ -122,7 +104,7 @@ elseif(APPLE)
     set(CMAKE_CXX_FLAGS "-fno-rtti -lz")
 endif()
 
-message("CMAKE_CXX_FLAGS        : ${CMAKE_CXX_FLAGS}" )
+message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
 
 add_executable(
     namelint
@@ -154,6 +136,7 @@ target_link_libraries(
     namelint
     docopt
     gtest
+    gtest_main
     ${EXTERNAL_LIB}
     clangAnalysis
     clangARCMigrate
@@ -185,8 +168,6 @@ target_link_libraries(
     clangToolingCore
     clangToolingInclusions
     clangToolingRefactor
-    gtest
-    gtest_main
     #Kaleidoscope-Ch4
     #Kaleidoscope-Ch5
     #Kaleidoscope-Ch6

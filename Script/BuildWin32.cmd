@@ -15,8 +15,6 @@ IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
 clang-tidy   --version  > NUL
 IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
 
-ECHO.
-ECHO.
 ECHO ==============================================================
 ECHO Git submodule
 ECHO ==============================================================
@@ -30,7 +28,7 @@ ECHO.
 ECHO ==============================================================
 ECHO Reformat source files
 ECHO ==============================================================
-python build-flow.py lint format ..\Source
+python BuildFlow.py lint-format ..\Source
 
 ECHO.
 ECHO.
@@ -38,13 +36,17 @@ ECHO ==============================================================
 ECHO Static source files analyzation
 ECHO ==============================================================
 ::python build-flow.py lint analyze ..\Source
+ECHO Skipped
 
 ECHO.
 ECHO.
 ECHO ==============================================================
 ECHO Generate makefile via CMake
 ECHO ==============================================================
-python build-flow.py cmake create .. ..\Build
+SET BUILD_TYPE=
+IF /I "Release"=="%1" (SET BUILD_TYPE="--build=Release")
+IF /I "Debug"=="%1"   (SET BUILD_TYPE="--build=Debug")
+python BuildFlow.py proj-create .. ..\Build %BUILD_TYPE%
 
 ECHO.
 ECHO.
