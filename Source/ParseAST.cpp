@@ -14,8 +14,6 @@ using namespace boost::filesystem;
 
 using namespace namelint;
 
-
-
 bool MyASTVisitor::isMainFile(Decl *pDecl)
 {
     if (this->m_pAstCxt->getSourceManager().isInMainFile(pDecl->getLocation()))
