@@ -1,8 +1,20 @@
 #include "ParseAST.h"
 #include <assert.h>
+
+#if __has_include("filesystem")
+#    include <filesystem>
+using namespace filesystem;
+#else
+#    include <boost/filesystem.hpp>
+using namespace boost::filesystem;
+#endif
+
+#include <iomanip>
 #include "Common.h"
 
 using namespace namelint;
+
+
 
 bool MyASTVisitor::isMainFile(Decl *pDecl)
 {
@@ -42,6 +54,19 @@ bool MyASTVisitor::getPosition(Decl *pDecl, string &FileName, size_t &nLineNumb,
     if (FullLocation.isValid())
     {
         FileName = FullLocation.getFileLoc().getFileEntry()->getName();
+
+        if ((FileName != this->m_FileName) || ("" == this->m_FileName))
+        {
+            path Path1   = FileName;
+            string Path2 = Path1.lexically_normal().string();
+
+            MyString::Replace(Path2, "\\\\", "\\");
+            MyString::Replace(Path2, "\"", "");
+            cout << endl << "[" << Path2 << "]" << endl;
+
+            this->m_FileName = FileName;
+        }
+
         this->keepFileName(FileName);
         nLineNumb = FullLocation.getSpellingLineNumber();
         nColNumb  = FullLocation.getSpellingColumnNumber();
@@ -59,7 +84,7 @@ bool MyASTVisitor::printPosition(Decl *pDecl)
     bool bStatus     = getPosition(pDecl, FileName, nLineNumb, nColNumb);
     if (bStatus)
     {
-        cout << FileName << " <Line:" << nLineNumb << ",Col:" << nColNumb << ">\t";
+        cout << "  <" << nLineNumb << "," << nColNumb << ">" << setw(12);
     }
     return bStatus;
 }
@@ -185,8 +210,9 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM,
                            const ASTContext *pAstCxt,
                            const namelint::Config *pConfig)
 {
-    this->m_pSrcMgr = pSM;
-    this->m_pAstCxt = (ASTContext *)pAstCxt;
+    this->m_FileName = "";
+    this->m_pSrcMgr  = pSM;
+    this->m_pAstCxt  = (ASTContext *)pAstCxt;
 
     this->m_bCheckFile     = pConfig->GetData().m_General.bCheckFileName;
     this->m_bCheckFunction = pConfig->GetData().m_General.bCheckFunctionName;

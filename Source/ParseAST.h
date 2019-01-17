@@ -35,6 +35,7 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     ASTContext *m_pAstCxt;
     const SourceManager *m_pSrcMgr;
     namelint::Detection m_Detect;
+    string m_FileName;
 
     bool m_bCheckFile;
     bool m_bCheckFunction;
@@ -82,7 +83,7 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 class MyASTConsumer : public ASTConsumer {
    private:
    public:
-    virtual bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
+    bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
     void HandleTranslationUnit(ASTContext &Ctx);
 };
 

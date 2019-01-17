@@ -8,7 +8,7 @@ message("CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}"         )
 message("CMAKE_SYSTEM_VERSION       : ${CMAKE_SYSTEM_VERSION}"      )
 message("CMAKE_SYSTEM_PROCESSOR     : ${CMAKE_SYSTEM_PROCESSOR}"    )
 
-set(CMAKE_CXX_STANDARD          14)
+set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
@@ -100,8 +100,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/Build/${OUTPUT_OS}/Output
 if(WIN32)
 elseif(UNIX AND NOT APPLE)
     set(CMAKE_CXX_FLAGS "-fno-rtti")
+    link_libraries(stdc++fs)
 elseif(APPLE)
     set(CMAKE_CXX_FLAGS "-fno-rtti -lz")
+    SET(Boost_USE_STATIC_LIBS ON)
+    FIND_PACKAGE(Boost 1.54 COMPONENTS filesystem REQUIRED)
 endif()
 
 message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
@@ -129,7 +132,7 @@ if(WIN32)
     set(EXTERNAL_LIB Version)
 elseif(UNIX AND NOT APPLE)
 elseif(APPLE)
-    set(EXTERNAL_LIB ncurses)
+    set(EXTERNAL_LIB ncurses ${Boost_LIBRARIES})
 endif()
 
 target_link_libraries(

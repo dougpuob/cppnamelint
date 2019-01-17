@@ -7,29 +7,17 @@
 
 #include <docopt.h>
 #include <gtest/gtest.h>
+#include <map>
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace namelint;
 
 int main(int argc, char** argv)
 {
-    //    const char* m_UsageHelp =
-    //        "\
-//\r\n  COMMANDS\
-//\r\n  namelint check <FILE>        Check naming of the input file\
-//\r\n  namelint test  <MODE>        Run test\
-//\r\n\n";
-    //
-    //    const char* m_UsageOption =
-    //        "\
-//\r\n  OPTIONS\
-//\r\n  -log[=FILE]                  Write log to a specific file or default\
-//\r\n  -config[=FILE]               Apply a specific config or default\
-//\r\n\n";
-    //
-
     static const char USAGE[] =
-        R"(Name Lint.
+        R"(NameLint utility v0.0.1
 
   Usage:
     namelint check <file> [--config=<file>] [--log=<file>]
@@ -43,26 +31,23 @@ int main(int argc, char** argv)
     --log=<file>      [default: namelint.log]
   )";
 
-    std::map<std::string, docopt::value> args = docopt::docopt(USAGE, {argv + 1, argv + argc},
-                                                               false,  // show help if requested
-                                                               "Naval Fate 2.0");  // version string
+    std::map<std::string, docopt::value> Arguments =
+        docopt::docopt(USAGE, {argv + 1, argv + argc},
+                       false,              // show help if requested
+                       "Naval Fate 2.0");  // version string
 
-    // std::cout << "--config = " << args["--config"]  << endl;
-    // std::cout << "--help   = " << args["--help"]    << endl;
-    // std::cout << "--abc    = " << args["--abc"]     << endl;
-
-    for (auto const& arg : args)
-    {
-        std::cout << arg.first << "  \t: " << arg.second << std::endl;
-    }
+    std::cout << "--config = " << Arguments["--config"] << endl;
+    std::cout << "--help   = " << Arguments["--help"] << endl;
+    std::cout << "--abc    = " << Arguments["--abc"] << endl;
 
     int iReturn = 0;
-    if (args["check"].asBool() && args["<file>"].asString().length() > 0)
+
+    if (Arguments["check"].asBool() && Arguments["<file>"].asString().length() > 0)
     {
         APP_CONTEXT* pAppCxt = (APP_CONTEXT*)GetAppCxt();
 
         namelint::Config Config;
-        Config.Load(args["--config"].asString());
+        Config.Load(Arguments["--config"].asString());
         pAppCxt->pTomlConfig = &Config;
 
         int iMyArgc            = 3;
@@ -71,7 +56,7 @@ int main(int argc, char** argv)
         CommonOptionsParser NullOptionsParser(iMyArgc, ppMyArgV, NameLintOptions);
 
         vector<string> SourcePathList;
-        SourcePathList.push_back(args["<file>"].asString());
+        SourcePathList.push_back(Arguments["<file>"].asString());
         ClangTool Tool(NullOptionsParser.getCompilations(), SourcePathList);
 
         Tool.setDiagnosticConsumer(new MyIgnoringDiagConsumer());
@@ -81,12 +66,12 @@ int main(int argc, char** argv)
 
         Tool.run(Factory.get());
     }
-    else if (args["config"].asBool())
+    else if (Arguments["config"].asBool())
     {
         namelint::Config Config;
-        Config.Print(args["--config"].asString());
+        Config.Print(Arguments["--config"].asString());
     }
-    else if (args["test"].asBool())
+    else if (Arguments["test"].asBool())
     {
         ::testing::InitGoogleTest(&argc, (char**)argv);
         iReturn = RUN_ALL_TESTS();

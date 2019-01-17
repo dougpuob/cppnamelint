@@ -258,20 +258,20 @@ def main():
     elif arguments['proj-create']:
         input_target_path = arguments['<PATH>']
         input_output_path = arguments['<OUTPUT>']
-        
+
         input_build_type  = 'Release'
         if arguments['BUILD']:
-            if   'RELEASE' == arguments['BUILD'].upper():
+            if 'RELEASE' == arguments['BUILD'].upper():
                 input_build_type  = 'Release'
             elif 'DEBUG' == arguments['BUILD'].upper():
                 input_build_type  = 'Debug'
-        
+
         print("proj-create command")
         print("<PATH>    = ", input_target_path)
         print("<OUTPUT>  = ", input_output_path)
         print("[BUILD]   = ", input_build_type)
         build_flow_build.create(input_target_path, input_output_path, input_build_type)
-        
+
     elif arguments['proj-build']:
         input_target_path = arguments['<PATH>']
         print("proj-build command")
