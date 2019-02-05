@@ -17,7 +17,7 @@ using namespace namelint;
 int main(int argc, char** argv)
 {
     static const char USAGE[] =
-        R"(NameLint utility v0.0.1
+        R"(NameLint utility v0.0.2
 
   Usage:
     namelint check <file> [--config=<file>] [--log=<file>]
