@@ -18,7 +18,6 @@ NameLint utility v0.0.1
   Usage:
     namelint check <file> [--config=<file>] [--log=<file>]
     namelint test   [-a | --all] [-u | --unittest]
-    namelint config [--config=<file>]
     namelint --help
     namelint --version
 
@@ -30,10 +29,14 @@ NameLint utility v0.0.1
 ### Examples
 1. `namelint check InputFile.cpp --config=Config.toml`
 
+----------
+
+### [To be an User]
+- namelint_v0.0.0.2.7z(win32)[http://bit.ly/2DfBK82]
 
 ----------
 
-### [How To Start]
+### [To be a Developer]
 This instructions NOW for Windows, make it work on Linux and MacOS in beta phase.
 
 1. `git clone https://github.com/dougpuob/cpp-namelint.git namelint.git`
@@ -42,6 +45,8 @@ This instructions NOW for Windows, make it work on Linux and MacOS in beta phase
 1. `git submodule update`
 1. `cd Script`
 1. Run BuildWin32.cmd/BuildLinux.sh/BuildMacOS.sh .
+1. Build the project(Win32=MSVC, Linux=G++-8, macOS=G++).
+1. Run TestWin32.cmd.
 
 
 ----------

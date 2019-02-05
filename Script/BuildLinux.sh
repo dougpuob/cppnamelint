@@ -8,11 +8,11 @@ echo CXX =$CC
 echo "${1}"
 
 if   [ "${1}" == "Release" ] || [ "${1}" == "release" ] || [ "${1}" == "RELEASE" ]; then
-    BUILD_TYPE="build=Release"
+    BUILD_TYPE="Release"
 elif [ "${1}" == "Debug" ]   || [ "${1}" == "debug" ]   || [ "${1}" == "DEBUG" ]; then
-    BUILD_TYPE="build=Debug"
+    BUILD_TYPE="Debug"
 else
-    BUILD_TYPE=""
+    UILD_TYPE="Release"
 fi
 
 

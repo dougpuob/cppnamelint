@@ -28,25 +28,68 @@ bool Detection::captureLowerCasePrefix(string &Name)
     return bStatus;
 }
 
-bool Detection::isUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs)
+bool Detection::isUpperCamelCaseString(const string &Name,
+                                       vector<string> IgnorePrefixs,
+                                       bool bAllowedEndWithUnderscopeChar = false)
 {
     bool bStatus                    = false;
     vector<string> NewIgnorePrefixs = IgnorePrefixs;
     NewIgnorePrefixs.push_back("");
 
+    string NewRegexPatn = "(^[A-Z][0-9a-zA-Z]*)";
+    if (bAllowedEndWithUnderscopeChar)
+    {
+        NewRegexPatn += "([0-9a-zA-Z_]*)";
+    }
+    std::regex re(NewRegexPatn);
+
     for (string Prefix : NewIgnorePrefixs)
     {
-        const string NewRegexPatn = "^" + Prefix + "[A-Z]";
-        std::regex re(NewRegexPatn);
+        string TempStr   = Name;
+        size_t nFoundPos = 0;
+
+        if (Prefix.length() > 0)
+        {
+            nFoundPos = TempStr.find(Prefix);
+            if (0 == nFoundPos)
+            {
+                TempStr = TempStr.substr(Prefix.length(), TempStr.length() - Prefix.length());
+            }
+        }
+
+        nFoundPos = TempStr.find(".");
+        if (-1 != nFoundPos)
+        {
+            TempStr = TempStr.substr(0, nFoundPos);
+        }
+
         std::smatch match;
         std::string result;
-        if (std::regex_search(Name, match, re) && match.size() >= 1)
+        if (std::regex_search(TempStr, match, re))
         {
-            bStatus = true;
-            break;
+            if (match.size() >= 2)
+            {
+                if (bAllowedEndWithUnderscopeChar)
+                {
+                    if ((match[0] == TempStr) || (match[0] != match[1]))
+                    {
+                        bStatus = true;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (match[0] == TempStr)
+                    {
+                        bStatus = true;
+                        break;
+                    }
+                }
+            }
         }
     }
 
+    // printf("Checking >%s< (%d)\r\n", Name.c_str(), bStatus);
     return bStatus;
 }
 
@@ -58,6 +101,7 @@ bool Detection::isLowerCamelCaseString(const string &Name, vector<string> Ignore
 
     for (string Prefix : NewIgnorePrefixs)
     {
+        // const string NewRegexPatn = "^" + Prefix + "[a-z_]";
         const string NewRegexPatn = "^" + Prefix + "[a-z]";
         std::regex re(NewRegexPatn);
         std::smatch match;
@@ -75,7 +119,7 @@ bool Detection::isLowerCamelCaseString(const string &Name, vector<string> Ignore
 bool Detection::isLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs)
 {
     bool bStatus = false;
-    if (!::MyString::IsLower(Name))
+    if (!::String::IsLower(Name))
     {
         return false;
     }
@@ -125,7 +169,7 @@ bool Detection::isHungarianNotationString(const string &Type,
         if (bStatus && (nPointerNumb > 0))
         {
             NewName = NewName.substr(nPointerNumb, NewName.length() - nPointerNumb);
-            MyString::Replace(NewType, "*", "");
+            String::Replace(NewType, "*", "");
         }
     }
 
@@ -137,7 +181,7 @@ bool Detection::isHungarianNotationString(const string &Type,
             const size_t nPos = NewName.find_first_of(*iter);
             if (0 == nPos)
             {
-                NewName = NewName.substr(nPos, NewName.length() - nPos);
+                NewName = NewName.substr(iter->length(), NewName.length() - iter->length());
                 break;
             }
         }
@@ -215,7 +259,8 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name)
 
 bool Detection::CheckFunction(const RULETYPE Rule,
                               const string &Name,
-                              const vector<string> &IgnorePrefixs)
+                              const vector<string> &IgnorePrefixs,
+                              const bool bAllowedEndWithUnderscopeChar)
 {
     if (Name.length() == 0)
     {
@@ -227,7 +272,7 @@ bool Detection::CheckFunction(const RULETYPE Rule,
     {
     case RULETYPE_DEFAULT:
     case RULETYPE_UPPER_CAMEL_CASE:
-        bStatus = this->isUpperCamelCaseString(Name, IgnorePrefixs);
+        bStatus = this->isUpperCamelCaseString(Name, IgnorePrefixs, bAllowedEndWithUnderscopeChar);
         break;
 
     case RULETYPE_LOWER_CAMEL_CASE:

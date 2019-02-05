@@ -40,6 +40,7 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     bool m_bCheckFile;
     bool m_bCheckFunction;
     bool m_bCheckVariable;
+    bool bAllowedEndWithUnderscopeChar;
 
     namelint::RULETYPE m_FileRuleType;
     namelint::RULETYPE m_FunctionRuleType;
@@ -52,19 +53,19 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 
     bool isMainFile(Decl *pDecl);
     bool printPosition(Decl *pDecl);
-    void keepFileName(string &FilePath);
+    void keepFileName(string &Path);
     bool getPosition(Decl *pDecl, string &FileName, size_t &nLineNumb, size_t &nColNumb);
     bool classifyTypeName(string &TyeName);
-    void stringReplace(string &strBig, const string &strsrc, const string &strdst);
+    void stringReplace(string &Source, const string &Patn, const string &New);
     void stringTrim(string &s);
 
-    bool assertWithFunction(FunctionDecl *pFuncDecl, string &FuncName);
-    bool assertWithParm(ParmVarDecl *pParmVarDecl, string &TypeName, string &VarName);
-    bool assertWithVar(VarDecl *pVarDecl, string &TypeName, string &VarName);
+    bool assertWithFunction(FunctionDecl *pDecl, string &FuncName);
+    bool assertWithParm(ParmVarDecl *pDecl, string &TypeName, string &VarName);
+    bool assertWithVar(VarDecl *pDecl, string &TypeName, string &VarName);
 
-    bool getFunctionInfo(FunctionDecl *pFuncDecl, string &FuncName);
-    bool getParmsInfo(ParmVarDecl *pParmVarDecl, string &VarType, string &VarName);
-    bool getVarInfo(VarDecl *pVarDecl, string &VarType, string &VarName);
+    bool getFunctionInfo(FunctionDecl *pDecl, string &FuncName);
+    bool getParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName);
+    bool getVarInfo(VarDecl *pDecl, string &VarType, string &VarName);
 
    public:
     MyASTVisitor(const SourceManager *pSM,
@@ -73,10 +74,10 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     // bool VisitStmt(Stmt *pStmt);
     // bool VisitCXXRecordDecl(CXXRecordDecl *D);
     // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
-    bool VisitFunctionDecl(FunctionDecl *pFuncDecl);
-    bool VisitCXXMethodDecl(CXXMethodDecl *D);
-    bool VisitRecordDecl(RecordDecl *D);
-    bool VisitVarDecl(VarDecl *pVarDecl);
+    bool VisitFunctionDecl(FunctionDecl *pDecl);
+    bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
+    bool VisitRecordDecl(RecordDecl *pDecl);
+    bool VisitVarDecl(VarDecl *pDecl);
     bool VisitReturnStmt(ReturnStmt *pRetStmt);
 };
 

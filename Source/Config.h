@@ -40,6 +40,7 @@ class WhiteList {
    public:
     vector<string> FunctionPrefix;
     vector<string> VariablePrefix;
+    bool bAllowedUnderscopeChar;
 
    public:
     WhiteList()
@@ -68,9 +69,9 @@ class Config {
 
    public:
     Config();
-    bool Load(string SrcPath);
+    bool LoadFile(string ConfigFilePath);
+    bool LoadStream(string ConfigContent);
     bool Save(string DstPath);
-    bool Print(string SrcPath);
     ConfigData &GetData() const;
 };
 }  // namespace namelint

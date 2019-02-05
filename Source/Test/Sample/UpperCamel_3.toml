@@ -1,0 +1,22 @@
+﻿[General]
+  ListFileExtName           = ["*.c","*.h","*.cpp"]
+  BoolCheckVariableName     = true
+  BoolCheckFunctionName     = true
+  BoolCheckFileName         = true
+
+[Rule]
+  EnumFileName              = 1 # 1: UpperCamelCase
+  EnumFunctionName          = 1 # 1: UpperCamelCase
+  EnumVariableName          = 4 # 4: Hungarian
+
+[WhiteList]
+  ListFunctionPrefix        = [ "_", "__" , "XXX_"]
+  ListVariablePrefix        = [ "m_" ]
+  BoolAllowedUnderscopeChar = true
+
+[HungarianList]
+"size_t"                 = "n"
+"uint8_t"                = "u8"
+"char*"                  = "sz"
+"int"                    = "i"
+"char"                   = "c"

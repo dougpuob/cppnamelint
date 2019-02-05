@@ -122,6 +122,7 @@ add_executable(
     Source/Config.h
     Source/Config.cpp
     Source/Main.cpp
+    Source/Test/TestConfig.cpp
     Source/Test/TestDetection.cpp
     )
 

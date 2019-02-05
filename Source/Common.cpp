@@ -1,48 +1,47 @@
 #include "Common.h"
-#include <sys/stat.h>
+
+#if __has_include("filesystem")
+#    include <filesystem>
+using namespace filesystem;
+#else
+#    include <boost/filesystem.hpp>
+using namespace boost::filesystem;
+#endif
 
 static APP_CONTEXT m_AppCxt;
 const APP_CONTEXT *GetAppCxt() { return &m_AppCxt; }
 
 namespace FileSystem {
-bool IsFileExist(const string &FilePath)
-{
-    struct stat fileStat;
-    if (stat(FilePath.c_str(), &fileStat))
-    {
-        return false;
-    }
-    return true;
-}
+bool IsExist(const string &Path) { return filesystem::exists(Path); }
 
-const char *FindFileNameInPath(const string &FielPath)
+const char *FindFileNameInPath(const string &Path)
 {
-    size_t nPos = FielPath.find_last_of("\\");
+    size_t nPos = Path.find_last_of("\\");
     if (nPos == string::npos)
     {
-        nPos = FielPath.find_last_of("/");
+        nPos = Path.find_last_of("/");
         if (nPos == string::npos)
         {
-            return FielPath.c_str();
+            return Path.c_str();
         }
     }
-    return FielPath.c_str() + nPos;
+    return Path.c_str() + nPos;
 }
 
 }  // namespace FileSystem
 
-namespace MyString {
+namespace String {
 
-void PadTo(string &s, size_t nCount, char cChar)
+void PadTo(string &Source, size_t nCount, char cChar)
 {
-    if (nCount > s.length())
-        s.append(nCount - s.length(), cChar);
+    if (nCount > Source.length())
+        Source.append(nCount - Source.length(), cChar);
 }
 
-bool IsLower(const string &Str)
+bool IsLower(const string &Source)
 {
     bool bStatus = true;
-    for (std::string::const_iterator iter = Str.begin(); iter != Str.end(); iter++)
+    for (std::string::const_iterator iter = Source.begin(); iter != Source.end(); iter++)
     {
         if (isupper(*iter))
         {
@@ -54,27 +53,27 @@ bool IsLower(const string &Str)
     return bStatus;
 }
 
-void Replace(string &strBig, const string &strsrc, const string &strdst)
+void Replace(string &Source, const string &Patn, const string &New)
 {
     string::size_type pos    = 0;
-    string::size_type srclen = strsrc.size();
-    string::size_type dstlen = strdst.size();
-    while ((pos = strBig.find(strsrc, pos)) != string::npos)
+    string::size_type srclen = Patn.size();
+    string::size_type dstlen = New.size();
+    while ((pos = Source.find(Patn, pos)) != string::npos)
     {
-        strBig.replace(pos, srclen, strdst);
+        Source.replace(pos, srclen, New);
         pos += dstlen;
     }
 }
 
-void Trim(string &Str)
+void Trim(string &Source)
 {
-    if (Str.empty())
+    if (Source.empty())
     {
         return;
     }
 
-    Str.erase(0, Str.find_first_not_of(" "));
-    Str.erase(Str.find_last_not_of(" ") + 1);
+    Source.erase(0, Source.find_first_not_of(" "));
+    Source.erase(Source.find_last_not_of(" ") + 1);
 }
 
-}  // namespace MyString
+}  // namespace String

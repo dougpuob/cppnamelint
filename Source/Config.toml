@@ -1,28 +1,30 @@
 [General]
-FileExtName         = ["*.c","*.h","*.cpp"]
-CheckVariableName   = true
-CheckFunctionName   = true
-CheckFileName       = false
+ListFileExtName         = ["*.c","*.h","*.cpp"]
+BoolCheckVariableName   = true
+BoolCheckFunctionName   = true
+BoolCheckFileName       = false
 
 [Rule]
-FileName            = 0 # 0: Default (UpperCamelCase)
-                        # 1: UpperCamelCase
-                        # 3: lower-seperated
+EnumFileName            = 0 # 0: Default (UpperCamelCase)
+                            # 1: UpperCamelCase
+                            # 3: lower-seperated
 
-FunctionName        = 0 # 0: Default (UpperCamelCase)
-                        # 1: UpperCamelCase
-                        # 2: lowerCamelCase
-                        # 3: lower-seperated
+EnumFunctionName        = 0 # 0: Default (UpperCamelCase)
+                            # 1: UpperCamelCase
+                            # 2: lowerCamelCase
+                            # 3: lower-seperated
 
-VariableName        = 4 # 0: Default (UpperCamelCase)
-                        # 1: UpperCamelCase
-                        # 2: lowerCamelCase
-                        # 3: lower-seperated
-                        # 4: Hungarian
+EnumVariableName        = 4 # 0: Default (UpperCamelCase)
+                            # 1: UpperCamelCase
+                            # 2: lowerCamelCase
+                            # 3: lower-seperated
+                            # 4: Hungarian
 [WhiteList]
-FunctionPrefix      = [ "_",
-                        "__" ]
-VariablePrefix      = [ "m_" ]
+ListFunctionPrefix           = [ "_",
+                                 "__" ]
+ListVariablePrefix           = [ "m_" ]
+
+BoolAllowedUnderscopeChar    = false
 
 [HungarianList]
 # C Primitive Type

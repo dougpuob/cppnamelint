@@ -196,12 +196,12 @@ class Lint():
            # file.write("--------------------------------------------------------------------------------\n")
            #
            # file.close()
-           
+
 
 class Build():
     def __init__(self):
         self.name = ""
-        
+
     def create(self, cmakefile_folder, output_folder, build_type):
         output_path = os.path.abspath(os.path.join(output_folder, sys.platform))
         input_path  = os.path.abspath(cmakefile_folder)
@@ -239,7 +239,7 @@ def main():
         build_flow_utility.find_files(input_folder, accepted_extname_list, output_list)
         for file_path in output_list:
             build_flow_lint.code_reformat(file_path)
-            
+
     elif arguments['lint-analyze']:
         input_folder = arguments['<DIR>']
         print("lint-analyze command with input folder ", input_folder)

@@ -22,7 +22,6 @@ int main(int argc, char** argv)
   Usage:
     namelint check <file> [--config=<file>] [--log=<file>]
     namelint test   [-a | --all] [-u | --unittest]
-    namelint config [--config=<file>]
     namelint --help
     namelint --version
 
@@ -36,9 +35,8 @@ int main(int argc, char** argv)
                        false,              // show help if requested
                        "Naval Fate 2.0");  // version string
 
+    std::cout << "<file>   = " << Arguments["<file>"] << endl;
     std::cout << "--config = " << Arguments["--config"] << endl;
-    std::cout << "--help   = " << Arguments["--help"] << endl;
-    std::cout << "--abc    = " << Arguments["--abc"] << endl;
 
     int iReturn = 0;
 
@@ -47,7 +45,7 @@ int main(int argc, char** argv)
         APP_CONTEXT* pAppCxt = (APP_CONTEXT*)GetAppCxt();
 
         namelint::Config Config;
-        Config.Load(Arguments["--config"].asString());
+        Config.LoadFile(Arguments["--config"].asString());
         pAppCxt->pTomlConfig = &Config;
 
         int iMyArgc            = 3;
@@ -65,11 +63,7 @@ int main(int argc, char** argv)
         std::unique_ptr<FrontendActionFactory> Factory = newFrontendActionFactory(&MyFactory);
 
         Tool.run(Factory.get());
-    }
-    else if (Arguments["config"].asBool())
-    {
-        namelint::Config Config;
-        Config.Print(Arguments["--config"].asString());
+        iReturn = GetAppCxt()->nAsserted;
     }
     else if (Arguments["test"].asBool())
     {

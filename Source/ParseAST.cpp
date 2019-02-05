@@ -52,20 +52,19 @@ bool MyASTVisitor::getPosition(Decl *pDecl, string &FileName, size_t &nLineNumb,
     if (FullLocation.isValid())
     {
         FileName = FullLocation.getFileLoc().getFileEntry()->getName();
-
-        if ((FileName != this->m_FileName) || ("" == this->m_FileName))
+        if ((FileName != GetAppCxt()->FileName) || ("" == GetAppCxt()->FileName))
         {
+            APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+            pAppCxt->FileName    = FileName;
+
             path Path1   = FileName;
             string Path2 = Path1.lexically_normal().string();
 
-            MyString::Replace(Path2, "\\\\", "\\");
-            MyString::Replace(Path2, "\"", "");
+            String::Replace(Path2, "\\\\", "\\");
+            String::Replace(Path2, "\"", "");
             cout << endl << "[" << Path2 << "]" << endl;
-
-            this->m_FileName = FileName;
         }
 
-        this->keepFileName(FileName);
         nLineNumb = FullLocation.getSpellingLineNumber();
         nColNumb  = FullLocation.getSpellingColumnNumber();
         bStatus   = true;
@@ -91,12 +90,12 @@ bool MyASTVisitor::classifyTypeName(string &TyeName)
 {
     bool bStatus = true;
 
-    MyString::Replace(TyeName, "struct", "");
-    MyString::Replace(TyeName, "const", "");
-    MyString::Replace(TyeName, "&", "");
-    MyString::Replace(TyeName, "* ", "*");
-    MyString::Replace(TyeName, " *", "*");
-    MyString::Trim(TyeName);
+    String::Replace(TyeName, "struct", "");
+    String::Replace(TyeName, "const", "");
+    String::Replace(TyeName, "&", "");
+    String::Replace(TyeName, "* ", "*");
+    String::Replace(TyeName, " *", "*");
+    String::Trim(TyeName);
 
     return bStatus;
 }
@@ -162,9 +161,9 @@ bool MyASTVisitor::getVarInfo(VarDecl *pVarDecl, string &VarType, string &VarNam
     return true;
 }
 
-bool MyASTVisitor::assertWithFunction(FunctionDecl *pFuncDecl, string &FuncName)
+bool MyASTVisitor::assertWithFunction(FunctionDecl *pDecl, string &FuncName)
 {
-    this->printPosition(pFuncDecl);
+    this->printPosition(pDecl);
     if ("" == FuncName)
     {
         cout << "Function:\t<INVALID>" << endl;
@@ -176,9 +175,9 @@ bool MyASTVisitor::assertWithFunction(FunctionDecl *pFuncDecl, string &FuncName)
     return true;
 }
 
-bool MyASTVisitor::assertWithParm(ParmVarDecl *pParmVarDecl, string &TypeName, string &VarName)
+bool MyASTVisitor::assertWithParm(ParmVarDecl *pDecl, string &TypeName, string &VarName)
 {
-    this->printPosition(pParmVarDecl);
+    this->printPosition(pDecl);
     if ("" == VarName)
     {
         cout << "Parameter:\t<INVALID>" << endl;
@@ -190,9 +189,9 @@ bool MyASTVisitor::assertWithParm(ParmVarDecl *pParmVarDecl, string &TypeName, s
     return true;
 }
 
-bool MyASTVisitor::assertWithVar(VarDecl *pVarDecl, string &TypeName, string &VarName)
+bool MyASTVisitor::assertWithVar(VarDecl *pDecl, string &TypeName, string &VarName)
 {
-    this->printPosition(pVarDecl);
+    this->printPosition(pDecl);
     if ("" == VarName)
     {
         cout << "Variable:\t<INVALID>" << endl;
@@ -208,31 +207,26 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM,
                            const ASTContext *pAstCxt,
                            const namelint::Config *pConfig)
 {
-    this->m_FileName = "";
-    this->m_pSrcMgr  = pSM;
-    this->m_pAstCxt  = (ASTContext *)pAstCxt;
+    this->m_pSrcMgr = pSM;
+    this->m_pAstCxt = (ASTContext *)pAstCxt;
 
     this->m_bCheckFile     = pConfig->GetData().m_General.bCheckFileName;
     this->m_bCheckFunction = pConfig->GetData().m_General.bCheckFunctionName;
     this->m_bCheckVariable = pConfig->GetData().m_General.bCheckVariableName;
-    // cout << "bCheckFileName     = " << this->m_bCheckFile << endl;
-    // cout << "bCheckFunctionName = " << this->m_bCheckFunction << endl;
-    // cout << "bCheckVariableName = " << this->m_bCheckVariable << endl;
 
     this->m_FileRuleType     = pConfig->GetData().m_Rule.FileName;
     this->m_FunctionRuleType = pConfig->GetData().m_Rule.FunctionName;
     this->m_VariableRuleType = pConfig->GetData().m_Rule.VariableName;
-    // cout << "Rule.FileName     = " << this->m_FileRuleType << endl;
-    // cout << "Rule.FunctionName = " << this->m_FunctionRuleType << endl;
-    // cout << "Rule.VariableName = " << this->m_VariableRuleType << endl;
 
     this->m_FileExt              = pConfig->GetData().m_General.FileExtName;
     this->m_FunctionIgnorePrefix = pConfig->GetData().m_WhiteList.FunctionPrefix;
     this->m_VariableIgnorePrefix = pConfig->GetData().m_WhiteList.VariablePrefix;
     this->m_HungarianMappedList  = pConfig->GetData().m_HungarianList.MappedTable;
+
+    this->bAllowedEndWithUnderscopeChar = pConfig->GetData().m_WhiteList.bAllowedUnderscopeChar;
 }
 
-bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pFuncDecl)
+bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl)
 {
     if (!this->m_bCheckFunction)
     {
@@ -241,17 +235,19 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pFuncDecl)
 
     string FuncName;
     bool bResult = false;
-    bool bStatus = this->getFunctionInfo(pFuncDecl, FuncName);
+    bool bStatus = this->getFunctionInfo(pDecl, FuncName);
     if (bStatus)
     {
         bResult = this->m_Detect.CheckFunction(this->m_FunctionRuleType, FuncName,
-                                               this->m_FunctionIgnorePrefix);
+                                               this->m_FunctionIgnorePrefix,
+                                               this->bAllowedEndWithUnderscopeChar);
         if (!bResult)
         {
-            this->assertWithFunction(pFuncDecl, FuncName);
+            ((APP_CONTEXT *)GetAppCxt())->nAsserted++;
+            this->assertWithFunction(pDecl, FuncName);
         }
 
-        const clang::ArrayRef<clang::ParmVarDecl *> parmRefArray = pFuncDecl->parameters();
+        const clang::ArrayRef<clang::ParmVarDecl *> parmRefArray = pDecl->parameters();
         for (size_t nIdx = 0; nIdx < parmRefArray.size(); nIdx++)
         {
             string VarType;
@@ -262,10 +258,11 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pFuncDecl)
             if (bStatus)
             {
                 bResult = this->m_Detect.CheckVariable(this->m_VariableRuleType, VarType, VarName,
-                                                       this->m_FunctionIgnorePrefix,
+                                                       this->m_VariableIgnorePrefix,
                                                        this->m_HungarianMappedList);
                 if (!bResult)
                 {
+                    ((APP_CONTEXT *)GetAppCxt())->nAsserted++;
                     this->assertWithParm(pParmVarDecl, VarType, VarName);
                 }
             }
@@ -275,15 +272,15 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pFuncDecl)
     return bStatus;
 }
 
-bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *D)
+bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl)
 {
-    if (!this->printPosition(D))
+    if (!this->printPosition(pDecl))
     {
         return false;
     }
 
     assert(false);
-    printf("VisitCXXMethodDecl:  %s()\n", D->getNameAsString().c_str());
+    printf("VisitCXXMethodDecl:  %s()\n", pDecl->getNameAsString().c_str());
     return true;
 }
 
@@ -305,7 +302,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl)
     return true;
 }
 
-bool MyASTVisitor::VisitVarDecl(VarDecl *pVarDecl)
+bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl)
 {
     if (!this->m_bCheckVariable)
     {
@@ -315,7 +312,7 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pVarDecl)
     string VarType;
     string VarName;
 
-    bool bStauts = this->getVarInfo(pVarDecl, VarType, VarName);
+    bool bStauts = this->getVarInfo(pDecl, VarType, VarName);
     if (bStauts)
     {
         bool bResult =
@@ -323,7 +320,8 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pVarDecl)
                                          this->m_VariableIgnorePrefix, this->m_HungarianMappedList);
         if (!bResult)
         {
-            this->assertWithVar(pVarDecl, VarType, VarName);
+            ((APP_CONTEXT *)GetAppCxt())->nAsserted++;
+            this->assertWithVar(pDecl, VarType, VarName);
         }
     }
 
@@ -361,7 +359,6 @@ bool MyASTConsumer::HandleTopLevelDecl(clang::DeclGroupRef declGroupRef)
         if (FullLocation.isValid())
         {
             FileName = FullLocation.getFileLoc().getFileEntry()->getName();
-            // cout << FileName << endl;
         }
 
         if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation()))

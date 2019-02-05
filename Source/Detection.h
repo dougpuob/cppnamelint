@@ -12,7 +12,9 @@ namespace namelint {
 class Detection {
    private:
     bool captureLowerCasePrefix(string &Name);
-    bool isUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
+    bool isUpperCamelCaseString(const string &Name,
+                                vector<string> IgnorePrefixs,
+                                bool bAllowedEndWithUnderscopeChar);
     bool isLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
     bool isLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs);
     bool isHungarianNotationString(const string &Type,
@@ -25,7 +27,8 @@ class Detection {
     bool CheckFile(const RULETYPE Rule, const string &Name);
     bool CheckFunction(const RULETYPE Rule,
                        const string &Name,
-                       const vector<string> &IgnorePrefixs);
+                       const vector<string> &IgnorePrefixs,
+                       const bool bAllowedEndWithUnderscopeChar = false);
     bool CheckVariable(const RULETYPE Rule,
                        const string &Type,
                        const string &Name,

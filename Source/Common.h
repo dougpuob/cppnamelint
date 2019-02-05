@@ -7,6 +7,8 @@ using namespace std;
 
 typedef struct _APP_CONTEXT {
     void *pTomlConfig;
+    string FileName;
+    size_t nAsserted;
 } APP_CONTEXT;
 
 typedef struct _COMMAND_CHECK {
@@ -25,14 +27,14 @@ typedef struct _INPUT_COMMAND {
 const APP_CONTEXT *GetAppCxt();
 
 namespace FileSystem {
-bool IsFileExist(const string &FilePath);
+bool IsExist(const string &FilePath);
 const char *FindFileNameInPath(const string &FielPath);
 }  // namespace FileSystem
 
-namespace MyString {
+namespace String {
 void PadTo(string &s, size_t nCount, char cChar);
 bool IsLower(const string &Str);
-void Replace(string &strBig, const string &strsrc, const string &strdst);
+void Replace(string &Source, const string &Patn, const string &New);
 void Trim(string &Str);
-}  // namespace MyString
+}  // namespace String
 #endif
