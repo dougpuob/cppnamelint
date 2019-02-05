@@ -32,7 +32,8 @@ NameLint utility v0.0.1
 ----------
 
 ### [To be an User]
-- namelint_v0.0.0.2.7z(win32)[http://bit.ly/2DfBK82]
+- **Download**
+  - namelint_v0.0.0.2.7z(win32)[http://bit.ly/2DVwQNX]
 
 ----------
 
