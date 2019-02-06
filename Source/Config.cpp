@@ -45,8 +45,8 @@ bool Config::LoadFile(string ConfigFilePath)
 bool Config::LoadStream(string ConfigContent)
 {
     istringstream istrstm = istringstream(ConfigContent);
-    toml::ParseResult pr = toml::parse(istrstm);
-    bool bStatus         = pr.valid();
+    toml::ParseResult pr  = toml::parse(istrstm);
+    bool bStatus          = pr.valid();
     if (bStatus)
     {
         const toml::Value &value = pr.value;

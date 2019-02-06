@@ -1,3 +1,6 @@
+export CC=clang
+export CXX=clang++
+
 echo "${1}"
 if   [ "${1}" == "Release" ] || [ "${1}" == "release" ] || [ "${1}" == "RELEASE" ]; then
     BUILD_TYPE="Release"
