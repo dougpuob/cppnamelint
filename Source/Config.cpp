@@ -45,8 +45,8 @@ bool Config::LoadFile(string ConfigFilePath)
 bool Config::LoadStream(string ConfigContent)
 {
     istringstream istrstm = istringstream(ConfigContent);
-    toml::ParseResult pr = toml::parse(istrstm);
-    bool bStatus         = pr.valid();
+    toml::ParseResult pr  = toml::parse(istrstm);
+    bool bStatus          = pr.valid();
     if (bStatus)
     {
         const toml::Value &value = pr.value;
@@ -141,6 +141,20 @@ bool Config::LoadStream(string ConfigContent)
                 }
             }(this->m_Config.m_WhiteList.VariablePrefix,
               pWhiteList_VariablePrefix->as<toml::Array>());
+        }
+
+        // WhiteList.IgnoreFunctions
+        const toml::Value *pWhiteList_IgnoreFunctions = value.find("WhiteList.IgnoreFunctions");
+        if (pWhiteList_IgnoreFunctions && pWhiteList_IgnoreFunctions->is<toml::Array>())
+        {
+            this->m_Config.m_WhiteList.IgnoreFunctions.clear();
+            [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
+                for (toml::Value value : InputVect)
+                {
+                    OutStrVect.push_back(value.as<string>());
+                }
+            }(this->m_Config.m_WhiteList.IgnoreFunctions,
+              pWhiteList_IgnoreFunctions->as<toml::Array>());
         }
 
         // WhiteList.BoolAllowedUnderscopeChar

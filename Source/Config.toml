@@ -20,11 +20,14 @@ EnumVariableName        = 4 # 0: Default (UpperCamelCase)
                             # 3: lower-seperated
                             # 4: Hungarian
 [WhiteList]
+BoolAllowedUnderscopeChar    = false
+
 ListFunctionPrefix           = [ "_",
                                  "__" ]
 ListVariablePrefix           = [ "m_" ]
 
-BoolAllowedUnderscopeChar    = false
+IgnoreFunctions              = ["main"]
+
 
 [HungarianList]
 # C Primitive Type

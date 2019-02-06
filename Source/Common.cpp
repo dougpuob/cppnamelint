@@ -5,7 +5,7 @@
 using namespace filesystem;
 #else
 #    include <boost/filesystem.hpp>
-using namespace boost::filesystem;
+namespace filesystem = boost::filesystem;
 #endif
 
 static APP_CONTEXT m_AppCxt;

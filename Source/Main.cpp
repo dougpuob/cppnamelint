@@ -12,6 +12,13 @@
 #include <string>
 #include <vector>
 
+#if __has_include("filesystem")
+#    include <filesystem>
+using namespace filesystem;
+#else
+#    include <boost/filesystem.hpp>
+namespace filesystem = boost::filesystem;
+#endif
 using namespace namelint;
 
 int main(int argc, char** argv)
@@ -32,8 +39,8 @@ int main(int argc, char** argv)
 
     std::map<std::string, docopt::value> Arguments =
         docopt::docopt(USAGE, {argv + 1, argv + argc},
-                       false,              // show help if requested
-                       "Naval Fate 2.0");  // version string
+                       false,  // show help if requested
+                       "");    // version string
 
     std::cout << "<file>   = " << Arguments["<file>"] << endl;
     std::cout << "--config = " << Arguments["--config"] << endl;
@@ -45,7 +52,28 @@ int main(int argc, char** argv)
         APP_CONTEXT* pAppCxt = (APP_CONTEXT*)GetAppCxt();
 
         namelint::Config Config;
-        Config.LoadFile(Arguments["--config"].asString());
+        string config_file_path = "";
+
+        config_file_path = ".namelint";
+        bool bResult     = filesystem::exists(config_file_path);
+        if (!bResult)
+        {
+            config_file_path = Arguments["--config"].asString();
+            bResult          = filesystem::exists(config_file_path);
+        }
+
+        if (bResult)
+        {
+            bResult = Config.LoadFile(config_file_path);
+            if (!bResult) {
+				cout << "Error: Failed to load config file (format wrong)" << endl;
+			}
+        }
+        else
+        {
+            cout << "Error: Failed to find a config file" << endl;
+        }
+
         pAppCxt->pTomlConfig = &Config;
 
         int iMyArgc            = 3;

@@ -221,7 +221,9 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM,
     this->m_FileExt              = pConfig->GetData().m_General.FileExtName;
     this->m_FunctionIgnorePrefix = pConfig->GetData().m_WhiteList.FunctionPrefix;
     this->m_VariableIgnorePrefix = pConfig->GetData().m_WhiteList.VariablePrefix;
-    this->m_HungarianMappedList  = pConfig->GetData().m_HungarianList.MappedTable;
+    this->m_IgnoreFunctions      = pConfig->GetData().m_WhiteList.IgnoreFunctions;
+
+    this->m_HungarianMappedList = pConfig->GetData().m_HungarianList.MappedTable;
 
     this->bAllowedEndWithUnderscopeChar = pConfig->GetData().m_WhiteList.bAllowedUnderscopeChar;
 }

@@ -38,9 +38,11 @@ class Rule {
 
 class WhiteList {
    public:
+    bool bAllowedUnderscopeChar;
+
     vector<string> FunctionPrefix;
     vector<string> VariablePrefix;
-    bool bAllowedUnderscopeChar;
+    vector<string> IgnoreFunctions;
 
    public:
     WhiteList()

@@ -224,6 +224,19 @@ size_t Detection::findHowManyChar(const string &InputStr, char cChar)
     return nCount;
 }
 
+bool Detection::skipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList)
+{
+    for (vector<string>::const_iterator pIter = IgnoreList.begin(); pIter != IgnoreList.end();
+         pIter++)
+    {
+        if (Name == *pIter)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 }  // namespace namelint
 
 //==---------------------------------------------------------------------------
@@ -265,6 +278,17 @@ bool Detection::CheckFunction(const RULETYPE Rule,
     if (Name.length() == 0)
     {
         return false;
+    }
+
+    Config *pConfig = (Config *)GetAppCxt()->pTomlConfig;
+    if (pConfig->GetData().m_WhiteList.IgnoreFunctions.size() > 0)
+    {
+        bool bResult =
+            this->skipIgnoreFunctions(Name, pConfig->GetData().m_WhiteList.IgnoreFunctions);
+        if (bResult)
+        {
+            return true;
+        }
     }
 
     bool bStatus = false;

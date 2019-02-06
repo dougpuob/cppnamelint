@@ -22,6 +22,7 @@ class Detection {
                                    const vector<string> &IgnorePrefixs,
                                    const map<string, string> &MappedList);
     size_t findHowManyChar(const string &InputStr, char cChar);
+    bool skipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList);
 
    public:
     bool CheckFile(const RULETYPE Rule, const string &Name);

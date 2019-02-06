@@ -53,3 +53,5 @@ Debug
 .vscode
 .idea
 *.pyc
+/Doc/*.toml
+/Doc/*.c

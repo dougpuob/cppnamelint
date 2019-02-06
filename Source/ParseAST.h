@@ -50,6 +50,7 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     vector<string> m_FileExt;
     vector<string> m_FunctionIgnorePrefix;
     vector<string> m_VariableIgnorePrefix;
+    vector<string> m_IgnoreFunctions;
 
     bool isMainFile(Decl *pDecl);
     bool printPosition(Decl *pDecl);
