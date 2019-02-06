@@ -1,7 +1,6 @@
 #include <sys/stat.h>
 #include <iostream>
 #include <string>
-#include <strstream>
 
 #include "Common.h"
 #include "Config.h"
@@ -45,7 +44,8 @@ bool Config::LoadFile(string ConfigFilePath)
 
 bool Config::LoadStream(string ConfigContent)
 {
-    toml::ParseResult pr = toml::parse(istringstream(ConfigContent));
+    istringstream istrstm = istringstream(ConfigContent);
+    toml::ParseResult pr = toml::parse(istrstm);
     bool bStatus         = pr.valid();
     if (bStatus)
     {
