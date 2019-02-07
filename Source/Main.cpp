@@ -24,7 +24,7 @@ using namespace namelint;
 int main(int argc, char** argv)
 {
     static const char USAGE[] =
-        R"(NameLint utility v0.0.2
+        R"(NameLint utility v0.0.3
 
   Usage:
     namelint check <file> [--config=<file>] [--log=<file>]
@@ -65,9 +65,10 @@ int main(int argc, char** argv)
         if (bResult)
         {
             bResult = Config.LoadFile(config_file_path);
-            if (!bResult) {
-				cout << "Error: Failed to load config file (format wrong)" << endl;
-			}
+            if (!bResult)
+            {
+                cout << "Error: Failed to load config file (format wrong)" << endl;
+            }
         }
         else
         {

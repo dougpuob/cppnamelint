@@ -160,13 +160,15 @@ IgnoreFunctions              = ["main"]
 ----------
 
 ## **How to start** (as an User)
+
 - **Download**
-  - namelint_v0.0.0.2.7z(win32)[http://bit.ly/2DVwQNX]
+  - **namelint_v0.0.2.7z**(win32)[http://bit.ly/2DVwQNX]
+  - **namelint_v0.0.3.7z**(win32)[http://bit.ly/2ROBHnO]
 
 ----------
 
 ## **How to start** (as a Developer)
-This instructions NOW for Windows, make it work on Linux and MacOS in beta phase.
+It is a lazy note, if you need to develop NameLint, please contact with me will save your time. I will write a complete manual later.
 
 1. `git clone https://dougpuob@bitbucket.org/dougpuob/cpp-namelint.git namelint.git`
 1. `cd namelint.git`
