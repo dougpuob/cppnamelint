@@ -135,28 +135,33 @@ IgnoreFunctions              = ["main"]
 
 ## **Cases**
 
-- **Passed case**
-  ```
-  C:\working-folder\namelint\namelint.git\Doc>namelint.exe check UpperCamel.c
-  <file>   = "UpperCamel.c"
-  --config = "namelint.toml"
+### **Passed case**
 
-  ERRORLEVEL=0
-  ```
-  ![Passed Case](https://i.imgur.com/rGfl526.png)
+```shell
+C:\working-folder\namelint\namelint.git\Doc>namelint.exe check UpperCamel.c
+<file>   = "UpperCamel.c"
+--config = "namelint.toml"
 
-- **Failed case**
-  ```
-  C:\working-folder\namelint\namelint.git\Doc>namelint.exe check UpperCamel.c
-  <file>   = "UpperCamel.c"
-  --config = "namelint.toml"
+ERRORLEVEL=0
+```
+  
+![Passed Case](https://i.imgur.com/rGfl526.png)
 
-  [C:\working-folder\namelint\namelint.git\Doc\UpperCamel.c]
-    <5,5>  Variable:      u8MyValue (uint8_t)
+### **Failed case**
 
-  ERRORLEVEL=1
-  ```
-  ![Failed Case](https://i.imgur.com/HM5RZhh.png)
+```shell
+C:\working-folder\namelint\namelint.git\Doc>namelint.exe check UpperCamel.c
+<file>   = "UpperCamel.c"
+--config = "namelint.toml"
+
+[C:\working-folder\namelint\namelint.git\Doc\UpperCamel.c]
+  <5,5>  Variable:      u8MyValue (uint8_t)
+
+ERRORLEVEL=1
+```
+  
+![Failed Case](https://i.imgur.com/HM5RZhh.png)
+    
 ----------
 
 ## **How to start** (as an User)
