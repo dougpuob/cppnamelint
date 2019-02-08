@@ -58,8 +58,7 @@ int main(int argc, char** argv)
         bool bResult     = filesystem::exists(config_file_path);
         if (!bResult)
         {
-            config_file_path = Arguments["--config"].asString();
-            bResult          = filesystem::exists(config_file_path);
+            bResult = filesystem::exists(Arguments["--config"].asString());
         }
 
         if (bResult)

@@ -100,35 +100,35 @@ bool MyASTVisitor::classifyTypeName(string &TyeName)
     return bStatus;
 }
 
-bool MyASTVisitor::getFunctionInfo(FunctionDecl *pFuncDecl, string &FuncName)
+bool MyASTVisitor::getFunctionInfo(FunctionDecl *pDecl, string &Name)
 {
-    if (!pFuncDecl->hasBody())
+    if (!pDecl->hasBody())
     {
         return false;
     }
-    if (!this->isMainFile(pFuncDecl))
+    if (!this->isMainFile(pDecl))
     {
         return false;
     }
 
-    FuncName = pFuncDecl->getDeclName().getAsString();
+    Name = pDecl->getDeclName().getAsString();
     return true;
 }
 
-bool MyASTVisitor::getParmsInfo(ParmVarDecl *pParmVarDecl, string &VarType, string &VarName)
+bool MyASTVisitor::getParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName)
 {
-    if (!pParmVarDecl)
+    if (!pDecl)
     {
         return false;
     }
-    if (!this->isMainFile(pParmVarDecl))
+    if (!this->isMainFile(pDecl))
     {
         return false;
     }
 
-    QualType QualType = pParmVarDecl->getType();
+    QualType QualType = pDecl->getType();
 
-    VarName = pParmVarDecl->getName().data();
+    VarName = pDecl->getName().data();
     VarType = QualType.getAsString();
     if (VarType.length() > 0)
     {
@@ -138,21 +138,21 @@ bool MyASTVisitor::getParmsInfo(ParmVarDecl *pParmVarDecl, string &VarType, stri
     return true;
 }
 
-bool MyASTVisitor::getVarInfo(VarDecl *pVarDecl, string &VarType, string &VarName)
+bool MyASTVisitor::getVarInfo(VarDecl *pDecl, string &VarType, string &VarName)
 {
-    if (!pVarDecl)
+    if (!pDecl)
     {
         return false;
     }
 
-    if (!this->isMainFile(pVarDecl))
+    if (!this->isMainFile(pDecl))
     {
         return false;
     }
 
-    QualType myQualType = pVarDecl->getType();
-    VarName             = pVarDecl->getNameAsString();
-    VarType             = pVarDecl->getType().getAsString();
+    QualType myQualType = pDecl->getType();
+    VarName             = pDecl->getNameAsString();
+    VarType             = pDecl->getType().getAsString();
     if (VarType.length() > 0)
     {
         this->classifyTypeName(VarType);
