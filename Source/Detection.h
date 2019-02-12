@@ -14,7 +14,8 @@ class Detection {
     bool captureLowerCasePrefix(string &Name);
     bool isUpperCamelCaseString(const string &Name,
                                 vector<string> IgnorePrefixs,
-                                bool bAllowedEndWithUnderscopeChar);
+                                const bool bAllowedEndWithUnderscopeChar = false);
+
     bool isLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
     bool isLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs);
     bool isHungarianNotationString(const string &Type,

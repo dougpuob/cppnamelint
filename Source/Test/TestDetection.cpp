@@ -11,7 +11,7 @@ using namespace namelint;
 //==-------------------------------------------------------------------------==
 // Detection.CheckFile()
 //==-------------------------------------------------------------------------==
-namespace TargetIsFile {    
+namespace TargetIsFile {
 
 // Input Parameters
 TEST(Config_Detect_CheckFile, InputParms_Good)
@@ -113,7 +113,7 @@ TEST(Config_Detect_CheckFile, LowerSeperated_Bad)
 // Detection.CheckFunction()
 //==-------------------------------------------------------------------------==
 namespace TargetIsFunction {
-    
+
  // Input Parameter
 TEST(Config_Detect_CheckFunction, InputParms_Good)
 {
@@ -123,8 +123,8 @@ TEST(Config_Detect_CheckFunction, InputParms_Good)
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "MyFunc"     , NullIgnorePrefixs));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "My_Func"    , NullIgnorePrefixs, true));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "My__Func"   , NullIgnorePrefixs, true));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "My_Func_A"  , NullIgnorePrefixs, true));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "My__Func_B" , NullIgnorePrefixs, true));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "My_Func_A"  , NullIgnorePrefixs, true));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL_CASE  , "My__Func_B" , NullIgnorePrefixs, true));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_CAMEL_CASE  , "myFunc"     , NullIgnorePrefixs));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SEPERATED   , "my_func"    , NullIgnorePrefixs));
 }
@@ -150,17 +150,17 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "UpperCamelFuncName"     , NullIgnorePrefixs));
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "UpperCamelFuncName1"    , NullIgnorePrefixs));
 
-	vector<string> IgnorePrefixs;
-	IgnorePrefixs.push_back("_");
-	IgnorePrefixs.push_back("__");
-	IgnorePrefixs.push_back("XXX_");
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName"	, IgnorePrefixs));
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "__UpperCamelFuncName"	, IgnorePrefixs));
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "XXX_UpperCamelFuncName"	, IgnorePrefixs));		
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName_AB"	, IgnorePrefixs, true));
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc3"				, IgnorePrefixs, true));
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc3"				, IgnorePrefixs, false));
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc_3"				, IgnorePrefixs, true));
+    vector<string> IgnorePrefixs;
+    IgnorePrefixs.push_back("_");
+    IgnorePrefixs.push_back("__");
+    IgnorePrefixs.push_back("XXX_");
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName"    , IgnorePrefixs));
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "__UpperCamelFuncName"   , IgnorePrefixs));
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "XXX_UpperCamelFuncName" , IgnorePrefixs));
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName_AB" , IgnorePrefixs, true));
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc3"                , IgnorePrefixs, true));
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc3"                , IgnorePrefixs, false));
+    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc_3"               , IgnorePrefixs, true));
 }
 
 TEST(Config_Detect_CheckFunction, UpperCamelCase_Bad)
@@ -170,10 +170,10 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Bad)
     const RULETYPE RuleType = RULETYPE_UPPER_CAMEL_CASE;
 
     EXPECT_EQ(false, Detect.CheckFunction(RuleType, "UpperCamelFuncName_"   , NullIgnorePrefixs));
-	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "Upper_CamelFuncName"   , NullIgnorePrefixs));
+    EXPECT_EQ(false, Detect.CheckFunction(RuleType, "Upper_CamelFuncName"   , NullIgnorePrefixs));
     EXPECT_EQ(false, Detect.CheckFunction(RuleType, "upperCamelFuncName"    , NullIgnorePrefixs));
     EXPECT_EQ(false, Detect.CheckFunction(RuleType, "_UpperCamelFuncName"   , NullIgnorePrefixs));
-	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "UpperCamelFuncName_AB" , NullIgnorePrefixs, false));	
+    EXPECT_EQ(false, Detect.CheckFunction(RuleType, "UpperCamelFuncName_AB" , NullIgnorePrefixs, false));
 }
 
 //-------------------------------------------------------------------------
@@ -237,24 +237,24 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
     Detection Detect;
     vector<string> NullIgnorePrefixs;
     map<string, string> MappedList;
-    
-	MappedList.insert(std::pair<string, string>("int"    , "i"));
+
+    MappedList.insert(std::pair<string, string>("int"    , "i"));
     MappedList.insert(std::pair<string, string>("uin8_t" , "u8"));
     MappedList.insert(std::pair<string, string>("uin16_t", "u16"));
 
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT           , "uin8_t"  , "MyFunc"      , NullIgnorePrefixs, MappedList));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT           , "uin8_t"  , "MyFunc"      , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL_CASE  , "uin8_t"  , "MyFunc"      , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL_CASE  , "uin8_t"  , "myFunc"      , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SEPERATED   , "uin8_t"  , "my_func"     , NullIgnorePrefixs, MappedList));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "int"     , "iMyFunc"     , NullIgnorePrefixs, MappedList));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "int"     , "iMyFunc"     , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "uin8_t"  , "u8MyFunc"    , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "uin16_t" , "u16MyFunc"   , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "uin8_t"  , "u8_my_func"  , NullIgnorePrefixs, MappedList));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "uin16_t" , "u16_my_func" , NullIgnorePrefixs, MappedList));
 
-	vector<string> IgnorePrefixs;
-	IgnorePrefixs.push_back("m_");
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "int"     , "m_iMyFunc"	, IgnorePrefixs, MappedList));
+    vector<string> IgnorePrefixs;
+    IgnorePrefixs.push_back("m_");
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN         , "int"     , "m_iMyFunc"   , IgnorePrefixs, MappedList));
 }
 
 TEST(Config_Detect_CheckVariable, InputParms_Bad)

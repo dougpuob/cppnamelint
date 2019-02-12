@@ -30,7 +30,7 @@ bool Detection::captureLowerCasePrefix(string &Name)
 
 bool Detection::isUpperCamelCaseString(const string &Name,
                                        vector<string> IgnorePrefixs,
-                                       bool bAllowedEndWithUnderscopeChar = false)
+                                       const bool bAllowedEndWithUnderscopeChar)
 {
     bool bStatus                    = false;
     vector<string> NewIgnorePrefixs = IgnorePrefixs;
@@ -280,11 +280,9 @@ bool Detection::CheckFunction(const RULETYPE Rule,
         return false;
     }
 
-    Config *pConfig = (Config *)GetAppCxt()->pTomlConfig;
-    if (pConfig->GetData().m_WhiteList.IgnoreFunctions.size() > 0)
+    if (IgnorePrefixs.size() > 0)
     {
-        bool bResult =
-            this->skipIgnoreFunctions(Name, pConfig->GetData().m_WhiteList.IgnoreFunctions);
+        bool bResult = this->skipIgnoreFunctions(Name, IgnorePrefixs);
         if (bResult)
         {
             return true;
