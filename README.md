@@ -184,11 +184,14 @@ ERRORLEVEL=1
 
 ----------
 
-## **How to start** (as an User)
+## **Download Pre-built**
 
-- **Download**
-  - **namelint_v0.0.2.7z**(win32)[http://bit.ly/2DVwQNX]
-  - **namelint_v0.0.3.7z**(win32)[http://bit.ly/2ROBHnO]
+- **Windows**
+  - **namelint_v0.0.3.7z**[http://bit.ly/2ROBHnO]
+  - **namelint_v0.0.4.7z**[http://bit.ly/2tjnIMP]
+  
+- **Linux**
+- **macOS**
 
 ----------
 
