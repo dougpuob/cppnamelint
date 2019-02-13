@@ -13,7 +13,7 @@ The `NameLint` C/C++ naming convention checking tool which can run on Windows/Li
 
 ## **Usage**
 ```
-NameLint utility v0.0.3
+NameLint utility v0.0.4
 
   Usage:
     namelint check <file> [--config=<file>] [--log=<file>]
@@ -133,7 +133,7 @@ IgnoreFunctions              = ["main"]
 
 ----------
 
-## **Cases**
+## **Samples**
 
 ### **Passed case**
 
@@ -161,7 +161,27 @@ ERRORLEVEL=1
 ```
   
 ![Failed Case](https://i.imgur.com/HM5RZhh.png)
-    
+
+
+----------
+
+## **Tests**
+
+### **Unit Test**
+
+`namelint test -a`
+`namelint test --all`
+
+![Unit Test](https://i.imgur.com/a09h4Yg.png)
+
+
+### **Sample Test**
+
+`Test/TestWin32.cmd`
+`Test/TestLinux.cmd`
+![namelint.log](https://i.imgur.com/rEnoOs4.png)
+
+
 ----------
 
 ## **How to start** (as an User)
