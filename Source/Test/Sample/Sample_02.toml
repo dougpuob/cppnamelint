@@ -1,34 +1,18 @@
-[General]
-ListFileExtName         = ["*.c","*.h","*.cpp"]
-BoolCheckVariableName   = true
-BoolCheckFunctionName   = true
-BoolCheckFileName       = false
+﻿[General]
+  ListFileExtName           = ["*.c","*.h","*.cpp"]
+  BoolCheckVariableName     = true
+  BoolCheckFunctionName     = true
+  BoolCheckFileName         = true
 
 [Rule]
-EnumFileName            = 0 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 3: lower-seperated
+  EnumFileName              = 1 # 1: UpperCamelCase
+  EnumFunctionName          = 1 # 1: UpperCamelCase
+  EnumVariableName          = 4 # 4: Hungarian
 
-EnumFunctionName        = 0 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 2: lowerCamelCase
-                            # 3: lower-seperated
-
-EnumVariableName        = 4 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 2: lowerCamelCase
-                            # 3: lower-seperated
-                            # 4: Hungarian
 [WhiteList]
-BoolAllowedUnderscopeChar    = false
-
-ListFunctionPrefix           = [ "_",
-                                 "__" ]
-ListVariablePrefix           = [ "m_" ]
-
-ListIgnoreFunctions          = ["main",
-                                "newASTConsumer"]
-
+  ListFunctionPrefix        = [ "_", "__" , "XXX_"]
+  ListVariablePrefix        = [ "m_" ]
+  BoolAllowedUnderscopeChar = false
 
 [HungarianList]
 # C Primitive Type

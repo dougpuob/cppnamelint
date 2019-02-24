@@ -30,74 +30,81 @@ using namespace llvm;
 using namespace clang::driver;
 using namespace clang::tooling;
 
-class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
-   private:
-    ASTContext *m_pAstCxt;
-    const SourceManager *m_pSrcMgr;
-    namelint::Detection m_Detect;
-    string m_FileName;
+class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor>
+{
+private:
+  ASTContext* m_pAstCxt;
+  const SourceManager* m_pSrcMgr;
+  namelint::Detection m_Detect;
+  string m_FileName;
 
-    bool m_bCheckFile;
-    bool m_bCheckFunction;
-    bool m_bCheckVariable;
-    bool bAllowedEndWithUnderscopeChar;
+  bool m_bCheckFile;
+  bool m_bCheckFunction;
+  bool m_bCheckVariable;
+  bool bAllowedEndWithUnderscopeChar;
 
-    namelint::RULETYPE m_FileRuleType;
-    namelint::RULETYPE m_FunctionRuleType;
-    namelint::RULETYPE m_VariableRuleType;
+  namelint::RULETYPE m_FileRuleType;
+  namelint::RULETYPE m_FunctionRuleType;
+  namelint::RULETYPE m_VariableRuleType;
 
-    map<string, string> m_HungarianMappedList;
-    vector<string> m_FileExt;
-    vector<string> m_FunctionIgnorePrefix;
-    vector<string> m_VariableIgnorePrefix;
-    vector<string> m_IgnoreFunctions;
+  map<string, string> m_HungarianMappedList;
+  vector<string> m_FileExt;
+  vector<string> m_FunctionIgnorePrefix;
+  vector<string> m_VariableIgnorePrefix;
+  vector<string> m_IgnoreFunctions;
 
-    bool isMainFile(Decl *pDecl);
-    bool printPosition(Decl *pDecl);
-    void keepFileName(string &Path);
-    bool getPosition(Decl *pDecl, string &FileName, size_t &nLineNumb, size_t &nColNumb);
-    bool classifyTypeName(string &TyeName);
-    void stringReplace(string &Source, const string &Patn, const string &New);
-    void stringTrim(string &s);
+  bool _IsMainFile(Decl* pDecl);
+  bool _PrintPosition(Decl* pDecl);
+  void _KeepFileName(string& Path);
+  bool _GetPosition(Decl* pDecl,
+                    string& FileName,
+                    size_t& nLineNumb,
+                    size_t& nColNumb);
+  bool _ClassifyTypeName(string& TyeName);
+  void stringReplace(string& Source, const string& Patn, const string& New);
+  void stringTrim(string& s);
 
-    bool assertWithFunction(FunctionDecl *pDecl, string &FuncName);
-    bool assertWithParm(ParmVarDecl *pDecl, string &TypeName, string &VarName);
-    bool assertWithVar(VarDecl *pDecl, string &TypeName, string &VarName);
+  bool _AssertWithFunction(FunctionDecl* pDecl, string& FuncName);
+  bool _AssertWithParm(ParmVarDecl* pDecl, string& TypeName, string& VarName);
+  bool _AssertWithVar(VarDecl* pDecl, string& TypeName, string& VarName);
 
-    bool getFunctionInfo(FunctionDecl *pDecl, string &FuncName);
-    bool getParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName);
-    bool getVarInfo(VarDecl *pDecl, string &VarType, string &VarName);
+  bool _GetFunctionInfo(FunctionDecl* pDecl, string& FuncName);
+  bool _GetParmsInfo(ParmVarDecl* pDecl, string& VarType, string& VarName);
+  bool _GetVarInfo(VarDecl* pDecl, string& VarType, string& VarName);
 
-   public:
-    MyASTVisitor(const SourceManager *pSM,
-                 const ASTContext *pAstCxt,
-                 const namelint::Config *pConfig);
-    // bool VisitStmt(Stmt *pStmt);
-    // bool VisitCXXRecordDecl(CXXRecordDecl *D);
-    // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
-    bool VisitFunctionDecl(FunctionDecl *pDecl);
-    bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
-    bool VisitRecordDecl(RecordDecl *pDecl);
-    bool VisitVarDecl(VarDecl *pDecl);
-    bool VisitReturnStmt(ReturnStmt *pRetStmt);
+public:
+  MyASTVisitor(const SourceManager* pSM,
+               const ASTContext* pAstCxt,
+               const namelint::Config* pConfig);
+  // bool VisitStmt(Stmt *pStmt);
+  // bool VisitCXXRecordDecl(CXXRecordDecl *D);
+  // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
+  bool VisitFunctionDecl(FunctionDecl* pDecl);
+  bool VisitCXXMethodDecl(CXXMethodDecl* pDecl);
+  bool VisitRecordDecl(RecordDecl* pDecl);
+  bool VisitVarDecl(VarDecl* pDecl);
+  bool VisitReturnStmt(ReturnStmt* pRetStmt);
 };
 
-class MyASTConsumer : public ASTConsumer {
-   private:
-   public:
-    bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
-    void HandleTranslationUnit(ASTContext &Ctx);
+class MyASTConsumer : public ASTConsumer
+{
+private:
+public:
+  bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
+  void HandleTranslationUnit(ASTContext& Ctx);
 };
 
-class MyFactory {
-   public:
-    std::unique_ptr<MyASTConsumer> newASTConsumer();
+class MyFactory
+{
+public:
+  std::unique_ptr<MyASTConsumer> newASTConsumer();
 };
 
-class MyIgnoringDiagConsumer : public IgnoringDiagConsumer {
-   public:
-    // virtual void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel, const
-    // Diagnostic &Info);
+class MyIgnoringDiagConsumer : public IgnoringDiagConsumer
+{
+public:
+  // virtual void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel, const
+  // Diagnostic &Info);
 };
 
 #endif

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(namelint)
+project(cppnamelint)
 
 message("CMAKE_CURRENT_SOURCE_DIR   : ${CMAKE_CURRENT_SOURCE_DIR}"  )
 message("CMAKE_BUILD_TYPE           : ${CMAKE_BUILD_TYPE}"          )
@@ -110,7 +110,7 @@ endif()
 message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
 
 add_executable(
-    namelint
+    cppnamelint
     Module/tinytoml.git/include/toml/toml.h
     Module/docopt.cpp/docopt.h
     Source/Detection.h
@@ -137,7 +137,7 @@ elseif(APPLE)
 endif()
 
 target_link_libraries(
-    namelint
+    cppnamelint
     docopt
     gtest
     gtest_main

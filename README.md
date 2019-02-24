@@ -1,5 +1,5 @@
-# **NameLint**
-The `NameLint` C/C++ naming convention checking tool which can run on Windows/Linux/MacOS for name of files, functions, variable, and parameters. This project is based on LLVM's LibTooling as a compiler frontend to retrieve AST from C/C++ source files, then check your naming rules like UpperCamel, LowerCamel, LowerSeperated, and Hungarain.
+# **CppNameLint**
+The `cppnamelint` C/C++ naming convention checking tool which can run on Windows/Linux/MacOS for name of files, functions, variable, and parameters. This project is based on LLVM's LibTooling as a compiler frontend to retrieve AST from C/C++ source files, then check your naming rules like UpperCamel, LowerCamel, LowerSeperated, and Hungarain.
 
 1. File target for C/C++ source code.
 1. Cross platform on Windows/Linux/macOS.
@@ -7,23 +7,23 @@ The `NameLint` C/C++ naming convention checking tool which can run on Windows/Li
 1. Config file format with TOML.
 1. Naming rule with UpperCamel, LowerCamel, LowerSeperated, and Hungarain.
 
-`#LLVM` `#Clang` `#LibTooling` `#Compiler` `#Naming` `#NamingConvention` `#Toml` `#NameLint`
+`#LLVM` `#Clang` `#LibTooling` `#Compiler` `#Naming` `#NamingConvention` `#Toml` `#CppNameLint`
 
 ----------
 
 ## **Usage**
 ```
-NameLint utility v0.0.4
+cppnamelint utility v0.1.0
 
   Usage:
-    namelint check <file> [--config=<file>] [--log=<file>]
-    namelint test   [-a | --all] [-u | --unittest]
-    namelint --help
-    namelint --version
+    cppnamelint check <file> [--config=<file>] [--log=<file>]
+    cppnamelint test   [-a | --all] [-u | --unittest]
+    cppnamelint --help
+    cppnamelint --version
 
   Options:
-    --config=<file>   [default: namelint.toml]
-    --log=<file>      [default: namelint.log]
+    --config=<file>   [default: cppnamelint.toml]
+    --log=<file>      [default: cppnamelint.log]
 ```
 
 
@@ -33,9 +33,9 @@ NameLint utility v0.0.4
 
 ### **Commands**
 
-1. `namelint check UpperCamel.c`
-1. `namelint check UpperCamel.c --config=namelint.toml`
-1. `namelint test -a`
+1. `cppnamelint check UpperCamel.c`
+1. `cppnamelint check UpperCamel.c --config=cppnamelint.toml`
+1. `cppnamelint test -a`
 
 ### **Config File**
 
@@ -138,9 +138,9 @@ IgnoreFunctions              = ["main"]
 ### **Passed case**
 
 ```shell
-C:\working-folder\namelint\namelint.git\Doc>namelint.exe check UpperCamel.c
+C:\working-folder\namelint\namelint.git\Doc>cppnamelint.exe check UpperCamel.c
 <file>   = "UpperCamel.c"
---config = "namelint.toml"
+--config = "cppnamelint.toml"
 
 ERRORLEVEL=0
 ```
@@ -150,9 +150,9 @@ ERRORLEVEL=0
 ### **Failed case**
 
 ```shell
-C:\working-folder\namelint\namelint.git\Doc>namelint.exe check UpperCamel.c
+C:\working-folder\namelint\namelint.git\Doc>cppnamelint.exe check UpperCamel.c
 <file>   = "UpperCamel.c"
---config = "namelint.toml"
+--config = "cppnamelint.toml"
 
 [C:\working-folder\namelint\namelint.git\Doc\UpperCamel.c]
   <5,5>  Variable:      u8MyValue (uint8_t)
@@ -169,8 +169,8 @@ ERRORLEVEL=1
 
 ### **Unit Test**
 
-`namelint test -a`
-`namelint test --all`
+`cppnamelint test -a`
+`cppnamelint test --all`
 
 ![Unit Test](https://i.imgur.com/a09h4Yg.png)
 
@@ -189,6 +189,7 @@ ERRORLEVEL=1
 - **Windows**
   - **namelint_v0.0.3.7z**[http://bit.ly/2ROBHnO]
   - **namelint_v0.0.4.7z**[http://bit.ly/2tjnIMP]
+  - **cppnamelint_v0.1.0.7z**[http://bit.ly/2GHj7N6]
   
 - **Linux**
 - **macOS**
@@ -198,8 +199,8 @@ ERRORLEVEL=1
 ## **How to start** (as a Developer)
 It is a lazy note, if you need to develop NameLint, please contact with me will save your time. I will write a complete manual later.
 
-1. `git clone https://dougpuob@bitbucket.org/dougpuob/cpp-namelint.git namelint.git`
-1. `cd namelint.git`
+1. `git clone https://dougpuob@bitbucket.org/dougpuob/cpp-namelint.git cpp-namelint.git`
+1. `cd cpp-namelint.git`
 1. `git submodule init`
 1. `git submodule update`
 1. `cd Script`
