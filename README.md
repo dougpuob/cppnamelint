@@ -186,13 +186,7 @@ ERRORLEVEL=1
 
 ## **Download Pre-built**
 
-- **Windows**
-  - **namelint_v0.0.3.7z**[http://bit.ly/2ROBHnO]
-  - **namelint_v0.0.4.7z**[http://bit.ly/2tjnIMP]
-  - **cppnamelint_v0.1.0.7z**[http://bit.ly/2GHj7N6]
-  
-- **Linux**
-- **macOS**
+- [**Pre-built**](https://github.com/dougpuob/cpp-namelint/releases)
 
 ----------
 
