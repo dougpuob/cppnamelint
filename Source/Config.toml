@@ -5,18 +5,18 @@ BoolCheckFunctionName   = true
 BoolCheckFileName       = false
 
 [Rule]
-EnumFileName            = 0 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
+EnumFileName            = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
                             # 3: lower-seperated
 
-EnumFunctionName        = 0 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 2: lowerCamelCase
+EnumFunctionName        = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
                             # 3: lower-seperated
 
-EnumVariableName        = 4 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 2: lowerCamelCase
+EnumVariableName        = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
                             # 3: lower-seperated
                             # 4: Hungarian
 [WhiteList]
@@ -29,9 +29,15 @@ ListVariablePrefix           = [ "m_" ]
 ListIgnoreFunctions          = ["main",
                                 "newASTConsumer"]
 
+[HungarianListEx]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
 
 [HungarianList]
 # C Primitive Type
+"void"                   = ""
 "size_t"                 = "n"
 "int8_t"                 = "i8"
 "int16_t"                = "i16"
@@ -42,8 +48,6 @@ ListIgnoreFunctions          = ["main",
 "uint32_t"               = "u32"
 "uint64_t"               = "u64"
 "char"                   = "c"
-"char*"                  = "sz"
-"wchar_t*"               = "wsz"
 "_Bool"                  = "b"
 "bool"                   = "b"
 "wchar_t"                = "wc"
@@ -86,6 +90,3 @@ ListIgnoreFunctions          = ["main",
 "HANDLE"                 = "h"
 "BOOLEAN"                = "b"
 "LONGLONG"               = "ll"
-
-
-

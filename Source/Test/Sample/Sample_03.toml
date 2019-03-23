@@ -13,10 +13,15 @@
   ListFunctionPrefix        = [ "_", "__" , "XXX_"]
   ListVariablePrefix        = [ "m_" ]
   BoolAllowedUnderscopeChar = true
+  
+[HungarianListEx]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
 
 [HungarianList]
 "size_t"                 = "n"
 "uint8_t"                = "u8"
-"char*"                  = "sz"
 "int"                    = "i"
 "char"                   = "c"

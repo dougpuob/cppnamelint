@@ -12,8 +12,8 @@ namespace namelint {
 typedef enum _RULETYPE
 {
   RULETYPE_DEFAULT = 0,
-  RULETYPE_UPPER_CAMEL_CASE,
-  RULETYPE_LOWER_CAMEL_CASE,
+  RULETYPE_UPPER_CAMEL,
+  RULETYPE_LOWER_CAMEL,
   RULETYPE_LOWER_SEPERATED,
   RULETYPE_HUNGARIAN
 } RULETYPE;
@@ -41,16 +41,16 @@ public:
 class WhiteList
 {
 public:
-  bool bAllowedUnderscopeChar;
+  bool bAllowedEndWithUnderscope;
 
-  vector<string> FunctionPrefix;
+  vector<string> IgnoredFuncPrefix;
   vector<string> VariablePrefix;
-  vector<string> IgnoreFunctions;
+  vector<string> IgnoredFuncName;
 
 public:
   WhiteList()
   {
-    FunctionPrefix.clear();
+    IgnoredFuncPrefix.clear();
     VariablePrefix.clear();
   }
 };
@@ -68,6 +68,7 @@ public:
   General m_General;
   WhiteList m_WhiteList;
   HungarianList m_HungarianList;
+  HungarianList m_HungarianListEx;
 };
 
 class Config

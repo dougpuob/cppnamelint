@@ -230,23 +230,26 @@ MyASTVisitor::MyASTVisitor(const SourceManager* pSM,
   this->m_pSrcMgr = pSM;
   this->m_pAstCxt = (ASTContext*)pAstCxt;
 
-  this->m_bCheckFile = pConfig->GetData().m_General.bCheckFileName;
-  this->m_bCheckFunction = pConfig->GetData().m_General.bCheckFunctionName;
-  this->m_bCheckVariable = pConfig->GetData().m_General.bCheckVariableName;
+  const ConfigData& CfgData = pConfig->GetData();
 
-  this->m_FileRuleType = pConfig->GetData().m_Rule.FileName;
-  this->m_FunctionRuleType = pConfig->GetData().m_Rule.FunctionName;
-  this->m_VariableRuleType = pConfig->GetData().m_Rule.VariableName;
+  this->m_FileExt = CfgData.m_General.FileExtName;
+  this->m_bCheckFile = CfgData.m_General.bCheckFileName;
+  this->m_bCheckFunction = CfgData.m_General.bCheckFunctionName;
+  this->m_bCheckVariable = CfgData.m_General.bCheckVariableName;
 
-  this->m_FileExt = pConfig->GetData().m_General.FileExtName;
-  this->m_FunctionIgnorePrefix = pConfig->GetData().m_WhiteList.FunctionPrefix;
-  this->m_VariableIgnorePrefix = pConfig->GetData().m_WhiteList.VariablePrefix;
-  this->m_IgnoreFunctions = pConfig->GetData().m_WhiteList.IgnoreFunctions;
+  this->m_FileRuleType = CfgData.m_Rule.FileName;
+  this->m_FunctionRuleType = CfgData.m_Rule.FunctionName;
+  this->m_VariableRuleType = CfgData.m_Rule.VariableName;
 
-  this->m_HungarianMappedList = pConfig->GetData().m_HungarianList.MappedTable;
+  this->m_IgnoredFuncName = CfgData.m_WhiteList.IgnoredFuncName;
+  this->m_IgnoredFuncPrefix = CfgData.m_WhiteList.IgnoredFuncPrefix;
+  this->m_IgnoredVarPrefix = CfgData.m_WhiteList.VariablePrefix;
 
-  this->bAllowedEndWithUnderscopeChar =
-    pConfig->GetData().m_WhiteList.bAllowedUnderscopeChar;
+  this->m_HungarianList = CfgData.m_HungarianList.MappedTable;
+  this->m_HungarianListEx = CfgData.m_HungarianListEx.MappedTable;
+
+  this->bAllowedEndWithUnderscope =
+    CfgData.m_WhiteList.bAllowedEndWithUnderscope;
 }
 
 bool
@@ -262,8 +265,9 @@ MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl* pDecl)
   if (bStatus) {
     bResult = this->m_Detect.CheckFunction(this->m_FunctionRuleType,
                                            FuncName,
-                                           this->m_FunctionIgnorePrefix,
-                                           this->bAllowedEndWithUnderscopeChar);
+                                           this->m_IgnoredFuncName,
+                                           this->m_IgnoredFuncPrefix,
+                                           this->bAllowedEndWithUnderscope);
     if (!bResult) {
       ((APP_CONTEXT*)GetAppCxt())->nAsserted++;
       this->_AssertWithFunction(pDecl, FuncName);
@@ -293,8 +297,9 @@ MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl* pDecl)
         bResult = this->m_Detect.CheckVariable(this->m_VariableRuleType,
                                                VarType,
                                                VarName,
-                                               this->m_VariableIgnorePrefix,
-                                               this->m_HungarianMappedList);
+                                               this->m_IgnoredVarPrefix,
+                                               this->m_HungarianList,
+                                               this->m_HungarianListEx);
         if (!bResult) {
           ((APP_CONTEXT*)GetAppCxt())->nAsserted++;
           this->_AssertWithParm(pParmVarDecl, VarType, VarName);
@@ -320,14 +325,14 @@ MyASTVisitor::VisitRecordDecl(RecordDecl* pDecl)
     return false;
   }
 
-  if (!this->_PrintPosition(pDecl)) {
-    return false;
-  }
-
-  assert(false);
-  printf("VisitRecordDecl:  %s (isClass=%d)\n",
-         pDecl->getNameAsString().c_str(),
-         pDecl->isClass());
+  // if (!this->_PrintPosition(pDecl)) {
+  //  return false;
+  //}
+  //
+  // assert(false);
+  // printf("VisitRecordDecl:  %s (isClass=%d)\n",
+  //       pDecl->getNameAsString().c_str(),
+  //       pDecl->isClass());
   return true;
 }
 
@@ -346,8 +351,9 @@ MyASTVisitor::VisitVarDecl(VarDecl* pDecl)
     bool bResult = this->m_Detect.CheckVariable(this->m_VariableRuleType,
                                                 VarType,
                                                 VarName,
-                                                this->m_VariableIgnorePrefix,
-                                                this->m_HungarianMappedList);
+                                                this->m_IgnoredVarPrefix,
+                                                this->m_HungarianList,
+                                                this->m_HungarianListEx);
     if (!bResult) {
       ((APP_CONTEXT*)GetAppCxt())->nAsserted++;
       this->_AssertWithVar(pDecl, VarType, VarName);

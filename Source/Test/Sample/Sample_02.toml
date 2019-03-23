@@ -14,8 +14,15 @@
   ListVariablePrefix        = [ "m_" ]
   BoolAllowedUnderscopeChar = false
 
+[HungarianListEx]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
+
 [HungarianList]
 # C Primitive Type
+"void"                   = ""
 "size_t"                 = "n"
 "int8_t"                 = "i8"
 "int16_t"                = "i16"
@@ -26,8 +33,6 @@
 "uint32_t"               = "u32"
 "uint64_t"               = "u64"
 "char"                   = "c"
-"char*"                  = "sz"
-"wchar_t*"               = "wsz"
 "_Bool"                  = "b"
 "bool"                   = "b"
 "wchar_t"                = "wc"
@@ -70,6 +75,3 @@
 "HANDLE"                 = "h"
 "BOOLEAN"                = "b"
 "LONGLONG"               = "ll"
-
-
-

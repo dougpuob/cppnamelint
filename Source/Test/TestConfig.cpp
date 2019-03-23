@@ -36,7 +36,7 @@ TEST(General, Default)
   // WhiteList
   //
   WhiteList* pWhiteList = &config.GetData().m_WhiteList;
-  EXPECT_EQ(1, pWhiteList->FunctionPrefix.size());
+  EXPECT_EQ(1, pWhiteList->IgnoredFuncPrefix.size());
   EXPECT_EQ(1, pWhiteList->VariablePrefix.size());
 }
 
@@ -105,19 +105,19 @@ TEST(General, Fake_WhiteList)
 
   WhiteList* pWhiteList = &config.GetData().m_WhiteList;
 
-  EXPECT_EQ(true, 2 == pWhiteList->FunctionPrefix.size());
+  EXPECT_EQ(true, 2 == pWhiteList->IgnoredFuncPrefix.size());
   EXPECT_EQ(true,
-            pWhiteList->FunctionPrefix.end() !=
-              std::find(pWhiteList->FunctionPrefix.begin(),
-                        pWhiteList->FunctionPrefix.end(),
+            pWhiteList->IgnoredFuncPrefix.end() !=
+              std::find(pWhiteList->IgnoredFuncPrefix.begin(),
+                        pWhiteList->IgnoredFuncPrefix.end(),
                         "_"));
   EXPECT_EQ(true,
-            pWhiteList->FunctionPrefix.end() !=
-              std::find(pWhiteList->FunctionPrefix.begin(),
-                        pWhiteList->FunctionPrefix.end(),
+            pWhiteList->IgnoredFuncPrefix.end() !=
+              std::find(pWhiteList->IgnoredFuncPrefix.begin(),
+                        pWhiteList->IgnoredFuncPrefix.end(),
                         "__"));
 
-  EXPECT_EQ(true, 2 == pWhiteList->FunctionPrefix.size());
+  EXPECT_EQ(true, 2 == pWhiteList->IgnoredFuncPrefix.size());
   EXPECT_EQ(true,
             pWhiteList->VariablePrefix.end() !=
               std::find(pWhiteList->VariablePrefix.begin(),
@@ -129,7 +129,7 @@ TEST(General, Fake_WhiteList)
                         pWhiteList->VariablePrefix.end(),
                         "g_"));
 
-  EXPECT_EQ(true, pWhiteList->bAllowedUnderscopeChar);
+  EXPECT_EQ(true, pWhiteList->bAllowedEndWithUnderscope);
 }
 
 } // namespace TargetIsGeneral

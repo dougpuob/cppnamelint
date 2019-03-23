@@ -41,17 +41,18 @@ private:
   bool m_bCheckFile;
   bool m_bCheckFunction;
   bool m_bCheckVariable;
-  bool bAllowedEndWithUnderscopeChar;
+  bool bAllowedEndWithUnderscope;
 
   namelint::RULETYPE m_FileRuleType;
   namelint::RULETYPE m_FunctionRuleType;
   namelint::RULETYPE m_VariableRuleType;
 
-  map<string, string> m_HungarianMappedList;
+  map<string, string> m_HungarianList;
+  map<string, string> m_HungarianListEx;
   vector<string> m_FileExt;
-  vector<string> m_FunctionIgnorePrefix;
-  vector<string> m_VariableIgnorePrefix;
-  vector<string> m_IgnoreFunctions;
+  vector<string> m_IgnoredFuncName;
+  vector<string> m_IgnoredFuncPrefix;
+  vector<string> m_IgnoredVarPrefix;
 
   bool _IsMainFile(Decl* pDecl);
   bool _PrintPosition(Decl* pDecl);

@@ -22,7 +22,7 @@ Config::Config()
   this->m_Config.m_Rule.VariableName = RULETYPE::RULETYPE_DEFAULT;
 
   // WhiteList
-  this->m_Config.m_WhiteList.FunctionPrefix.assign({ "" });
+  this->m_Config.m_WhiteList.IgnoredFuncPrefix.assign({ "" });
   this->m_Config.m_WhiteList.VariablePrefix.assign({ "" });
 }
 
@@ -128,12 +128,12 @@ Config::LoadStream(string ConfigContent)
       ParseRsValue.find("WhiteList.ListFunctionPrefix");
     if (pWhiteListFunctionPrefix &&
         pWhiteListFunctionPrefix->is<toml::Array>()) {
-      this->m_Config.m_WhiteList.FunctionPrefix.clear();
+      this->m_Config.m_WhiteList.IgnoredFuncPrefix.clear();
       [](vector<string>& OutStrVect, vector<toml::Value> InputVect) {
         for (toml::Value Item : InputVect) {
           OutStrVect.push_back(Item.as<string>());
         }
-      }(this->m_Config.m_WhiteList.FunctionPrefix,
+      }(this->m_Config.m_WhiteList.IgnoredFuncPrefix,
         pWhiteListFunctionPrefix->as<toml::Array>());
     }
 
@@ -156,12 +156,12 @@ Config::LoadStream(string ConfigContent)
       ParseRsValue.find("WhiteList.ListIgnoreFunctions");
     if (pWhiteListIgnoreFunctions &&
         pWhiteListIgnoreFunctions->is<toml::Array>()) {
-      this->m_Config.m_WhiteList.IgnoreFunctions.clear();
+      this->m_Config.m_WhiteList.IgnoredFuncName.clear();
       [](vector<string>& OutStrVect, vector<toml::Value> InputVect) {
         for (toml::Value Item : InputVect) {
           OutStrVect.push_back(Item.as<string>());
         }
-      }(this->m_Config.m_WhiteList.IgnoreFunctions,
+      }(this->m_Config.m_WhiteList.IgnoredFuncName,
         pWhiteListIgnoreFunctions->as<toml::Array>());
     }
 
@@ -170,8 +170,26 @@ Config::LoadStream(string ConfigContent)
       ParseRsValue.find("WhiteList.BoolAllowedUnderscopeChar");
     if (pWhiteListBoolAllowedUnderscopeChar &&
         pWhiteListBoolAllowedUnderscopeChar->is<bool>()) {
-      this->m_Config.m_WhiteList.bAllowedUnderscopeChar =
+      this->m_Config.m_WhiteList.bAllowedEndWithUnderscope =
         pWhiteListBoolAllowedUnderscopeChar->as<bool>();
+    }
+
+    // ==----------------------------------------------------------------------------------
+    // [HungarianListEx]
+    // ==----------------------------------------------------------------------------------
+    const toml::Value* pHungarianListEx = ParseRsValue.find("HungarianListEx");
+    if (pHungarianListEx && pHungarianListEx->is<toml::Table>()) {
+      this->m_Config.m_HungarianListEx.MappedTable.clear();
+      [](map<string, string>& OutStrMap, toml::Table InputTable) {
+        for (toml::Table::iterator Iter = InputTable.begin();
+             Iter != InputTable.end();
+             Iter++) {
+          auto Str1 = Iter->first;
+          auto Str2 = Iter->second.as<string>();
+          OutStrMap.insert(std::pair<string, string>(Str1, Str2));
+        }
+      }(this->m_Config.m_HungarianListEx.MappedTable,
+        pHungarianListEx->as<toml::Table>());
     }
 
     // ==----------------------------------------------------------------------------------

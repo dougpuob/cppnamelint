@@ -20,10 +20,10 @@ namespace filesystem = boost::filesystem;
 using namespace namelint;
 
 int
-main(int iArgc, char** ppArgv)
+main(int iArgc, char** pszArgv)
 {
   static const char USAGE[] =
-    R"(cppnamelint utility v0.1.0
+    R"(cppnamelint utility v0.1.1
 
   Usage:
     cppnamelint check <file> [--config=<file>] [--log=<file>]
@@ -38,7 +38,7 @@ main(int iArgc, char** ppArgv)
 
   std::map<std::string, docopt::value> Arguments =
     docopt::docopt(USAGE,
-                   { ppArgv + 1, ppArgv + iArgc },
+                   { pszArgv + 1, pszArgv + iArgc },
                    false, // show help if requested
                    "");   // version string
 
@@ -75,9 +75,9 @@ main(int iArgc, char** ppArgv)
     pAppCxt->pTomlConfig = &Config;
 
     int iMyArgc = 3;
-    const char* pszMyArgV[] = { "", "*.*", "--" };
+    const char* szMyArgV[] = { "", "*.*", "--" };
     static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
-    CommonOptionsParser NullOptionsParser(iMyArgc, pszMyArgV, NameLintOptions);
+    CommonOptionsParser NullOptionsParser(iMyArgc, szMyArgV, NameLintOptions);
 
     vector<string> SourcePathList;
     SourcePathList.push_back(Arguments["<file>"].asString());
@@ -92,7 +92,7 @@ main(int iArgc, char** ppArgv)
     Tool.run(Factory.get());
     iReturn = GetAppCxt()->nAsserted;
   } else if (Arguments["test"].asBool()) {
-    ::testing::InitGoogleTest(&iArgc, (char**)ppArgv);
+    ::testing::InitGoogleTest(&iArgc, (char**)pszArgv);
     iReturn = RUN_ALL_TESTS();
   } else {
     iReturn = 1; // Error

@@ -1,0 +1,15 @@
+[General]
+  ListFileExtName           = ["*.c","*.h","*.cpp"]
+  BoolCheckVariableName     = true
+  BoolCheckFunctionName     = true
+  BoolCheckFileName         = true
+
+[Rule]
+  EnumFileName              = 1 # 1: UpperCamelCase
+  EnumFunctionName          = 1 # 1: UpperCamelCase
+  EnumVariableName          = 1 # 1: UpperCamelCase
+
+[WhiteList]
+  ListFunctionPrefix        = [ "_", "__" , "XXX_"]
+  ListVariablePrefix        = [ "m_" ]
+  BoolAllowedUnderscopeChar = false
