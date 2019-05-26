@@ -7,6 +7,7 @@ The `cppnamelint` C/C++ naming convention checking tool which can run on Windows
 1. Config file format with TOML.
 1. Naming rule with UpperCamel, LowerCamel, LowerSeperated, and Hungarain.
 
+
 `#LLVM` `#Clang` `#LibTooling` `#Compiler` `#Naming` `#NamingConvention` `#Toml` `#CppNameLint`
 
 ----------
@@ -187,20 +188,6 @@ ERRORLEVEL=1
 ## **Download Pre-built**
 
 - [**Pre-built**](https://github.com/dougpuob/cpp-namelint/releases)
-
-----------
-
-## **How to start** (as a Developer)
-It is a lazy note, if you need to develop NameLint, please contact with me will save your time. I will write a complete manual later.
-
-1. `git clone https://dougpuob@bitbucket.org/dougpuob/cpp-namelint.git cpp-namelint.git`
-1. `cd cpp-namelint.git`
-1. `git submodule init`
-1. `git submodule update`
-1. `cd Script`
-1. Run BuildWin32.cmd/BuildLinux.sh/BuildMacOS.sh .
-1. Build the project(Win32=MSVC, Linux=g++-8, macOS=clang++).
-1. Run TestWin32.cmd/TestLinux.sh
 
 
 ----------

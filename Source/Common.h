@@ -1,5 +1,5 @@
-#ifndef __NAMELINT_COMMON__
-#define __NAMELINT_COMMON__
+#ifndef __NAMELINT_COMMON__H__
+#define __NAMELINT_COMMON__H__
 
 #include <string>
 
@@ -7,36 +7,38 @@ using namespace std;
 
 typedef struct _APP_CONTEXT
 {
-  void* pTomlConfig;
-  string FileName;
-  size_t nAsserted;
+    void* pTomlConfig;
+    string FileName;
+    size_t nErrorCount;
 } APP_CONTEXT;
 
 typedef struct _COMMAND_CHECK
 {
-  bool bEnabled;
+    bool bEnabled;
 } COMMAND_CHECK;
 
 typedef struct _COMMAND_TEST
 {
-  bool bEnabled;
+    bool bEnabled;
 } COMMAND_TEST;
 
 typedef struct _INPUT_COMMAND
 {
-  COMMAND_CHECK Check;
-  COMMAND_TEST Test;
+    COMMAND_CHECK Check;
+    COMMAND_TEST Test;
 } INPUT_COMMAND;
 
 const APP_CONTEXT*
 GetAppCxt();
 
-namespace FileSystem {
+namespace Path {
 bool
 IsExist(const string& FilePath);
 const char*
-FindFileNameInPath(const string& FielPath);
-} // namespace FileSystem
+FindFileName(const string& FielPath);
+bool
+NormPath(const char* szPath, string& NewPath);
+} // namespace Path
 
 namespace String {
 void
@@ -48,4 +50,4 @@ Replace(string& Source, const string& Patn, const string& New);
 void
 Trim(string& Str);
 } // namespace String
-#endif
+#endif // __NAMELINT_COMMON__H__

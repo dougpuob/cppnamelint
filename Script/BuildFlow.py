@@ -265,6 +265,8 @@ def main():
                 input_build_type  = 'Release'
             elif 'DEBUG' == arguments['BUILD'].upper():
                 input_build_type  = 'Debug'
+            elif 'RELWITHDEBINFO' == arguments['BUILD'].upper():
+                input_build_type  = 'RelWithDebInfo'
 
         print("proj-create command")
         print("<PATH>    = ", input_target_path)

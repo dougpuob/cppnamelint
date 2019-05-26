@@ -24,11 +24,6 @@ XXX_MyFunc4(uint8_t u8Value)
     return 0;
 }
 int
-MyFunc5ABC(char cValue)
-{
-    return 0;
-}
-int
 MyFunc5_ABC(char cValue)
 {
     return 0;

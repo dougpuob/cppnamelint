@@ -44,8 +44,9 @@ ECHO ==============================================================
 ECHO Generate makefile via CMake
 ECHO ==============================================================
 SET BUILD_TYPE=
-IF /I "Release"=="%1" (SET BUILD_TYPE="Release")
-IF /I "Debug"=="%1"   (SET BUILD_TYPE="Debug")
+IF /I "Release"=="%1"        (SET BUILD_TYPE="Release")
+IF /I "RelWithDebInfo"=="%1" (SET BUILD_TYPE="RelWithDebInfo")
+IF /I "Debug"=="%1"          (SET BUILD_TYPE="Debug")
 python BuildFlow.py proj-create .. ..\Build %BUILD_TYPE%
 
 ECHO.

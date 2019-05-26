@@ -1,87 +1,115 @@
 #include "Common.h"
-
-#if __has_include("filesystem")
-#include <filesystem>
-using namespace filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace filesystem = boost::filesystem;
-#endif
+#include <stdio.h>
+#include <stdlib.h>
 
 static APP_CONTEXT m_AppCxt;
 const APP_CONTEXT*
 GetAppCxt()
 {
-  return &m_AppCxt;
+    return &m_AppCxt;
 }
 
-namespace FileSystem {
+namespace Path {
 bool
 IsExist(const string& Path)
 {
-  return filesystem::exists(Path);
+    FILE* pFile = fopen(Path.c_str(), "r");
+    bool bStatus = (NULL != pFile);
+    if (bStatus) {
+        fclose(pFile);
+    }
+
+    return bStatus;
 }
 
 const char*
-FindFileNameInPath(const string& Path)
+FindFileName(const string& Path)
 {
-  size_t nPos = Path.find_last_of("\\");
-  if (nPos == string::npos) {
-    nPos = Path.find_last_of("/");
+    size_t nPos = Path.find_last_of("\\");
     if (nPos == string::npos) {
-      return Path.c_str();
+        nPos = Path.find_last_of("/");
+        if (nPos == string::npos) {
+            return Path.c_str();
+        }
     }
-  }
-  return Path.c_str() + nPos;
+    return Path.c_str() + nPos;
 }
 
-} // namespace FileSystem
+bool
+NormPath(const char* szPath, string& NewPath)
+{
+    if (!szPath) {
+        return NULL;
+    }
+
+    bool bStatus = false;
+    size_t nRet = 0;
+
+    char szBuf[4096];
+
+#if WIN32
+    memset(szBuf, 0, sizeof(szBuf));
+    if (_fullpath(szBuf, szPath, sizeof(szBuf)) != NULL) {
+        bStatus = true;
+        NewPath.assign(szBuf);
+    }
+#else
+    if (NULL != realpath(szPath, szBuf)) {
+        bStatus = true;
+        NewPath.assign(szBuf);
+    }
+#endif
+
+    return bStatus;
+}
+} // namespace Path
 
 namespace String {
 
 void
 PadTo(string& Source, size_t nCount, char cChar)
 {
-  if (nCount > Source.length())
-    Source.append(nCount - Source.length(), cChar);
+    if (nCount > Source.length())
+        Source.append(nCount - Source.length(), cChar);
 }
 
 bool
 IsLower(const string& Source)
 {
-  bool bStatus = true;
-  for (std::string::const_iterator Iter = Source.begin(); Iter != Source.end();
-       Iter++) {
-    if (isupper(*Iter)) {
-      bStatus = false;
-      break;
+    bool bStatus = true;
+    for (std::string::const_iterator Iter = Source.begin();
+         Iter != Source.end();
+         Iter++) {
+        if (isupper(*Iter)) {
+            bStatus = false;
+            break;
+        }
     }
-  }
 
-  return bStatus;
+    return bStatus;
 }
 
 void
 Replace(string& Source, const string& Patn, const string& New)
 {
-  string::size_type Pos = 0;
-  string::size_type SrcLen = Patn.size();
-  string::size_type DstLen = New.size();
-  while ((Pos = Source.find(Patn, Pos)) != string::npos) {
-    Source.replace(Pos, SrcLen, New);
-    Pos += DstLen;
-  }
+    string::size_type Pos = 0;
+    string::size_type SrcLen = Patn.size();
+    string::size_type DstLen = New.size();
+    while ((Pos = Source.find(Patn, Pos)) != string::npos) {
+        Source.replace(Pos, SrcLen, New);
+        Pos += DstLen;
+    }
 }
 
 void
 Trim(string& Source)
 {
-  if (Source.empty()) {
-    return;
-  }
+    if (Source.empty()) {
+        return;
+    }
 
-  Source.erase(0, Source.find_first_not_of(" "));
-  Source.erase(Source.find_last_not_of(" ") + 1);
+    Source.erase(0, Source.find_first_not_of(" "));
+    Source.erase(Source.find_last_not_of(" ") + 1);
 }
 
 } // namespace String

@@ -28,8 +28,3 @@ MyFunc5ABC(char cValue)
 {
     return 0;
 }
-int
-MyFunc5_ABC(char cValue)
-{
-    return 0;
-}
