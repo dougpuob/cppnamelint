@@ -2,9 +2,10 @@
 
 """cppnamelint.
 
-Usage:
-  cppnamelint.py test
+Usage:  
   cppnamelint.py check <srcdir> <config> [--includes=<dirs>] [--ignores=<paths>]
+  cppnamelint.py test  <srcdir> <config>
+  cppnamelint.py test-sample <sampledir>  
   cppnamelint.py (-h | --help)
   cppnamelint.py (-v | --version)
   cppnamelint.py --help     Show this screen.
@@ -148,7 +149,7 @@ def main():
     testKit = TestHelper()
 
     arguments = docopt(__doc__, version='cppnamelint')
-    print(arguments['--includes'])
+    print("--includes=", arguments['--includes'])
     inc_dirs = ""
     if   arguments['check']:
         src_dir  = arguments['<srcdir>']
@@ -175,7 +176,12 @@ def main():
 
 
     elif arguments['test']:
-        exe_file = testKit.find_target_app('cppnamelint', '../Build')
+        exe_file = testKit.find_target_app('cppnamelint', '.')
+        if '' == exe_file:
+            exe_file = testKit.find_target_app('cppnamelint', '..')
+            if '' == exe_file:
+                exe_file = testKit.find_target_app('cppnamelint', '../Build')
+
         if not os.path.exists(exe_file):
             print('Failed to find executable binary file.')
         else:
@@ -185,7 +191,7 @@ def main():
             testKit.del_file(".", ".json")
             
             # Find all source code files.
-            root_path = "../Source"
+            root_path = arguments['<srcdir>']
             ext_name_list = [".c", ".cpp"]
             full_source_files = []
             testKit.find_files(root_path, ext_name_list, full_source_files)
@@ -197,9 +203,22 @@ def main():
             # Run check for self source code files.
             for file_path in filtered_source_files:
                 if not os.path.basename(file_path).startswith("Test"):
-                    testKit.run_file(exe_file, "check " + file_path + " --config=" + os.path.abspath("../Source/Config.toml"))
+                    testKit.run_file(exe_file, "check " + file_path + " --config=" + os.path.abspath(arguments['<config>']))
 
-            path = os.path.abspath('../Source/Test/Sample')
+            
+    elif arguments['test-sample']:
+        exe_file = testKit.find_target_app('cppnamelint', '.')
+        if '' == exe_file:
+            exe_file = testKit.find_target_app('cppnamelint', '..')
+            if '' == exe_file:
+                exe_file = testKit.find_target_app('cppnamelint', '../Build')
+            
+        if not os.path.exists(exe_file):
+            print('Failed to find executable binary file.')
+        else:
+            print('exe_file = ' + exe_file)              
+
+            path = os.path.abspath(arguments['<sampledir>'])
             testKit.run_file(exe_file, mg(path, 'Sample_01.c',   'Sample_01.toml'))
             testKit.run_file(exe_file, mg(path, 'Sample_02.c',   'Sample_02.toml'))
             testKit.run_file(exe_file, mg(path, 'Sample_03.c',   'Sample_03.toml'))
@@ -207,7 +226,6 @@ def main():
 
             # Run UnitTest.
             testKit.run_file(exe_file, 'test --all')
-
 
 if __name__ == '__main__':
     main()
