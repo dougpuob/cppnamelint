@@ -23,6 +23,7 @@
 #include "Config.h"
 #include "Detection.h"
 #include "MyAstConsumer.h"
+#include "TraceMemo.h"
 
 using namespace std;
 using namespace clang;
@@ -30,12 +31,12 @@ using namespace clang::tooling;
 using namespace llvm;
 using namespace clang::driver;
 using namespace clang::tooling;
+using namespace namelint;
 
-class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor>
-{
+class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
   private:
-    ASTContext* m_pAstCxt;
-    const SourceManager* m_pSrcMgr;
+    ASTContext *m_pAstCxt;
+    const SourceManager *m_pSrcMgr;
     namelint::Detection m_Detect;
     string m_FileName;
 
@@ -55,37 +56,38 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor>
     vector<string> m_IgnoredFuncPrefix;
     vector<string> m_IgnoredVarPrefix;
 
-    bool _IsMainFile(Decl* pDecl);
-    bool _PrintPosition(Decl* pDecl);
-    void _KeepFileName(string& Path);
-    bool _GetPosition(Decl* pDecl,
-                      string& FileName,
-                      size_t& nLineNumb,
-                      size_t& nColNumb);
-    bool _ClassifyTypeName(string& TyeName);
-    void stringReplace(string& Source, const string& Patn, const string& New);
-    void stringTrim(string& s);
+    bool _IsMainFile(Decl *pDecl);
+    bool _PrintPosition(Decl *pDecl);
+    void _KeepFileName(string &Path);
+    bool _GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb,
+                      size_t &nColNumb);
 
-    bool _AssertWithFunction(FunctionDecl* pDecl, string& FuncName);
-    bool _AssertWithParm(ParmVarDecl* pDecl, string& TypeName, string& VarName);
-    bool _AssertWithVar(VarDecl* pDecl, string& TypeName, string& VarName);
+    bool _ClassifyTypeName(string &TyeName);
 
-    bool _GetFunctionInfo(FunctionDecl* pDecl, string& FuncName);
-    bool _GetParmsInfo(ParmVarDecl* pDecl, string& VarType, string& VarName);
-    bool _GetVarInfo(VarDecl* pDecl, string& VarType, string& VarName);
+    ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
+                                    const string &TargetName,
+                                    const string &Expected);
+
+    ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
+                                    const string &TypeName,
+                                    const string &TargetName,
+                                    const string &Suggestion);
+
+    bool _GetFunctionInfo(FunctionDecl *pDecl, string &FuncName);
+    bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName);
+    bool _GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName);
 
   public:
-    MyASTVisitor(const SourceManager* pSM,
-                 const ASTContext* pAstCxt,
-                 const namelint::Config* pConfig);
+    MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
+                 const namelint::Config *pConfig);
     // bool VisitStmt(Stmt *pStmt);
     // bool VisitCXXRecordDecl(CXXRecordDecl *D);
     // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
-    bool VisitFunctionDecl(FunctionDecl* pDecl);
-    bool VisitCXXMethodDecl(CXXMethodDecl* pDecl);
-    bool VisitRecordDecl(RecordDecl* pDecl);
-    bool VisitVarDecl(VarDecl* pDecl);
-    bool VisitReturnStmt(ReturnStmt* pRetStmt);
+    bool VisitFunctionDecl(FunctionDecl *pDecl);
+    bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
+    bool VisitRecordDecl(RecordDecl *pDecl);
+    bool VisitVarDecl(VarDecl *pDecl);
+    bool VisitReturnStmt(ReturnStmt *pRetStmt);
 };
 
 #endif // __NAMELINT_MY_AST_VISITOR__H__

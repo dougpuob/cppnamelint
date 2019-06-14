@@ -9,8 +9,7 @@
 using namespace std;
 
 namespace namelint {
-typedef enum _RULETYPE
-{
+typedef enum _RULETYPE {
     RULETYPE_DEFAULT = 0,
     RULETYPE_UPPER_CAMEL,
     RULETYPE_LOWER_CAMEL,
@@ -18,8 +17,7 @@ typedef enum _RULETYPE
     RULETYPE_HUNGARIAN
 } RULETYPE;
 
-class General
-{
+class General {
   public:
     vector<string> FileExtName;
     bool bCheckVariableName;
@@ -30,16 +28,14 @@ class General
     General() { FileExtName.clear(); }
 };
 
-class Rule
-{
+class Rule {
   public:
     RULETYPE FileName;
     RULETYPE FunctionName;
     RULETYPE VariableName;
 };
 
-class WhiteList
-{
+class WhiteList {
   public:
     bool bAllowedEndWithUnderscope;
 
@@ -48,21 +44,18 @@ class WhiteList
     vector<string> IgnoredFuncName;
 
   public:
-    WhiteList()
-    {
+    WhiteList() {
         IgnoredFuncPrefix.clear();
         VariablePrefix.clear();
     }
 };
 
-class HungarianList
-{
+class HungarianList {
   public:
     std::map<std::string, std::string> MappedTable;
 };
 
-class ConfigData
-{
+class ConfigData {
   public:
     Rule m_Rule;
     General m_General;
@@ -71,8 +64,7 @@ class ConfigData
     HungarianList m_HungarianListEx;
 };
 
-class Config
-{
+class Config {
   private:
     ConfigData m_Config;
 
@@ -81,7 +73,7 @@ class Config
     bool LoadFile(string ConfigFilePath);
     bool LoadStream(string ConfigContent);
     bool Save(string DstPath);
-    ConfigData& GetData() const;
+    ConfigData &GetData() const;
 };
 } // namespace namelint
 

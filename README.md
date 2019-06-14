@@ -192,5 +192,31 @@ ERRORLEVEL=1
 
 ----------
 
+
+```
+{
+  "SourceFile" : "Common.cpp",
+  "ConfigFile" : "Config.toml",
+  "CheckedNumber" : {
+    "Function" : 10,
+    "Argument" : 10,
+    "Variable" : 10
+  },
+  "ErrorNumber" : {
+    "Total" : 100,
+    "Function" : 10,
+    "Argument" : 10,
+    "Variable" : 10
+  },
+  "Details" : [
+    {"Line" : 10, "Column": 10, "Type" : "Function", "Text" : "IsStatus", "Expected" : ""}
+    ]
+}
+```
+
+
+----------
+
+
 ## License
 MIT

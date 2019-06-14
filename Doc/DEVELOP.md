@@ -33,9 +33,9 @@ https://clang.llvm.org/get_started.html
           - 64-bit (XXXX GB): `cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "Visual Studio 15 2017" -A x64 -Thost=x64 ..\llvm`
 
         - Debug
-          - 32-bit (4.27 GB): `cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug          -G "Visual Studio 15 2017"        -Thost=x64 ..\llvm`
-          - 64-bit (XXXX GB): `cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug          -G "Visual Studio 15 2017" -A x64 -Thost=x64 ..\llvm`
-
+          - 32-bit (4.27 GB): `cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017" -Thost=x64 ..\llvm`
+          - 64-bit (XXXX GB): ``
+D:\llvm-project.git--8.0.0\build>cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017" -Thost=x64 ..\llvm
       - Linux
         - `export CC=gcc-8`
         - `export CXX=g++-8`

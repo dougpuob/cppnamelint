@@ -1,6 +1,6 @@
 @ECHO OFF
 
-python TestKit.py
+python cppnamelint.py test
 PAUSE
 
 @ECHO ON

@@ -24,58 +24,65 @@
 #include "MyFactory.h"
 
 #include <docopt.h>
+#include <fstream>
 #include <gtest/gtest.h>
+#include <iostream>
+#include <jsoncons/json.hpp>
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
 
+using namespace jsoncons;
 using namespace namelint;
 
-int
-main(int iArgc, char** pszArgv)
-{
-    static const char USAGE[] =
-      R"(cppnamelint utility v0.1.2
+size_t GetTotalError(const TraceMemo &TraceMemo);
 
+bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc);
+
+bool PrintTraceMemo(const TraceMemo &TraceMemo);
+
+bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath);
+
+int main(int iArgc, char **pszArgv) {
+    const char *szTitle = "cppnamelint utility v0.1.2";
+    static const char *szUsage =
+        R"(
   Usage:
-    cppnamelint check <file> [--config=<file>] [--log=<file>]
+    cppnamelint check <file> [--config=<file>] [--log=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>]
     cppnamelint test   [-a | --all] [-u | --unittest]
     cppnamelint --help
     cppnamelint --version
 
   Options:
-    --config=<file>   [default: cppnamelint.toml]
-    --log=<file>      [default: cppnamelint.log]
+    --jsonout=<file> [default: cppnamelint.json]
+    --config=<file>  [default: cppnamelint.toml]
+    --log=<file>     [default: cppnamelint.log]
   )";
 
-    std::map<std::string, docopt::value> Arguments =
-      docopt::docopt(USAGE,
-                     { pszArgv + 1, pszArgv + iArgc },
-                     false, // show help if requested
-                     "");   // version string
-
-    std::cout << "<file>   = " << Arguments["<file>"] << endl;
-    std::cout << "--config = " << Arguments["--config"] << endl;
+    map<string, docopt::value> Arguments =
+        docopt::docopt(szUsage, {pszArgv + 1, pszArgv + iArgc},
+                       false, // show help if requested
+                       "");   // version string
 
     int iReturn = 0;
 
+    cout << szTitle << endl;
+    cout << "---------------------------------------------------" << endl;
     if (Arguments["check"].asBool() &&
         Arguments["<file>"].asString().length() > 0) {
-        APP_CONTEXT* pAppCxt = (APP_CONTEXT*)GetAppCxt();
+        APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
         namelint::Config Config;
-        string ConfigFilePath = "";
 
-        ConfigFilePath = ".cppnamelint";
-        bool bResult = Path::IsExist(ConfigFilePath);
+        string ConfigFilePath = ".cppnamelint";
+        bool bResult          = Path::IsExist(ConfigFilePath);
         if (!bResult) {
             bResult = Path::IsExist(Arguments["--config"].asString());
             if (bResult) {
                 ConfigFilePath = Arguments["--config"].asString();
             }
         }
-
         if (bResult) {
             bResult = Config.LoadFile(ConfigFilePath);
             if (!bResult) {
@@ -86,15 +93,45 @@ main(int iArgc, char** pszArgv)
             cout << "Error: Failed to find a config file" << endl;
         }
 
-        pAppCxt->pTomlConfig = &Config;
+        string JsonOutFilePath = "cppnamelint.json";
+        if (Arguments["--jsonout"]) {
+            JsonOutFilePath = Arguments["--jsonout"].asString();
+        }
 
-        int iMyArgc = 3;
-        const char* szMyArgV[] = { "", "*.*", "--" };
+        pAppCxt->TraceMemo.File.Config = ConfigFilePath;
+        pAppCxt->pTomlConfig           = &Config;
+
+        if (Arguments["--includes"]) {
+            vector<string> IncludeDirs;
+            size_t nCount = String::Split(Arguments["--includes"].asString(),
+                                          IncludeDirs, ',');
+            for (size_t nIdx = 0; nIdx < nCount; nIdx++) {
+                string FullPath;
+                if (Path::NormPath(IncludeDirs[nIdx].c_str(), FullPath)) {
+                    string IncArg = "-I" + FullPath;
+                    pAppCxt->TraceMemo.Dir.Includes.push_back(IncArg);
+                }
+            }
+        }
+
+        int iMyArgc     = 3 + pAppCxt->TraceMemo.Dir.Includes.size();
+        char **szMyArgV = new char *[iMyArgc];
+        szMyArgV[0]     = strdup("");
+        szMyArgV[1]     = strdup("*.*");
+        szMyArgV[2]     = strdup("--");
+        size_t nIdx     = 3;
+        for (auto Item : pAppCxt->TraceMemo.Dir.Includes) {
+            szMyArgV[nIdx] = strdup(Item.c_str());
+            nIdx++;
+        }
+
         static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
-        CommonOptionsParser NullOptionsParser(
-          iMyArgc, szMyArgV, NameLintOptions);
+        CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)szMyArgV,
+                                              NameLintOptions);
 
         vector<string> SourcePathList;
+        pAppCxt->TraceMemo.File.Source = Arguments["<file>"].asString();
+
         SourcePathList.push_back(Arguments["<file>"].asString());
 
         // Utility to run a FrontendAction over a set of files.
@@ -104,24 +141,157 @@ main(int iArgc, char** pszArgv)
         // Abstract interface, implemented by clients of the front-end, which
         // formats and prints fully processed diagnostics.
         Tool.setDiagnosticConsumer(
-          /*(clang::DiagnosticConsumer*)*/ new IgnoringDiagConsumer());
+            /*(clang::DiagnosticConsumer*)*/ new IgnoringDiagConsumer());
 
         MyFactory MyFactory;
         std::unique_ptr<FrontendActionFactory> Factory =
-          newFrontendActionFactory(&MyFactory);
+            newFrontendActionFactory(&MyFactory);
 
         if (0 == Tool.run(Factory.get())) {
-            iReturn = GetAppCxt()->nErrorCount;
+            iReturn = GetTotalError(GetAppCxt()->TraceMemo);
+            PrintTraceMemo(GetAppCxt()->TraceMemo);
+            WriteJsonResult(GetAppCxt()->TraceMemo, JsonOutFilePath);
         } else {
             iReturn = -1;
         }
+
+        for (size_t nIdx = 0; nIdx < (size_t)iMyArgc; nIdx++) {
+            free(szMyArgV[nIdx]);
+        }
+        delete[] szMyArgV;
+
     } else if (Arguments["test"].asBool()) {
-        testing::InitGoogleTest(&iArgc, (char**)pszArgv);
+        testing::InitGoogleTest(&iArgc, (char **)pszArgv);
         iReturn = RUN_ALL_TESTS();
+    } else if (Arguments["nonono"].asBool()) {
+        std::cout << "<file>   = " << Arguments["<file>"] << endl;
     } else {
         // Command miss matched.
         iReturn = -1 /* Error */;
     }
 
     return iReturn;
+}
+
+size_t GetTotalError(const TraceMemo &TraceMemo) {
+    return TraceMemo.Error.nParameter + TraceMemo.Error.nFunction +
+           TraceMemo.Error.nVariable;
+}
+
+size_t GetTotalChecked(const TraceMemo &TraceMemo) {
+    return TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction +
+           TraceMemo.Checked.nVariable;
+}
+
+bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
+    json TotalList            = json::array();
+    JsonDoc["File"]["Source"] = TraceMemo.File.Source;
+    JsonDoc["File"]["Config"] = TraceMemo.File.Config;
+
+    JsonDoc["Checked"]["Function"]  = TraceMemo.Checked.nFunction;
+    JsonDoc["Checked"]["Parameter"] = TraceMemo.Checked.nParameter;
+    JsonDoc["Checked"]["Variable"]  = TraceMemo.Checked.nVariable;
+
+    JsonDoc["Error"]["Function"]  = TraceMemo.Error.nFunction;
+    JsonDoc["Error"]["Parameter"] = TraceMemo.Error.nParameter;
+    JsonDoc["Error"]["Variable"]  = TraceMemo.Error.nVariable;
+
+    json JsonErrDetail;
+    json ErrorDetailList = json::array();
+    for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
+        JsonErrDetail["Line"]       = pErrDetail->Pos.nLine;
+        JsonErrDetail["Column"]     = pErrDetail->Pos.nColumn;
+        JsonErrDetail["Type"]       = (int)pErrDetail->Type;
+        JsonErrDetail["TypeName"]   = pErrDetail->TypeName;
+        JsonErrDetail["TargetName"] = pErrDetail->TargetName;
+        JsonErrDetail["Expected"]   = pErrDetail->Suggestion;
+        ErrorDetailList.push_back(JsonErrDetail);
+    }
+
+    JsonDoc["ErrorDetailList"] = ErrorDetailList;
+    TotalList.push_back(JsonDoc);
+    // cout << pretty_print(JsonDoc) << endl;
+
+    return true;
+}
+
+bool PrintTraceMemo(const TraceMemo &TraceMemo) {
+    bool bStatus = true;
+    cout << " File    = " << TraceMemo.File.Source << endl;
+    cout << " Config  = " << TraceMemo.File.Config << endl;
+    for (size_t nIdx = 0; nIdx < TraceMemo.Dir.Includes.size(); nIdx++) {
+        printf(" Inc[%2d] = %s\n", nIdx + 1,
+               TraceMemo.Dir.Includes[nIdx].c_str());
+    }
+
+    printf(" Checked = %5d  [Func:%3d | Param:%3d | Var:%3d]\n",
+           GetTotalChecked(TraceMemo), TraceMemo.Checked.nFunction,
+           TraceMemo.Checked.nParameter, TraceMemo.Checked.nVariable);
+
+    printf(" Error   = %5d  [Func:%3d | Param:%3d | Var:%3d]\n",
+           GetTotalError(TraceMemo), TraceMemo.Error.nFunction,
+           TraceMemo.Error.nParameter, TraceMemo.Error.nVariable);
+
+    cout << "---------------------------------------------------" << endl;
+    for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
+        switch (pErrDetail->Type) {
+        case CheckType::CT_Function:
+            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
+                 << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
+                 << " Function: " << pErrDetail->TargetName << endl;
+            break;
+
+        case CheckType::CT_Parameter:
+            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
+                 << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
+                 << " Parameter: " << pErrDetail->TargetName << " ("
+                 << pErrDetail->TypeName << ")" << endl;
+            break;
+
+        case CheckType::CT_Variable:
+            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
+                 << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
+                 << " Variable : " << pErrDetail->TargetName << " ("
+                 << pErrDetail->TypeName << ")" << endl;
+            break;
+
+        default:
+            bStatus = false;
+        }
+    }
+
+    return bStatus;
+}
+
+bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
+    if (!Path::IsExist(FilePath)) {
+        json JasonEmty = json::array();
+        ofstream MyFile;
+        MyFile.open(FilePath);
+        MyFile << pretty_print(JasonEmty);
+        MyFile.close();
+    } else {
+    }
+
+    json JsonNew;
+    json JsonAll = NULL;
+    try {
+        JsonAll = json::parse_file(FilePath);
+    } catch (const std::exception &Exp) {
+        cout << Exp.what() << endl;
+    }
+
+    if (JsonAll == NULL) {
+        JsonAll = json::array();
+    }
+
+    if (DataToJson(TraceMemo, JsonNew)) {
+        ofstream MyFile;
+        MyFile.open(FilePath);
+        JsonAll.push_back(JsonNew);
+        MyFile << pretty_print(JsonAll);
+        MyFile.close();
+        return true;
+    }
+    return false;
 }

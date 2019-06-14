@@ -55,3 +55,4 @@ Debug
 *.pyc
 /Doc/*.toml
 /Doc/*.c
+cppnamelint.json

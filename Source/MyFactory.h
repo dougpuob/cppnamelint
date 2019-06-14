@@ -4,8 +4,7 @@
 #include "MyAstConsumer.h"
 #include <memory>
 
-class MyFactory
-{
+class MyFactory {
   public:
     std::unique_ptr<MyASTConsumer> newASTConsumer();
 };

@@ -8,17 +8,14 @@
 
 using namespace std;
 
-bool
-MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef)
-{
+bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
     string FileName;
     for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(),
-                                e = MyDeclGroupRef.end();
-         Iter != e;
-         ++Iter) {
-        Decl* pDecl = *Iter;
+                                e    = MyDeclGroupRef.end();
+         Iter != e; ++Iter) {
+        Decl *pDecl = *Iter;
 
-        const ASTContext& ASTCxt = pDecl->getASTContext();
+        const ASTContext &ASTCxt = pDecl->getASTContext();
 
         FullSourceLoc FullLocation = ASTCxt.getFullLoc(pDecl->getBeginLoc());
         if (FullLocation.isValid()) {
@@ -26,10 +23,10 @@ MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef)
         }
 
         if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {
-            namelint::Config* pCfg =
-              (namelint::Config*)GetAppCxt()->pTomlConfig;
+            namelint::Config *pCfg =
+                (namelint::Config *)GetAppCxt()->pTomlConfig;
 
-            const SourceManager& SrcMgr = ASTCxt.getSourceManager();
+            const SourceManager &SrcMgr = ASTCxt.getSourceManager();
             MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, pCfg);
             myVisitor.TraverseDecl(*Iter);
         }
@@ -38,8 +35,6 @@ MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef)
     return true;
 }
 
-void
-MyASTConsumer::HandleTranslationUnit(ASTContext& Ctx)
-{
-    assert(false);
+void MyASTConsumer::HandleTranslationUnit(ASTContext &Ctx) {
+    // assert(false);
 }

@@ -17,15 +17,13 @@
 
 using namespace clang;
 
-class MyASTConsumer : public clang::ASTConsumer
-{
+class MyASTConsumer : public clang::ASTConsumer {
   private:
   public:
     bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
-    void HandleTranslationUnit(ASTContext& Ctx);
+    void HandleTranslationUnit(ASTContext &Ctx);
 };
 
-class MyIgnoringDiagConsumer : public clang::IgnoringDiagConsumer
-{};
+class MyIgnoringDiagConsumer : public clang::IgnoringDiagConsumer {};
 
 #endif // __NAMELINT_MY_AST_CONSUMER__H__
