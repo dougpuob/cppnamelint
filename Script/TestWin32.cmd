@@ -8,8 +8,8 @@ IF EXIST ..\Source\Test\Sample (
     python cppnamelint.py test-sample "..\Source\Test\Sample"
 )
 
-IF EXIST Sample (
-    python cppnamelint.py test-sample "Sample"
+IF EXIST Test\Sample (
+    python cppnamelint.py test-sample "Test\Sample"
 )
 
 PAUSE

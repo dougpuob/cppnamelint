@@ -6,7 +6,7 @@
 	path = Module/googletest.git
 	url = https://github.com/abseil/googletest.git
         branch = master
-[submodule "Module/jsoncons.git"]
-	path = Module/jsoncons.git
-	url = https://github.com/danielaparker/jsoncons.git
-	branch = v0.125.0
+[submodule "Module/nlohmannjson.git"]
+	path = Module/nlohmannjson.git
+	url = https://github.com/nlohmann/json.git
+    branch = v3.6.1

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # build-flow.py
 """Build-Flow.
 
@@ -28,6 +30,7 @@ from subprocess import Popen, PIPE
 
 from docopt import docopt
 
+
 class Utility():
     def __init__(self):
         self.name = ""
@@ -47,11 +50,16 @@ class Utility():
         path_list = []
         if 'Windows' == platform.system():
             if os.path.exists(os.path.join(devtls_path, '@Win32')):
-                path_list.append(os.path.join(devtls_path, '@Win32/tool/7zip/18.05'))
-                path_list.append(os.path.join(devtls_path, '@Win32/tool/cmake/3.12.2'))
-                path_list.append(os.path.join(devtls_path, '@Win32/tool/llvm/7.0.1'))
-                path_list.append(os.path.join(devtls_path, '@Win32/tool/python/3.7'))
-                path_list.append(os.path.join(devtls_path, '@Win32/tool/rclone/1.45'))
+                path_list.append(os.path.join(
+                    devtls_path, '@Win32/tool/7zip/18.05'))
+                path_list.append(os.path.join(
+                    devtls_path, '@Win32/tool/cmake/3.12.2'))
+                path_list.append(os.path.join(
+                    devtls_path, '@Win32/tool/llvm/7.0.1'))
+                path_list.append(os.path.join(
+                    devtls_path, '@Win32/tool/python/3.7'))
+                path_list.append(os.path.join(
+                    devtls_path, '@Win32/tool/rclone/1.45'))
 
         elif 'Linux' == platform.system():
             if os.exists(os.path.join(devtls_path, '@Linux')):
@@ -111,7 +119,8 @@ class Lint():
 
     def get_devtls_path(self):
         build_flow_utility = Utility()
-        crdswdevtls_path = build_flow_utility.get_devtls_tool_path_list(os.environ['CRDSWDEVTLS'])
+        crdswdevtls_path = build_flow_utility.get_devtls_tool_path_list(
+            os.environ['CRDSWDEVTLS'])
         return crdswdevtls_path
 
     def code_reformat(self, file_path, test_mode=False):
@@ -119,16 +128,16 @@ class Lint():
         file_path = os.path.abspath(file_path)
         print(file_path)
 
-        style_file    = "-style=file"
-        style_llvm    = "-style=llvm"
-        style_google  = "-style=google"
+        style_file = "-style=file"
+        style_llvm = "-style=llvm"
+        style_google = "-style=google"
         style_mozilla = "-style=mozilla"
         style_jsonfmt = "-style=\"{BasedOnStyle: mozilla, IndentWidth: 8}" + "\""
 
         new_env = os.environ
         if test_mode:
-            style_target = "-style=google" # For test
-            crdswdevtls  = self.get_devtls_path()
+            style_target = "-style=google"  # For test
+            crdswdevtls = self.get_devtls_path()
             for item in crdswdevtls:
                 new_env['PATH'] = new_env['PATH'] + ';' + item
         else:
@@ -157,16 +166,14 @@ class Lint():
 
         return ret_value
 
-
     def code_analyze(self, file_path, test_mode=False):
         print(file_path)
 
         new_env = os.environ
         if test_mode:
-            crdswdevtls  = self.get_devtls_path()
-            ret_value    = os.path.exists(crdswdevtls)
+            crdswdevtls = self.get_devtls_path()
+            ret_value = os.path.exists(crdswdevtls)
             new_env['PATH'] = new_env['PATH'] + ';' + crdswdevtls
-
 
         process = Popen(["clang-tidy",
                          "-checks=cert*",
@@ -181,34 +188,43 @@ class Lint():
 
         stdout, stderr = process.communicate()
 
-        #if not test_mode:
-           # file = open("build-flow.log", 'a')
-           # file.write("================================================================================\n")
-           # file.write(file_path + '\n')
-           # file.write("--------------------------------------------------------------------------------\n")
-           #
-           # pipe_output_str = reformat_pipe_output(stdout)
-           # file.write(pipe_output_str)
-           # file.write("--------------------------------------------------------------------------------\n")
-           #
-           # pipe_output_str = reformat_pipe_output(stderr)
-           # file.write(pipe_output_str)
-           # file.write("--------------------------------------------------------------------------------\n")
-           #
-           # file.close()
+        # if not test_mode:
+        # file = open("build-flow.log", 'a')
+        # file.write("================================================================================\n")
+        # file.write(file_path + '\n')
+        # file.write("--------------------------------------------------------------------------------\n")
+        #
+        # pipe_output_str = reformat_pipe_output(stdout)
+        # file.write(pipe_output_str)
+        # file.write("--------------------------------------------------------------------------------\n")
+        #
+        # pipe_output_str = reformat_pipe_output(stderr)
+        # file.write(pipe_output_str)
+        # file.write("--------------------------------------------------------------------------------\n")
+        #
+        # file.close()
 
+
+
+class MakePackage():
+    def __init__(self):
+        self.name = ""
+
+        
 
 class Build():
     def __init__(self):
         self.name = ""
 
     def create(self, cmakefile_folder, output_folder, build_type):
-        output_path = os.path.abspath(os.path.join(output_folder, sys.platform))
-        input_path  = os.path.abspath(cmakefile_folder)
+        output_path = os.path.abspath(
+            os.path.join(output_folder, sys.platform))
+        input_path = os.path.abspath(cmakefile_folder)
         print("Input  = " + input_path)
         print("Output = " + output_path)
 
-        process = Popen(["cmake", input_path, "-B"+ output_path, "-DCMAKE_BUILD_TYPE="+build_type])
+        process = Popen(["cmake", input_path, "-B" +
+                         output_path, "-DCMAKE_BUILD_TYPE="+build_type])
         stdout, stderr = process.communicate()
 
 
@@ -221,36 +237,40 @@ def main():
     if os.path.exists("build-flow.log"):
         os.remove("build-flow.log")
 
-    build_flow_lint    = Lint()
-    build_flow_build   = Build()
+    build_flow_lint = Lint()
+    build_flow_build = Build()
     build_flow_utility = Utility()
 
     if arguments['lint']:
         input_folder = arguments['<DIR>']
         print("lint command with input folder ", input_folder)
 
-        build_flow_utility.find_files(input_folder, accepted_extname_list, output_list)
+        build_flow_utility.find_files(
+            input_folder, accepted_extname_list, output_list)
         for file_path in output_list:
             build_flow_lint.code_reformat(file_path)
 
     elif arguments['lint-format']:
         input_folder = arguments['<DIR>']
         print("lint-format command with input folder ", input_folder)
-        build_flow_utility.find_files(input_folder, accepted_extname_list, output_list)
+        build_flow_utility.find_files(
+            input_folder, accepted_extname_list, output_list)
         for file_path in output_list:
             build_flow_lint.code_reformat(file_path)
 
     elif arguments['lint-analyze']:
         input_folder = arguments['<DIR>']
         print("lint-analyze command with input folder ", input_folder)
-        build_flow_utility.find_files(input_folder, accepted_extname_list, output_list)
+        build_flow_utility.find_files(
+            input_folder, accepted_extname_list, output_list)
         for file_path in output_list:
             build_flow_lint.code_analyze(file_path)
 
     elif arguments['path']:
         input_folder = arguments['<DIR>']
         print("path command with input folder ", input_folder)
-        build_flow_utility.find_files(input_folder, accepted_extname_list, output_list)
+        build_flow_utility.find_files(
+            input_folder, accepted_extname_list, output_list)
         for file_path in output_list:
             if not build_flow_utility.is_ascii_string(file_path):
                 print(file_path)
@@ -259,20 +279,21 @@ def main():
         input_target_path = arguments['<PATH>']
         input_output_path = arguments['<OUTPUT>']
 
-        input_build_type  = 'Release'
+        input_build_type = 'Release'
         if arguments['BUILD']:
             if 'RELEASE' == arguments['BUILD'].upper():
-                input_build_type  = 'Release'
+                input_build_type = 'Release'
             elif 'DEBUG' == arguments['BUILD'].upper():
-                input_build_type  = 'Debug'
+                input_build_type = 'Debug'
             elif 'RELWITHDEBINFO' == arguments['BUILD'].upper():
-                input_build_type  = 'RelWithDebInfo'
+                input_build_type = 'RelWithDebInfo'
 
         print("proj-create command")
         print("<PATH>    = ", input_target_path)
         print("<OUTPUT>  = ", input_output_path)
         print("[BUILD]   = ", input_build_type)
-        build_flow_build.create(input_target_path, input_output_path, input_build_type)
+        build_flow_build.create(
+            input_target_path, input_output_path, input_build_type)
 
     elif arguments['proj-build']:
         input_target_path = arguments['<PATH>']

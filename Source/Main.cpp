@@ -27,13 +27,13 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>
-#include <jsoncons/json.hpp>
 #include <map>
+#include <nlohmann/json.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
 
-using namespace jsoncons;
+using namespace nlohmann;
 using namespace namelint;
 
 size_t GetTotalError(const TraceMemo &TraceMemo);
@@ -55,8 +55,8 @@ int main(int iArgc, char **pszArgv) {
     cppnamelint --version
 
   Options:
-    --jsonout=<file> [default: cppnamelint.json]
-    --config=<file>  [default: cppnamelint.toml]
+	--config=<file>  [default: cppnamelint.toml]    
+	--jsonout=<file> [default: cppnamelint.json]    
     --log=<file>     [default: cppnamelint.log]
   )";
 
@@ -67,6 +67,9 @@ int main(int iArgc, char **pszArgv) {
 
     int iReturn = 0;
 
+    // for convenience
+    // using json = nlohmann::json;
+
     cout << szTitle << endl;
     cout << "---------------------------------------------------" << endl;
     if (Arguments["check"].asBool() &&
@@ -75,14 +78,8 @@ int main(int iArgc, char **pszArgv) {
 
         namelint::Config Config;
 
-        string ConfigFilePath = ".cppnamelint";
+        string ConfigFilePath = Arguments["--config"].asString();
         bool bResult          = Path::IsExist(ConfigFilePath);
-        if (!bResult) {
-            bResult = Path::IsExist(Arguments["--config"].asString());
-            if (bResult) {
-                ConfigFilePath = Arguments["--config"].asString();
-            }
-        }
         if (bResult) {
             bResult = Config.LoadFile(ConfigFilePath);
             if (!bResult) {
@@ -268,7 +265,7 @@ bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
         json JasonEmty = json::array();
         ofstream MyFile;
         MyFile.open(FilePath);
-        MyFile << pretty_print(JasonEmty);
+        MyFile << JasonEmty;
         MyFile.close();
     } else {
     }
@@ -276,7 +273,8 @@ bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
     json JsonNew;
     json JsonAll = NULL;
     try {
-        JsonAll = json::parse_file(FilePath);
+        std::ifstream ifs(FilePath);
+        JsonAll = json::parse(ifs);
     } catch (const std::exception &Exp) {
         cout << Exp.what() << endl;
     }
@@ -289,7 +287,7 @@ bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
         ofstream MyFile;
         MyFile.open(FilePath);
         JsonAll.push_back(JsonNew);
-        MyFile << pretty_print(JsonAll);
+        MyFile << JsonAll;
         MyFile.close();
         return true;
     }

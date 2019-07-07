@@ -116,10 +116,11 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
 
     QualType QualType = pDecl->getType();
 
-    VarName = pDecl->getName().data();
-    // VarType = QualType.getAsString();
+    VarName    = pDecl->getName().data();
+    string abc = QualType.getAsString();
     if (VarType.length() > 0) {
         this->_ClassifyTypeName(VarType);
+        // printf("abc=%s\n", abc.c_str());
     }
 
     return true;
@@ -144,9 +145,12 @@ bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType,
     MyStrRef = Lexer::getSourceText(CharSourceRange::getCharRange(MySrcRange),
                                     *this->m_pSrcMgr, MyLangOpt, &bInvalid);
 
-    string RawSrcText   = MyStrRef.str();
-    QualType myQualType = pDecl->getType();
-    VarName             = pDecl->getNameAsString();
+    string RawSrcText = MyStrRef.str();
+
+    QualType myQualType   = pDecl->getType();
+    VarName               = pDecl->getNameAsString();
+    const bool bArrayType = myQualType->isArrayType();
+
     if (RawSrcText.length() > 0) {
         this->_ClassifyTypeName(RawSrcText);
     }
@@ -203,8 +207,8 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
     this->m_IgnoredFuncPrefix = CfgData.m_WhiteList.IgnoredFuncPrefix;
     this->m_IgnoredVarPrefix  = CfgData.m_WhiteList.VariablePrefix;
 
-    this->m_HungarianList   = CfgData.m_HungarianList.MappedTable;
-    this->m_HungarianListEx = CfgData.m_HungarianListEx.MappedTable;
+    this->m_HungarianList        = CfgData.m_HungarianList.MappedTable;
+    this->m_HungarianPointerList = CfgData.m_HungarianPointerList.MappedTable;
 
     this->bAllowedEndWithUnderscope =
         CfgData.m_WhiteList.bAllowedEndWithUnderscope;
@@ -250,7 +254,7 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
                 bResult = this->m_Detect.CheckVariable(
                     this->m_VariableRuleType, VarType, VarName,
                     this->m_IgnoredVarPrefix, this->m_HungarianList,
-                    this->m_HungarianListEx);
+                    this->m_HungarianPointerList);
 
                 pAppCxt->TraceMemo.Checked.nParameter++;
                 if (!bResult) {
@@ -297,7 +301,7 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
         bool bResult = this->m_Detect.CheckVariable(
             this->m_VariableRuleType, VarType, VarName,
             this->m_IgnoredVarPrefix, this->m_HungarianList,
-            this->m_HungarianListEx);
+            this->m_HungarianPointerList);
 
         pAppCxt->TraceMemo.Checked.nVariable++;
         if (!bResult) {

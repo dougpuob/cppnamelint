@@ -61,7 +61,7 @@ class ConfigData {
     General m_General;
     WhiteList m_WhiteList;
     HungarianList m_HungarianList;
-    HungarianList m_HungarianListEx;
+    HungarianList m_HungarianPointerList;
 };
 
 class Config {

@@ -1,4 +1,5 @@
-﻿int Value = 0;
+﻿char ValueBuf[16];
+int Value = 0;
 
 int __MyFunc1(int Value) { return 0; }
 int _MyFunc2(int Value) { return 0; }

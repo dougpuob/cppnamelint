@@ -50,7 +50,7 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     namelint::RULETYPE m_VariableRuleType;
 
     map<string, string> m_HungarianList;
-    map<string, string> m_HungarianListEx;
+    map<string, string> m_HungarianPointerList;
     vector<string> m_FileExt;
     vector<string> m_IgnoredFuncName;
     vector<string> m_IgnoredFuncPrefix;

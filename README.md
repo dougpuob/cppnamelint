@@ -14,17 +14,18 @@ The `cppnamelint` C/C++ naming convention checking tool which can run on Windows
 
 ## **Usage**
 ```
-cppnamelint utility v0.1.0
+cppnamelint utility v0.1.2
 
   Usage:
-    cppnamelint check <file> [--config=<file>] [--log=<file>]
+    cppnamelint check <file> [--config=<file>] [--log=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>]
     cppnamelint test   [-a | --all] [-u | --unittest]
     cppnamelint --help
     cppnamelint --version
 
   Options:
-    --config=<file>   [default: cppnamelint.toml]
-    --log=<file>      [default: cppnamelint.log]
+        --config=<file>  [default: cppnamelint.toml]
+        --jsonout=<file> [default: cppnamelint.json]
+    --log=<file>     [default: cppnamelint.log]
 ```
 
 
@@ -139,29 +140,38 @@ IgnoreFunctions              = ["main"]
 ### **Passed case**
 
 ```shell
-C:\working-folder\namelint\namelint.git\Doc>cppnamelint.exe check UpperCamel.c
-<file>   = "UpperCamel.c"
---config = "cppnamelint.toml"
+D:\cppnamelint_v0.1.2>cppnamelint.exe check Test\Sample\UpperCamel_1.c --config=Test\Sample\UpperCamel_1.toml
+cppnamelint utility v0.1.2
+---------------------------------------------------
+ File    = Test\Sample\UpperCamel_1.c
+ Config  = Test\Sample\UpperCamel_1.toml
+ Checked =    17  [Func:  8 | Param:  4 | Var:  5]
+ Error   =     0  [Func:  0 | Param:  0 | Var:  0]
+---------------------------------------------------
 
 ERRORLEVEL=0
 ```
   
-![Passed Case](https://i.imgur.com/rGfl526.png)
+![Passed Case](https://i.imgur.com/JmULdqR.png)
 
 ### **Failed case**
 
 ```shell
-C:\working-folder\namelint\namelint.git\Doc>cppnamelint.exe check UpperCamel.c
-<file>   = "UpperCamel.c"
---config = "cppnamelint.toml"
-
-[C:\working-folder\namelint\namelint.git\Doc\UpperCamel.c]
-  <5,5>  Variable:      u8MyValue (uint8_t)
+D:\cppnamelint_v0.1.2>cppnamelint.exe check Test\Sample\UpperCamel_1.c --config=Test\Sample\UpperCamel_1.toml
+cppnamelint utility v0.1.2
+---------------------------------------------------
+ File    = Test\Sample\UpperCamel_1.c
+ Config  = Test\Sample\UpperCamel_1.toml
+ Checked =    17  [Func:  8 | Param:  4 | Var:  5]
+ Error   =     2  [Func:  0 | Param:  2 | Var:  0]
+---------------------------------------------------
+  <5, 13> Parameter:    iValue (int)
+  <5, 13> Variable :    iValue (int)
 
 ERRORLEVEL=1
 ```
   
-![Failed Case](https://i.imgur.com/HM5RZhh.png)
+![Failed Case](https://i.imgur.com/YLWolw0.png)
 
 
 ----------

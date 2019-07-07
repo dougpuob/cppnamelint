@@ -56,3 +56,4 @@ Debug
 /Doc/*.toml
 /Doc/*.c
 cppnamelint.json
+Release

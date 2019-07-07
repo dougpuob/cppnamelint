@@ -48,7 +48,7 @@ include_directories(
         ${NAMELINT_LLVM_LIB_VER}/build/include
         ${NAMELINT_LLVM_LIB_VER}/build/tools/clang/include
         Module/googletest.git/googletest/include
-        Module/jsoncons.git/include
+        Module/nlohmannjson.git/include
         Module/docopt.cpp
 )
 
@@ -89,7 +89,7 @@ message("INC_PATH_5                 : Module/googletest.git/googletest/include" 
 ###############################################################################
 add_subdirectory(Module/docopt.cpp)
 add_subdirectory(Module/googletest.git)
-add_subdirectory(Module/jsoncons.git)
+add_subdirectory(Module/nlohmannjson.git)
 
 
 ###############################################################################

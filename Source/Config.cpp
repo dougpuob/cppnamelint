@@ -169,12 +169,12 @@ bool Config::LoadStream(string ConfigContent) {
         }
 
         // ==----------------------------------------------------------------------------------
-        // [HungarianListEx]
+        // [HungarianPointerList]
         // ==----------------------------------------------------------------------------------
-        const toml::Value *pHungarianListEx =
-            ParseRsValue.find("HungarianListEx");
-        if (pHungarianListEx && pHungarianListEx->is<toml::Table>()) {
-            this->m_Config.m_HungarianListEx.MappedTable.clear();
+        const toml::Value *pHungarianPointerList =
+            ParseRsValue.find("HungarianPointerList");
+        if (pHungarianPointerList && pHungarianPointerList->is<toml::Table>()) {
+            this->m_Config.m_HungarianPointerList.MappedTable.clear();
             [](map<string, string> &OutStrMap, toml::Table InputTable) {
                 for (toml::Table::iterator Iter = InputTable.begin();
                      Iter != InputTable.end(); Iter++) {
@@ -182,8 +182,8 @@ bool Config::LoadStream(string ConfigContent) {
                     auto Str2 = Iter->second.as<string>();
                     OutStrMap.insert(std::pair<string, string>(Str1, Str2));
                 }
-            }(this->m_Config.m_HungarianListEx.MappedTable,
-              pHungarianListEx->as<toml::Table>());
+            }(this->m_Config.m_HungarianPointerList.MappedTable,
+              pHungarianPointerList->as<toml::Table>());
         }
 
         // ==----------------------------------------------------------------------------------

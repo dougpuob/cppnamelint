@@ -29,11 +29,16 @@ ListVariablePrefix           = [ "m_" ]
 ListIgnoreFunctions          = ["main",
                                 "newASTConsumer"]
 
-[HungarianListEx]
+[HungarianPointerList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
+
+[HungarianArray]
+ArrayAffected            = false
+Prefix                   = "ary"    # char aryBuf1[16];
+                                    # int  aryBuf2[16];
 
 [HungarianList]
 # C Primitive Type
