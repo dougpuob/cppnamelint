@@ -14,7 +14,7 @@
   ListVariablePrefix        = [ "m_" ]
   BoolAllowedUnderscopeChar = true
   
-[HungarianListEx]
+[HungarianPointerList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"

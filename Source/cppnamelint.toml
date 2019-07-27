@@ -4,6 +4,7 @@ BoolCheckVariableName   = true
 BoolCheckFunctionName   = true
 BoolCheckFileName       = false
 
+
 [Rule]
 EnumFileName            = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
@@ -21,6 +22,7 @@ EnumVariableName        = 4 # 0: Default (UpperCamel)
                             # 4: Hungarian
 [WhiteList]
 BoolAllowedUnderscopeChar    = false
+BoolAllowedArrayAffected     = false
 
 ListFunctionPrefix           = [ "_",
                                  "__" ]
@@ -35,10 +37,8 @@ ListIgnoreFunctions          = ["main",
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
 
-[HungarianArray]
-ArrayAffected            = false
-Prefix                   = "ary"    # char aryBuf1[16];
-                                    # int  aryBuf2[16];
+[HungarianArrayList]
+char 					 = "sz"
 
 [HungarianList]
 # C Primitive Type

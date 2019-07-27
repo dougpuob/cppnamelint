@@ -3,7 +3,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin:/usr/loc
 
 
 if [ -d ../Source ]; then
-    python3 cppnamelint.py test  ../Source  ../Source/Config.toml
+    python3 cppnamelint.py test  ../Source  ../Source/cppnamelint.toml
 fi
 
 if [ -d ../Source/Test/Sample ]; then

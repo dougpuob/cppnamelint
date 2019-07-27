@@ -1,7 +1,12 @@
 @ECHO OFF
 
+::python cppnamelint.py check ..\Source\Test\Sample\Sample_05.cpp ..\Source\Test\Sample\Sample_05.toml
+::PAUSE 
+::EXIT
+
+
 IF EXIST ..\Source (
-    python cppnamelint.py test ..\Source ..\Source\Config.toml
+    python cppnamelint.py test ..\Source ..\Source\cppnamelint.toml
 )
 
 IF EXIST ..\Source\Test\Sample (

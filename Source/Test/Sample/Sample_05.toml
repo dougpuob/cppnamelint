@@ -1,0 +1,69 @@
+[General]
+  ListFileExtName           = ["*.c","*.h","*.cpp"]
+  BoolCheckVariableName     = true
+  BoolCheckFunctionName     = true
+  BoolCheckFileName         = true
+
+[Rule]
+  EnumFileName              = 1 # 1: UpperCamelCase
+  EnumFunctionName          = 1 # 1: UpperCamelCase
+  EnumVariableName          = 4 # 4: Hungarian
+
+[WhiteList]
+  ListFunctionPrefix        = [ "_", "__" , "XXX_"]
+  ListVariablePrefix        = [ "m_" ]
+  BoolAllowedUnderscopeChar = false
+  	
+[HungarianPointerList]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
+
+[HungarianArrayList]
+char 					 = "sz"
+
+[HungarianList]
+# C Primitive Type
+"void"                   = ""
+"size_t"                 = "n"
+"int8_t"                 = "i8"
+"int16_t"                = "i16"
+"int32_t"                = "i32"
+"int64_t"                = "i64"
+"uint8_t"                = "u8"
+"uint16_t"               = "u16"
+"uint32_t"               = "u32"
+"uint64_t"               = "u64"
+"char"                   = "c"
+"_Bool"                  = "b"
+"bool"                   = "b"
+"wchar_t"                = "wc"
+"signed char"            = "sc"
+"unsigned char"          = "uc"
+"short"                  = "s"
+"short int"              = "si"
+"signed short"           = "ss"
+"signed short int"       = "ssi"
+"unsigned short"         = "us"
+"unsigned short int"     = "usi"
+"int"                    = "i"
+"signed"                 = "s"
+"signed int"             = "si"
+"unsigned"               = "u"
+"unsigned int"           = "ui"
+"long"                   = "l"
+"long int"               = "li"
+"signed long"            = "sl"
+"signed long int"        = "sli"
+"unsigned long"          = "ul"
+"unsigned long int"      = "uli"
+"long long"              = "ll"
+"long long int"          = "lli"
+"signed long long"       = "sll"
+"signed long long int"   = "slli"
+"unsigned long long"     = "ull"
+"unsigned long long int" = "ulli"
+"float"                  = "f"
+"double"                 = "d"
+"long double"            = "ld"

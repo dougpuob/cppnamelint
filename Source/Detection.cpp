@@ -10,6 +10,22 @@
 //==---------------------------------------------------------------------------
 namespace namelint {
 
+RuleOfFunction::RuleOfFunction() { this->Reset(); }
+
+void RuleOfFunction::Reset() {
+    this->bAllowedEndWithUnderscopeChar = false;
+    this->IgnorePrefixs.clear();
+    this->IgnoreNames.clear();
+}
+
+RuleOfVariable::RuleOfVariable() { this->Reset(); }
+void RuleOfVariable::Reset() {
+    this->IgnorePrefixs.clear();
+    this->TypeNamingMap.clear();
+    this->PtrNamingMap.clear();
+    this->ArrayNamingMap.clear();
+}
+
 bool Detection::_RemoveHeadingUnderscore(string &Text) {
     bool bStatus = false;
 
@@ -156,9 +172,12 @@ bool Detection::_IsLowerSeperatedString(const string &Name,
 }
 
 bool Detection::_IsHungarianNotationString(
-    const string &TypeStr, const string &NameStr,
-    const vector<string> &IgnorePrefixs, const map<string, string> &MappedList,
-    const map<string, string> &MappedListEx) {
+    const string &TypeStr, const string &NameStr, const bool &bIsPtr,
+    const bool &bIsArray, const vector<string> &IgnorePrefixs,
+    const map<string, string> &TypeNamingMap,
+    const map<string, string> &PtrNamingMap,
+    const map<string, string> &ArrayNamingMap) {
+
     bool bModified = false;
 
     string NewNameStr = NameStr;
@@ -182,20 +201,27 @@ bool Detection::_IsHungarianNotationString(
     }
 
     //
-    // MappedListEx
+    // PtrNamingMap
     //
-    for (map<string, string>::const_iterator Iter = MappedListEx.begin();
-         Iter != MappedListEx.end(); Iter++) {
-        const auto IterType   = Iter->first;
-        const auto IterPrefix = Iter->second;
-        if (IterType == NewTypeStr) {
-            const size_t nPos = NewNameStr.find_first_of(IterPrefix);
-            if (0 == nPos) {
-                const size_t nStrLen = IterPrefix.length();
-                NewNameStr =
-                    NewNameStr.substr(nStrLen, NewNameStr.length() - nStrLen);
-                bModified = true;
-                break;
+    if (bIsPtr) {
+        for (map<string, string>::const_iterator Iter = PtrNamingMap.begin();
+             Iter != PtrNamingMap.end(); Iter++) {
+            const auto IterType   = Iter->first;
+            const auto IterPrefix = Iter->second;
+
+            string IterTypeNoStar = IterType;
+            String::Replace(IterTypeNoStar, "*", "");
+
+            if (IterTypeNoStar == NewTypeStr) {
+                const size_t nPos = NewNameStr.find_first_of(IterPrefix);
+                if (0 == nPos) {
+                    const size_t nStrLen = IterPrefix.length();
+
+                    NewNameStr = NewNameStr.substr(
+                        nStrLen, NewNameStr.length() - nStrLen);
+                    bModified = true;
+                    break;
+                }
             }
         }
     }
@@ -203,19 +229,16 @@ bool Detection::_IsHungarianNotationString(
     //
     // Pointer
     //
-    size_t nPtrCnt = this->_FindHowManyChar(NewTypeStr, '*');
-    if (nPtrCnt > 0) {
+    if (bIsPtr) {
         bModified = true;
-        String::Replace(NewTypeStr, "*", "");
         this->_RemoveHeadingPtrChar(NewNameStr);
     }
 
-    //
-    // MappedList
+    // TypeNamingMap
     //
     bool bMatchedList = false;
-    for (map<string, string>::const_iterator Iter = MappedList.begin();
-         Iter != MappedList.end(); Iter++) {
+    for (map<string, string>::const_iterator Iter = TypeNamingMap.begin();
+         Iter != TypeNamingMap.end(); Iter++) {
         const auto IterType   = Iter->first;
         const auto IterPrefix = Iter->second;
 
@@ -224,15 +247,34 @@ bool Detection::_IsHungarianNotationString(
             const size_t nPos = NewNameStr.find_first_of(IterPrefix);
             if (0 == nPos) {
                 const size_t nStrLen = IterPrefix.length();
+
                 NewNameStr =
                     NewNameStr.substr(nStrLen, NewNameStr.length() - nStrLen);
-
                 bModified = true;
                 break;
             } else if (IterPrefix == "") {
                 // Bypass
                 bModified = true;
                 break;
+            }
+        }
+    }
+
+    if (bIsArray) {
+        for (map<string, string>::const_iterator Iter = ArrayNamingMap.begin();
+             Iter != ArrayNamingMap.end(); Iter++) {
+            const auto IterType   = Iter->first;
+            const auto IterPrefix = Iter->second;
+            if (IterType == NewTypeStr) {
+                const size_t nPos = NewNameStr.find_first_of(IterPrefix);
+                if (0 == nPos) {
+                    const size_t nStrLen = IterPrefix.length();
+
+                    NewNameStr = NewNameStr.substr(
+                        nStrLen, NewNameStr.length() - nStrLen);
+                    bModified = true;
+                    break;
+                }
             }
         }
     }
@@ -301,6 +343,22 @@ bool Detection::_SkipIgnoreFunctions(const string &Name,
 // Public Functions
 //==---------------------------------------------------------------------------
 namespace namelint {
+
+bool Detection::ApplyRuleForFunction(const RuleOfFunction &Rule) {
+    this->m_RuleOfFunction.bAllowedEndWithUnderscopeChar =
+        Rule.bAllowedEndWithUnderscopeChar;
+    this->m_RuleOfFunction.IgnoreNames   = Rule.IgnoreNames;
+    this->m_RuleOfFunction.IgnorePrefixs = Rule.IgnorePrefixs;
+    return true;
+}
+bool Detection::ApplyRuleForVariable(const RuleOfVariable &Rule) {
+    this->m_RuleOfVariable.IgnorePrefixs  = Rule.IgnorePrefixs;
+    this->m_RuleOfVariable.TypeNamingMap  = Rule.TypeNamingMap;
+    this->m_RuleOfVariable.PtrNamingMap   = Rule.PtrNamingMap;
+    this->m_RuleOfVariable.ArrayNamingMap = Rule.ArrayNamingMap;
+    return true;
+}
+
 bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
     bool bStatus = false;
     if (Name.length() == 0) {
@@ -318,23 +376,21 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
         bStatus = this->_IsLowerCamelCaseString(Name, NullIgnorePrefixs);
         break;
 
-    case RULETYPE_LOWER_SEPERATED:
+    case RULETYPE_LOWER_SNAKE:
         bStatus = this->_IsLowerSeperatedString(Name, NullIgnorePrefixs);
         break;
     }
     return bStatus;
 }
 
-bool Detection::CheckFunction(const RULETYPE Rule, const string &Name,
-                              const vector<string> &IgnoreNames,
-                              const vector<string> &IgnorePrefixs,
-                              const bool bAllowedEndWithUnderscopeChar) {
+bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     if (Name.length() == 0) {
         return false;
     }
 
-    if (IgnorePrefixs.size() > 0) {
-        bool bResult = this->_SkipIgnoreFunctions(Name, IgnoreNames);
+    if (this->m_RuleOfFunction.IgnorePrefixs.size() > 0) {
+        bool bResult = this->_SkipIgnoreFunctions(
+            Name, this->m_RuleOfFunction.IgnoreNames);
         if (bResult) {
             return true;
         }
@@ -349,26 +405,27 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name,
     switch (Rule) {
     case RULETYPE_DEFAULT:
     case RULETYPE_UPPER_CAMEL:
-        bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                                bAllowedEndWithUnderscopeChar);
+        bStatus = this->_IsUpperCamelCaseString(
+            Name, this->m_RuleOfFunction.IgnorePrefixs,
+            this->m_RuleOfFunction.bAllowedEndWithUnderscopeChar);
         break;
 
     case RULETYPE_LOWER_CAMEL:
-        bStatus = this->_IsLowerCamelCaseString(Name, IgnorePrefixs);
+        bStatus = this->_IsLowerCamelCaseString(
+            Name, this->m_RuleOfFunction.IgnorePrefixs);
         break;
 
-    case RULETYPE_LOWER_SEPERATED:
-        bStatus = this->_IsLowerSeperatedString(Name, IgnorePrefixs);
+    case RULETYPE_LOWER_SNAKE:
+        bStatus = this->_IsLowerSeperatedString(
+            Name, this->m_RuleOfFunction.IgnorePrefixs);
         break;
     }
     return bStatus;
 }
 
 bool Detection::CheckVariable(const RULETYPE Rule, const string &Type,
-                              const string &Name,
-                              const vector<string> &IgnorePrefixs,
-                              const map<string, string> &MappedList,
-                              const map<string, string> &MappedListEx) {
+                              const string &Name, const bool &bIsPtr,
+                              const bool &bIsArray) {
     if (Name.length() == 0) {
         return false;
     }
@@ -377,20 +434,26 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type,
     switch (Rule) {
     case RULETYPE_DEFAULT:
     case RULETYPE_UPPER_CAMEL:
-        bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs);
+        bStatus = this->_IsUpperCamelCaseString(
+            Name, this->m_RuleOfVariable.IgnorePrefixs);
         break;
 
     case RULETYPE_LOWER_CAMEL:
-        bStatus = this->_IsLowerCamelCaseString(Name, IgnorePrefixs);
+        bStatus = this->_IsLowerCamelCaseString(
+            Name, this->m_RuleOfVariable.IgnorePrefixs);
         break;
 
-    case RULETYPE_LOWER_SEPERATED:
-        bStatus = this->_IsLowerSeperatedString(Name, IgnorePrefixs);
+    case RULETYPE_LOWER_SNAKE:
+        bStatus = this->_IsLowerSeperatedString(
+            Name, this->m_RuleOfVariable.IgnorePrefixs);
         break;
 
     case RULETYPE_HUNGARIAN:
-        bStatus = this->_IsHungarianNotationString(Type, Name, IgnorePrefixs,
-                                                   MappedList, MappedListEx);
+        bStatus = this->_IsHungarianNotationString(
+            Type, Name, bIsPtr, bIsArray, this->m_RuleOfVariable.IgnorePrefixs,
+            this->m_RuleOfVariable.TypeNamingMap,
+            this->m_RuleOfVariable.PtrNamingMap,
+            this->m_RuleOfVariable.ArrayNamingMap);
         break;
     }
     return bStatus;

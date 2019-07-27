@@ -1,3 +1,4 @@
 BasedOnStyle                        : LLVM
 IndentWidth                         : 4
 AlignConsecutiveAssignments         : true
+#ColumnLimit                         : 120

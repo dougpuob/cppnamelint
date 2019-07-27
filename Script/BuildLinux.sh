@@ -18,6 +18,10 @@ fi
 git submodule init
 git submodule update
 
+git submodule init
+git submodule update
+
+
 python3 BuildFlow.py lint-format ../Source
 python3 BuildFlow.py proj-create .. ../Build ${BUILD_TYPE}
 

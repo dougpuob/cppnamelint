@@ -49,12 +49,8 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     namelint::RULETYPE m_FunctionRuleType;
     namelint::RULETYPE m_VariableRuleType;
 
-    map<string, string> m_HungarianList;
-    map<string, string> m_HungarianPointerList;
+    HungarianArray m_HungarianArray;
     vector<string> m_FileExt;
-    vector<string> m_IgnoredFuncName;
-    vector<string> m_IgnoredFuncPrefix;
-    vector<string> m_IgnoredVarPrefix;
 
     bool _IsMainFile(Decl *pDecl);
     bool _PrintPosition(Decl *pDecl);
@@ -65,21 +61,27 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
     bool _ClassifyTypeName(string &TyeName);
 
     ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
+                                    const bool &bIsPtr, const bool &bIsArray,
                                     const string &TargetName,
                                     const string &Expected);
 
     ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
+                                    const bool &bIsPtr, const bool &bIsArray,
                                     const string &TypeName,
                                     const string &TargetName,
                                     const string &Suggestion);
 
     bool _GetFunctionInfo(FunctionDecl *pDecl, string &FuncName);
-    bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName);
-    bool _GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName);
+
+    bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName,
+                       bool &bIsPtr);
+
+    bool _GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
+                     bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
 
   public:
     MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
-                 const namelint::Config *pConfig);
+                 const Config *pConfig);
     // bool VisitStmt(Stmt *pStmt);
     // bool VisitCXXRecordDecl(CXXRecordDecl *D);
     // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);

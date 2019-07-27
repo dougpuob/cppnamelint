@@ -82,8 +82,8 @@ TEST(General, Fake_Rule) {
     EXPECT_EQ(true, bStatus);
 
     Rule *pRule = &config.GetData().m_Rule;
-    EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SEPERATED, pRule->FileName);
-    EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SEPERATED, pRule->FunctionName);
+    EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SNAKE, pRule->FileName);
+    EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SNAKE, pRule->FunctionName);
     EXPECT_EQ(RULETYPE::RULETYPE_HUNGARIAN, pRule->VariableName);
 }
 

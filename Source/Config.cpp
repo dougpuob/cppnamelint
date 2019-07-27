@@ -168,13 +168,22 @@ bool Config::LoadStream(string ConfigContent) {
                 pWhiteListBoolAllowedUnderscopeChar->as<bool>();
         }
 
+        // WhiteList.BoolAllowedArrayAffected
+        const toml::Value *pWhiteListBoolAllowedArrayAffected =
+            ParseRsValue.find("WhiteList.BoolAllowedArrayAffected");
+        if (pWhiteListBoolAllowedArrayAffected &&
+            pWhiteListBoolAllowedArrayAffected->is<bool>()) {
+            this->m_Config.m_WhiteList.bAllowedArrayAffected =
+                pWhiteListBoolAllowedArrayAffected->as<bool>();
+        }
+
         // ==----------------------------------------------------------------------------------
-        // [HungarianPointerList]
+        // [HungarianArrayList]
         // ==----------------------------------------------------------------------------------
-        const toml::Value *pHungarianPointerList =
-            ParseRsValue.find("HungarianPointerList");
-        if (pHungarianPointerList && pHungarianPointerList->is<toml::Table>()) {
-            this->m_Config.m_HungarianPointerList.MappedTable.clear();
+        const toml::Value *pHungarianArrayList =
+            ParseRsValue.find("HungarianArrayList");
+        if (pHungarianArrayList && pHungarianArrayList->is<toml::Table>()) {
+            this->m_Config.m_HungarianList.ArrayNamingMap.clear();
             [](map<string, string> &OutStrMap, toml::Table InputTable) {
                 for (toml::Table::iterator Iter = InputTable.begin();
                      Iter != InputTable.end(); Iter++) {
@@ -182,7 +191,25 @@ bool Config::LoadStream(string ConfigContent) {
                     auto Str2 = Iter->second.as<string>();
                     OutStrMap.insert(std::pair<string, string>(Str1, Str2));
                 }
-            }(this->m_Config.m_HungarianPointerList.MappedTable,
+            }(this->m_Config.m_HungarianList.ArrayNamingMap,
+              pHungarianArrayList->as<toml::Table>());
+        }
+
+        // ==----------------------------------------------------------------------------------
+        // [HungarianPointerList]
+        // ==----------------------------------------------------------------------------------
+        const toml::Value *pHungarianPointerList =
+            ParseRsValue.find("HungarianPointerList");
+        if (pHungarianPointerList && pHungarianPointerList->is<toml::Table>()) {
+            this->m_Config.m_HungarianList.PtrNamingMap.clear();
+            [](map<string, string> &OutStrMap, toml::Table InputTable) {
+                for (toml::Table::iterator Iter = InputTable.begin();
+                     Iter != InputTable.end(); Iter++) {
+                    auto Str1 = Iter->first;
+                    auto Str2 = Iter->second.as<string>();
+                    OutStrMap.insert(std::pair<string, string>(Str1, Str2));
+                }
+            }(this->m_Config.m_HungarianList.PtrNamingMap,
               pHungarianPointerList->as<toml::Table>());
         }
 
@@ -191,7 +218,7 @@ bool Config::LoadStream(string ConfigContent) {
         // ==----------------------------------------------------------------------------------
         const toml::Value *pHungarianList = ParseRsValue.find("HungarianList");
         if (pHungarianList && pHungarianList->is<toml::Table>()) {
-            this->m_Config.m_HungarianList.MappedTable.clear();
+            this->m_Config.m_HungarianList.TypeNamingMap.clear();
             [](map<string, string> &OutStrMap, toml::Table InputTable) {
                 for (toml::Table::iterator Iter = InputTable.begin();
                      Iter != InputTable.end(); Iter++) {
@@ -199,9 +226,11 @@ bool Config::LoadStream(string ConfigContent) {
                     auto Str2 = Iter->second.as<string>();
                     OutStrMap.insert(std::pair<string, string>(Str1, Str2));
                 }
-            }(this->m_Config.m_HungarianList.MappedTable,
+            }(this->m_Config.m_HungarianList.TypeNamingMap,
               pHungarianList->as<toml::Table>());
         }
+
+        std::map<std::string, std::string> PtrNamingMap;
     }
 
     return bStatus;

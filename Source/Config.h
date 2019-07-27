@@ -13,7 +13,7 @@ typedef enum _RULETYPE {
     RULETYPE_DEFAULT = 0,
     RULETYPE_UPPER_CAMEL,
     RULETYPE_LOWER_CAMEL,
-    RULETYPE_LOWER_SEPERATED,
+    RULETYPE_LOWER_SNAKE,
     RULETYPE_HUNGARIAN
 } RULETYPE;
 
@@ -28,40 +28,43 @@ class General {
     General() { FileExtName.clear(); }
 };
 
-class Rule {
-  public:
+struct Rule {
     RULETYPE FileName;
     RULETYPE FunctionName;
     RULETYPE VariableName;
 };
 
-class WhiteList {
-  public:
+struct WhiteList {
     bool bAllowedEndWithUnderscope;
+    bool bAllowedArrayAffected;
 
     vector<string> IgnoredFuncPrefix;
     vector<string> VariablePrefix;
     vector<string> IgnoredFuncName;
 
-  public:
     WhiteList() {
         IgnoredFuncPrefix.clear();
         VariablePrefix.clear();
     }
 };
 
-class HungarianList {
-  public:
-    std::map<std::string, std::string> MappedTable;
+struct HungarianArray {
+    bool ArrayAffected;
+    std::string Prefix;
 };
 
-class ConfigData {
-  public:
+struct HungarianList {
+    std::map<std::string, std::string> TypeNamingMap;
+    std::map<std::string, std::string> PtrNamingMap;
+    std::map<std::string, std::string> ArrayNamingMap;
+};
+
+struct ConfigData {
     Rule m_Rule;
     General m_General;
     WhiteList m_WhiteList;
+    HungarianArray m_HungarianArray;
     HungarianList m_HungarianList;
-    HungarianList m_HungarianPointerList;
 };
 
 class Config {

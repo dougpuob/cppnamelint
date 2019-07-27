@@ -45,7 +45,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo);
 bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath);
 
 int main(int iArgc, char **pszArgv) {
-    const char *szTitle = "cppnamelint utility v0.1.2";
+    const char *szTitle = "cppnamelint utility v0.1.3";
     static const char *szUsage =
         R"(
   Usage:
@@ -111,19 +111,19 @@ int main(int iArgc, char **pszArgv) {
             }
         }
 
-        int iMyArgc     = 3 + pAppCxt->TraceMemo.Dir.Includes.size();
-        char **szMyArgV = new char *[iMyArgc];
-        szMyArgV[0]     = strdup("");
-        szMyArgV[1]     = strdup("*.*");
-        szMyArgV[2]     = strdup("--");
-        size_t nIdx     = 3;
+        int iMyArgc      = 3 + pAppCxt->TraceMemo.Dir.Includes.size();
+        char **pszMyArgV = new char *[iMyArgc];
+        pszMyArgV[0]     = strdup("");
+        pszMyArgV[1]     = strdup("*.*");
+        pszMyArgV[2]     = strdup("--");
+        size_t nIdx      = 3;
         for (auto Item : pAppCxt->TraceMemo.Dir.Includes) {
-            szMyArgV[nIdx] = strdup(Item.c_str());
+            pszMyArgV[nIdx] = strdup(Item.c_str());
             nIdx++;
         }
 
         static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
-        CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)szMyArgV,
+        CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)pszMyArgV,
                                               NameLintOptions);
 
         vector<string> SourcePathList;
@@ -153,9 +153,9 @@ int main(int iArgc, char **pszArgv) {
         }
 
         for (size_t nIdx = 0; nIdx < (size_t)iMyArgc; nIdx++) {
-            free(szMyArgV[nIdx]);
+            free(pszMyArgV[nIdx]);
         }
-        delete[] szMyArgV;
+        delete[] pszMyArgV;
 
     } else if (Arguments["test"].asBool()) {
         testing::InitGoogleTest(&iArgc, (char **)pszArgv);
@@ -196,10 +196,12 @@ bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
     json JsonErrDetail;
     json ErrorDetailList = json::array();
     for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
-        JsonErrDetail["Line"]       = pErrDetail->Pos.nLine;
-        JsonErrDetail["Column"]     = pErrDetail->Pos.nColumn;
-        JsonErrDetail["Type"]       = (int)pErrDetail->Type;
-        JsonErrDetail["TypeName"]   = pErrDetail->TypeName;
+        JsonErrDetail["Line"]     = pErrDetail->Pos.nLine;
+        JsonErrDetail["Column"]   = pErrDetail->Pos.nColumn;
+        JsonErrDetail["Type"]     = (int)pErrDetail->Type;
+        JsonErrDetail["TypeName"] = pErrDetail->TypeName +
+                                    (pErrDetail->bIsPtr ? "*" : "") +
+                                    (pErrDetail->bIsArray ? "[]" : "");
         JsonErrDetail["TargetName"] = pErrDetail->TargetName;
         JsonErrDetail["Expected"]   = pErrDetail->Suggestion;
         ErrorDetailList.push_back(JsonErrDetail);
@@ -242,14 +244,16 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
             cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
                  << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
                  << " Parameter: " << pErrDetail->TargetName << " ("
-                 << pErrDetail->TypeName << ")" << endl;
+                 << pErrDetail->TypeName << (pErrDetail->bIsPtr ? "*" : "")
+                 << ")" << endl;
             break;
 
         case CheckType::CT_Variable:
             cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
                  << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
                  << " Variable : " << pErrDetail->TargetName << " ("
-                 << pErrDetail->TypeName << ")" << endl;
+                 << pErrDetail->TypeName << (pErrDetail->bIsPtr ? "*" : "")
+                 << (pErrDetail->bIsArray ? "[]" : "") << ")" << endl;
             break;
 
         default:
@@ -273,8 +277,8 @@ bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
     json JsonNew;
     json JsonAll = NULL;
     try {
-        std::ifstream ifs(FilePath);
-        JsonAll = json::parse(ifs);
+        std::ifstream IfStm(FilePath);
+        JsonAll = json::parse(IfStm);
     } catch (const std::exception &Exp) {
         cout << Exp.what() << endl;
     }

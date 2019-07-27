@@ -78,8 +78,9 @@ bool MyASTVisitor::_ClassifyTypeName(string &TyeName) {
     String::Replace(TyeName, "struct", "");
     String::Replace(TyeName, "const", "");
     String::Replace(TyeName, "&", "");
-    String::Replace(TyeName, "* ", "*");
-    String::Replace(TyeName, " *", "*");
+    String::Replace(TyeName, "*", "");
+    // String::Replace(TyeName, "* ", "*");
+    // String::Replace(TyeName, " *", "*");
     String::Trim(TyeName);
 
     return bStatus;
@@ -98,7 +99,7 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
 }
 
 bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
-                                 string &VarName) {
+                                 string &VarName, bool &bIsPtr) {
     if (!pDecl) {
         return false;
     }
@@ -117,17 +118,19 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
     QualType QualType = pDecl->getType();
 
     VarName    = pDecl->getName().data();
-    string abc = QualType.getAsString();
+    string Abc = QualType.getAsString();
+    bIsPtr     = QualType->isPointerType();
+
     if (VarType.length() > 0) {
         this->_ClassifyTypeName(VarType);
-        // printf("abc=%s\n", abc.c_str());
     }
 
     return true;
 }
 
-bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType,
-                               string &VarName) {
+bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
+                               bool &bIsPtr, bool &bIsArray,
+                               bool &bIsBuiltinType) {
     if (!pDecl) {
         return false;
     }
@@ -146,32 +149,48 @@ bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType,
                                     *this->m_pSrcMgr, MyLangOpt, &bInvalid);
 
     string RawSrcText = MyStrRef.str();
+    size_t nPos       = RawSrcText.find(",");
+
+    if (std::string::npos != nPos) {
+        // printf("1 nPos=%d    ", nPos);
+        nPos = RawSrcText.find(" ");
+        // printf("2 nPos=%d \n", nPos);
+        RawSrcText = RawSrcText.substr(0, nPos);
+    }
 
     QualType myQualType   = pDecl->getType();
     VarName               = pDecl->getNameAsString();
     const bool bArrayType = myQualType->isArrayType();
+    const bool bPtrType   = myQualType->isPointerType();
 
     if (RawSrcText.length() > 0) {
         this->_ClassifyTypeName(RawSrcText);
     }
-    VarType = RawSrcText;
+
+    VarType        = RawSrcText;
+    bIsArray       = bArrayType;
+    bIsBuiltinType = myQualType->isBuiltinType();
+    bIsPtr         = myQualType->isPointerType();
+
+    // printf("VarType       = %s\n", VarType.c_str());
+    // printf("isBuiltinType = %d\n", myQualType->isBuiltinType());
+    // printf("bArrayType    = %d\n", bArrayType);
 
     return true;
 }
 
-ErrorDetail *MyASTVisitor::_CreateErrorDetail(Decl *pDecl,
-                                              const CheckType &CheckType,
-                                              const string &TargetName,
-                                              const string &Suggestion) {
-    return this->_CreateErrorDetail(pDecl, CheckType, "", TargetName,
-                                    Suggestion);
+ErrorDetail *MyASTVisitor::_CreateErrorDetail(
+    Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
+    const bool &bIsArray, const string &TargetName, const string &Suggestion) {
+
+    return this->_CreateErrorDetail(pDecl, CheckType, bIsPtr, bIsArray, "",
+                                    TargetName, Suggestion);
 }
 
-ErrorDetail *MyASTVisitor::_CreateErrorDetail(Decl *pDecl,
-                                              const CheckType &CheckType,
-                                              const string &TypeName,
-                                              const string &TargetName,
-                                              const string &Suggestion) {
+ErrorDetail *MyASTVisitor::_CreateErrorDetail(
+    Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
+    const bool &bIsArray, const string &TypeName, const string &TargetName,
+    const string &Suggestion) {
     if (!pDecl) {
         return NULL;
     }
@@ -181,14 +200,14 @@ ErrorDetail *MyASTVisitor::_CreateErrorDetail(Decl *pDecl,
     string FileName;
     CodePos Pos = {0};
     if (this->_GetPosition(pDecl, FileName, Pos.nLine, Pos.nColumn)) {
-        pNew =
-            new ErrorDetail(Pos, CheckType, TypeName, TargetName, Suggestion);
+        pNew = new ErrorDetail(Pos, CheckType, bIsPtr, bIsArray, TypeName,
+                               TargetName, Suggestion);
     }
     return pNew;
 }
 
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
-                           const namelint::Config *pConfig) {
+                           const Config *pConfig) {
     this->m_pSrcMgr = pSM;
     this->m_pAstCxt = (ASTContext *)pAstCxt;
 
@@ -203,15 +222,23 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
     this->m_FunctionRuleType = CfgData.m_Rule.FunctionName;
     this->m_VariableRuleType = CfgData.m_Rule.VariableName;
 
-    this->m_IgnoredFuncName   = CfgData.m_WhiteList.IgnoredFuncName;
-    this->m_IgnoredFuncPrefix = CfgData.m_WhiteList.IgnoredFuncPrefix;
-    this->m_IgnoredVarPrefix  = CfgData.m_WhiteList.VariablePrefix;
+    {
+        RuleOfFunction Rule;
+        Rule.bAllowedEndWithUnderscopeChar =
+            CfgData.m_WhiteList.bAllowedEndWithUnderscope;
+        Rule.IgnoreNames   = CfgData.m_WhiteList.IgnoredFuncName;
+        Rule.IgnorePrefixs = CfgData.m_WhiteList.IgnoredFuncPrefix;
+        this->m_Detect.ApplyRuleForFunction(Rule);
+    }
 
-    this->m_HungarianList        = CfgData.m_HungarianList.MappedTable;
-    this->m_HungarianPointerList = CfgData.m_HungarianPointerList.MappedTable;
-
-    this->bAllowedEndWithUnderscope =
-        CfgData.m_WhiteList.bAllowedEndWithUnderscope;
+    {
+        RuleOfVariable Rule;
+        Rule.IgnorePrefixs  = CfgData.m_WhiteList.VariablePrefix;
+        Rule.TypeNamingMap  = CfgData.m_HungarianList.TypeNamingMap;
+        Rule.PtrNamingMap   = CfgData.m_HungarianList.PtrNamingMap;
+        Rule.ArrayNamingMap = CfgData.m_HungarianList.ArrayNamingMap;
+        this->m_Detect.ApplyRuleForVariable(Rule);
+    }
 }
 
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
@@ -226,20 +253,21 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     }
 
     string FuncName;
-    bool bResult = false;
-    bool bStatus = this->_GetFunctionInfo(pDecl, FuncName);
+    bool bResult  = false;
+    bool bIsPtr   = false;
+    bool bIsArray = false;
+    bool bStatus  = this->_GetFunctionInfo(pDecl, FuncName);
     if (bStatus) {
-        bResult = this->m_Detect.CheckFunction(
-            this->m_FunctionRuleType, FuncName, this->m_IgnoredFuncName,
-            this->m_IgnoredFuncPrefix, this->bAllowedEndWithUnderscope);
+        bResult =
+            this->m_Detect.CheckFunction(this->m_FunctionRuleType, FuncName);
 
         pAppCxt->TraceMemo.Checked.nFunction++;
         if (!bResult) {
             pAppCxt->TraceMemo.Error.nFunction++;
 
             pAppCxt->TraceMemo.ErrorDetailList.push_back(
-                this->_CreateErrorDetail(pDecl, CheckType::CT_Function,
-                                         FuncName, ""));
+                this->_CreateErrorDetail(pDecl, CheckType::CT_Function, bIsPtr,
+                                         bIsArray, FuncName, ""));
         }
 
         const clang::ArrayRef<clang::ParmVarDecl *> MyRefArray =
@@ -247,23 +275,27 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
         for (size_t nIdx = 0; nIdx < MyRefArray.size(); nIdx++) {
             string VarType;
             string VarName;
+
+            bool bIsPtr   = false;
+            bool bIsArray = false;
+
             ParmVarDecl *pParmVarDecl = MyRefArray[nIdx];
 
-            bStatus = this->_GetParmsInfo(pParmVarDecl, VarType, VarName);
+            bStatus =
+                this->_GetParmsInfo(pParmVarDecl, VarType, VarName, bIsPtr);
             if (bStatus) {
-                bResult = this->m_Detect.CheckVariable(
-                    this->m_VariableRuleType, VarType, VarName,
-                    this->m_IgnoredVarPrefix, this->m_HungarianList,
-                    this->m_HungarianPointerList);
+                bResult = this->m_Detect.CheckVariable(this->m_VariableRuleType,
+                                                       VarType, VarName, bIsPtr,
+                                                       bIsArray);
 
                 pAppCxt->TraceMemo.Checked.nParameter++;
                 if (!bResult) {
                     pAppCxt->TraceMemo.Error.nParameter++;
 
                     pAppCxt->TraceMemo.ErrorDetailList.push_back(
-                        this->_CreateErrorDetail(pParmVarDecl,
-                                                 CheckType::CT_Parameter,
-                                                 VarType, VarName, ""));
+                        this->_CreateErrorDetail(
+                            pParmVarDecl, CheckType::CT_Parameter, bIsPtr,
+                            bIsArray, VarType, VarName, ""));
                 }
             }
         }
@@ -296,20 +328,23 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
     string VarType;
     string VarName;
 
-    bool bStauts = this->_GetVarInfo(pDecl, VarType, VarName);
+    bool bIsPtr         = false;
+    bool bIsArray       = false;
+    bool bIsBuiltinType = false;
+
+    bool bStauts = this->_GetVarInfo(pDecl, VarType, VarName, bIsPtr, bIsArray,
+                                     bIsBuiltinType);
     if (bStauts) {
         bool bResult = this->m_Detect.CheckVariable(
-            this->m_VariableRuleType, VarType, VarName,
-            this->m_IgnoredVarPrefix, this->m_HungarianList,
-            this->m_HungarianPointerList);
+            this->m_VariableRuleType, VarType, VarName, bIsPtr, bIsArray);
 
         pAppCxt->TraceMemo.Checked.nVariable++;
         if (!bResult) {
             pAppCxt->TraceMemo.Error.nParameter++;
 
             pAppCxt->TraceMemo.ErrorDetailList.push_back(
-                this->_CreateErrorDetail(pDecl, CheckType::CT_Variable, VarType,
-                                         VarName, ""));
+                this->_CreateErrorDetail(pDecl, CheckType::CT_Variable, bIsPtr,
+                                         bIsArray, VarType, VarName, ""));
         }
     }
 
