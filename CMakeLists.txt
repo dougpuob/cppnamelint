@@ -88,6 +88,8 @@ message("INC_PATH_5                 : Module/googletest.git/googletest/include" 
 
 
 ###############################################################################
+set(BUILD_TESTING "OFF")
+
 add_subdirectory(Module/docopt.cpp)
 add_subdirectory(Module/googletest.git)
 add_subdirectory(Module/nlohmannjson.git)
