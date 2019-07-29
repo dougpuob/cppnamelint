@@ -60,10 +60,9 @@ int main(int iArgc, char **pszArgv) {
     --log=<file>     [default: cppnamelint.log]
   )";
 
-    map<string, docopt::value> Arguments =
-        docopt::docopt(szUsage, {pszArgv + 1, pszArgv + iArgc},
-                       false, // show help if requested
-                       "");   // version string
+    map<string, docopt::value> Arguments = docopt::docopt(szUsage, {pszArgv + 1, pszArgv + iArgc},
+                                                          false, // show help if requested
+                                                          "");   // version string
 
     int iReturn = 0;
 
@@ -72,8 +71,7 @@ int main(int iArgc, char **pszArgv) {
 
     cout << szTitle << endl;
     cout << "---------------------------------------------------" << endl;
-    if (Arguments["check"].asBool() &&
-        Arguments["<file>"].asString().length() > 0) {
+    if (Arguments["check"].asBool() && Arguments["<file>"].asString().length() > 0) {
         APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
         namelint::Config Config;
@@ -83,8 +81,7 @@ int main(int iArgc, char **pszArgv) {
         if (bResult) {
             bResult = Config.LoadFile(ConfigFilePath);
             if (!bResult) {
-                cout << "Error: Failed to load config file (format wrong)"
-                     << endl;
+                cout << "Error: Failed to load config file (format wrong)" << endl;
             }
         } else {
             cout << "Error: Failed to find a config file" << endl;
@@ -100,8 +97,7 @@ int main(int iArgc, char **pszArgv) {
 
         if (Arguments["--includes"]) {
             vector<string> IncludeDirs;
-            size_t nCount = String::Split(Arguments["--includes"].asString(),
-                                          IncludeDirs, ',');
+            size_t nCount = String::Split(Arguments["--includes"].asString(), IncludeDirs, ',');
             for (size_t nIdx = 0; nIdx < nCount; nIdx++) {
                 string FullPath;
                 if (Path::NormPath(IncludeDirs[nIdx].c_str(), FullPath)) {
@@ -123,8 +119,7 @@ int main(int iArgc, char **pszArgv) {
         }
 
         static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
-        CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)pszMyArgV,
-                                              NameLintOptions);
+        CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)pszMyArgV, NameLintOptions);
 
         vector<string> SourcePathList;
         pAppCxt->TraceMemo.File.Source = Arguments["<file>"].asString();
@@ -141,8 +136,7 @@ int main(int iArgc, char **pszArgv) {
             /*(clang::DiagnosticConsumer*)*/ new IgnoringDiagConsumer());
 
         MyFactory MyFactory;
-        std::unique_ptr<FrontendActionFactory> Factory =
-            newFrontendActionFactory(&MyFactory);
+        std::unique_ptr<FrontendActionFactory> Factory = newFrontendActionFactory(&MyFactory);
 
         if (0 == Tool.run(Factory.get())) {
             iReturn = GetTotalError(GetAppCxt()->TraceMemo);
@@ -171,13 +165,11 @@ int main(int iArgc, char **pszArgv) {
 }
 
 size_t GetTotalError(const TraceMemo &TraceMemo) {
-    return TraceMemo.Error.nParameter + TraceMemo.Error.nFunction +
-           TraceMemo.Error.nVariable;
+    return TraceMemo.Error.nParameter + TraceMemo.Error.nFunction + TraceMemo.Error.nVariable;
 }
 
 size_t GetTotalChecked(const TraceMemo &TraceMemo) {
-    return TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction +
-           TraceMemo.Checked.nVariable;
+    return TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction + TraceMemo.Checked.nVariable;
 }
 
 bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
@@ -196,12 +188,11 @@ bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
     json JsonErrDetail;
     json ErrorDetailList = json::array();
     for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
-        JsonErrDetail["Line"]     = pErrDetail->Pos.nLine;
-        JsonErrDetail["Column"]   = pErrDetail->Pos.nColumn;
-        JsonErrDetail["Type"]     = (int)pErrDetail->Type;
-        JsonErrDetail["TypeName"] = pErrDetail->TypeName +
-                                    (pErrDetail->bIsPtr ? "*" : "") +
-                                    (pErrDetail->bIsArray ? "[]" : "");
+        JsonErrDetail["Line"]   = pErrDetail->Pos.nLine;
+        JsonErrDetail["Column"] = pErrDetail->Pos.nColumn;
+        JsonErrDetail["Type"]   = (int)pErrDetail->Type;
+        JsonErrDetail["TypeName"] =
+            pErrDetail->TypeName + (pErrDetail->bIsPtr ? "*" : "") + (pErrDetail->bIsArray ? "[]" : "");
         JsonErrDetail["TargetName"] = pErrDetail->TargetName;
         JsonErrDetail["Expected"]   = pErrDetail->Suggestion;
         ErrorDetailList.push_back(JsonErrDetail);
@@ -219,41 +210,33 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
     cout << " File    = " << TraceMemo.File.Source << endl;
     cout << " Config  = " << TraceMemo.File.Config << endl;
     for (size_t nIdx = 0; nIdx < TraceMemo.Dir.Includes.size(); nIdx++) {
-        printf(" Inc[%2d] = %s\n", nIdx + 1,
-               TraceMemo.Dir.Includes[nIdx].c_str());
+        printf(" Inc[%2d] = %s\n", nIdx + 1, TraceMemo.Dir.Includes[nIdx].c_str());
     }
 
-    printf(" Checked = %5d  [Func:%3d | Param:%3d | Var:%3d]\n",
-           GetTotalChecked(TraceMemo), TraceMemo.Checked.nFunction,
-           TraceMemo.Checked.nParameter, TraceMemo.Checked.nVariable);
+    printf(" Checked = %5d  [Func:%3d | Param:%3d | Var:%3d]\n", GetTotalChecked(TraceMemo),
+           TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter, TraceMemo.Checked.nVariable);
 
-    printf(" Error   = %5d  [Func:%3d | Param:%3d | Var:%3d]\n",
-           GetTotalError(TraceMemo), TraceMemo.Error.nFunction,
+    printf(" Error   = %5d  [Func:%3d | Param:%3d | Var:%3d]\n", GetTotalError(TraceMemo), TraceMemo.Error.nFunction,
            TraceMemo.Error.nParameter, TraceMemo.Error.nVariable);
 
     cout << "---------------------------------------------------" << endl;
     for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
         switch (pErrDetail->Type) {
         case CheckType::CT_Function:
-            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
-                 << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
-                 << " Function: " << pErrDetail->TargetName << endl;
+            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", " << pErrDetail->Pos.nColumn << ">" << std::left
+                 << std::setw(15) << " Function: " << pErrDetail->TargetName << endl;
             break;
 
         case CheckType::CT_Parameter:
-            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
-                 << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
-                 << " Parameter: " << pErrDetail->TargetName << " ("
-                 << pErrDetail->TypeName << (pErrDetail->bIsPtr ? "*" : "")
-                 << ")" << endl;
+            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", " << pErrDetail->Pos.nColumn << ">" << std::left
+                 << std::setw(15) << " Parameter: " << pErrDetail->TargetName << " (" << pErrDetail->TypeName
+                 << (pErrDetail->bIsPtr ? "*" : "") << ")" << endl;
             break;
 
         case CheckType::CT_Variable:
-            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
-                 << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
-                 << " Variable : " << pErrDetail->TargetName << " ("
-                 << pErrDetail->TypeName << (pErrDetail->bIsPtr ? "*" : "")
-                 << (pErrDetail->bIsArray ? "[]" : "") << ")" << endl;
+            cout << std::left << "  <" << pErrDetail->Pos.nLine << ", " << pErrDetail->Pos.nColumn << ">" << std::left
+                 << std::setw(15) << " Variable : " << pErrDetail->TargetName << " (" << pErrDetail->TypeName
+                 << (pErrDetail->bIsPtr ? "*" : "") << (pErrDetail->bIsArray ? "[]" : "") << ")" << endl;
             break;
 
         default:

@@ -16,13 +16,7 @@ class CodePos {
     size_t nColumn;
 };
 
-typedef enum _CheckType {
-    CT_None,
-    CT_Function  = 1,
-    CT_Parameter = 2,
-    CT_Variable  = 3,
-    CT_Max
-} CheckType;
+typedef enum _CheckType { CT_None, CT_Function = 1, CT_Parameter = 2, CT_Variable = 3, CT_Max } CheckType;
 
 class ErrorDetail {
   public:
@@ -34,8 +28,11 @@ class ErrorDetail {
     string TypeName;
     string Suggestion;
 
-    ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr,
-                const bool &bIsArray, const string &TypeName,
+    ErrorDetail(const CodePos &Pos,
+                const CheckType &Type,
+                const bool &bIsPtr,
+                const bool &bIsArray,
+                const string &TypeName,
                 const string &Suggestion) {
         this->bIsPtr     = bIsPtr;
         this->bIsArray   = bIsArray;
@@ -45,9 +42,13 @@ class ErrorDetail {
         this->Suggestion = Suggestion;
     }
 
-    ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr,
-                const bool &bIsArray, const string &TypeName,
-                const string &TargetName, const string &Suggestion) {
+    ErrorDetail(const CodePos &Pos,
+                const CheckType &Type,
+                const bool &bIsPtr,
+                const bool &bIsArray,
+                const string &TypeName,
+                const string &TargetName,
+                const string &Suggestion) {
         this->bIsPtr     = bIsPtr;
         this->bIsArray   = bIsArray;
         this->Pos        = Pos;

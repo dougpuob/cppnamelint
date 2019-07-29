@@ -1,46 +1,52 @@
-[General]
-ListFileExtName         = ["*.c","*.h","*.cpp"]
-BoolCheckVariableName   = true
-BoolCheckFunctionName   = true
-BoolCheckFileName       = false
+[General.Options]
+Version                 = 0.2
+FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckVariableName       = true
+CheckFunctionName       = true
+CheckFileName           = false
+AllowedUnderscopeChar   = false
+AllowedArrayAffected    = false
 
 
-[Rule]
-EnumFileName            = 0 # 0: Default (UpperCamel)
+[General.Rules]
+FileName                = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 3: lower-seperated
 
-EnumFunctionName        = 0 # 0: Default (UpperCamel)
+FunctionName            = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower-seperated
 
-EnumVariableName        = 4 # 0: Default (UpperCamel)
+VariableName            = 4 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower-seperated
                             # 4: Hungarian
-[WhiteList]
-BoolAllowedUnderscopeChar    = false
-BoolAllowedArrayAffected     = false
 
-ListFunctionPrefix           = [ "_",
-                                 "__" ]
-ListVariablePrefix           = [ "m_" ]
+[General.IgnoredList]
+FunctionPrefix          = [ "_",
+                            "__" ]
+VariablePrefix          = [ "m_" ]
 
-ListIgnoreFunctions          = ["main",
-                                "newASTConsumer"]
+FunctionName            = ["main",
+                           "newASTConsumer"]
 
-[HungarianPointerList]
+
+[Hungarian.Others]
+PreferUpperCamelIfMissed = true
+
+[Hungarian.PointerList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
 
-[HungarianArrayList]
+[Hungarian.ArrayList]
 char 					 = "sz"
 
-[HungarianList]
+
+[Hungarian.WordList]
 # C Primitive Type
 "void"                   = ""
 "size_t"                 = "n"
@@ -95,3 +101,4 @@ char 					 = "sz"
 "HANDLE"                 = "h"
 "BOOLEAN"                = "b"
 "LONGLONG"               = "ll"
+

@@ -10,9 +10,7 @@ using namespace std;
 
 bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
     string FileName;
-    for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(),
-                                e    = MyDeclGroupRef.end();
-         Iter != e; ++Iter) {
+    for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(), e = MyDeclGroupRef.end(); Iter != e; ++Iter) {
         Decl *pDecl = *Iter;
 
         const ASTContext &ASTCxt = pDecl->getASTContext();
@@ -23,8 +21,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
         }
 
         if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {
-            namelint::Config *pCfg =
-                (namelint::Config *)GetAppCxt()->pTomlConfig;
+            namelint::Config *pCfg = (namelint::Config *)GetAppCxt()->pTomlConfig;
 
             const SourceManager &SrcMgr = ASTCxt.getSourceManager();
             MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, pCfg);

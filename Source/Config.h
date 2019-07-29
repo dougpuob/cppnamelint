@@ -14,69 +14,65 @@ typedef enum _RULETYPE {
     RULETYPE_UPPER_CAMEL,
     RULETYPE_LOWER_CAMEL,
     RULETYPE_LOWER_SNAKE,
-    RULETYPE_HUNGARIAN
+    RULETYPE_HUNGARIAN,
+    RULETYPE_NA,
 } RULETYPE;
 
-class General {
-  public:
-    vector<string> FileExtName;
+struct GeneralOptions {
+    vector<string> FileExtNameList;
     bool bCheckVariableName;
     bool bCheckFunctionName;
     bool bCheckFileName;
-
-  public:
-    General() { FileExtName.clear(); }
+    bool bAllowedEndWithUnderscope;
+    bool bAllowedArrayAffected;
 };
 
-struct Rule {
+struct GeneralRules {
     RULETYPE FileName;
     RULETYPE FunctionName;
     RULETYPE VariableName;
 };
 
-struct WhiteList {
-    bool bAllowedEndWithUnderscope;
-    bool bAllowedArrayAffected;
-
-    vector<string> IgnoredFuncPrefix;
+struct GeneralIgnoredList {
+    vector<string> FunctionPrefix;
     vector<string> VariablePrefix;
-    vector<string> IgnoredFuncName;
-
-    WhiteList() {
-        IgnoredFuncPrefix.clear();
-        VariablePrefix.clear();
-    }
+    vector<string> FunctionName;
 };
 
-struct HungarianArray {
-    bool ArrayAffected;
-    std::string Prefix;
+struct General {
+    GeneralRules Rules;
+    GeneralOptions Options;
+    GeneralIgnoredList IgnoredList;
 };
 
-struct HungarianList {
-    std::map<std::string, std::string> TypeNamingMap;
-    std::map<std::string, std::string> PtrNamingMap;
-    std::map<std::string, std::string> ArrayNamingMap;
+struct HungarianOthers {
+    bool PreferUpperCamelIfMissed;
+};
+
+typedef std::map<std::string, std::string> HungarianMap;
+
+struct Hungarian {
+    HungarianOthers Others;
+    HungarianMap PointerList;
+    HungarianMap ArrayList;
+    HungarianMap WordList;
 };
 
 struct ConfigData {
-    Rule m_Rule;
-    General m_General;
-    WhiteList m_WhiteList;
-    HungarianArray m_HungarianArray;
-    HungarianList m_HungarianList;
+    General General;
+    Hungarian Hungarian;
 };
 
 class Config {
   private:
-    ConfigData m_Config;
+    shared_ptr<ConfigData> m_pConfig = std::make_shared<ConfigData>();
 
   public:
     Config();
     bool LoadFile(string ConfigFilePath);
     bool LoadStream(string ConfigContent);
     bool Save(string DstPath);
-    ConfigData &GetData() const;
+    shared_ptr<ConfigData> GetData() const;
 };
 } // namespace namelint
 

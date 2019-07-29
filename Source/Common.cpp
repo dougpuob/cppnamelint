@@ -64,8 +64,7 @@ void PadTo(string &Source, size_t nCount, char cChar) {
 
 bool IsLower(const string &Source) {
     bool bStatus = true;
-    for (std::string::const_iterator Iter = Source.begin();
-         Iter != Source.end(); Iter++) {
+    for (std::string::const_iterator Iter = Source.begin(); Iter != Source.end(); Iter++) {
         if (isupper(*Iter)) {
             bStatus = false;
             break;
@@ -108,8 +107,7 @@ size_t Split(const std::string &txt, std::vector<std::string> &strs, char ch) {
     }
 
     // Add the last one
-    strs.push_back(
-        txt.substr(initialPos, std::min(pos, txt.size()) - initialPos + 1));
+    strs.push_back(txt.substr(initialPos, std::min(pos, txt.size()) - initialPos + 1));
 
     return strs.size();
 }

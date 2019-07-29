@@ -1,26 +1,52 @@
-﻿[General]
-  ListFileExtName           = ["*.c","*.h","*.cpp"]
-  BoolCheckVariableName     = true
-  BoolCheckFunctionName     = true
-  BoolCheckFileName         = true
+﻿[General.Options]
+Version                 = 0.2
+FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckVariableName       = true
+CheckFunctionName       = true
+CheckFileName           = false
+AllowedUnderscopeChar   = false
+AllowedArrayAffected    = false
 
-[Rule]
-  EnumFileName              = 1 # 1: UpperCamelCase
-  EnumFunctionName          = 1 # 1: UpperCamelCase
-  EnumVariableName          = 4 # 4: Hungarian
 
-[WhiteList]
-  ListFunctionPrefix        = [ "_", "__" , "XXX_"]
-  ListVariablePrefix        = [ "m_" ]
-  BoolAllowedUnderscopeChar = false
+[General.Rules]
+FileName                = 1 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 3: lower-seperated
 
-[HungarianListEx]
+FunctionName            = 1 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower-seperated
+
+VariableName            = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower-seperated
+                            # 4: Hungarian
+
+[General.IgnoredList]
+FunctionPrefix          = [ "_",
+                            "__" ]
+VariablePrefix          = [ "m_" ]
+
+FunctionName            = ["main",
+                           "newASTConsumer"]
+
+
+[Hungarian.Others]
+PreferUpperCamelIfMissed = true
+
+[Hungarian.PointerList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
 
-[HungarianList]
+[Hungarian.ArrayList]
+char 					 = "sz"
+
+
+[Hungarian.WordList]
 # C Primitive Type
 "void"                   = ""
 "size_t"                 = "n"
@@ -75,3 +101,4 @@
 "HANDLE"                 = "h"
 "BOOLEAN"                = "b"
 "LONGLONG"               = "ll"
+
