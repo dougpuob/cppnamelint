@@ -4,7 +4,7 @@ FileExtNameList         = ["*.c","*.h","*.cpp"]
 CheckVariableName       = true
 CheckFunctionName       = true
 CheckFileName           = false
-AllowedUnderscopeChar   = false
+AllowedUnderscopeChar   = true
 AllowedArrayAffected    = false
 
 
@@ -26,7 +26,8 @@ VariableName            = 4 # 0: Default (UpperCamel)
 
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
-                            "__" ]
+                            "__",
+			    "XXX_"]
 VariablePrefix          = [ "m_" ]
 
 FunctionName            = ["main",

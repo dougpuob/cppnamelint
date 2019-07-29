@@ -170,6 +170,7 @@ bool Detection::_IsLowerSeperatedString(const string &Name, vector<string> Ignor
 
 bool Detection::_IsHungarianNotationString(const string &TypeStr,
                                            const string &NameStr,
+                                           const bool &bPreferUpperCamel,
                                            const bool &bIsPtr,
                                            const bool &bIsArray,
                                            const vector<string> &IgnorePrefixs,
@@ -188,7 +189,7 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr,
     // Prefix
     //
     for (vector<string>::const_iterator Iter = IgnorePrefixs.begin(); Iter != IgnorePrefixs.end(); Iter++) {
-        const size_t nPos = NewNameStr.find_first_of(*Iter);
+        const size_t nPos = NewNameStr.find(*Iter);
         if (0 == nPos) {
             const size_t nStrLen = Iter->length();
             NewNameStr           = NewNameStr.substr(nStrLen, NewNameStr.length() - nStrLen);
@@ -274,11 +275,16 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr,
         this->_RemoveHeadingUnderscore(NewNameStr);
     }
 
-    bool bIsUpperCamel = this->_IsUpperCamelCaseString(NewNameStr, IgnorePrefixs);
+    bool bIsPreferCamel = false;
+    if (bPreferUpperCamel || bModified) {
+        bIsPreferCamel = this->_IsUpperCamelCaseString(NewNameStr, IgnorePrefixs);
+    } else {
+        bIsPreferCamel = this->_IsLowerCamelCaseString(NewNameStr, IgnorePrefixs);
+    }
 
-    bool bStatus = (bMatchedList && bModified && bIsUpperCamel) ||  // Hungarian notation
-                   (!bMatchedList && bModified && bIsUpperCamel) || // Pointer of object
-                   (!bMatchedList && !bModified && bIsUpperCamel);  // Object
+    bool bStatus = (bMatchedList && bModified && bIsPreferCamel) ||  // Hungarian notation
+                   (!bMatchedList && bModified && bIsPreferCamel) || // Pointer of object
+                   (!bMatchedList && !bModified && bIsPreferCamel);  // Object
     return bStatus;
 }
 
@@ -404,8 +410,12 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     return bStatus;
 }
 
-bool Detection::CheckVariable(
-    const RULETYPE Rule, const string &Type, const string &Name, const bool &bIsPtr, const bool &bIsArray) {
+bool Detection::CheckVariable(const RULETYPE Rule,
+                              const string &Type,
+                              const string &Name,
+                              const bool &bPreferUpperCamel,
+                              const bool &bIsPtr,
+                              const bool &bIsArray) {
     if (Name.length() == 0) {
         return false;
     }
@@ -427,8 +437,9 @@ bool Detection::CheckVariable(
 
     case RULETYPE_HUNGARIAN:
         bStatus = this->_IsHungarianNotationString(
-            Type, Name, bIsPtr, bIsArray, this->m_RuleOfVariable.IgnorePrefixs, this->m_RuleOfVariable.TypeNamingMap,
-            this->m_RuleOfVariable.PtrNamingMap, this->m_RuleOfVariable.ArrayNamingMap);
+            Type, Name, bPreferUpperCamel, bIsPtr, bIsArray, this->m_RuleOfVariable.IgnorePrefixs,
+            this->m_RuleOfVariable.TypeNamingMap, this->m_RuleOfVariable.PtrNamingMap,
+            this->m_RuleOfVariable.ArrayNamingMap);
         break;
     }
     return bStatus;

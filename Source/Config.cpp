@@ -50,7 +50,6 @@ bool Config::LoadStream(string ConfigContent) {
         // ==----------------------------------------------------------------------------------
         // General.Options.FileExtNameList
         const toml::Value *pFileExtNameList = ParseRsValue.find("General.Options.FileExtNameList");
-        assert(pFileExtNameList);
         if (pFileExtNameList && pFileExtNameList->is<toml::Array>()) {
             this->m_pConfig->General.Options.FileExtNameList.clear();
             [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
@@ -62,35 +61,30 @@ bool Config::LoadStream(string ConfigContent) {
 
         // General.Options.CheckVariableName
         const toml::Value *pChkVarName = ParseRsValue.find("General.Options.CheckVariableName");
-        assert(pChkVarName);
         if (pChkVarName && pChkVarName->is<bool>()) {
             this->m_pConfig->General.Options.bCheckVariableName = pChkVarName->as<bool>();
         }
 
         // General.Options.CheckFunctionName
         const toml::Value *pChkFuncName = ParseRsValue.find("General.Options.CheckFunctionName");
-        assert(pChkFuncName);
         if (pChkFuncName && pChkFuncName->is<bool>()) {
             this->m_pConfig->General.Options.bCheckFunctionName = pChkFuncName->as<bool>();
         }
 
         // General.Options.CheckFileName
         const toml::Value *pChkFileName = ParseRsValue.find("General.Options.CheckFileName");
-        assert(pChkFileName);
         if (pChkFileName && pChkFileName->is<bool>()) {
             this->m_pConfig->General.Options.bCheckFileName = pChkFileName->as<bool>();
         }
 
         // General.Options.AllowedUnderscopeChar
         const toml::Value *pAllowUnderscopeChar = ParseRsValue.find("General.Options.AllowedUnderscopeChar");
-        assert(pAllowUnderscopeChar);
         if (pAllowUnderscopeChar && pAllowUnderscopeChar->is<bool>()) {
             this->m_pConfig->General.Options.bAllowedEndWithUnderscope = pAllowUnderscopeChar->as<bool>();
         }
 
         // General.Options.AllowedArrayAffected
         const toml::Value *pAllowArrayAffected = ParseRsValue.find(" General.Options.AllowedArrayAffected");
-        assert(pAllowArrayAffected);
         if (pAllowArrayAffected && pAllowArrayAffected->is<bool>()) {
             this->m_pConfig->General.Options.bAllowedArrayAffected = pAllowArrayAffected->as<bool>();
         }
@@ -100,21 +94,18 @@ bool Config::LoadStream(string ConfigContent) {
         // ==----------------------------------------------------------------------------------
         // General.Rules.FileName
         const toml::Value *pRuleFileName = ParseRsValue.find("General.Rules.FileName");
-        assert(pRuleFileName);
         if (pRuleFileName && pRuleFileName->is<int>()) {
             this->m_pConfig->General.Rules.FileName = (RULETYPE)pRuleFileName->as<int>();
         }
 
         // General.Rules.FunctionName
         const toml::Value *pRuleFunctionName = ParseRsValue.find("General.Rules.FunctionName");
-        assert(pRuleFunctionName);
         if (pRuleFunctionName && pRuleFunctionName->is<int>()) {
             this->m_pConfig->General.Rules.FunctionName = (RULETYPE)pRuleFunctionName->as<int>();
         }
 
         // General.Rules.VariableName
         const toml::Value *pRuleVariableName = ParseRsValue.find("General.Rules.VariableName");
-        assert(pRuleVariableName);
         if (pRuleVariableName && pRuleVariableName->is<int>()) {
             this->m_pConfig->General.Rules.VariableName = (RULETYPE)pRuleVariableName->as<int>();
         }
@@ -124,7 +115,6 @@ bool Config::LoadStream(string ConfigContent) {
         // ==----------------------------------------------------------------------------------
         // General.IgnoredList.FunctionPrefix
         const toml::Value *pIgnoredFuncPrefix = ParseRsValue.find("General.IgnoredList.FunctionPrefix");
-        assert(pIgnoredFuncPrefix);
         if (pIgnoredFuncPrefix && pIgnoredFuncPrefix->is<toml::Array>()) {
             this->m_pConfig->General.IgnoredList.FunctionPrefix.clear();
             [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
@@ -136,7 +126,6 @@ bool Config::LoadStream(string ConfigContent) {
 
         // General.IgnoredList.VariablePrefix
         const toml::Value *pIgnoredVarPrefix = ParseRsValue.find("General.IgnoredList.VariablePrefix");
-        assert(pIgnoredVarPrefix);
         if (pIgnoredVarPrefix && pIgnoredVarPrefix->is<toml::Array>()) {
             this->m_pConfig->General.IgnoredList.VariablePrefix.clear();
             [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
@@ -148,7 +137,6 @@ bool Config::LoadStream(string ConfigContent) {
 
         // General.IgnoredList.FunctionName
         const toml::Value *pIgnoredFuncName = ParseRsValue.find("General.IgnoredList.FunctionName");
-        assert(pIgnoredFuncName);
         if (pIgnoredFuncName && pIgnoredFuncName->is<toml::Array>()) {
             this->m_pConfig->General.IgnoredList.FunctionName.clear();
             [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
@@ -162,18 +150,15 @@ bool Config::LoadStream(string ConfigContent) {
         // [Hungarian.Others]
         // ==----------------------------------------------------------------------------------
         // Hungarian.Others.PreferUpperCamelIfMissed
-        const toml::Value *pHungarianPreferUpperCamelIfMissed =
-            ParseRsValue.find("Hungarian.Others.PreferUpperCamelIfMissed");
-        assert(pHungarianPreferUpperCamelIfMissed);
-        if (pRuleVariableName && pRuleVariableName->is<int>()) {
-            this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed = (RULETYPE)pRuleVariableName->as<int>();
+        const toml::Value *pHungarianPreferUpperCamel = ParseRsValue.find("Hungarian.Others.PreferUpperCamelIfMissed");
+        if (pHungarianPreferUpperCamel && pHungarianPreferUpperCamel->is<bool>()) {
+            this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed = pHungarianPreferUpperCamel->as<bool>();
         }
 
         // ==----------------------------------------------------------------------------------
         // [Hungarian.ArrayList]
         // ==----------------------------------------------------------------------------------
         const toml::Value *pHungarianArrayList = ParseRsValue.find("Hungarian.ArrayList");
-        assert(pHungarianArrayList);
         if (pHungarianArrayList && pHungarianArrayList->is<toml::Table>()) {
             this->m_pConfig->Hungarian.ArrayList.clear();
             [](map<string, string> &OutStrMap, toml::Table InputTable) {
@@ -189,7 +174,6 @@ bool Config::LoadStream(string ConfigContent) {
         // [Hungarian.PointerList]
         // ==----------------------------------------------------------------------------------
         const toml::Value *pHungarianPointerList = ParseRsValue.find("Hungarian.PointerList");
-        assert(pHungarianPointerList);
         if (pHungarianPointerList && pHungarianPointerList->is<toml::Table>()) {
             this->m_pConfig->Hungarian.PointerList.clear();
             [](map<string, string> &OutStrMap, toml::Table InputTable) {
@@ -205,7 +189,6 @@ bool Config::LoadStream(string ConfigContent) {
         // [Hungarian.WordList]
         // ==----------------------------------------------------------------------------------
         const toml::Value *pHungarianWordList = ParseRsValue.find("Hungarian.WordList");
-        assert(pHungarianWordList);
         if (pHungarianWordList && pHungarianWordList->is<toml::Table>()) {
             this->m_pConfig->Hungarian.WordList.clear();
             [](map<string, string> &OutStrMap, toml::Table InputTable) {

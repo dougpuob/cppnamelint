@@ -1,0 +1,104 @@
+[General.Options]
+Version                 = 0.2
+FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckVariableName       = true
+CheckFunctionName       = true
+CheckFileName           = false
+AllowedUnderscopeChar   = false
+AllowedArrayAffected    = false
+
+
+[General.Rules]
+FileName                = 1 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 3: lower-seperated
+
+FunctionName            = 1 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower-seperated
+
+VariableName            = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower-seperated
+                            # 4: Hungarian
+
+[General.IgnoredList]
+FunctionPrefix          = [ "_",
+                            "__" ]
+VariablePrefix          = [ "m_" ]
+
+FunctionName            = ["main",
+                           "newASTConsumer"]
+
+
+[Hungarian.Others]
+PreferUpperCamelIfMissed = false
+
+[Hungarian.PointerList]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
+
+[Hungarian.ArrayList]
+char 					 = "sz"
+
+
+[Hungarian.WordList]
+# C Primitive Type
+"void"                   = ""
+"size_t"                 = "n"
+"int8_t"                 = "i8"
+"int16_t"                = "i16"
+"int32_t"                = "i32"
+"int64_t"                = "i64"
+"uint8_t"                = "u8"
+"uint16_t"               = "u16"
+"uint32_t"               = "u32"
+"uint64_t"               = "u64"
+"char"                   = "c"
+"_Bool"                  = "b"
+"bool"                   = "b"
+"wchar_t"                = "wc"
+"signed char"            = "sc"
+"unsigned char"          = "uc"
+"short"                  = "s"
+"short int"              = "si"
+"signed short"           = "ss"
+"signed short int"       = "ssi"
+"unsigned short"         = "us"
+"unsigned short int"     = "usi"
+"int"                    = "i"
+"signed"                 = "s"
+"signed int"             = "si"
+"unsigned"               = "u"
+"unsigned int"           = "ui"
+"long"                   = "l"
+"long int"               = "li"
+"signed long"            = "sl"
+"signed long int"        = "sli"
+"unsigned long"          = "ul"
+"unsigned long int"      = "uli"
+"long long"              = "ll"
+"long long int"          = "lli"
+"signed long long"       = "sll"
+"signed long long int"   = "slli"
+"unsigned long long"     = "ull"
+"unsigned long long int" = "ulli"
+"float"                  = "f"
+"double"                 = "d"
+"long double"            = "ld"
+
+# Windows Type
+"ULONG"                  = "ul"
+"DWORD"                  = "dw"
+"DWORD64"                = "dw64"
+"WORD"                   = "w"
+"CHAR"                   = "c"
+"BYTE"                   = "by"
+"HANDLE"                 = "h"
+"BOOLEAN"                = "b"
+"LONGLONG"               = "ll"
+

@@ -150,10 +150,10 @@ bool MyASTVisitor::_GetVarInfo(
         RawSrcText = RawSrcText.substr(0, nPos);
     }
 
-    QualType myQualType   = pDecl->getType();
+    QualType MyQualType   = pDecl->getType();
     VarName               = pDecl->getNameAsString();
-    const bool bArrayType = myQualType->isArrayType();
-    const bool bPtrType   = myQualType->isPointerType();
+    const bool bArrayType = MyQualType->isArrayType();
+    const bool bPtrType   = MyQualType->isPointerType();
 
     if (RawSrcText.length() > 0) {
         this->_ClassifyTypeName(RawSrcText);
@@ -161,8 +161,8 @@ bool MyASTVisitor::_GetVarInfo(
 
     VarType        = RawSrcText;
     bIsArray       = bArrayType;
-    bIsBuiltinType = myQualType->isBuiltinType();
-    bIsPtr         = myQualType->isPointerType();
+    bIsBuiltinType = MyQualType->isBuiltinType();
+    bIsPtr         = MyQualType->isPointerType();
 
     // printf("VarType       = %s\n", VarType.c_str());
     // printf("isBuiltinType = %d\n", myQualType->isBuiltinType());
@@ -265,6 +265,7 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
             bStatus = this->_GetParmsInfo(pParmVarDecl, VarType, VarName, bIsPtr);
             if (bStatus) {
                 bResult = this->m_Detect.CheckVariable(this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+                                                       this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed,
                                                        bIsPtr, bIsArray);
 
                 pAppCxt->TraceMemo.Checked.nParameter++;
@@ -311,8 +312,9 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
 
     bool bStauts = this->_GetVarInfo(pDecl, VarType, VarName, bIsPtr, bIsArray, bIsBuiltinType);
     if (bStauts) {
-        bool bResult = this->m_Detect.CheckVariable(this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-                                                    bIsPtr, bIsArray);
+        bool bResult =
+            this->m_Detect.CheckVariable(this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+                                         this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
         pAppCxt->TraceMemo.Checked.nVariable++;
         if (!bResult) {

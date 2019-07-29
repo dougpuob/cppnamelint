@@ -46,6 +46,7 @@ class Detection {
     bool _IsLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs);
     bool _IsHungarianNotationString(const string &TypeStr,
                                     const string &NameStr,
+                                    const bool &bPreferUpperCamel,
                                     const bool &bIsPtr,
                                     const bool &bIsArray,
                                     const vector<string> &IgnorePrefixs,
@@ -63,8 +64,12 @@ class Detection {
 
     bool CheckFile(const RULETYPE Rule, const string &Name);
     bool CheckFunction(const RULETYPE Rule, const string &Name);
-    bool CheckVariable(
-        const RULETYPE Rule, const string &Type, const string &Name, const bool &bIsPtr, const bool &bIsArray);
+    bool CheckVariable(const RULETYPE Rule,
+                       const string &Type,
+                       const string &Name,
+                       const bool &bPreferUpperCamel,
+                       const bool &bIsPtr,
+                       const bool &bIsArray);
 };
 } // namespace namelint
 
