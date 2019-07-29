@@ -45,7 +45,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo);
 bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath);
 
 int main(int iArgc, char **pszArgv) {
-    const char *szTitle = "cppnamelint utility v0.1.3";
+    const char *szTitle = "cppnamelint utility v0.2.0";
     static const char *szUsage =
         R"(
   Usage:

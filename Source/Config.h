@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -59,8 +60,8 @@ struct Hungarian {
 };
 
 struct ConfigData {
-    General General;
-    Hungarian Hungarian;
+    struct General General;
+    struct Hungarian Hungarian;
 };
 
 class Config {
