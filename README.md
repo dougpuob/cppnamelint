@@ -42,41 +42,57 @@ cppnamelint utility v0.1.2
 ### **Config File**
 
 ```toml
-[General]
-ListFileExtName         = ["*.c","*.h","*.cpp"]
-BoolCheckVariableName   = true
-BoolCheckFunctionName   = true
-BoolCheckFileName       = true
+[General.Options]
+Version                 = 0.2
+FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckVariableName       = true
+CheckFunctionName       = true
+CheckFileName           = false
+AllowedUnderscopeChar   = false
+AllowedArrayAffected    = false
 
-[Rule]
-EnumFileName            = 1 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
+
+[General.Rules]
+FileName                = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
                             # 3: lower-seperated
 
-EnumFunctionName        = 1 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 2: lowerCamelCase
+FunctionName            = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
                             # 3: lower-seperated
 
-EnumVariableName        = 1 # 0: Default (UpperCamelCase)
-                            # 1: UpperCamelCase
-                            # 2: lowerCamelCase
+VariableName            = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
                             # 3: lower-seperated
                             # 4: Hungarian
-[WhiteList]
-BoolAllowedUnderscopeChar    = false
 
-ListFunctionPrefix           = [ "_",
-                                 "__"
-                               ]
-                               
-ListVariablePrefix           = [ "m_" ]
+[General.IgnoredList]
+FunctionPrefix          = [ "_",
+                            "__" ]
+VariablePrefix          = [ "m_" ]
 
-IgnoreFunctions              = ["main"]
+FunctionName            = ["main",
+                           "newASTConsumer"]
 
 
-[HungarianList]
+[Hungarian.Others]
+PreferUpperCamelIfMissed = true
+
+[Hungarian.PointerList]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
+
+[Hungarian.ArrayList]
+char                     = "sz"
+
+
+[Hungarian.WordList]
 # C Primitive Type
+"void"                   = ""
 "size_t"                 = "n"
 "int8_t"                 = "i8"
 "int16_t"                = "i16"
@@ -87,8 +103,6 @@ IgnoreFunctions              = ["main"]
 "uint32_t"               = "u32"
 "uint64_t"               = "u64"
 "char"                   = "c"
-"char*"                  = "sz"
-"wchar_t*"               = "wsz"
 "_Bool"                  = "b"
 "bool"                   = "b"
 "wchar_t"                = "wc"
