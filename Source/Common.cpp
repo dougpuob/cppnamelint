@@ -25,7 +25,7 @@ const char *FindFileName(const string &Path) {
             return Path.c_str();
         }
     }
-    return Path.c_str() + nPos;
+    return Path.c_str() + nPos + 1;
 }
 
 bool NormPath(const char *szPath, string &NewPath) {

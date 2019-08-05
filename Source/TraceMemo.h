@@ -16,7 +16,7 @@ class CodePos {
     size_t nColumn;
 };
 
-typedef enum _CheckType { CT_None, CT_Function = 1, CT_Parameter = 2, CT_Variable = 3, CT_Max } CheckType;
+typedef enum _CheckType { CT_None = 0, CT_File, CT_Function , CT_Parameter, CT_Variable , CT_Max } CheckType;
 
 class ErrorDetail {
   public:
@@ -27,6 +27,14 @@ class ErrorDetail {
     string TargetName;
     string TypeName;
     string Suggestion;
+
+	ErrorDetail(
+		const string& FileName,
+		const string &Suggestion) {
+		this->Type		 = CT_File;
+		this->TargetName = FileName;
+		this->Suggestion = Suggestion;
+	}
 
     ErrorDetail(const CodePos &Pos,
                 const CheckType &Type,
@@ -71,12 +79,14 @@ class TraceMemo {
     } Dir;
 
     struct _Checked {
+		size_t nFile;
         size_t nFunction;
         size_t nParameter;
         size_t nVariable;
     } Checked;
 
     struct _Error {
+		size_t nFile;
         size_t nFunction;
         size_t nParameter;
         size_t nVariable;

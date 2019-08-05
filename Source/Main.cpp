@@ -45,7 +45,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo);
 bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath);
 
 int main(int iArgc, char **pszArgv) {
-    const char *szTitle = "cppnamelint utility v0.2.0";
+    const char *szTitle = "cppnamelint utility v0.2.1";
     static const char *szUsage =
         R"(
   Usage:
@@ -165,11 +165,11 @@ int main(int iArgc, char **pszArgv) {
 }
 
 size_t GetTotalError(const TraceMemo &TraceMemo) {
-    return TraceMemo.Error.nParameter + TraceMemo.Error.nFunction + TraceMemo.Error.nVariable;
+    return TraceMemo.Error.nFile + TraceMemo.Error.nParameter + TraceMemo.Error.nFunction + TraceMemo.Error.nVariable;
 }
 
 size_t GetTotalChecked(const TraceMemo &TraceMemo) {
-    return TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction + TraceMemo.Checked.nVariable;
+    return TraceMemo.Checked.nFile + TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction + TraceMemo.Checked.nVariable;
 }
 
 bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
@@ -213,15 +213,20 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
         printf(" Inc[%2d] = %s\n", nIdx + 1, TraceMemo.Dir.Includes[nIdx].c_str());
     }
 
-    printf(" Checked = %5d  [Func:%3d | Param:%3d | Var:%3d]\n", GetTotalChecked(TraceMemo),
-           TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter, TraceMemo.Checked.nVariable);
+    printf(" Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n", GetTotalChecked(TraceMemo),
+		TraceMemo.Checked.nFile, TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter, TraceMemo.Checked.nVariable);
 
-    printf(" Error   = %5d  [Func:%3d | Param:%3d | Var:%3d]\n", GetTotalError(TraceMemo), TraceMemo.Error.nFunction,
-           TraceMemo.Error.nParameter, TraceMemo.Error.nVariable);
+    printf(" Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n", GetTotalError(TraceMemo), 
+		TraceMemo.Error.nFile, TraceMemo.Error.nFunction, TraceMemo.Error.nParameter, TraceMemo.Error.nVariable);
 
     cout << "---------------------------------------------------" << endl;
     for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
         switch (pErrDetail->Type) {
+		case CheckType::CT_File:
+			cout << std::left << "  < 0, 0 >" << std::left
+				<< std::setw(15) << " File: " << pErrDetail->TargetName << endl;
+			break;
+
         case CheckType::CT_Function:
             cout << std::left << "  <" << pErrDetail->Pos.nLine << ", " << pErrDetail->Pos.nColumn << ">" << std::left
                  << std::setw(15) << " Function: " << pErrDetail->TargetName << endl;
