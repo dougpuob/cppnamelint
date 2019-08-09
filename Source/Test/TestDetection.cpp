@@ -17,20 +17,20 @@ namespace TargetIsFile {
 TEST(Config_Detect_CheckFile, InputParms_Good)
 {
     Detection Detect;
-    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_DEFAULT           , "TestName.cpp"));
-    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL		, "TestName.cpp"));
-    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_LOWER_CAMEL		, "testName.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_DEFAULT		, "TestName.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL	, "TestName.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_LOWER_CAMEL	, "testName.cpp"));
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_LOWER_SNAKE   , "test_name.cpp"));
 }
 
 TEST(Config_Detect_CheckFile, InputParms_Bad)
 {
     Detection Detect;
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_DEFAULT          , ""));
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL		, ""));
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_LOWER_CAMEL		, ""));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_DEFAULT		, ""));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL	, ""));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_LOWER_CAMEL	, ""));
     EXPECT_EQ(false, Detect.CheckFile(RULETYPE_LOWER_SNAKE  , ""));
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_HUNGARIAN        , "AnyName.cpp"));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_HUNGARIAN	, "AnyName.cpp"));
 }
 
 //-------------------------------------------------------------------------
@@ -40,11 +40,18 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Good)
     Detection Detect;
     const RULETYPE RuleType = RULETYPE_UPPER_CAMEL;
 
+	EXPECT_EQ(true, Detect.CheckFile(RuleType, "UtestWnd.h"));
+	EXPECT_EQ(true, Detect.CheckFile(RuleType, "SerialPort.h"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "TestName"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "TestName.h"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "TestName.H"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "TestName.cpp"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "TestName.CPP"));
+
+	RuleOfFile Rule;
+	Rule.bAllowedUnderscopeChar = true;
+	Detect.ApplyRuleForFile(Rule);
+	EXPECT_EQ(true, Detect.CheckFile(RuleType, "Sample_03.c"));
 }
 
 TEST(Config_Detect_CheckFile, UpperCamelCase_Bad)
@@ -52,6 +59,7 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Bad)
     Detection Detect;
     const RULETYPE RuleType = RULETYPE_UPPER_CAMEL;
 
+	EXPECT_EQ(false, Detect.CheckFile(RuleType, "UTestWnd.h"));
     EXPECT_EQ(false, Detect.CheckFile(RuleType, "testName"));
     EXPECT_EQ(false, Detect.CheckFile(RuleType, "testName.h"));
     EXPECT_EQ(false, Detect.CheckFile(RuleType, "testName.cpp"));
@@ -118,7 +126,7 @@ namespace TargetIsFunction {
 TEST(Config_Detect_CheckFunction, InputParms_Good)
 {
 	RuleOfFunction Rule;
-	Rule.bAllowedEndWithUnderscopeChar = false;
+	Rule.bAllowedUnderscopeChar = false;
 	Rule.IgnoreNames.clear();
 	Rule.IgnorePrefixs.clear();
 
@@ -127,30 +135,32 @@ TEST(Config_Detect_CheckFunction, InputParms_Good)
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_DEFAULT           , "MyFunc"	));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "MyFunc"	));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_CAMEL		, "myFunc"	));
-    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE   , "my_func"	));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE		, "my_func"	));
 
-	Rule.bAllowedEndWithUnderscopeChar = true;
+	Rule.bAllowedUnderscopeChar = true;
 	Detect.ApplyRuleForFunction(Rule);
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My_Func"		));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My_Func_A"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func_B"	));
+	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "MyFunc_"	));
+	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "Mem_"	));
+	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "Fun_"	));
 }
 
 TEST(Config_Detect_CheckFunction, InputParms_Bad)
 {
 	RuleOfFunction Rule;
-	Rule.bAllowedEndWithUnderscopeChar = false;
+	Rule.bAllowedUnderscopeChar = false;
 	Rule.IgnoreNames.clear();
 	Rule.IgnorePrefixs.clear();
 
 	Detection Detect;
 	Detect.ApplyRuleForFunction(Rule);
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_DEFAULT          , ""		));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, ""		));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_CAMEL		, ""        ));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE  , ""        ));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_HUNGARIAN        , "AnyName" ));
+	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My_Func_A"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func_B"	));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_DEFAULT          , ""			));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, ""			));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_CAMEL		, ""			));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE		, ""			));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_HUNGARIAN        , "AnyName"		));
 }
 
 //-------------------------------------------------------------------------
@@ -165,7 +175,7 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "UpperCamelFuncName"	));
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "UpperCamelFuncName1"));
 
-	Rule.bAllowedEndWithUnderscopeChar = false;
+	Rule.bAllowedUnderscopeChar = false;
 	Rule.IgnoreNames.push_back("main");
 	Rule.IgnorePrefixs.push_back("_");
 	Rule.IgnorePrefixs.push_back("__");
@@ -177,9 +187,10 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
 	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc3"				));
 	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "main"                   ));
 
-	Rule.bAllowedEndWithUnderscopeChar = true;
+	Rule.bAllowedUnderscopeChar = true;
 	Detect.ApplyRuleForFunction(Rule);
-	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName_AB"	));
+	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName_"	));
+	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_UpperCamelFuncName_A"	));
 	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "main"                   ));
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc3"                ));
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "MyFunc_3"               ));
@@ -263,14 +274,26 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
 {
 	RuleOfVariable Rule;
     Detection Detect;
-	Rule.TypeNamingMap.insert(std::pair<string, string>("int"    , "i"));
-	Rule.TypeNamingMap.insert(std::pair<string, string>("uin8_t" , "u8"));
-	Rule.TypeNamingMap.insert(std::pair<string, string>("uin16_t", "u16"));
+	Rule.WordListMap.insert(std::pair<string, string>("int"    , "i"));
+	Rule.WordListMap.insert(std::pair<string, string>("uin8_t" , "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
+
+	Rule.NullStringMap.push_back(MappingPair("char*"	 , "sz"));
+	Rule.NullStringMap.push_back(MappingPair("char**"	 , "psz"));
+	Rule.NullStringMap.push_back(MappingPair("wchar_t*"  , "wsz"));
+	Rule.NullStringMap.push_back(MappingPair("wchar_t**" , "pwsz"));
 
 	bool bPrefer = true;
 	bool bIsPtr   = false;
 	bool bIsArray = false;
 	Detect.ApplyRuleForVariable(Rule);
+	
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"     , bPrefer, true  , bIsArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "pszStr"    , bPrefer, true  , bIsArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t" , "wszStr"    , bPrefer, true  , bIsArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "pwszStr"   , bPrefer, true  , bIsArray));
+
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"		, "piMyValue" , bPrefer, true  , bIsArray));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uin8_t"  , "MyFunc"    , bPrefer, bIsPtr, bIsArray));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uin8_t"  , "MyFunc"    , bPrefer, bIsPtr, bIsArray));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uin8_t"  , "myFunc"    , bPrefer, bIsPtr, bIsArray));
@@ -278,7 +301,7 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"     , "iMyFunc"   , bPrefer, bIsPtr, bIsArray));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uin8_t"  , "u8MyFunc"  , bPrefer, bIsPtr, bIsArray));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uin16_t" , "u16MyFunc" , bPrefer, bIsPtr, bIsArray));
-
+	
 	Rule.IgnorePrefixs.push_back("m_");
 	Detect.ApplyRuleForVariable(Rule);
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"     , "m_iMyFunc" , bPrefer, bIsPtr, bIsArray));
@@ -289,8 +312,8 @@ TEST(Config_Detect_CheckVariable, InputParms_Bad)
 	RuleOfVariable Rule;
 	Detection Detect;
 
-	Rule.TypeNamingMap.insert(std::pair<string, string>("uin8_t", "u8"));
-	Rule.TypeNamingMap.insert(std::pair<string, string>("uin16_t", "u16"));
+	Rule.WordListMap.insert(std::pair<string, string>("uin8_t", "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
 
 	bool bPrefer = true;
 	bool bIsPtr  = false;
@@ -308,6 +331,8 @@ TEST(Config_Detect_CheckVariable, InputParms_Bad)
     EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t" , "u8AnyName"   , bPrefer, bIsPtr, bIsArray));
     EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin8_t"  , "u8_my_func"  , bPrefer, bIsPtr, bIsArray));
     EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t" , "u16_my_func" , bPrefer, bIsPtr, bIsArray));
+	
+	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "int" 	, "iMyValue" 	, bPrefer, true,   bIsArray));
 }
 
 //-------------------------------------------------------------------------
@@ -319,7 +344,7 @@ TEST(Config_Detect_CheckVariable, GoodCases)
 	RuleOfVariable Rule;
 	Detection Detect;
 
-	Rule.TypeNamingMap.insert(std::pair<string, string>("uin8_t", "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uin8_t", "u8"));
 
 	bool bPrefer = true;
 	bool bIsPtr = false;
@@ -336,7 +361,7 @@ TEST(Config_Detect_CheckVariable, Hungarian_Bad)
 	RuleOfVariable Rule;
 	Detection Detect;
 
-	Rule.TypeNamingMap.insert(std::pair<string, string>("uin8_t", "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uin8_t", "u8"));
 
 	bool bPrefer = true;
 	bool bIsPtr = false;

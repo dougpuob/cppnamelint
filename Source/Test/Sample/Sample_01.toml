@@ -27,7 +27,7 @@ VariableName            = 1 # 0: Default (UpperCamel)
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
-			    "XXX_"]
+			                "XXX_"]
 
 VariablePrefix          = [ "m_" ]
 
@@ -38,7 +38,7 @@ FunctionName            = ["main",
 [Hungarian.Others]
 PreferUpperCamelIfMissed = true
 
-[Hungarian.PointerList]
+[Hungarian.NullStringList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"

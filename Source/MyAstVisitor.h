@@ -48,8 +48,7 @@ class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 
     bool _ClassifyTypeName(string &TyeName);
 
-	ErrorDetail *_CreateErrorDetail(const string &FileName,
-						   		    const string &Suggestion);
+    ErrorDetail *_CreateErrorDetail(const string &FileName, const string &Suggestion);
 
     ErrorDetail *_CreateErrorDetail(Decl *pDecl,
                                     const CheckType &CheckType,

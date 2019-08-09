@@ -3,7 +3,7 @@ Version                 = 0.2
 FileExtNameList         = ["*.c","*.h","*.cpp"]
 CheckVariableName       = true
 CheckFunctionName       = true
-CheckFileName           = false
+CheckFileName           = true
 AllowedUnderscopeChar   = true
 AllowedArrayAffected    = false
 
@@ -27,7 +27,7 @@ VariableName            = 4 # 0: Default (UpperCamel)
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
-			    "XXX_"]
+			                "XXX_"]
 VariablePrefix          = [ "m_" ]
 
 FunctionName            = ["main",
@@ -37,14 +37,11 @@ FunctionName            = ["main",
 [Hungarian.Others]
 PreferUpperCamelIfMissed = true
 
-[Hungarian.PointerList]
+[Hungarian.NullStringList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
-
-[Hungarian.ArrayList]
-char 					 = "sz"
 
 
 [Hungarian.WordList]

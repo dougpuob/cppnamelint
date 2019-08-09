@@ -10,10 +10,17 @@ using namespace std;
 
 namespace namelint {
 
+struct RuleOfFile {
+    bool bAllowedUnderscopeChar;
+
+    RuleOfFile();
+    void Reset();
+};
+
 struct RuleOfFunction {
     vector<string> IgnoreNames;
     vector<string> IgnorePrefixs;
-    bool bAllowedEndWithUnderscopeChar;
+    bool bAllowedUnderscopeChar;
 
     RuleOfFunction();
     void Reset();
@@ -21,8 +28,8 @@ struct RuleOfFunction {
 
 struct RuleOfVariable {
     vector<string> IgnorePrefixs;
-    map<string, string> TypeNamingMap;
-    map<string, string> PtrNamingMap;
+    map<string, string> WordListMap;
+    vector<MappingPair> NullStringMap;
     map<string, string> ArrayNamingMap;
 
     RuleOfVariable();
@@ -31,16 +38,16 @@ struct RuleOfVariable {
 
 class Detection {
   private:
+    RuleOfFile m_RuleOfFile;
     RuleOfFunction m_RuleOfFunction;
     RuleOfVariable m_RuleOfVariable;
 
   private:
     bool _RemoveHeadingUnderscore(string &Text);
-    bool _RemoveHeadingPtrChar(string &Text);
+    size_t _RemoveHeadingPtrChar(string &Text);
     bool _CaptureLowerCasePrefix(string &Name);
-    bool _IsUpperCamelCaseString(const string &Name,
-                                 vector<string> IgnorePrefixs,
-                                 const bool bAllowedEndWithUnderscopeChar = false);
+    bool
+    _IsUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs, const bool AllowedUnderscopeChar = false);
 
     bool _IsLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
     bool _IsLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs);
@@ -51,7 +58,7 @@ class Detection {
                                     const bool &bIsArray,
                                     const vector<string> &IgnorePrefixs,
                                     const map<string, string> &TypeNamingMap,
-                                    const map<string, string> &PtrNamingMap,
+                                    const vector<MappingPair> &NullStringMap,
                                     const map<string, string> &ArrayNamingMap);
 
     size_t _FindHowManyChar(const string &InputStr, char cChar);
@@ -59,6 +66,7 @@ class Detection {
     bool _SkipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList);
 
   public:
+    bool ApplyRuleForFile(const RuleOfFile &Rule);
     bool ApplyRuleForFunction(const RuleOfFunction &Rule);
     bool ApplyRuleForVariable(const RuleOfVariable &Rule);
 

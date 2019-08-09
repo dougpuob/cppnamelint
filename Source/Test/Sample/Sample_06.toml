@@ -9,11 +9,11 @@ AllowedArrayAffected    = false
 
 
 [General.Rules]
-FileName                = 1 # 0: Default (UpperCamel)
+FileName                = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 3: lower-seperated
 
-FunctionName            = 1 # 0: Default (UpperCamel)
+FunctionName            = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower-seperated
@@ -32,18 +32,14 @@ VariablePrefix          = [ "m_" ]
 FunctionName            = ["main",
                            "newASTConsumer"]
 
-
 [Hungarian.Others]
-PreferUpperCamelIfMissed = false
+PreferUpperCamelIfMissed = true
 
-[Hungarian.PointerList]
+[Hungarian.NullStringList]
 "char*"                  = "sz"
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
-
-[Hungarian.ArrayList]
-char 					 = "sz"
 
 
 [Hungarian.WordList]
@@ -61,6 +57,7 @@ char 					 = "sz"
 "char"                   = "c"
 "_Bool"                  = "b"
 "bool"                   = "b"
+"int"                    = "i"
 "wchar_t"                = "wc"
 "signed char"            = "sc"
 "unsigned char"          = "uc"
@@ -70,7 +67,6 @@ char 					 = "sz"
 "signed short int"       = "ssi"
 "unsigned short"         = "us"
 "unsigned short int"     = "usi"
-"int"                    = "i"
 "signed"                 = "s"
 "signed int"             = "si"
 "unsigned"               = "u"

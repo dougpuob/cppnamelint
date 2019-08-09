@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 using namespace std;
 
@@ -24,7 +24,7 @@ struct GeneralOptions {
     bool bCheckVariableName;
     bool bCheckFunctionName;
     bool bCheckFileName;
-    bool bAllowedEndWithUnderscope;
+    bool bAllowedUnderscopeChar;
     bool bAllowedArrayAffected;
 };
 
@@ -50,11 +50,23 @@ struct HungarianOthers {
     bool PreferUpperCamelIfMissed;
 };
 
+struct MappingPair {
+    string Key;
+    string Value;
+    MappingPair(string &Key, string &Value) {
+        this->Key   = Key;
+        this->Value = Value;
+    }
+    MappingPair(const char *szKey, const char *szValue) {
+        this->Key   = szKey;
+        this->Value = szValue;
+    }
+};
 typedef std::map<std::string, std::string> HungarianMap;
 
 struct Hungarian {
     HungarianOthers Others;
-    HungarianMap PointerList;
+    vector<MappingPair> NullStringList;
     HungarianMap ArrayList;
     HungarianMap WordList;
 };

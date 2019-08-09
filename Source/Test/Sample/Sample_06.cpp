@@ -1,6 +1,6 @@
 ﻿
 struct MyClass {};
-MyClass myClass;
+MyClass MyNewClass;
 
 static const uint8_t u8UhsSpeeds[];
 static const uint8_t *u8UhsSpeeds[];

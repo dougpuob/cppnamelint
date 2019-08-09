@@ -80,7 +80,7 @@ bool Config::LoadStream(string ConfigContent) {
         // General.Options.AllowedUnderscopeChar
         const toml::Value *pAllowUnderscopeChar = ParseRsValue.find("General.Options.AllowedUnderscopeChar");
         if (pAllowUnderscopeChar && pAllowUnderscopeChar->is<bool>()) {
-            this->m_pConfig->General.Options.bAllowedEndWithUnderscope = pAllowUnderscopeChar->as<bool>();
+            this->m_pConfig->General.Options.bAllowedUnderscopeChar = pAllowUnderscopeChar->as<bool>();
         }
 
         // General.Options.AllowedArrayAffected
@@ -171,18 +171,18 @@ bool Config::LoadStream(string ConfigContent) {
         }
 
         // ==----------------------------------------------------------------------------------
-        // [Hungarian.PointerList]
+        // [Hungarian.NullStringList]
         // ==----------------------------------------------------------------------------------
-        const toml::Value *pHungarianPointerList = ParseRsValue.find("Hungarian.PointerList");
-        if (pHungarianPointerList && pHungarianPointerList->is<toml::Table>()) {
-            this->m_pConfig->Hungarian.PointerList.clear();
-            [](map<string, string> &OutStrMap, toml::Table InputTable) {
+        const toml::Value *pHungarianNullStringList = ParseRsValue.find("Hungarian.NullStringList");
+        if (pHungarianNullStringList && pHungarianNullStringList->is<toml::Table>()) {
+            this->m_pConfig->Hungarian.NullStringList.clear();
+            [](vector<MappingPair> &OutStrMap, toml::Table InputTable) {
                 for (toml::Table::iterator Iter = InputTable.begin(); Iter != InputTable.end(); Iter++) {
                     auto Str1 = Iter->first;
                     auto Str2 = Iter->second.as<string>();
-                    OutStrMap.insert(std::pair<string, string>(Str1, Str2));
+                    OutStrMap.push_back(MappingPair(Str1, Str2));
                 }
-            }(this->m_pConfig->Hungarian.PointerList, pHungarianPointerList->as<toml::Table>());
+            }(this->m_pConfig->Hungarian.NullStringList, pHungarianNullStringList->as<toml::Table>());
         }
 
         // ==----------------------------------------------------------------------------------

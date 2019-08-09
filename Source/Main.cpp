@@ -45,7 +45,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo);
 bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath);
 
 int main(int iArgc, char **pszArgv) {
-    const char *szTitle = "cppnamelint utility v0.2.1";
+    const char *szTitle = "cppnamelint utility v0.2.2";
     static const char *szUsage =
         R"(
   Usage:
@@ -121,12 +121,13 @@ int main(int iArgc, char **pszArgv) {
         static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
         CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)pszMyArgV, NameLintOptions);
 
-        vector<string> SourcePathList;
-        pAppCxt->TraceMemo.File.Source = Arguments["<file>"].asString();
-
-        SourcePathList.push_back(Arguments["<file>"].asString());
+        string FileNamePath            = Arguments["<file>"].asString();
+        string FileName                = Path::FindFileName(FileNamePath);
+        pAppCxt->TraceMemo.File.Source = FileNamePath;
 
         // Utility to run a FrontendAction over a set of files.
+        vector<string> SourcePathList;
+        SourcePathList.push_back(FileNamePath);
         ClangTool Tool(NullOptionsParser.getCompilations(), SourcePathList);
 
         // [DiagnosticConsume class]
@@ -137,6 +138,20 @@ int main(int iArgc, char **pszArgv) {
 
         MyFactory MyFactory;
         std::unique_ptr<FrontendActionFactory> Factory = newFrontendActionFactory(&MyFactory);
+
+        Detection dect;
+        shared_ptr<ConfigData> pConfig = Config.GetData();
+        if (pConfig->General.Options.bCheckFileName) {
+            RuleOfFile Rule;
+            Rule.bAllowedUnderscopeChar = pConfig->General.Options.bAllowedUnderscopeChar;
+            dect.ApplyRuleForFile(Rule);
+
+            pAppCxt->TraceMemo.Checked.nFile++;
+            if (!dect.CheckFile(pConfig->General.Rules.FileName, FileName)) {
+                pAppCxt->TraceMemo.Error.nFile++;
+                pAppCxt->TraceMemo.ErrorDetailList.push_back(new ErrorDetail(FileName, ""));
+            }
+        }
 
         if (0 == Tool.run(Factory.get())) {
             iReturn = GetTotalError(GetAppCxt()->TraceMemo);
@@ -169,7 +184,8 @@ size_t GetTotalError(const TraceMemo &TraceMemo) {
 }
 
 size_t GetTotalChecked(const TraceMemo &TraceMemo) {
-    return TraceMemo.Checked.nFile + TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction + TraceMemo.Checked.nVariable;
+    return TraceMemo.Checked.nFile + TraceMemo.Checked.nParameter + TraceMemo.Checked.nFunction +
+           TraceMemo.Checked.nVariable;
 }
 
 bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
@@ -214,18 +230,19 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
     }
 
     printf(" Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n", GetTotalChecked(TraceMemo),
-		TraceMemo.Checked.nFile, TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter, TraceMemo.Checked.nVariable);
+           TraceMemo.Checked.nFile, TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter,
+           TraceMemo.Checked.nVariable);
 
-    printf(" Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n", GetTotalError(TraceMemo), 
-		TraceMemo.Error.nFile, TraceMemo.Error.nFunction, TraceMemo.Error.nParameter, TraceMemo.Error.nVariable);
+    printf(" Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n", GetTotalError(TraceMemo),
+           TraceMemo.Error.nFile, TraceMemo.Error.nFunction, TraceMemo.Error.nParameter, TraceMemo.Error.nVariable);
 
     cout << "---------------------------------------------------" << endl;
     for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
         switch (pErrDetail->Type) {
-		case CheckType::CT_File:
-			cout << std::left << "  < 0, 0 >" << std::left
-				<< std::setw(15) << " File: " << pErrDetail->TargetName << endl;
-			break;
+        case CheckType::CT_File:
+            cout << std::left << "  < 0, 0 >" << std::left << std::setw(15) << " File: " << pErrDetail->TargetName
+                 << endl;
+            break;
 
         case CheckType::CT_Function:
             cout << std::left << "  <" << pErrDetail->Pos.nLine << ", " << pErrDetail->Pos.nColumn << ">" << std::left
