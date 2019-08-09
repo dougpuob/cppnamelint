@@ -27,7 +27,7 @@ VariableName            = 3 # 0: Default (UpperCamel)
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
-			                "XXX_"]
+			    "XXX_"]
 
 VariablePrefix          = [ "m_" ]
 
