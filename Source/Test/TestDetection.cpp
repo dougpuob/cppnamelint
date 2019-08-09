@@ -244,12 +244,22 @@ TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Good)
 
 	RuleOfFunction Rule;
 	Detection Detect;
+
+	Rule.IgnorePrefixs.push_back("_");
+	Rule.IgnorePrefixs.push_back("__");
+	Rule.IgnorePrefixs.push_back("XX_");
+	Rule.IgnorePrefixs.push_back("XX__");
+	Rule.IgnorePrefixs.push_back("XXX__");
+
 	Detect.ApplyRuleForFunction(Rule);
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "lower_separated_funcname"   ));
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "lower_separated_funcname_"  ));
-    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "lower__separated__funcname" ));
-    EXPECT_EQ(true, Detect.CheckFunction(RuleType, "lower_separated_funcname__" ));
     EXPECT_EQ(true, Detect.CheckFunction(RuleType, "lowerseparatedfuncname"     ));
+
+	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "_lower_separated_funcname"		));
+	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "__lower_separated_funcname"		));
+	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "XX_lower_separated_funcname"	));
+	EXPECT_EQ(true, Detect.CheckFunction(RuleType, "XXX__lower_separated_funcname"	));
 }
 
 TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Bad)
@@ -258,8 +268,15 @@ TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Bad)
 
 	RuleOfFunction Rule;
 	Detection Detect;
+
 	Detect.ApplyRuleForFunction(Rule);
-    EXPECT_EQ(false, Detect.CheckFunction(RuleType, "lowerSeparatedFuncName"	));
+    EXPECT_EQ(false, Detect.CheckFunction(RuleType, "lowerSeparatedFuncName"		));
+	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "lower_separated__funcname_"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "lower_separated_funcname__"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "_lower_separated_funcname__"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "__lower_separated_funcname"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "XX_lower_separated_funcname"	));
+	EXPECT_EQ(false, Detect.CheckFunction(RuleType, "XXX__lower_separated_funcname"	));
 }
 }  // namespace CheckFunction
 

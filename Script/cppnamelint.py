@@ -336,12 +336,12 @@ def main():
             add2list_func  = json_list.append
             make_info_func = helper.make_test_info
 
-            add2list_func(make_info_func(path, 'Sample_01.c',   'Sample_01.toml'))
-            add2list_func(make_info_func(path, 'Sample_02.c',   'Sample_02.toml'))
-            add2list_func(make_info_func(path, 'Sample_03.c',   'Sample_03.toml'))
-            add2list_func(make_info_func(path, 'Sample_04.cpp', 'Sample_04.toml'))
-            add2list_func(make_info_func(path, 'Sample_05.cpp', 'Sample_05.toml'))
-            add2list_func(make_info_func(path, 'Sample_06.cpp', 'Sample_06.toml'))
+            add2list_func(make_info_func(path, 'Sample01UpperCamel.c',      'Sample01UpperCamel.toml'))
+            add2list_func(make_info_func(path, 'Sample02_UpperCamel.c',     'Sample02_UpperCamel.toml'))
+            add2list_func(make_info_func(path, 'sample03_lower_snake.c',    'sample03_lower_snake.toml'))
+            add2list_func(make_info_func(path, 'sample04_lower_snake.cpp',  'sample04_lower_snake.toml'))
+            add2list_func(make_info_func(path, 'sample05LowerCamel.cpp',    'sample05LowerCamel.toml'))
+            add2list_func(make_info_func(path, 'sample06LowerCamel.cpp',    'sample06LowerCamel.toml'))
 
             for item in json_list:
                 test_argument_string = helper.make_test_argument_string(item)

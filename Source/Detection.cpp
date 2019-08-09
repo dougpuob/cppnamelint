@@ -26,6 +26,7 @@ void RuleOfFunction::Reset() {
 
 RuleOfVariable::RuleOfVariable() { this->Reset(); }
 void RuleOfVariable::Reset() {
+    this->bAllowedUnderscopeChar = false;
     this->IgnorePrefixs.clear();
     this->WordListMap.clear();
     this->NullStringMap.clear();
@@ -162,22 +163,42 @@ bool Detection::_IsLowerCamelCaseString(const string &Name, vector<string> Ignor
 }
 
 bool Detection::_IsLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs) {
-    bool bStatus = false;
-    if (!::String::IsLower(Name)) {
-        return false;
-    }
     vector<string> NewIgnorePrefixs = IgnorePrefixs;
-    NewIgnorePrefixs.push_back("");
 
+    auto wayToSort = [](string strA, string strB) { return strA.length() > strB.length(); };
+    std::sort(NewIgnorePrefixs.begin(), NewIgnorePrefixs.end(), wayToSort);
+
+    string NewName = Name;
     for (string Prefix : NewIgnorePrefixs) {
-        const string NewRegexPatn = Prefix + "^[a-z_]*";
-        std::regex Regex(NewRegexPatn);
-        std::smatch Match;
-        std::string Result;
-        if (std::regex_search(Name, Match, Regex) && Match.size() >= 1) {
-            bStatus = true;
+        if (0 == NewName.find(Prefix)) {
+            const size_t nPrefixLen = Prefix.length();
+
+            NewName = NewName.substr(nPrefixLen, NewName.length() - nPrefixLen);
             break;
         }
+    }
+
+    char *szText = (char *)NewName.c_str();
+    if (szText[0] == '_') {
+        return false;
+    }
+
+    for (size_t nIdx = 0; szText[nIdx] != '\0'; nIdx++) {
+        if (isupper(szText[nIdx])) {
+            return false;
+        }
+    }
+
+    bool bStatus = true;
+    while (*szText != '\0') {
+        if (*szText == '_') {
+            szText++;
+            if (*szText == '_') {
+                bStatus = false;
+                break;
+            }
+        }
+        szText++;
     }
 
     return bStatus;
@@ -327,9 +348,10 @@ bool Detection::ApplyRuleForFunction(const RuleOfFunction &Rule) {
     return true;
 }
 bool Detection::ApplyRuleForVariable(const RuleOfVariable &Rule) {
-    this->m_RuleOfVariable.IgnorePrefixs  = Rule.IgnorePrefixs;
-    this->m_RuleOfVariable.WordListMap    = Rule.WordListMap;
-    this->m_RuleOfVariable.ArrayNamingMap = Rule.ArrayNamingMap;
+    this->m_RuleOfVariable.IgnorePrefixs          = Rule.IgnorePrefixs;
+    this->m_RuleOfVariable.WordListMap            = Rule.WordListMap;
+    this->m_RuleOfVariable.ArrayNamingMap         = Rule.ArrayNamingMap;
+    this->m_RuleOfVariable.bAllowedUnderscopeChar = Rule.bAllowedUnderscopeChar;
 
     this->m_RuleOfVariable.NullStringMap.clear();
     for (auto Item : Rule.NullStringMap) {
@@ -413,7 +435,8 @@ bool Detection::CheckVariable(const RULETYPE Rule,
     switch (Rule) {
     case RULETYPE_DEFAULT:
     case RULETYPE_UPPER_CAMEL:
-        bStatus = this->_IsUpperCamelCaseString(Name, this->m_RuleOfVariable.IgnorePrefixs);
+        bStatus = this->_IsUpperCamelCaseString(Name, this->m_RuleOfVariable.IgnorePrefixs,
+                                                this->m_RuleOfVariable.bAllowedUnderscopeChar);
         break;
 
     case RULETYPE_LOWER_CAMEL:

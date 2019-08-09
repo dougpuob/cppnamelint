@@ -89,7 +89,9 @@ void Trim(string &Source) {
         return;
     }
 
+    Source.erase(0, Source.find_first_not_of("\t"));
     Source.erase(0, Source.find_first_not_of(" "));
+    Source.erase(Source.find_last_not_of("\t") + 1);
     Source.erase(Source.find_last_not_of(" ") + 1);
 }
 

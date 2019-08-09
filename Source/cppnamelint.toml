@@ -11,17 +11,17 @@ AllowedArrayAffected    = false
 [General.Rules]
 FileName                = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
-                            # 3: lower-seperated
+                            # 3: lower_snake
 
 FunctionName            = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
-                            # 3: lower-seperated
+                            # 3: lower_snake
 
 VariableName            = 4 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
-                            # 3: lower-seperated
+                            # 3: lower_snake
                             # 4: Hungarian
 
 [General.IgnoredList]

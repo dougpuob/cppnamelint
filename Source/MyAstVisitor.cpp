@@ -119,6 +119,9 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
         this->_ClassifyTypeName(VarType);
     }
 
+    String::Trim(VarType);
+    String::Trim(VarName);
+
     return true;
 }
 
@@ -167,6 +170,9 @@ bool MyASTVisitor::_GetVarInfo(
     // printf("VarType       = %s\n", VarType.c_str());
     // printf("isBuiltinType = %d\n", myQualType->isBuiltinType());
     // printf("bArrayType    = %d\n", bArrayType);
+
+    String::Trim(VarType);
+    String::Trim(VarName);
 
     return true;
 }
@@ -217,15 +223,19 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt, 
         Rule.bAllowedUnderscopeChar = this->m_pConfig->General.Options.bAllowedUnderscopeChar;
         Rule.IgnoreNames            = this->m_pConfig->General.IgnoredList.FunctionName;
         Rule.IgnorePrefixs          = this->m_pConfig->General.IgnoredList.FunctionPrefix;
+
         this->m_Detect.ApplyRuleForFunction(Rule);
     }
 
     {
         RuleOfVariable Rule;
+        Rule.bAllowedUnderscopeChar = this->m_pConfig->General.Options.bAllowedUnderscopeChar;
+
         Rule.IgnorePrefixs  = this->m_pConfig->General.IgnoredList.VariablePrefix;
         Rule.WordListMap    = this->m_pConfig->Hungarian.WordList;
         Rule.ArrayNamingMap = this->m_pConfig->Hungarian.ArrayList;
         Rule.NullStringMap  = this->m_pConfig->Hungarian.NullStringList;
+
         this->m_Detect.ApplyRuleForVariable(Rule);
     }
 }

@@ -3,8 +3,8 @@ Version                 = 0.2
 FileExtNameList         = ["*.c","*.h","*.cpp"]
 CheckVariableName       = true
 CheckFunctionName       = true
-CheckFileName           = false
-AllowedUnderscopeChar   = false
+CheckFileName           = true
+AllowedUnderscopeChar   = true
 AllowedArrayAffected    = false
 
 
@@ -43,10 +43,6 @@ PreferUpperCamelIfMissed = true
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
-
-[Hungarian.ArrayList]
-char 					 = "sz"
-
 
 [Hungarian.WordList]
 # C Primitive Type

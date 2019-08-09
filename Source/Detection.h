@@ -32,6 +32,8 @@ struct RuleOfVariable {
     vector<MappingPair> NullStringMap;
     map<string, string> ArrayNamingMap;
 
+    bool bAllowedUnderscopeChar;
+
     RuleOfVariable();
     void Reset();
 };
