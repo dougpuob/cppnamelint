@@ -107,6 +107,4 @@ int myFunc1(int myVal) { return 0; }
 int myFunc_(int myVal) { return 0; }
 int myFunc_1(int myVal) { return 0; }
 
-
-
 // clang-format on

@@ -4,6 +4,34 @@
 // VariableName            = 1 # 1: UpperCamel
 // AllowedUnderscopeChar   = false
 
+// clang-format off
+
+//
+// Structure
+//
+struct _MyStructA {
+	int 	ValueA1;
+	long 	ValueA2;	
+};
+
+typedef struct _MyStructB {
+	int 	ValueB1;
+	long 	ValueB2;	
+} MyStructB;
+
+//
+// Enumeration
+//
+enum _MyEnumA {
+	MyEnumA_1,
+	MyEnumA_2,
+};
+
+typedef enum _MyEnumB {
+	MyEnumB_1,
+	MyEnumB_2,
+} MyEnumB;
+
 //
 // Variables (Pointer)
 //
@@ -90,3 +118,6 @@ LONGLONG WinVarLongLong = 0;
 // Function
 //
 int MyFunc(int Value) { return 0; }
+
+
+// clang-format on
