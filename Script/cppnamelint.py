@@ -336,12 +336,12 @@ def main():
             add2list_func  = json_list.append
             make_info_func = helper.make_test_info
 
-            add2list_func(make_info_func(path, 'Sample01UpperCamel.c',      'Sample01UpperCamel.toml'))
-            add2list_func(make_info_func(path, 'Sample02_UpperCamel.c',     'Sample02_UpperCamel.toml'))
-            add2list_func(make_info_func(path, 'sample03_lower_snake.c',    'sample03_lower_snake.toml'))
-            add2list_func(make_info_func(path, 'sample04_lower_snake.cpp',  'sample04_lower_snake.toml'))
-            add2list_func(make_info_func(path, 'sample05LowerCamel.cpp',    'sample05LowerCamel.toml'))
-            add2list_func(make_info_func(path, 'sample06LowerCamel.cpp',    'sample06LowerCamel.toml'))
+            add2list_func(make_info_func(path, 'Sample01UpperCamel.c',          'Sample01UpperCamel.toml'))
+            add2list_func(make_info_func(path, 'Sample02_UpperCamel.c',         'Sample02_UpperCamel.toml'))
+            add2list_func(make_info_func(path, 'sample03_lower_snake.c',        'sample03_lower_snake.toml'))
+            add2list_func(make_info_func(path, 'sample04_lower_snake.cpp',      'sample04_lower_snake.toml'))
+            add2list_func(make_info_func(path, 'sample05HungarianNotation.cpp', 'sample05HungarianNotation.toml'))
+            add2list_func(make_info_func(path, 'Sample06LowerCamel.cpp',        'Sample06LowerCamel.toml'))
 
             for item in json_list:
                 test_argument_string = helper.make_test_argument_string(item)
