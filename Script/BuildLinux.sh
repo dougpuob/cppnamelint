@@ -2,7 +2,7 @@
 
 export CC="gcc-8"
 export CXX="g++-8"
-echo CC  =$CC
+echo CC  =$CC 
 echo CXX =$CXX
 
 echo "${1}"
