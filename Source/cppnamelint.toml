@@ -29,8 +29,7 @@ FunctionPrefix          = [ "_",
                             "__" ]
 VariablePrefix          = [ "m_" ]
 
-FunctionName            = ["main",
-                           "newASTConsumer"]
+FunctionName            = ["main", "newASTConsumer"]
 
 [Hungarian.Others]
 PreferUpperCamelIfMissed = true
@@ -87,14 +86,59 @@ PreferUpperCamelIfMissed = true
 "double"                 = "d"
 "long double"            = "ld"
 
-# Windows Type
+# Windows Type - Variable
 "ULONG"                  = "ul"
+"UINT"                   = "ui"
 "DWORD"                  = "dw"
 "DWORD64"                = "dw64"
 "WORD"                   = "w"
 "CHAR"                   = "c"
 "BYTE"                   = "by"
-"HANDLE"                 = "h"
+"BOOL"                   = "b"
 "BOOLEAN"                = "b"
 "LONGLONG"               = "ll"
+"UCHAR"                  = "uc"
 
+# Windows Type - Handle
+"HANDLE"                 = "h"
+HACCEL                   = "h"
+HBITMAP                  = "h"
+HBRUSH                   = "h"
+HCOLORSPACE              = "h"
+HCONV                    = "h"
+HCONVLIST                = "h"
+HCURSOR                  = "h"
+HDC                      = "h"
+HDDEDATA                 = "h"
+HDESK                    = "h"
+HDROP                    = "h"
+HDWP                     = "h"
+HENHMETAFILE             = "h"
+HFILE                    = "h"
+HFONT                    = "h"
+HGDIOBJ                  = "h"
+HGLOBAL                  = "h"
+HHOOK                    = "h"
+HICON                    = "h"
+HINSTANCE                = "h"
+HKEY                     = "h"
+HLOCAL                   = "h"
+HMENU                    = "h"
+HMETAFILE                = "h"
+HMODULE                  = "h"
+HMONITOR                 = "h"
+HPALETTE                 = "h"
+HPEN                     = "h"
+HRGN                     = "h"
+HRSRC                    = "h"
+HSZ                      = "h"
+HWINSTA                  = "h"
+HWND                     = "h"
+LPHANDLE                 = "h"
+PHANDLE                  = "h"
+SC_HANDLE                = "h"
+SERVICE_STATUS_HANDLE    = "h"
+
+# Windows Type - Parameter
+WPARAM                   = "w"
+LPARAM                   = "l"
