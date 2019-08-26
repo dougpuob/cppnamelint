@@ -300,15 +300,23 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
 	Rule.NullStringMap.push_back(MappingPair("wchar_t*"  , "wsz"));
 	Rule.NullStringMap.push_back(MappingPair("wchar_t**" , "pwsz"));
 
+    Rule.NullStringMap.push_back(MappingPair("char[]"	 , "sz"));
+    Rule.NullStringMap.push_back(MappingPair("wchar_t[]" , "wsz"));
+
 	bool bPrefer = true;
 	bool bIsPtr   = false;
 	bool bIsArray = false;
 	Detect.ApplyRuleForVariable(Rule);
-	
+	    
+    // ...........................................................vvvvvvvvv <-- * character should be removed.
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"     , bPrefer, true  , bIsArray));
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "pszStr"    , bPrefer, true  , bIsArray));
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t" , "wszStr"    , bPrefer, true  , bIsArray));
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "pwszStr"   , bPrefer, true  , bIsArray));
+
+    // ...........................................................vvvvvvvvv <-- [] characters should be removed.
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"     , bPrefer, false , true));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "wszStr"    , bPrefer, false , true));
 
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"		, "piMyValue" , bPrefer, true  , bIsArray));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uin8_t"  , "MyFunc"    , bPrefer, bIsPtr, bIsArray));

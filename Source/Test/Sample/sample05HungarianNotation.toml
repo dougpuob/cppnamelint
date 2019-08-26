@@ -41,6 +41,8 @@ PreferUpperCamelIfMissed = true
 "wchar_t*"               = "wsz"
 "char**"                 = "psz"
 "wchar_t**"              = "pwsz"
+"char[]"                 = "sz"
+"wchar_t[]"              = "wsz"
 
 [Hungarian.WordList]
 # C Primitive Type

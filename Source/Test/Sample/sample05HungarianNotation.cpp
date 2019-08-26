@@ -30,6 +30,8 @@ uint8_t u8VarUint8[8]    = {0};
 uint16_t u16VarUint16[8] = {0};
 uint32_t u32VarUint32[8] = {0};
 uint64_t u64VarUint64[8] = {0};
+char szMyStr[8]          = {'\0'};
+wchar_t wszMyStr[8]      = {'\0'};
 
 //
 // Variables
