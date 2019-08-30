@@ -101,7 +101,7 @@ PreferUpperCamelIfMissed = true
 "UCHAR"                  = "uc"
 
 # Windows Type - Handle
-"HANDLE"                 = "h"
+HANDLE                   = "h"
 HACCEL                   = "h"
 HBITMAP                  = "h"
 HBRUSH                   = "h"
@@ -143,3 +143,13 @@ SERVICE_STATUS_HANDLE    = "h"
 # Windows Type - Parameter
 WPARAM                   = "w"
 LPARAM                   = "l"
+
+# Redefined pointer types
+# PINT8                  = "i8"   # PINT8  pi8Value  = NULL;
+# PINT16                 = "i16"  # PINT16 pi16Value = NULL;
+# PINT32                 = "i32"  # PINT32 pi32Value = NULL;
+# PINT64                 = "i64"  # PINT64 pi64Value = NULL;
+# PUINT8                 = "u8"   # PINT8  pu8Value  = NULL;
+# PUINT16                = "u16"  # PINT16 pu16Value = NULL;
+# PUINT32                = "u32"  # PINT32 pu32Value = NULL;
+# PUINT64                = "u64"  # PINT64 pu64Value = NULL;
