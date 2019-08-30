@@ -356,6 +356,8 @@ bool Detection::ApplyRuleForVariable(const RuleOfVariable &Rule) {
     this->m_RuleOfVariable.NullStringMap.clear();
     for (auto Item : Rule.NullStringMap) {
         String::Replace(Item.Key, "*", "");
+        String::Replace(Item.Key, "[", "");
+        String::Replace(Item.Key, "]", "");
         this->m_RuleOfVariable.NullStringMap.push_back(MappingPair(Item.Key, Item.Value));
     }
     return true;
