@@ -54,6 +54,8 @@ endif()
 include_directories(
     $ENV{NAMELINT_LLVM_LIB}/llvm/include
     $ENV{NAMELINT_LLVM_LIB}/clang/include
+    $ENV{NAMELINT_LLVM_LIB}/build/include
+    $ENV{NAMELINT_LLVM_LIB}/build/tools/clang/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include    
