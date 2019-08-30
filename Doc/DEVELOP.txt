@@ -2,6 +2,12 @@ Development for CppNameLint
 ===========================
 
 
+Prebuilt LLVM libraries
+  - Windows       : llvm-8.0.0-prebuilt-msvc2017-32bit.7z (http://bit.ly/2Uggtlq)
+  - Linux(Ubuntu) : llvm-8.0.0-prebuilt-ubuntu18.04.2-gcc8-x64.7z (http://bit.ly/30MNNmy)
+  - macOS()       :
+
+
 Requires Common Tools
 ---------------------
   1. git
@@ -18,13 +24,13 @@ Steps to build LLVM
 -------------------
 1. Fetch source code of LLVM
    `$ git clone https://github.com/llvm/llvm-project.git llvm-project.git`
-   
+
 2. Configure LLVM
    `$ cd llvm-project.git`
    `$ git checkout llvmorg-8.0.0`
    `$ mkdir -p build/release`
    `$ cd build/release`
-   
+
 3. **Configure LLVM via CMake for WIndows**
    - Release
      - 32-bit (293 MB)
@@ -33,7 +39,7 @@ Steps to build LLVM
 	           -G "Visual Studio 15 2017"   \
 	           -Thost=x64                   \
 	           ..\llvm
-		
+
      - 64-bit (XXX MB)
        $ cmake -DLLVM_ENABLE_PROJECTS=clang \
 	           -DCMAKE_BUILD_TYPE=Release   \
@@ -43,7 +49,7 @@ Steps to build LLVM
 	           ..\llvm
 
 	 - Launch LLVM.sln
-		
+
    - Debug
      - 32-bit (4.27 GB)
         $ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 \
@@ -63,7 +69,7 @@ Steps to build LLVM
 
 4. **Configure LLVM via CMake for Linux**
    - Release
-     - 64-bit (XXXX GB)       
+     - 64-bit (XXXX GB)
 	   $ export CC=gcc-8
 	   $ export CXX=g++-8
 	   $ cmake -DCMAKE_BUILD_TYPE=Release   \
@@ -73,10 +79,10 @@ Steps to build LLVM
 	           -G "Unix Makefiles"          \
 	           ../../llvm
 	   $ make
-	
+
 5. **Configure LLVM via CMake for macOS**
    - Release
-     - 64-bit (XXXX GB)       
+     - 64-bit (XXXX GB)
 	   $ export CC=clang-8
 	   $ export CXX=clang++-8
 	   $ cmake -DLLVM_ENABLE_PROJECTS=clang      \
@@ -84,7 +90,7 @@ Steps to build LLVM
 	           -DLLVM_ENABLE_RTTI=1              \
 			   -G "Unix Makefiles"               \
 			   ../../llvm
-	   $ make	
+	   $ make
 
 
 Steps to build CppNameLint (This Project)
@@ -117,13 +123,13 @@ Steps to build CppNameLint (This Project)
 5. Build this project.
    - Windows
     Launch `cpp-namelint.git\Build\win32\cppnamelint.sln`
-	
+
   - Linux
 	$ cd Script
 	$ ./BuildLinux.sh
 	$ cd ../build/release
 	$ make
-	
+
   - macOS
 	$ cd Script
 	$ ./BuildMacOS.sh
@@ -133,7 +139,7 @@ Steps to build CppNameLint (This Project)
 
 Reference
 ---------
-- https://clang.llvm.org/get_started.html
+  - https://clang.llvm.org/get_started.html
 
 
 Submodules
