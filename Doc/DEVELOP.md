@@ -20,8 +20,8 @@ https://clang.llvm.org/get_started.html
 1. Configure LLVM(clang) project.
    1. `cd llvm-project.git`
    1. `git checkout llvmorg-8.0.0`
-   1. `mkdir build`
-   1. `cd build`
+   1. `mkdir build/release -p`
+   1. `cd build/release`
    1. Config project via CMake:
       - Windows
         - Release
@@ -39,7 +39,7 @@ https://clang.llvm.org/get_started.html
         - `export CC=gcc-8`
         - `export CXX=g++-8`
         - Release
-          - 64-bit (XXXX GB): `cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" ../llvm`
+          - 64-bit (XXXX GB): `cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS=clang -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_TERMINFO=OFF -G "Unix Makefiles" ../../llvm`
         - RelWithDebInfo
         - Debug
 
@@ -47,7 +47,7 @@ https://clang.llvm.org/get_started.html
         - `export CC=clang`
         - `export CXX=clang++`
         - Release
-          - 64-bit (XXXX GB): `cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE:STRING=Release -DLLVM_ENABLE_RTTI=1 -G "Unix Makefiles" ../llvm`
+          - 64-bit (XXXX GB): `cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE:STRING=Release -DLLVM_ENABLE_RTTI=1 -G "Unix Makefiles" ../../llvm`
         - RelWithDebInfo
         - Debug
 

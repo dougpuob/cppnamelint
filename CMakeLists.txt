@@ -20,8 +20,6 @@ endif()
 
 
 ###############################################################################
-set(LLVM_VERSION 8.0.0)# llvmorg-8.0.0
-set(NAMELINT_LLVM_LIB_VER "$ENV{NAMELINT_LLVM_LIB}/${LLVM_VERSION}")
 if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4141")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
@@ -31,23 +29,34 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4099")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /source-charset:utf-8")    
-    set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )
-    set(NAMELINT_LLVM_LIB_PATH ${NAMELINT_LLVM_LIB_VER}/build/${BUILD_TYPE}/lib)
+    set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )    
 elseif(UNIX AND NOT APPLE)
+    string(TOLOWER ${BUILD_TYPE} BUILD_TYPE)
     set(CMAKE_CXX_FLAGS "-frtti")
-    set(NAMELINT_LLVM_LIB_PATH ${NAMELINT_LLVM_LIB_VER}/build/lib)
 elseif(APPLE)
+    string(TOLOWER ${BUILD_TYPE} BUILD_TYPE)
     set(CMAKE_CXX_FLAGS "-frtti")
-    set(NAMELINT_LLVM_LIB_PATH ${NAMELINT_LLVM_LIB_VER}/build/lib)
+endif()
+
+
+###############################################################################
+set(NAMELINT_LLVM_LIB_PATH $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/lib)
+if(WIN32)
+    set(EXTERNAL_LIB Version)
+elseif(UNIX AND NOT APPLE)
+    set(EXTERNAL_LIB z tinfo)
+elseif(APPLE)
+    set(EXTERNAL_LIB z ncurses)
 endif()
 
 
 ###############################################################################
 include_directories(
-    ${NAMELINT_LLVM_LIB_VER}/llvm/include
-    ${NAMELINT_LLVM_LIB_VER}/clang/include
-    ${NAMELINT_LLVM_LIB_VER}/build/include
-    ${NAMELINT_LLVM_LIB_VER}/build/tools/clang/include
+    $ENV{NAMELINT_LLVM_LIB}/llvm/include
+    $ENV{NAMELINT_LLVM_LIB}/clang/include
+    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include
+    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include
+    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include    
     Module/googletest.git/googletest/include
     Module/nlohmannjson.git/include
     Module/docopt.cpp
@@ -75,16 +84,14 @@ else()
 endif()
 
 message("BUILD_TYPE                 : ${BUILD_TYPE}")
-message("LLVM_VERSION               : ${LLVM_VERSION}")
 message("NAMELINT_LLVM_LIB          : $ENV{NAMELINT_LLVM_LIB}")
-message("NAMELINT_LLVM_LIB_VER      : ${NAMELINT_LLVM_LIB_VER}" )
 message("NAMELINT_LLVM_LIB_PATH     : ${NAMELINT_LLVM_LIB_PATH}" )
-message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
-message("INC_PATH_1                 : ${NAMELINT_LLVM_LIB_VER}/llvm/include" )
-message("INC_PATH_2                 : ${NAMELINT_LLVM_LIB_VER}/clang/include" )
-message("INC_PATH_3                 : ${NAMELINT_LLVM_LIB_VER}/build/include" )
-message("INC_PATH_4                 : ${NAMELINT_LLVM_LIB_VER}/build/tools/clang/include" )
-message("INC_PATH_5                 : Module/googletest.git/googletest/include" )
+#message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
+message("INC_PATH_1                 : $ENV{NAMELINT_LLVM_LIB}/llvm/include" )
+message("INC_PATH_2                 : $ENV{NAMELINT_LLVM_LIB}/clang/include" )
+message("INC_PATH_3                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include" )
+message("INC_PATH_4                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include" )
+message("INC_PATH_5                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include" )
 
 
 ###############################################################################
@@ -137,15 +144,6 @@ add_executable(
 
 
 ###############################################################################
-
-if(WIN32)
-    set(EXTERNAL_LIB Version)
-elseif(UNIX AND NOT APPLE)
-    set(EXTERNAL_LIB z tinfo)
-elseif(APPLE)
-    set(EXTERNAL_LIB z ncurses)
-endif()
-
 target_link_libraries(
     cppnamelint
     docopt
