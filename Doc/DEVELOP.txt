@@ -1,10 +1,10 @@
-Development for CppNameLint
-===========================
+How to start to develop CppNameLint
+===================================
 
 
 Prebuilt LLVM libraries
-  - Windows       : llvm-8.0.0-prebuilt-msvc2017-32bit.7z (http://bit.ly/2Uggtlq)
-  - Linux(Ubuntu) : llvm-8.0.0-prebuilt-ubuntu18.04.2-gcc8-x64.7z (http://bit.ly/30MNNmy)
+  - Windows       : 8.0.0-msvc2017-32bit.7z [464MB] (http://bit.ly/32kQFYk)
+  - Linux(Ubuntu) : 8.0.0-ubuntu18.04.2-gcc8-x64.7z [90MB] (http://bit.ly/2MPghZA)
   - macOS()       :
 
 
