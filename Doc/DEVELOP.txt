@@ -5,7 +5,7 @@ How to start to develop CppNameLint
 Prebuilt LLVM libraries
   - Windows       : 8.0.0-msvc2017-32bit.7z [464MB] (http://bit.ly/32kQFYk)
   - Linux(Ubuntu) : 8.0.0-ubuntu18.04.2-gcc8-x64.7z [90MB] (http://bit.ly/2MPghZA)
-  - macOS()       :
+  - macOS()       : Preparing
 
 
 Requires Common Tools
@@ -35,62 +35,62 @@ Steps to build LLVM
    - Release
      - 32-bit (293 MB)
        $ cmake -DLLVM_ENABLE_PROJECTS=clang \
-	           -DCMAKE_BUILD_TYPE=Release   \
-	           -G "Visual Studio 15 2017"   \
-	           -Thost=x64                   \
-	           ..\llvm
+               -DCMAKE_BUILD_TYPE=Release   \
+               -G "Visual Studio 15 2017"   \
+               -Thost=x64                   \
+               ..\llvm
 
      - 64-bit (XXX MB)
        $ cmake -DLLVM_ENABLE_PROJECTS=clang \
-	           -DCMAKE_BUILD_TYPE=Release   \
-	           -G "Visual Studio 15 2017"   \
-	           -A x64                       \
-	           -Thost=x64                   \
-	           ..\llvm
+               -DCMAKE_BUILD_TYPE=Release   \
+               -G "Visual Studio 15 2017"   \
+               -A x64                       \
+               -Thost=x64                   \
+               ..\llvm
 
-	 - Launch LLVM.sln
+     - Launch LLVM.sln
 
    - Debug
      - 32-bit (4.27 GB)
         $ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 \
-	            -DLLVM_ENABLE_PROJECTS=clang        \
-	            -DCMAKE_BUILD_TYPE=Debug            \
-	            -G "Visual Studio 15 2017"          \
+                -DLLVM_ENABLE_PROJECTS=clang        \
+                -DCMAKE_BUILD_TYPE=Debug            \
+                -G "Visual Studio 15 2017"          \
                 -Thost=x64                          \
-	            ..\llvm
+                ..\llvm
 
      - 64-bit (x.xx GB)
-	    $ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 \
-	            -DLLVM_ENABLE_PROJECTS=clang        \
-	            -DCMAKE_BUILD_TYPE=Debug            \
-	            -G "Visual Studio 15 2017"          \
-	            -Thost=x64                          \
-	            ..\llvm
+        $ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 \
+                -DLLVM_ENABLE_PROJECTS=clang        \
+                -DCMAKE_BUILD_TYPE=Debug            \
+                -G "Visual Studio 15 2017"          \
+                -Thost=x64                          \
+                ..\llvm
 
 4. **Configure LLVM via CMake for Linux**
    - Release
      - 64-bit (XXXX GB)
-	   $ export CC=gcc-8
-	   $ export CXX=g++-8
-	   $ cmake -DCMAKE_BUILD_TYPE=Release   \
-	           -DLLVM_ENABLE_PROJECTS=clang \
-	           -DLLVM_ENABLE_RTTI=ON        \
-	           -DLLVM_ENABLE_TERMINFO=OFF   \
-	           -G "Unix Makefiles"          \
-	           ../../llvm
-	   $ make
+       $ export CC=gcc-8
+       $ export CXX=g++-8
+       $ cmake -DCMAKE_BUILD_TYPE=Release    \
+               -DLLVM_ENABLE_PROJECTS=clang  \
+               -DLLVM_ENABLE_RTTI=ON         \
+               -DLLVM_ENABLE_TERMINFO=OFF    \
+               -G "Unix Makefiles"           \
+               ../../llvm
+       $ make
 
 5. **Configure LLVM via CMake for macOS**
    - Release
      - 64-bit (XXXX GB)
-	   $ export CC=clang-8
-	   $ export CXX=clang++-8
-	   $ cmake -DLLVM_ENABLE_PROJECTS=clang      \
-	           -DCMAKE_BUILD_TYPE:STRING=Release \
-	           -DLLVM_ENABLE_RTTI=1              \
-			   -G "Unix Makefiles"               \
-			   ../../llvm
-	   $ make
+       $ export CC=clang-8
+       $ export CXX=clang++-8
+       $ cmake -DLLVM_ENABLE_PROJECTS=clang          \
+                   -DCMAKE_BUILD_TYPE:STRING=Release \
+                   -DLLVM_ENABLE_RTTI=1              \
+                   -G "Unix Makefiles"               \
+                   ../../llvm
+       $ make
 
 
 Steps to build CppNameLint (This Project)
@@ -98,7 +98,7 @@ Steps to build CppNameLint (This Project)
 1. `$ git clone https://github.com/dougpuob/cpp-namelint.git cpp-namelint.git`
 
 2. Set environment variable.
-   - **Windows** : `$ SET NAMELINT_DEVTLS "C:\llvm-project.git"`
+   - **Windows** : `$ SET NAMELINT_DEVTLS    "C:\llvm-project.git"`
    - **Linux**   : `$ export NAMELINT_DEVTLS "~/llvm-project.git"`
    - **macOS**   : `$ export NAMELINT_DEVTLS "~/llvm-project.git"`
 
@@ -112,29 +112,29 @@ Steps to build CppNameLint (This Project)
 
    - Linux
      - `$ BuildLinux.sh`
-	 - `$ BuildLinux.sh Release`
-	 - `$ BuildLinux.sh DEbug`
+     - `$ BuildLinux.sh Release`
+     - `$ BuildLinux.sh DEbug`
 
    - MacOS
      - `$ BuildLinux.sh`
-	 - `$ BuildLinux.sh Release`
-	 - `$ BuildLinux.sh DEbug`
+     - `$ BuildLinux.sh Release`
+     - `$ BuildLinux.sh DEbug`
 
 5. Build this project.
    - Windows
     Launch `cpp-namelint.git\Build\win32\cppnamelint.sln`
 
   - Linux
-	$ cd Script
-	$ ./BuildLinux.sh
-	$ cd ../build/release
-	$ make
+    $ cd Script
+    $ ./BuildLinux.sh
+    $ cd ../build/release
+    $ make
 
   - macOS
-	$ cd Script
-	$ ./BuildMacOS.sh
-	$ cd ../build/release
-	$ make
+    $ cd Script
+    $ ./BuildMacOS.sh
+    $ cd ../build/release
+    $ make
 
 
 Reference
@@ -149,3 +149,4 @@ Submodules
 License
 -------
 MIT
+
