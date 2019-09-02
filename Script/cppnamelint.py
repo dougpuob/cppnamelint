@@ -242,12 +242,15 @@ def main():
     inc_dirs = ""
 
 
-    def get_exe_file():
-        exe_file = utility.find_target_app('cppnamelint', os.path.abspath('.'))
+    def get_exe_file():        
+        exe_file = ''
+        if os.path.exists('../Build'):
+            exe_file = utility.find_target_app('cppnamelint', '../Build')
+
         if '' == exe_file:
-            exe_file = utility.find_target_app('cppnamelint', os.path.abspath('..'))
+            exe_file = utility.find_target_app('cppnamelint', '.')
             if '' == exe_file:
-                exe_file = utility.find_target_app('cppnamelint', os.path.abspath('../Build'))
+                exe_file = utility.find_target_app('cppnamelint', '..')
         return exe_file
 
 
@@ -287,11 +290,7 @@ def main():
 
 
     elif arguments['test']:
-        exe_file = utility.find_target_app('cppnamelint', '.')
-        if '' == exe_file:
-            exe_file = utility.find_target_app('cppnamelint', '..')
-            if '' == exe_file:
-                exe_file = utility.find_target_app('cppnamelint', '../Build')
+        exe_file = get_exe_file()
 
         if not os.path.exists(exe_file):
             print('Failed to find executable binary file.')
@@ -319,11 +318,7 @@ def main():
                                      " --config=" + os.path.abspath(arguments['<config>']))
 
     elif arguments['test-sample']:
-        exe_file = utility.find_target_app('cppnamelint', '.')
-        if '' == exe_file:
-            exe_file = utility.find_target_app('cppnamelint', '..')
-            if '' == exe_file:
-                exe_file = utility.find_target_app('cppnamelint', '../Build')
+        exe_file = get_exe_file()
 
         if not os.path.exists(exe_file):
             print('Failed to find executable binary file.')
