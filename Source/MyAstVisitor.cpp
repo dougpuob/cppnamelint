@@ -102,18 +102,18 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
         return false;
     }
 
-    bool bInvalid = false;
-    clang::StringRef MyStrRef;
-    clang::LangOptions MyLangOpt;
-    SourceRange MySrcRange(pDecl->getBeginLoc(), pDecl->getLocation());
-    MyStrRef = Lexer::getSourceText(CharSourceRange::getCharRange(MySrcRange), *this->m_pSrcMgr, MyLangOpt, &bInvalid);
-    VarType  = MyStrRef.str();
+	SourceLocation MyBeginLoc = pDecl->getBeginLoc();
+    SourceLocation MyLoc      = pDecl->getLocation();
+    string MyVarType =
+    std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
+                this->m_pSrcMgr->getCharacterData(MyLoc) - this->m_pSrcMgr->getCharacterData(MyBeginLoc));
 
-    QualType QualType = pDecl->getType();
+    VarType  = MyVarType;
+
+    QualType MyQualType = pDecl->getType();
 
     VarName    = pDecl->getName().data();
-    string Abc = QualType.getAsString();
-    bIsPtr     = QualType->isPointerType();
+    bIsPtr     = MyQualType->isPointerType();
 
     if (VarType.length() > 0) {
         this->_ClassifyTypeName(VarType);
@@ -134,42 +134,36 @@ bool MyASTVisitor::_GetVarInfo(
     if (!this->_IsMainFile(pDecl)) {
         return false;
     }
+	//TODO:
+	//This will get var type, but need to overcome some situation:
+	//1. Type "unsigned long long int" will get "unsigned long long"
+	//2. Dependency on include file, if can't get definition, it will get "int"
+	//3. Multi-array issue,we need to process string like "[8][]" "[][][]"
+	//...
+	//auto VarType = pDecl->getType().getAsString();
 
-    bool bInvalid = false;
-    clang::StringRef MyStrRef;
-    clang::LangOptions MyLangOpt;
     SourceLocation MyBeginLoc = pDecl->getBeginLoc();
     SourceLocation MyLoc      = pDecl->getLocation();
-    SourceRange MySrcRange(MyBeginLoc, MyLoc);
-    MyStrRef = Lexer::getSourceText(CharSourceRange::getCharRange(MySrcRange), *this->m_pSrcMgr, MyLangOpt, &bInvalid);
+    string MyVarType = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
+		                            this->m_pSrcMgr->getCharacterData(MyLoc) - this->m_pSrcMgr->getCharacterData(MyBeginLoc));
+    size_t nPos = MyVarType.find(",");
 
-    string RawSrcText = MyStrRef.str();
-    size_t nPos       = RawSrcText.find(",");
-
-    if (std::string::npos != nPos) {
-        // printf("1 nPos=%d    ", nPos);
-        nPos = RawSrcText.find(" ");
-        // printf("2 nPos=%d \n", nPos);
-        RawSrcText = RawSrcText.substr(0, nPos);
+	if (std::string::npos != nPos) {
+        nPos       = MyVarType.find(" ");
+        MyVarType = MyVarType.substr(0, nPos);
     }
 
-    QualType MyQualType   = pDecl->getType();
-    VarName               = pDecl->getNameAsString();
-    const bool bArrayType = MyQualType->isArrayType();
-    const bool bPtrType   = MyQualType->isPointerType();
-
-    if (RawSrcText.length() > 0) {
-        this->_ClassifyTypeName(RawSrcText);
+    if (MyVarType.length() > 0) {
+        this->_ClassifyTypeName(MyVarType);
     }
 
-    VarType        = RawSrcText;
-    bIsArray       = bArrayType;
+    QualType MyQualType = pDecl->getType();
+
+    VarType        = MyVarType;
+    VarName        = pDecl->getNameAsString();
+    bIsArray       = MyQualType->isArrayType();
     bIsBuiltinType = MyQualType->isBuiltinType();
     bIsPtr         = MyQualType->isPointerType();
-
-    // printf("VarType       = %s\n", VarType.c_str());
-    // printf("isBuiltinType = %d\n", myQualType->isBuiltinType());
-    // printf("bArrayType    = %d\n", bArrayType);
 
     String::Trim(VarType);
     String::Trim(VarName);
