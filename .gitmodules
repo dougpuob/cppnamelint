@@ -1,12 +1,15 @@
 [submodule "Module/tinytoml.git"]
-	path = Module/tinytoml.git
-	url = https://github.com/mayah/tinytoml.git
-        branch = master
+	path   = Module/tinytoml.git
+	url    = https://github.com/mayah/tinytoml.git
+    branch = master
 [submodule "Module/googletest.git"]
-	path = Module/googletest.git
-	url = https://github.com/abseil/googletest.git
-        branch = master
+	path   = Module/googletest.git
+	url    = https://github.com/abseil/googletest.git
+    branch = master
 [submodule "Module/nlohmannjson.git"]
-	path = Module/nlohmannjson.git
-	url = https://github.com/nlohmann/json.git
+	path   = Module/nlohmannjson.git
+	url    = https://github.com/nlohmann/json.git
     branch = v3.6.1
+[submodule "Module/plog.git"]
+	path = Module/plog.git
+	url = https://github.com/SergiusTheBest/plog.git

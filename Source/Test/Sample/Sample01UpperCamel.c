@@ -119,5 +119,4 @@ LONGLONG WinVarLongLong = 0;
 //
 int MyFunc(int Value) { return 0; }
 
-
 // clang-format on

@@ -12,7 +12,7 @@ if   [ "${1}" == "Release" ] || [ "${1}" == "release" ] || [ "${1}" == "RELEASE"
 elif [ "${1}" == "Debug" ]   || [ "${1}" == "debug" ]   || [ "${1}" == "DEBUG" ]; then
     BUILD_TYPE="Debug"
 else
-    UILD_TYPE="Release"
+    BUILD_TYPE="Release"
 fi
 
 git submodule init

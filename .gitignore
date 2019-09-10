@@ -57,3 +57,6 @@ Debug
 /Doc/*.c
 cppnamelint.json
 Release
+*.ninja
+*.pc
+compile_commands.*

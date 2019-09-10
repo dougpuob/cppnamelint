@@ -15,7 +15,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL Release)
 elseif(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
     set (BUILD_TYPE RelWithDebInfo)
 else()
-    set (BUILD_TYPE NONE)
+    set (BUILD_TYPE release)
 endif()
 
 
@@ -28,12 +28,16 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4227")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4099")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4996")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /source-charset:utf-8")    
-    set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )    
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /source-charset:utf-8")
+    set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )
 elseif(UNIX AND NOT APPLE)
+    set(CC   "/usr/bin/gcc-8")
+    set(CXX  "/usr/bin/g++-8")
     string(TOLOWER ${BUILD_TYPE} BUILD_TYPE)
-    set(CMAKE_CXX_FLAGS "-frtti")
+    set(CMAKE_CXX_FLAGS "-frtti -g")
 elseif(APPLE)
+    set(CC   "/usr/bin/clang-8")
+    set(CXX  "/usr/bin/clang++-8")
     string(TOLOWER ${BUILD_TYPE} BUILD_TYPE)
     set(CMAKE_CXX_FLAGS "-frtti")
 endif()
@@ -58,9 +62,10 @@ include_directories(
     $ENV{NAMELINT_LLVM_LIB}/build/tools/clang/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include
-    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include    
+    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include
     Module/googletest.git/googletest/include
     Module/nlohmannjson.git/include
+    Module/plog.git/include
     Module/docopt.cpp
 )
 
@@ -102,6 +107,7 @@ option(BUILD_TESTING "Turn OFF to build the testing tree (nlohmannjson)." OFF)
 add_subdirectory(Module/docopt.cpp)
 add_subdirectory(Module/googletest.git)
 add_subdirectory(Module/nlohmannjson.git)
+add_subdirectory(Module/plog.git)
 
 
 ###############################################################################
@@ -134,6 +140,8 @@ add_executable(
     Source/Common.cpp
     Source/Config.h
     Source/Config.cpp
+    Source/LearnIt.h
+    Source/LearnIt.cpp
     Source/MyFactory.h
     Source/MyFactory.cpp
     Source/MyAstVisitor.h
