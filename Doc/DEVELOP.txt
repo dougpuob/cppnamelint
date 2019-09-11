@@ -15,21 +15,21 @@ Requires Common Tools
   3. python3
   4. python docopt
   5. Compilers
-     - Windows: `Visual Studio 2017 Community`
-     - Linux  : `gcc-8`
-     - MacOS  : `llvm-8`
+     - Windows: Visual Studio 2017 Community
+     - Linux  : gcc-8
+     - MacOS  : llvm-8
 
 
 Steps to build LLVM
 -------------------
 1. Fetch source code of LLVM
-   `$ git clone https://github.com/llvm/llvm-project.git llvm-project.git`
+   $ git clone https://github.com/llvm/llvm-project.git llvm-project.git
 
 2. Configure LLVM
-   `$ cd llvm-project.git`
-   `$ git checkout llvmorg-8.0.0`
-   `$ mkdir -p build/release`
-   `$ cd build/release`
+   $ cd llvm-project.git
+   $ git checkout llvmorg-8.0.0
+   $ mkdir -p build/release
+   $ cd build/release
 
 3. **Configure LLVM via CMake for WIndows**
    - Release
@@ -98,31 +98,31 @@ Steps to build CppNameLint (This Project)
 1. `$ git clone https://github.com/dougpuob/cpp-namelint.git cpp-namelint.git`
 
 2. Set environment variable.
-   - **Windows** : `$ SET NAMELINT_DEVTLS    "C:\llvm-project.git"`
-   - **Linux**   : `$ export NAMELINT_DEVTLS "~/llvm-project.git"`
-   - **macOS**   : `$ export NAMELINT_DEVTLS "~/llvm-project.git"`
+   - **Windows** : $ SET NAMELINT_DEVTLS    "C:\llvm-project.git"
+   - **Linux**   : $ export NAMELINT_DEVTLS "~/llvm-project.git"
+   - **macOS**   : $ export NAMELINT_DEVTLS "~/llvm-project.git"
 
 3. `$ cd cpp-namelint.git`
 
 4. Config via CMake
    - Windows
-     - `$ BuildWin32.cmd`
-     - `$ BuildWin32.cmd Release`
-     - `$ BuildWin32.cmd Debug`
+     - $ BuildWin32.cmd
+     - $ BuildWin32.cmd Release
+     - $ BuildWin32.cmd Debug
 
    - Linux
-     - `$ BuildLinux.sh`
-     - `$ BuildLinux.sh Release`
-     - `$ BuildLinux.sh DEbug`
+     - $ BuildLinux.sh
+     - $ BuildLinux.sh Release
+     - $ BuildLinux.sh DEbug
 
    - MacOS
-     - `$ BuildLinux.sh`
-     - `$ BuildLinux.sh Release`
-     - `$ BuildLinux.sh DEbug`
+     - $ BuildLinux.sh
+     - $ BuildLinux.sh Release
+     - $ BuildLinux.sh DEbug
 
 5. Build this project.
    - Windows
-    Launch `cpp-namelint.git\Build\win32\cppnamelint.sln`
+    Launch cpp-namelint.git\Build\win32\cppnamelint.sln
 
   - Linux
     $ cd Script
