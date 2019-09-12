@@ -1,7 +1,6 @@
 #ifndef __LEARN_IT_H__
 #define __LEARN_IT_H__
 
-
 #include <llvm/Support/CommandLine.h>
 
 #include "clang/AST/AST.h"
@@ -20,7 +19,6 @@
 
 #include <plog/Log.h> // Step1: include the header.
 
-
 using namespace std;
 using namespace clang;
 using namespace clang::tooling;
@@ -28,11 +26,9 @@ using namespace llvm;
 using namespace clang::driver;
 using namespace clang::tooling;
 
-
 class LearnIt {
-    LearnIt(const string& LogFileName);
-    bool LearnRecordDecl(RecordDecl& Decl);
+    LearnIt(const string &LogFileName);
+    bool LearnRecordDecl(RecordDecl &Decl);
 };
-
 
 #endif // __LEARN_IT_H__
