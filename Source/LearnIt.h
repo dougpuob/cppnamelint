@@ -17,7 +17,7 @@
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
 
-#include <plog/Log.h> // Step1: include the header.
+#include <plog/Log.h>
 
 using namespace std;
 using namespace clang;
@@ -27,8 +27,10 @@ using namespace clang::driver;
 using namespace clang::tooling;
 
 class LearnIt {
-    LearnIt(const string &LogFileName);
-    bool LearnRecordDecl(RecordDecl &Decl);
+public:
+  LearnIt();
+  bool LearnRecordDecl(RecordDecl &Decl);
+  bool LearnFunctionDecl(FunctionDecl &Decl);
 };
 
 #endif // __LEARN_IT_H__

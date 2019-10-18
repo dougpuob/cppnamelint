@@ -18,10 +18,10 @@
 using namespace clang;
 
 class MyASTConsumer : public clang::ASTConsumer {
-  private:
-  public:
-    bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
-    void HandleTranslationUnit(ASTContext &Ctx);
+private:
+public:
+  bool HandleTopLevelDecl(DeclGroupRef declGroupRef);
+  void HandleTranslationUnit(ASTContext &Ctx);
 };
 
 class MyIgnoringDiagConsumer : public clang::IgnoringDiagConsumer {};

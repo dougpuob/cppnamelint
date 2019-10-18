@@ -5,6 +5,7 @@
 // AllowedUnderscopeChar   = false
 
 // clang-format off
+
 //
 // variables (Pointer)
 //

@@ -6,6 +6,8 @@
 
 using namespace namelint;
 
+// clang-format OFF
+
 namespace TargetIsGeneral {
 
 TEST(GeneralOptions, Default) {
@@ -30,7 +32,7 @@ TEST(GeneralOptions, Default) {
 }
 
 TEST(GeneralOptions, Chk_GeneralOptions) {
-    string content = "\
+  string content = "\
 	[General.Options] \r\n\
 		FileExtNameList  = [\"*.a\",\"*.b\",\"*.c\",\"*.d\"] \r\n\
 		CheckVariableName = false \r\n\
@@ -56,24 +58,24 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
 }
 
 TEST(GeneralOptions, Chk_GeneralRules) {
-    string content = "\
+  string content = "\
 	[General.Rules] \r\n\
 		FileName 	 = 3 \r\n\
 		FunctionName = 3 \r\n\
 		VariableName = 4 \r\n";
 
-    Config MyConfig;
-    bool bStatus = MyConfig.LoadStream(content);
-    // EXPECT_EQ(true, bStatus);
+  Config MyConfig;
+  bool bStatus = MyConfig.LoadStream(content);
+  // EXPECT_EQ(true, bStatus);
 
-    // GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
-    // EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SNAKE , pRule->FileName);
-    // EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SNAKE , pRule->FunctionName);
-    // EXPECT_EQ(RULETYPE::RULETYPE_HUNGARIAN   , pRule->VariableName);
+  // GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
+  // EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SNAKE , pRule->FileName);
+  // EXPECT_EQ(RULETYPE::RULETYPE_LOWER_SNAKE , pRule->FunctionName);
+  // EXPECT_EQ(RULETYPE::RULETYPE_HUNGARIAN   , pRule->VariableName);
 }
 
 TEST(GeneralOptions, Fake_WhiteList) {
-    string content = "\
+  string content = "\
 	[General.IgnoredList] \r\n\
 		FunctionPrefix 	 = [ \"_\", \"__\" ]    \r\n\
 		VariablePrefix 	 = [ \"m_\", \"g_\" ]";
@@ -97,4 +99,7 @@ TEST(GeneralOptions, Fake_WhiteList) {
                         std::find(pIgnoredList->VariablePrefix.begin(), pIgnoredList->VariablePrefix.end(), "g_"));
 }
 
+
 } // namespace TargetIsGeneral
+
+// clang-format ON

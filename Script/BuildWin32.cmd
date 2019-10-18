@@ -12,8 +12,6 @@ IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
 clang-format --version  > NUL
 IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
 
-clang-tidy   --version  > NUL
-IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
 
 ECHO ==============================================================
 ECHO Git submodule

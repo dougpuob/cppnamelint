@@ -4,6 +4,8 @@
 // VariableName            = 1 # 1: UpperCamel
 // AllowedUnderscopeChar   = true
 
+// clang-format OFF
+
 //
 // Variables (Pointer)
 //
@@ -105,3 +107,5 @@ int My_Func1(int Value) { return 0; }
 int My_Func_(int Value) { return 0; }
 int My_Func__(int Value) { return 0; }
 int My_Func_1(int Value) { return 0; }
+
+// clang-format ON

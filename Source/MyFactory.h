@@ -5,8 +5,8 @@
 #include <memory>
 
 class MyFactory {
-  public:
-    std::unique_ptr<MyASTConsumer> newASTConsumer();
+public:
+  std::unique_ptr<MyASTConsumer> newASTConsumer();
 };
 
 #endif
