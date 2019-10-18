@@ -4,7 +4,7 @@
 // VariableName            = 3 # 3: lower_snake
 // AllowedUnderscopeChar   = false
 
-// clang-format OFF
+// clang-format off
 
 //
 // Variables (Pointer)
@@ -93,4 +93,4 @@ LONGLONG win_var_longlong = 0;
 //
 int my_func(int my_value) { return 0; }
 
-// clang-format ON
+// clang-format on

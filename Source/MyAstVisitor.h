@@ -22,9 +22,9 @@
 
 #include "Config.h"
 #include "Detection.h"
+#include "LearnIt.h"
 #include "MyAstConsumer.h"
 #include "TraceMemo.h"
-#include "LearnIt.h"
 
 using namespace std;
 using namespace clang;
@@ -33,8 +33,6 @@ using namespace llvm;
 using namespace clang::driver;
 using namespace clang::tooling;
 using namespace namelint;
-
-
 
 class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 private:
@@ -53,9 +51,10 @@ private:
 
   bool _ClassifyTypeName(string &TyeName);
 
-  ErrorDetail *_CreateErrorDetail(const string &FileName, const string &Suggestion);
-  
-  ErrorDetail* _CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
+  ErrorDetail *_CreateErrorDetail(const string &FileName,
+                                  const string &Suggestion);
+
+  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
                                   const bool &bIsPtr, const bool &bIsArray,
                                   const string &TargetName,
                                   const string &Expected);

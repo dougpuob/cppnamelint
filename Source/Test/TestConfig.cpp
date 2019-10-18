@@ -6,29 +6,33 @@
 
 using namespace namelint;
 
-// clang-format OFF
+// clang-format off
 
 namespace TargetIsGeneral {
 
 TEST(GeneralOptions, Default) {
-    Config MyConfig;
+  Config MyConfig;
 
-    //
-    // General
-    //
-    std::vector<string> *pVect = &MyConfig.GetData()->General.Options.FileExtNameList;
-    EXPECT_EQ(true, 3 == pVect->size());
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.h"));
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.cpp"));
+  //
+  // General
+  //
+  std::vector<string> *pVect =
+      &MyConfig.GetData()->General.Options.FileExtNameList;
+  EXPECT_EQ(true, 3 == pVect->size());
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.h"));
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.cpp"));
 
-    //
-    // Rule
-    //
-    GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
-    EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->FileName);
-    EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->FunctionName);
-    EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->VariableName);
+  //
+  // Rule
+  //
+  GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
+  EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->FileName);
+  EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->FunctionName);
+  EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->VariableName);
 }
 
 TEST(GeneralOptions, Chk_GeneralOptions) {
@@ -40,21 +44,25 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
 		CheckFileName	  = false \r\n\
 	";
 
-    Config MyConfig;
-    bool bStatus = MyConfig.LoadStream(content);
-    EXPECT_EQ(true, bStatus);
+  Config MyConfig;
+  bool bStatus = MyConfig.LoadStream(content);
+  EXPECT_EQ(true, bStatus);
 
-    GeneralOptions *pGeneral   = &MyConfig.GetData()->General.Options;
-    std::vector<string> *pVect = &pGeneral->FileExtNameList;
-    EXPECT_EQ(true, 4 == pVect->size());
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.a"));
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.b"));
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
-    EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.d"));
+  GeneralOptions *pGeneral = &MyConfig.GetData()->General.Options;
+  std::vector<string> *pVect = &pGeneral->FileExtNameList;
+  EXPECT_EQ(true, 4 == pVect->size());
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.a"));
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.b"));
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
+  EXPECT_EQ(true,
+            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.d"));
 
-    EXPECT_EQ(true, false == pGeneral->bCheckFileName);
-    EXPECT_EQ(true, false == pGeneral->bCheckFunctionName);
-    EXPECT_EQ(true, false == pGeneral->bCheckVariableName);
+  EXPECT_EQ(true, false == pGeneral->bCheckFileName);
+  EXPECT_EQ(true, false == pGeneral->bCheckFunctionName);
+  EXPECT_EQ(true, false == pGeneral->bCheckVariableName);
 }
 
 TEST(GeneralOptions, Chk_GeneralRules) {
@@ -80,26 +88,29 @@ TEST(GeneralOptions, Fake_WhiteList) {
 		FunctionPrefix 	 = [ \"_\", \"__\" ]    \r\n\
 		VariablePrefix 	 = [ \"m_\", \"g_\" ]";
 
-    Config MyConfig;
-    bool bStatus = MyConfig.LoadStream(content);
-    EXPECT_EQ(true, bStatus);
+  Config MyConfig;
+  bool bStatus = MyConfig.LoadStream(content);
+  EXPECT_EQ(true, bStatus);
 
-    GeneralIgnoredList *pIgnoredList = &MyConfig.GetData()->General.IgnoredList;
+  GeneralIgnoredList *pIgnoredList = &MyConfig.GetData()->General.IgnoredList;
 
-    EXPECT_EQ(true, 2 == pIgnoredList->FunctionPrefix.size());
-    EXPECT_EQ(true, pIgnoredList->FunctionPrefix.end() !=
-                        std::find(pIgnoredList->FunctionPrefix.begin(), pIgnoredList->FunctionPrefix.end(), "_"));
-    EXPECT_EQ(true, pIgnoredList->FunctionPrefix.end() !=
-                        std::find(pIgnoredList->FunctionPrefix.begin(), pIgnoredList->FunctionPrefix.end(), "__"));
+  EXPECT_EQ(true, 2 == pIgnoredList->FunctionPrefix.size());
+  EXPECT_EQ(true, pIgnoredList->FunctionPrefix.end() !=
+                      std::find(pIgnoredList->FunctionPrefix.begin(),
+                                pIgnoredList->FunctionPrefix.end(), "_"));
+  EXPECT_EQ(true, pIgnoredList->FunctionPrefix.end() !=
+                      std::find(pIgnoredList->FunctionPrefix.begin(),
+                                pIgnoredList->FunctionPrefix.end(), "__"));
 
-    EXPECT_EQ(true, 2 == pIgnoredList->FunctionPrefix.size());
-    EXPECT_EQ(true, pIgnoredList->VariablePrefix.end() !=
-                        std::find(pIgnoredList->VariablePrefix.begin(), pIgnoredList->VariablePrefix.end(), "m_"));
-    EXPECT_EQ(true, pIgnoredList->VariablePrefix.end() !=
-                        std::find(pIgnoredList->VariablePrefix.begin(), pIgnoredList->VariablePrefix.end(), "g_"));
+  EXPECT_EQ(true, 2 == pIgnoredList->FunctionPrefix.size());
+  EXPECT_EQ(true, pIgnoredList->VariablePrefix.end() !=
+                      std::find(pIgnoredList->VariablePrefix.begin(),
+                                pIgnoredList->VariablePrefix.end(), "m_"));
+  EXPECT_EQ(true, pIgnoredList->VariablePrefix.end() !=
+                      std::find(pIgnoredList->VariablePrefix.begin(),
+                                pIgnoredList->VariablePrefix.end(), "g_"));
 }
-
 
 } // namespace TargetIsGeneral
 
-// clang-format ON
+// clang-format on

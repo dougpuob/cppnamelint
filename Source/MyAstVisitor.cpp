@@ -307,11 +307,11 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
 bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { return true; }
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
-    if (!this->_IsMainFile(pDecl)) {
-        return false;
-    }
+  if (!this->_IsMainFile(pDecl)) {
+    return false;
+  }
 
-    // clang-format OFF
+  // clang-format off
     printf("---------------------------------------------------------------------------------\n");
     printf("pDecl->getName()                            = %s\n", pDecl->getName().str().c_str());
     printf("pDecl->getNameAsString()                    = %s\n", pDecl->getNameAsString().c_str());
@@ -397,8 +397,8 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     printf("pDecl->isCompleteDefinition()               = %d\n", pDecl->mayInsertExtraPadding());
     printf("---------------------------------------------------------------------------------\n");
 
-    // clang-format ON
-    return true;
+  // clang-format on
+  return true;
 }
 
 bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {

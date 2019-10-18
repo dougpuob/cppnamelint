@@ -1,12 +1,9 @@
 #include "LearnIt.h"
 
-LearnIt::LearnIt() {
-  plog::init(plog::debug, "LearnIt.log");
-}
-
+LearnIt::LearnIt() { plog::init(plog::debug, "LearnIt.log"); }
 
 bool LearnIt::LearnFunctionDecl(FunctionDecl &Decl) {
-    // clang-format OFF
+  // clang-format off
   PLOGI << "---------------------------------------------------------------------------------"                  << std::endl;
   PLOGI << "Decl.getName()                            = "       << Decl.getName().str()                         << std::endl;
   PLOGI << "Decl.getNameAsString()                    = "       << Decl.getNameAsString()                       << std::endl;
@@ -68,16 +65,16 @@ bool LearnIt::LearnFunctionDecl(FunctionDecl &Decl) {
   PLOGI << "Decl.isUsed()                             = "       << Decl.isUsed()                                << std::endl;
   PLOGI << "Decl.isWeakImported()                     = "       << Decl.isWeakImported()                        << std::endl;
   PLOGI << "---------------------------------------------------------------------------------"                  << std::endl;
-  // clang-format ON
+  // clang-format on
   return true;
 }
 
 bool LearnIt::LearnRecordDecl(RecordDecl &Decl) {
-    // clang-format OFF
+  // clang-format off
 
-    PLOGI << "Hello log!";             // short macro
-    PLOGI << "Hello log!";             // long macro
-    PLOG(plog::debug) << "Hello log!"; // function-style macro
+  PLOGI << "Hello log!";             // short macro
+  PLOGI << "Hello log!";             // long macro
+  PLOG(plog::debug) << "Hello log!"; // function-style macro
 
     PLOGI << "---------------------------------------------------------------------------------"                << std::endl;
     PLOGI << "Decl.getName()                            = " << Decl.getName().str()                             << std::endl;
@@ -164,6 +161,6 @@ bool LearnIt::LearnRecordDecl(RecordDecl &Decl) {
     PLOGI << "Decl.isCompleteDefinition()               = " << Decl.mayInsertExtraPadding()                     << std::endl;
     PLOGI << "---------------------------------------------------------------------------------"                << std::endl;
 
-   // clang-format ON
-    return true;
+  // clang-format on
+  return true;
 }

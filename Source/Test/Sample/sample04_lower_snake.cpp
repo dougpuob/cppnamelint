@@ -4,7 +4,7 @@
 // VariableName            = 3 # 3: lower_snake
 // AllowedUnderscopeChar   = false
 
-// clang-format OFF
+// clang-format off
 
 //
 // Variables (Pointer)
@@ -108,4 +108,4 @@ int my_func1(int my_val) { return 0; }
 int my_func_(int my_val) { return 0; }
 int my_func_1(int my_val) { return 0; }
 
-// clang-format ON
+// clang-format on

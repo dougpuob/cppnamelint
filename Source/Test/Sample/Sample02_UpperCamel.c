@@ -4,7 +4,7 @@
 // VariableName            = 1 # 1: UpperCamel
 // AllowedUnderscopeChar   = true
 
-// clang-format OFF
+// clang-format off
 
 //
 // Variables (Pointer)

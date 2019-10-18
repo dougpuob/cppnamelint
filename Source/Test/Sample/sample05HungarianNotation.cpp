@@ -4,7 +4,7 @@
 // VariableName            = 4 # 4: Hungarian
 // AllowedUnderscopeChar   = false
 
-// clang-format OFF
+// clang-format off
 
 //
 // Variables (Pointer)
@@ -95,5 +95,4 @@ LONGLONG llWinVarLongLong = 0;
 //
 int MyFunc(int iValue) { return 0; }
 
-
-// clang-format ON
+// clang-format on
