@@ -1,11 +1,11 @@
 # **CppNameLint**
-The `cppnamelint` C/C++ naming convention checking tool which can run on Windows/Linux/MacOS for name of files, functions, variable, and parameters. This project is based on LLVM's LibTooling as a compiler frontend to retrieve AST from C/C++ source files, then check your naming rules like UpperCamel, LowerCamel, LowerSeperated, and Hungarain.
+The `cppnamelint` C/C++ naming convention checking tool which can run on Windows/Linux/MacOS for name of files, functions, variable, and parameters. This project is based on LLVM's LibTooling as a compiler frontend to retrieve AST from C/C++ source files, then check your naming rules like UpperCamel, LowerCamel, SnakeCase, and Hungarain.
 
 1. File target for C/C++ source code.
 1. Cross platform on Windows/Linux/macOS.
 1. String target for files, functions, variables, and parameters.
 1. Config file format with TOML.
-1. Naming rule with UpperCamel, LowerCamel, LowerSeperated, and Hungarain.
+1. Naming rule with UpperCamel, LowerCamel, SnakeCase, and Hungarain.
 
 
 `#LLVM` `#Clang` `#LibTooling` `#Compiler` `#Naming` `#NamingConvention` `#Toml` `#CppNameLint`
