@@ -215,6 +215,7 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   this->m_pSrcMgr = pSM;
   this->m_pAstCxt = (ASTContext *)pAstCxt;
   this->m_pConfig = pConfig->GetData();
+
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
   {
@@ -252,13 +253,18 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     return false;
   }
 
-  this->m_LearnIt.LearnFunctionDecl(*pDecl);
-
   string FuncName;
   bool bResult = false;
   bool bIsPtr = false;
   bool bIsArray = false;
   bool bStatus = this->_GetFunctionInfo(pDecl, FuncName);
+
+  if (pAppCxt->TraceMemo.Option.bLearnEnabled) {
+    // printf("aaa _GetFunctionInfo() FuncName = %s\n", FuncName.c_str());
+    // PLOGI << "_GetFunctionInfo() FuncName = " << FuncName;
+    this->m_LearnIt.LearnFunctionDecl(*pDecl);
+  }
+
   if (bStatus) {
     bResult = this->m_Detect.CheckFunction(
         this->m_pConfig->General.Rules.FunctionName, FuncName);
@@ -311,93 +317,14 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     return false;
   }
 
-  // clang-format off
-    printf("---------------------------------------------------------------------------------\n");
-    printf("pDecl->getName()                            = %s\n", pDecl->getName().str().c_str());
-    printf("pDecl->getNameAsString()                    = %s\n", pDecl->getNameAsString().c_str());
-    printf("pDecl->getDeclName()                        = %s\n", pDecl->getDeclName().getAsString().c_str());
-    printf("pDecl->getKindName()                        = %s\n", pDecl->getKindName().str().c_str());
-    // printf("pDecl->getDeclKindName()                    = %s\n", pDecl->getDeclKindName());
-    printf("pDecl->getQualifiedNameAsString()           = %s\n", pDecl->getQualifiedNameAsString().c_str());
-    printf("---------------------------------------------------------------------------------\n");
-    // printf("pDecl->InEnclosingNamespaceSetOf()          = %d\n", pDecl->InEnclosingNamespaceSetOf());
-    printf("pDecl->isAnonymousStructOrUnion()           = %d\n", pDecl->isAnonymousStructOrUnion());
-    printf("pDecl->isBeingDefined()                     = %d\n", pDecl->isBeingDefined());
-    printf("pDecl->isCanonicalDecl()                    = %d\n", pDecl->isCanonicalDecl());
-    printf("pDecl->isCapturedRecord()                   = %d\n", pDecl->isCapturedRecord());
-    printf("pDecl->isClass()                            = %d\n", pDecl->isClass());
-    printf("pDecl->isClosure()                          = %d\n", pDecl->isClosure());
-    printf("pDecl->isCompleteDefinition()               = %d\n", pDecl->isCompleteDefinition());
-    printf("pDecl->isCompleteDefinitionRequired()       = %d\n", pDecl->isCompleteDefinitionRequired());
-    printf("pDecl->isCXXClassMember()                   = %d\n", pDecl->isCXXClassMember());
-    printf("pDecl->isCXXInstanceMember()                = %d\n", pDecl->isCXXInstanceMember());
-    printf("pDecl->isExternCXXContext()                 = %d\n", pDecl->isExternCXXContext());
-    // printf("pDecl->isDeclInLexicalTraversal()           = %d\n", pDecl->isDeclInLexicalTraversal());
-    printf("pDecl->isDefinedOutsideFunctionOrMethod()   = %d\n", pDecl->isDefinedOutsideFunctionOrMethod());
-    printf("pDecl->isDependentContext()                 = %d\n", pDecl->isDependentContext());
-    printf("pDecl->isDependentType()                    = %d\n", pDecl->isDependentType());
-    printf("pDecl->isDeprecated()                       = %d\n", pDecl->isDeprecated());
-    printf("pDecl->isEmbeddedInDeclarator()             = %d\n", pDecl->isEmbeddedInDeclarator());
-    printf("pDecl->isEnum()                             = %d\n", pDecl->isEnum());
-    printf("pDecl->isExported()                         = %d\n", pDecl->isExported());
-    printf("pDecl->isExternallyDeclarable()             = %d\n", pDecl->isExternallyDeclarable());
-    printf("pDecl->isExternallyVisible()                = %d\n", pDecl->isExternallyVisible());
-    printf("pDecl->isExternCContext()                   = %d\n", pDecl->isExternCContext());
-    printf("pDecl->isExternCXXContext()                 = %d\n", pDecl->isExternCXXContext());
-    printf("pDecl->isFileContext()                      = %d\n", pDecl->isFileContext());
-    printf("pDecl->isFirstDecl()                        = %d\n", pDecl->isFirstDecl());
-    printf("pDecl->isFreeStanding()                     = %d\n", pDecl->isFreeStanding());
-    printf("pDecl->isFromASTFile()                      = %d\n", pDecl->isFromASTFile());
-    printf("pDecl->isFunctionOrFunctionTemplate()       = %d\n", pDecl->isFunctionOrFunctionTemplate());
-    printf("pDecl->isFunctionOrMethod()                 = %d\n", pDecl->isFunctionOrMethod());
-    printf("pDecl->isHidden()                           = %d\n", pDecl->isHidden());
-    printf("pDecl->isImplicit()                         = %d\n", pDecl->isImplicit());
-    printf("pDecl->isInAnonymousNamespace()             = %d\n", pDecl->isInAnonymousNamespace());
-    // printf("pDecl->isInIdentifierNamespace()            = %d\n", pDecl->isInIdentifierNamespace());
-    printf("pDecl->isInjectedClassName()                = %d\n", pDecl->isInjectedClassName());
-    printf("pDecl->isInlineNamespace()                  = %d\n", pDecl->isInlineNamespace());
-    printf("pDecl->isInStdNamespace()                   = %d\n", pDecl->isInStdNamespace());
-    printf("pDecl->isInterface()                        = %d\n", pDecl->isInterface());
-    printf("pDecl->isInvalidDecl()                      = %d\n", pDecl->isInvalidDecl());
-    printf("pDecl->isLambda()                           = %d\n", pDecl->isLambda());
-    printf("pDecl->isLexicallyWithinFunctionOrMethod()  = %d\n", pDecl->isLexicallyWithinFunctionOrMethod());
-    printf("pDecl->isLinkageValid()                     = %d\n", pDecl->isLinkageValid());
-    printf("pDecl->isLocalExternDecl()                  = %d\n", pDecl->isLocalExternDecl());
-    printf("pDecl->isLookupContext()                    = %d\n", pDecl->isLookupContext());
-    printf("pDecl->isModulePrivate()                    = %d\n", pDecl->isModulePrivate());
-    // printf("pDecl->isMsStruct()                         = %d\n", pDecl->isMsStruct());
-    printf("pDecl->isCompleteDefinitisNamespaceion()    = %d\n", pDecl->isNamespace());
-    printf("pDecl->isNonTrivialToPrimitiveCopy()        = %d\n", pDecl->isNonTrivialToPrimitiveCopy());
-    printf("pDecl->isNonTrivialToPrimitiveDefaultInit() = %d\n", pDecl->isNonTrivialToPrimitiveDefaultInitialize());
-    printf("pDecl->isNonTrivialToPrimitiveDestroy()     = %d\n", pDecl->isNonTrivialToPrimitiveDestroy());
-    printf("pDecl->isObjCContainer()                    = %d\n", pDecl->isObjCContainer());
-    printf("pDecl->isOutOfLine()                        = %d\n", pDecl->isOutOfLine());
-    printf("pDecl->isParamDestroyedInCallee()           = %d\n", pDecl->isParamDestroyedInCallee());
-    printf("pDecl->isParameterPack()                    = %d\n", pDecl->isParameterPack());
-    printf("pDecl->isRecord()                           = %d\n", pDecl->isRecord());
-    printf("pDecl->isReferenced()                       = %d\n", pDecl->isReferenced());
-    printf("pDecl->isStdNamespace()                     = %d\n", pDecl->isStdNamespace());
-    printf("pDecl->isStruct()                           = %d\n", pDecl->isStruct());
-    // printf("pDecl->isTagIdentifierNamespace()           = %d\n", pDecl->isTagIdentifierNamespace());
-    printf("pDecl->isTemplated()                        = %d\n", pDecl->isTemplated());
-    printf("pDecl->isTemplateDecl()                     = %d\n", pDecl->isTemplateDecl());
-    printf("pDecl->isTemplateParameter()                = %d\n", pDecl->isTemplateParameter());
-    printf("pDecl->isTemplateParameterPack()            = %d\n", pDecl->isTemplateParameterPack());
-    printf("pDecl->isThisDeclarationADefinition()       = %d\n", pDecl->isThisDeclarationADefinition());
-    printf("pDecl->isThisDeclarationReferenced()        = %d\n", pDecl->isThisDeclarationReferenced());
-    printf("pDecl->isTopLevelDeclInObjCContainer()      = %d\n", pDecl->isTopLevelDeclInObjCContainer());
-    printf("pDecl->isTranslationUnit()                  = %d\n", pDecl->isTranslationUnit());
-    printf("pDecl->isTransparentContext()               = %d\n", pDecl->isTransparentContext());
-    printf("pDecl->isUnavailable()                      = %d\n", pDecl->isUnavailable());
-    printf("pDecl->isCompleteDefiniisUniontion()        = %d\n", pDecl->isUnion());
-    printf("pDecl->isUsed()                             = %d\n", pDecl->isUsed());
-    printf("pDecl->isWeakImported()                     = %d\n", pDecl->isWeakImported());
-    printf("---------------------------------------------------------------------------------\n");
-    printf("pDecl->isCompleteDefinition()               = %d\n", pDecl->canPassInRegisters());
-    printf("pDecl->isCompleteDefinition()               = %d\n", pDecl->mayInsertExtraPadding());
-    printf("---------------------------------------------------------------------------------\n");
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  assert(pAppCxt);
 
-  // clang-format on
+  // PLOGI << "VisitRecordDecl()";
+  if (pAppCxt->TraceMemo.Option.bLearnEnabled) {
+    this->m_LearnIt.LearnRecordDecl(*pDecl);
+  }
+
   return true;
 }
 

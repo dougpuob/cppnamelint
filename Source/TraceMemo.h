@@ -67,6 +67,10 @@ public:
 
 class TraceMemo {
 public:
+  struct _Option {
+    bool bLearnEnabled;
+  } Option;
+
   struct _File {
     string Source;
     string Config;

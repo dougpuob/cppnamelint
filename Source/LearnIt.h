@@ -3,6 +3,7 @@
 
 #include <llvm/Support/CommandLine.h>
 
+#include "Logger.h"
 #include "clang/AST/AST.h"
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/ASTContext.h"
@@ -16,8 +17,10 @@
 #include "clang/Parse/Parser.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
-
-#include <plog/Log.h>
+#include <fstream>
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace clang;
@@ -27,6 +30,7 @@ using namespace clang::driver;
 using namespace clang::tooling;
 
 class LearnIt {
+private:
 public:
   LearnIt();
   bool LearnRecordDecl(RecordDecl &Decl);

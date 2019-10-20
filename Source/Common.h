@@ -12,19 +12,6 @@ typedef struct _APP_CONTEXT {
   string FileName;
 } APP_CONTEXT;
 
-typedef struct _COMMAND_CHECK {
-  bool bEnabled;
-} COMMAND_CHECK;
-
-typedef struct _COMMAND_TEST {
-  bool bEnabled;
-} COMMAND_TEST;
-
-typedef struct _INPUT_COMMAND {
-  COMMAND_CHECK Check;
-  COMMAND_TEST Test;
-} INPUT_COMMAND;
-
 const APP_CONTEXT *GetAppCxt();
 
 namespace Path {

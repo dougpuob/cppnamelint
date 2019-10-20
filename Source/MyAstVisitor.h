@@ -37,6 +37,7 @@ using namespace namelint;
 class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 private:
   LearnIt m_LearnIt;
+
   ASTContext *m_pAstCxt;
   const SourceManager *m_pSrcMgr;
 

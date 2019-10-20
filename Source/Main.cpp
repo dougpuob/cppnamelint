@@ -49,8 +49,8 @@ int main(int iArgc, char **pszArgv) {
   static const char *szUsage =
       R"(
   Usage:
-    cppnamelint check <file> [--config=<file>] [--log=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>]
-    cppnamelint test   [-a | --all] [-u | --unittest] [-l | --learn]
+    cppnamelint check <file> [--config=<file>] [--log=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>] [--learn]
+    cppnamelint test   [-a | --all] [-u | --unittest]
     cppnamelint --help
     cppnamelint --version
 
@@ -70,6 +70,8 @@ int main(int iArgc, char **pszArgv) {
   // for convenience
   // using json = nlohmann::json;
 
+  DcLib::Log::Init("Logger.log");
+
   cout << szTitle << endl;
   cout << "---------------------------------------------------" << endl;
   if (Arguments["check"].asBool() &&
@@ -78,6 +80,9 @@ int main(int iArgc, char **pszArgv) {
 
     namelint::Config Config;
 
+    //
+    //
+    //
     string ConfigFilePath = Arguments["--config"].asString();
     bool bResult = Path::IsExist(ConfigFilePath);
     if (bResult) {
@@ -89,6 +94,9 @@ int main(int iArgc, char **pszArgv) {
       cout << "Error: Failed to find a config file" << endl;
     }
 
+    //
+    //
+    //
     string JsonOutFilePath = "cppnamelint.json";
     if (Arguments["--jsonout"]) {
       JsonOutFilePath = Arguments["--jsonout"].asString();
@@ -97,6 +105,9 @@ int main(int iArgc, char **pszArgv) {
     pAppCxt->TraceMemo.File.Config = ConfigFilePath;
     pAppCxt->pTomlConfig = &Config;
 
+    //
+    //
+    //
     if (Arguments["--includes"]) {
       vector<string> IncludeDirs;
       size_t nCount =
@@ -110,6 +121,9 @@ int main(int iArgc, char **pszArgv) {
       }
     }
 
+    //
+    //
+    //
     int iMyArgc = 3 + pAppCxt->TraceMemo.Dir.Includes.size();
     char **pszMyArgV = new char *[iMyArgc];
     pszMyArgV[0] = strdup("");
@@ -121,6 +135,14 @@ int main(int iArgc, char **pszArgv) {
       nIdx++;
     }
 
+    //
+    //
+    //
+    pAppCxt->TraceMemo.Option.bLearnEnabled = Arguments["--learn"].asBool();
+
+    //
+    //
+    //
     static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
     CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)pszMyArgV,
                                           NameLintOptions);

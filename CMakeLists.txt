@@ -65,7 +65,6 @@ include_directories(
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include
     Module/googletest.git/googletest/include
     Module/nlohmannjson.git/include
-    Module/plog.git/include
     Module/docopt.cpp
 )
 
@@ -107,7 +106,6 @@ option(BUILD_TESTING "Turn OFF to build the testing tree (nlohmannjson)." OFF)
 add_subdirectory(Module/docopt.cpp)
 add_subdirectory(Module/googletest.git)
 add_subdirectory(Module/nlohmannjson.git)
-add_subdirectory(Module/plog.git)
 
 
 ###############################################################################
@@ -140,6 +138,8 @@ add_executable(
     Source/Common.cpp
     Source/Config.h
     Source/Config.cpp
+	Source/Logger.h
+    Source/Logger.cpp
     Source/LearnIt.h
     Source/LearnIt.cpp
     Source/MyFactory.h
