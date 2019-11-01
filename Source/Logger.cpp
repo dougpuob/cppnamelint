@@ -7,26 +7,26 @@
 
 namespace DcLib {
 
-// std::string Log::Format(const char *fmt, ...) {
-//  int size = 512;
-//  char *buffer = 0;
-//
-//  buffer = new char[size];
-//  va_list vl;
-//  va_start(vl, fmt);
-//
-//  int nsize = vsnprintf(buffer, size, fmt, vl);
-//  if (size <= nsize) { // fail delete buffer and try again
-//    delete[] buffer;
-//    buffer = 0;
-//    buffer = new char[nsize + 1]; //+1 for /0
-//    nsize = vsnprintf(buffer, size, fmt, vl);
-//  }
-//  std::string ret(buffer);
-//  va_end(vl);
-//  delete[] buffer;
-//  return ret;
-//}
+std::string Log::Format(const char *szFmt, va_list vaList) {
+  if (!DcLib::m_szBuf) {
+    DcLib::m_nBufSize = 256;
+    DcLib::m_szBuf = (char *)malloc(DcLib::m_nBufSize);
+  }
+
+  int iRetSize = vsnprintf(DcLib::m_szBuf, DcLib::m_nBufSize, szFmt, vaList);
+  if ((iRetSize > 0) && ((size_t)iRetSize > DcLib::m_nBufSize)) {
+    free(DcLib::m_szBuf);
+    DcLib::m_szBuf = NULL;
+
+    DcLib::m_nBufSize = iRetSize * 2;
+    DcLib::m_szBuf = (char *)malloc(DcLib::m_nBufSize);
+  }
+
+  iRetSize = vsnprintf(DcLib::m_szBuf, DcLib::m_nBufSize, szFmt, vaList);
+
+  static std::string retStr = DcLib::m_szBuf;
+  return retStr;
+}
 
 bool Log::Init(const char *szFileName) {
   DcLib::m_LogFileName.assign(szFileName);
@@ -54,8 +54,6 @@ size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
     FileStream.open(DcLib::m_LogFileName, std::ios::app);
   }
 
-  FileStream << std::endl;
-
   //
   // Date&Time
   //
@@ -65,9 +63,9 @@ size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
 
     FileStream << "[" << Log::Fixed(1900 + ltm->tm_year, 4)
                << Log::Fixed(ltm->tm_mon, 2) << Log::Fixed(ltm->tm_mday, 2);
-    FileStream << "-" + Log::Fixed(ltm->tm_hour, 2)
+    FileStream << "'" + Log::Fixed(ltm->tm_hour, 2)
                << Log::Fixed(ltm->tm_min, 2) << Log::Fixed(ltm->tm_sec, 2)
-               << "]";
+               << "] ";
   }
 
   //
@@ -86,9 +84,13 @@ size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
   //
   // Text Message
   //
-  FileStream << szFmt;
+  va_list vl;
+  va_start(vl, szFmt);
+  std::string retStr = Log::Format(szFmt, vl);
+  va_end(vl);
+  FileStream << retStr << std::endl;
 
   return 0;
-} // namespace DcLib
+}
 
 } // namespace DcLib

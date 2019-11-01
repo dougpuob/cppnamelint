@@ -41,6 +41,9 @@ typedef struct _FlagInfo {
   DcLib::FlagInfo { __FILE__, __func__, __LINE__, false, true, true }
 
 static std::string m_LogFileName;
+static std::size_t m_nBufSize = 0;
+static char *m_szBuf = NULL;
+
 class Log {
 private:
   Log() {}
@@ -49,7 +52,7 @@ public:
   static std::string Fixed(size_t nValue, size_t nZeroCnt);
   static bool Log::Init(const char *szFileName);
   static size_t Out(FlagInfo &FlagInfo, const char *szFmt, ...);
-  // std::string Format(const char *fmt, ...);
+  static std::string Format(const char *fmt, va_list vaList);
 };
 } // namespace DcLib
 
