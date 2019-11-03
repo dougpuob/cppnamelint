@@ -223,8 +223,14 @@ class Build():
         print("Input  = " + input_path)
         print("Output = " + output_path)
 
-        process = Popen(["cmake", input_path, "-B" +
+        process = None
+        if 'Windows' == platform.system():
+            process = Popen(["cmake", input_path, "-B" +
+                         output_path, "-DCMAKE_BUILD_TYPE="+build_type, "-G",  "Visual Studio 15 2017"])
+        else:
+            process = Popen(["cmake", input_path, "-B" +
                          output_path, "-DCMAKE_BUILD_TYPE="+build_type])
+                         
         stdout, stderr = process.communicate()
 
 
