@@ -11,6 +11,7 @@ std::string Log::Format(const char *szFmt, va_list vaList) {
   if (!DcLib::m_szBuf) {
     DcLib::m_nBufSize = 256;
     DcLib::m_szBuf = (char *)malloc(DcLib::m_nBufSize);
+    memset(DcLib::m_szBuf, 0, DcLib::m_nBufSize);
   }
 
   int iRetSize = vsnprintf(DcLib::m_szBuf, DcLib::m_nBufSize, szFmt, vaList);
@@ -24,7 +25,9 @@ std::string Log::Format(const char *szFmt, va_list vaList) {
 
   iRetSize = vsnprintf(DcLib::m_szBuf, DcLib::m_nBufSize, szFmt, vaList);
 
-  static std::string retStr = DcLib::m_szBuf;
+  static std::string retStr;
+  retStr.assign(DcLib::m_szBuf);
+
   return retStr;
 }
 

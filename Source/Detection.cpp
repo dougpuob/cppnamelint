@@ -90,8 +90,9 @@ bool Detection::_IsUpperCamelCaseString(const string &Name,
   vector<string> NewIgnorePrefixs = IgnorePrefixs;
   NewIgnorePrefixs.push_back("");
 
-  auto wayToSort =
-      [](string strA, string strB) { return strA.length() > strB.length(); };
+  auto wayToSort = [](string strA, string strB) {
+    return strA.length() > strB.length();
+  };
   std::sort(NewIgnorePrefixs.begin(), NewIgnorePrefixs.end(), wayToSort);
 
   size_t nUnderlineCount = 0;
@@ -169,8 +170,9 @@ bool Detection::_IsLowerSeperatedString(const string &Name,
                                         vector<string> IgnorePrefixs) {
   vector<string> NewIgnorePrefixs = IgnorePrefixs;
 
-  auto wayToSort =
-      [](string strA, string strB) { return strA.length() > strB.length(); };
+  auto wayToSort = [](string strA, string strB) {
+    return strA.length() > strB.length();
+  };
   std::sort(NewIgnorePrefixs.begin(), NewIgnorePrefixs.end(), wayToSort);
 
   string NewName = Name;
