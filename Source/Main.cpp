@@ -149,6 +149,11 @@ int main(int iArgc, char **pszArgv) {
 
     string FileNamePath = Arguments["<file>"].asString();
     string FileName = Path::FindFileName(FileNamePath);
+
+    DcLib::Log::Out(INFO_ALL, "File path    = %s", FileNamePath.c_str());
+    DcLib::Log::Out(INFO_ALL, "Config path  = %s", ConfigFilePath.c_str());
+    DcLib::Log::Out(INFO_ALL, "JsonLog path = %s", JsonOutFilePath.c_str());
+
     pAppCxt->TraceMemo.File.Source = FileNamePath;
 
     // Utility to run a FrontendAction over a set of files.
@@ -253,51 +258,84 @@ bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
 }
 
 bool PrintTraceMemo(const TraceMemo &TraceMemo) {
+
   bool bStatus = true;
+  char szText[512] = {0};
+
   cout << " File    = " << TraceMemo.File.Source << endl;
   cout << " Config  = " << TraceMemo.File.Config << endl;
   for (size_t nIdx = 0; nIdx < TraceMemo.Dir.Includes.size(); nIdx++) {
-    printf(" Inc[%2d] = %s\n", nIdx + 1, TraceMemo.Dir.Includes[nIdx].c_str());
+    sprintf(szText, " Inc[%2d] = %s", nIdx + 1,
+            TraceMemo.Dir.Includes[nIdx].c_str());
+    printf("%s\n", szText);
+    if (TraceMemo.Option.bLearnEnabled) {
+      DcLib::Log::Out(INFO_ALL, szText);
+    }
   }
 
-  printf(" Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n",
-         GetTotalChecked(TraceMemo), TraceMemo.Checked.nFile,
-         TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter,
-         TraceMemo.Checked.nVariable);
+  sprintf(szText, " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
+          GetTotalChecked(TraceMemo), TraceMemo.Checked.nFile,
+          TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter,
+          TraceMemo.Checked.nVariable);
+  printf("%s\n", szText);
+  if (TraceMemo.Option.bLearnEnabled) {
+    DcLib::Log::Out(INFO_ALL, szText);
+  }
 
-  printf(" Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]\n",
-         GetTotalError(TraceMemo), TraceMemo.Error.nFile,
-         TraceMemo.Error.nFunction, TraceMemo.Error.nParameter,
-         TraceMemo.Error.nVariable);
+  sprintf(szText, " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
+          GetTotalError(TraceMemo), TraceMemo.Error.nFile,
+          TraceMemo.Error.nFunction, TraceMemo.Error.nParameter,
+          TraceMemo.Error.nVariable);
+  printf("%s\n", szText);
+  if (TraceMemo.Option.bLearnEnabled) {
+    DcLib::Log::Out(INFO_ALL, szText);
+  }
 
-  cout << "---------------------------------------------------" << endl;
+  printf("------------------------------------------------------------\n");
+  if (TraceMemo.Option.bLearnEnabled) {
+    DcLib::Log::Out(
+        INFO_ALL,
+        "------------------------------------------------------------");
+  }
+
   for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
     switch (pErrDetail->Type) {
     case CheckType::CT_File:
       cout << std::left << "  < 0, 0 >" << std::left << std::setw(15)
-           << " File: " << pErrDetail->TargetName << endl;
+           << " File: " << pErrDetail->TargetName.c_str() << endl;
       break;
 
     case CheckType::CT_Function:
-      cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
-           << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
-           << " Function: " << pErrDetail->TargetName << endl;
+      sprintf(szText, "  <%4d, %4d>\t Function: %s", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
+
+      printf("%s\n", szText);
+      if (TraceMemo.Option.bLearnEnabled) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
       break;
 
     case CheckType::CT_Parameter:
-      cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
-           << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
-           << " Parameter: " << pErrDetail->TargetName << " ("
-           << pErrDetail->TypeName << (pErrDetail->bIsPtr ? "*" : "") << ")"
-           << endl;
+      sprintf(szText, "  <%4d, %4d>\t Parameter: %s%s", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TypeName.c_str(),
+              (pErrDetail->bIsPtr ? "*" : ""));
+
+      printf("%s\n", szText);
+      if (TraceMemo.Option.bLearnEnabled) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
       break;
 
     case CheckType::CT_Variable:
-      cout << std::left << "  <" << pErrDetail->Pos.nLine << ", "
-           << pErrDetail->Pos.nColumn << ">" << std::left << std::setw(15)
-           << " Variable : " << pErrDetail->TargetName << " ("
-           << pErrDetail->TypeName << (pErrDetail->bIsPtr ? "*" : "")
-           << (pErrDetail->bIsArray ? "[]" : "") << ")" << endl;
+      sprintf(szText, "  <%4d, %4d>\t Variable: %s%s%s", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TypeName.c_str(),
+              (pErrDetail->bIsPtr ? "*" : ""),
+              (pErrDetail->bIsArray ? "[]" : ""));
+
+      printf("%s\n", szText);
+      if (TraceMemo.Option.bLearnEnabled) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
       break;
 
     default:

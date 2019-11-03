@@ -33,8 +33,10 @@ class LearnIt {
 private:
 public:
   LearnIt();
-  bool LearnRecordDecl(RecordDecl &Decl);
-  bool LearnFunctionDecl(FunctionDecl &Decl);
+  bool PrintDecl(RecordDecl &Decl);
+  bool PrintDecl(FunctionDecl &Decl);
+  bool PrintDecl(VarDecl &Decl);
+  bool PrintDecl(ParmVarDecl &Decl);
 };
 
 #endif // __LEARN_IT_H__

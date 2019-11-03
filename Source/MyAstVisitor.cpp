@@ -92,6 +92,10 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
     return false;
   }
 
+  if (GetAppCxt()->TraceMemo.Option.bLearnEnabled) {
+    this->m_LearnIt.PrintDecl(*pDecl);
+  }
+
   Name = pDecl->getDeclName().getAsString();
   return true;
 }
@@ -103,6 +107,10 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
   }
   if (!this->_IsMainFile(pDecl)) {
     return false;
+  }
+
+  if (GetAppCxt()->TraceMemo.Option.bLearnEnabled) {
+    this->m_LearnIt.PrintDecl(*pDecl);
   }
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
@@ -139,6 +147,11 @@ bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
   if (!this->_IsMainFile(pDecl)) {
     return false;
   }
+
+  if (GetAppCxt()->TraceMemo.Option.bLearnEnabled) {
+    this->m_LearnIt.PrintDecl(*pDecl);
+  }
+
   // TODO:
   // This will get var type, but need to overcome some situation:
   // 1. Type "unsigned long long int" will get "unsigned long long"
@@ -259,12 +272,6 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   bool bIsArray = false;
   bool bStatus = this->_GetFunctionInfo(pDecl, FuncName);
 
-  if (pAppCxt->TraceMemo.Option.bLearnEnabled) {
-    // printf("aaa _GetFunctionInfo() FuncName = %s\n", FuncName.c_str());
-    // PLOGI << "_GetFunctionInfo() FuncName = " << FuncName;
-    this->m_LearnIt.LearnFunctionDecl(*pDecl);
-  }
-
   if (bStatus) {
     bResult = this->m_Detect.CheckFunction(
         this->m_pConfig->General.Rules.FunctionName, FuncName);
@@ -322,7 +329,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   // PLOGI << "VisitRecordDecl()";
   if (pAppCxt->TraceMemo.Option.bLearnEnabled) {
-    this->m_LearnIt.LearnRecordDecl(*pDecl);
+    this->m_LearnIt.PrintDecl(*pDecl);
   }
 
   return true;
@@ -348,20 +355,18 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
 
   bool bStauts = this->_GetVarInfo(pDecl, VarType, VarName, bIsPtr, bIsArray,
                                    bIsBuiltinType);
-  if (bStauts) {
-    bool bResult = this->m_Detect.CheckVariable(
-        this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-        this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
-        bIsArray);
 
-    pAppCxt->TraceMemo.Checked.nVariable++;
-    if (!bResult) {
-      pAppCxt->TraceMemo.Error.nParameter++;
+  bool bResult = this->m_Detect.CheckVariable(
+      this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
+      bIsArray);
 
-      pAppCxt->TraceMemo.ErrorDetailList.push_back(
-          this->_CreateErrorDetail(pDecl, CheckType::CT_Variable, bIsPtr,
-                                   bIsArray, VarType, VarName, ""));
-    }
+  pAppCxt->TraceMemo.Checked.nVariable++;
+  if (!bResult) {
+    pAppCxt->TraceMemo.Error.nParameter++;
+
+    pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
+        pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, VarType, VarName, ""));
   }
 
   return bStauts;

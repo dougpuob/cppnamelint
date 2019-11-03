@@ -68,7 +68,7 @@ size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
                << Log::Fixed(ltm->tm_mon, 2) << Log::Fixed(ltm->tm_mday, 2);
     FileStream << "'" + Log::Fixed(ltm->tm_hour, 2)
                << Log::Fixed(ltm->tm_min, 2) << Log::Fixed(ltm->tm_sec, 2)
-               << "] ";
+               << "]";
   }
 
   //
@@ -91,7 +91,7 @@ size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
   va_start(vl, szFmt);
   std::string retStr = Log::Format(szFmt, vl);
   va_end(vl);
-  FileStream << retStr << std::endl;
+  FileStream << " " << retStr << std::endl;
 
   return 0;
 }
