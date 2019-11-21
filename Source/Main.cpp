@@ -49,15 +49,10 @@ int main(int iArgc, char **pszArgv) {
   static const char *szUsage =
       R"(
   Usage:
-    cppnamelint check <file> [--config=<file>] [--log=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>] [--learn]
-    cppnamelint test   [-a | --all] [-u | --unittest]
+    cppnamelint check <file> [--config=<file>] [--logfile=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>]
+    cppnamelint test   [-a | --all] [-u | --unittest] [--logfile=<file>]
     cppnamelint --help
     cppnamelint --version
-
-  Options:
-	--config=<file>  [default: cppnamelint.toml]    
-	--jsonout=<file> [default: cppnamelint.json]    
-    --log=<file>     [default: cppnamelint.log]
   )";
 
   map<string, docopt::value> Arguments =
@@ -67,10 +62,13 @@ int main(int iArgc, char **pszArgv) {
 
   int iReturn = 0;
 
-  // for convenience
-  // using json = nlohmann::json;
-
-  DcLib::Log::Init("Logger.log");
+  
+    //
+  //
+  //
+  if (Arguments["--logfile"]) {
+    DcLib::Log::Init(Arguments["--logfile"].asString().c_str());
+  }
 
   cout << szTitle << endl;
   cout << "---------------------------------------------------" << endl;
@@ -78,7 +76,13 @@ int main(int iArgc, char **pszArgv) {
       Arguments["<file>"].asString().length() > 0) {
     APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
+    //
+    //
+    //
     namelint::Config Config;
+    if (Arguments["--logfile"]) {
+      pAppCxt->TraceMemo.Option.bEnableLog = true;
+    }
 
     //
     //
@@ -135,11 +139,7 @@ int main(int iArgc, char **pszArgv) {
       nIdx++;
     }
 
-    //
-    //
-    //
-    pAppCxt->TraceMemo.Option.bLearnEnabled = Arguments["--learn"].asBool();
-
+    
     //
     //
     //
@@ -268,7 +268,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
     sprintf(szText, " Inc[%2d] = %s", nIdx + 1,
             TraceMemo.Dir.Includes[nIdx].c_str());
     printf("%s\n", szText);
-    if (TraceMemo.Option.bLearnEnabled) {
+    if (TraceMemo.Option.bEnableLog) {
       DcLib::Log::Out(INFO_ALL, szText);
     }
   }
@@ -278,7 +278,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
           TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter,
           TraceMemo.Checked.nVariable);
   printf("%s\n", szText);
-  if (TraceMemo.Option.bLearnEnabled) {
+  if (TraceMemo.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
@@ -287,12 +287,12 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
           TraceMemo.Error.nFunction, TraceMemo.Error.nParameter,
           TraceMemo.Error.nVariable);
   printf("%s\n", szText);
-  if (TraceMemo.Option.bLearnEnabled) {
+  if (TraceMemo.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
   printf("------------------------------------------------------------\n");
-  if (TraceMemo.Option.bLearnEnabled) {
+  if (TraceMemo.Option.bEnableLog) {
     DcLib::Log::Out(
         INFO_ALL,
         "------------------------------------------------------------");
@@ -310,7 +310,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      if (TraceMemo.Option.bLearnEnabled) {
+      if (TraceMemo.Option.bEnableLog) {
         DcLib::Log::Out(INFO_ALL, szText);
       }
       break;
@@ -321,7 +321,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
-      if (TraceMemo.Option.bLearnEnabled) {
+      if (TraceMemo.Option.bEnableLog) {
         DcLib::Log::Out(INFO_ALL, szText);
       }
       break;
@@ -333,7 +333,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
               (pErrDetail->bIsArray ? "[]" : ""));
 
       printf("%s\n", szText);
-      if (TraceMemo.Option.bLearnEnabled) {
+      if (TraceMemo.Option.bEnableLog) {
         DcLib::Log::Out(INFO_ALL, szText);
       }
       break;

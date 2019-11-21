@@ -92,7 +92,7 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
     return false;
   }
 
-  if (GetAppCxt()->TraceMemo.Option.bLearnEnabled) {
+  if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(*pDecl);
   }
 
@@ -109,7 +109,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
     return false;
   }
 
-  if (GetAppCxt()->TraceMemo.Option.bLearnEnabled) {
+  if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(*pDecl);
   }
 
@@ -148,7 +148,7 @@ bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
     return false;
   }
 
-  if (GetAppCxt()->TraceMemo.Option.bLearnEnabled) {
+  if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(*pDecl);
   }
 
@@ -328,7 +328,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   assert(pAppCxt);
 
   // PLOGI << "VisitRecordDecl()";
-  if (pAppCxt->TraceMemo.Option.bLearnEnabled) {
+  if (pAppCxt->TraceMemo.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(*pDecl);
   }
 

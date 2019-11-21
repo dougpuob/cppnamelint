@@ -68,7 +68,7 @@ public:
 class TraceMemo {
 public:
   struct _Option {
-    bool bLearnEnabled;
+    bool bEnableLog;
   } Option;
 
   struct _File {

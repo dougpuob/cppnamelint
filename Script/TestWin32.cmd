@@ -1,8 +1,18 @@
 @ECHO OFF
 
-::python cppnamelint.py check ..\Source\Test\Sample\Sample_05.cpp ..\Source\Test\Sample\Sample_05.toml
-::PAUSE 
-::EXIT
+::=============================================================================
+::  cppnamelint.py check <srcdir> <config> [--includes=<dirs>] [--ignores=<paths>]
+::  cppnamelint.py pack  <rootdir> <outputdir>
+::  cppnamelint.py test  <srcdir> <config>
+::  cppnamelint.py test-sample <sampledir>
+::  cppnamelint.py (-h | --help)
+::  cppnamelint.py (-v | --version)
+::  cppnamelint.py --help     Show this screen.
+::  cppnamelint.py --version  Show version.
+::
+::Options:
+::    --log=<file>     [default: cppnamelint.log]
+::=============================================================================
 
 
 IF EXIST ..\Source (

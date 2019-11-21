@@ -50,7 +50,7 @@ size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
   static std::fstream FileStream;
 
   if (DcLib::m_LogFileName.length() == 0) {
-    DcLib::Log::Init("Default.log");
+    return 0;
   }
 
   if (!FileStream.is_open()) {
