@@ -62,8 +62,7 @@ int main(int iArgc, char **pszArgv) {
 
   int iReturn = 0;
 
-  
-    //
+  //
   //
   //
   if (Arguments["--logfile"]) {
@@ -139,7 +138,6 @@ int main(int iArgc, char **pszArgv) {
       nIdx++;
     }
 
-    
     //
     //
     //
@@ -306,7 +304,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
       break;
 
     case CheckType::CT_Function:
-      sprintf(szText, "  <%4d, %4d>\t Function: %s", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Function: %s", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -316,8 +314,8 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
       break;
 
     case CheckType::CT_Parameter:
-      sprintf(szText, "  <%4d, %4d>\t Parameter: %s%s", pErrDetail->Pos.nLine,
-              pErrDetail->Pos.nColumn, pErrDetail->TypeName.c_str(),
+      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str() ,pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
@@ -327,8 +325,8 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
       break;
 
     case CheckType::CT_Variable:
-      sprintf(szText, "  <%4d, %4d>\t Variable: %s%s%s", pErrDetail->Pos.nLine,
-              pErrDetail->Pos.nColumn, pErrDetail->TypeName.c_str(),
+      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""),
               (pErrDetail->bIsArray ? "[]" : ""));
 
