@@ -2,11 +2,18 @@ trigger:
 - master
 
 
+
+
 jobs:
 #==============================================================================
 # Windows
 #==============================================================================
 - job: Windows
+  
+  variables:
+  - name: NAMELINT_LLVM_LIB
+    value: $(System.DefaultWorkingDirectory) 
+
   pool:
     vmImage: 'vs2017-win2016'
   steps:
@@ -25,8 +32,8 @@ jobs:
       vstsPackageVersion: '1.0.0'
       verbosity: 'Trace'
   - script: 'dir /s'
-  
-  - task: CMake@1
+
+  - task: CMake@1  
     inputs:
       workingDirectory: 'Build/Win32'
       cmakeArgs: ../..
