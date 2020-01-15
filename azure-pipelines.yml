@@ -11,6 +11,7 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
   - script: echo hello from Windows
+  - script: 'dir /s'
   - script: 'mkdir Build/Win32'
   - checkout: self
     submodules: true
