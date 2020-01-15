@@ -42,8 +42,7 @@ jobs:
     inputs:    
       solution: 'Build/Win32/cppnamelint.sln'        
       msbuildVersion: '15.0' 
-      msbuildArchitecture: 'x86' #x86, x64
-      
+      msbuildArchitecture: 'x86' #x86, x64      
 
 
   #- script: 'cppazurepipeline.exe'
