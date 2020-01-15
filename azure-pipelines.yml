@@ -14,16 +14,30 @@ jobs:
   - script: 'dir /s'
   - checkout: self
     submodules: true
-    
+  
+  - task: UniversalPackages@0
+    inputs:
+      command: 'download'
+      downloadDirectory: '$(System.DefaultWorkingDirectory)'
+      feedsToUse: 'internal'
+      vstsFeed: '448f54a1-4d1b-48de-8068-37d70ec18213'
+      vstsFeedPackage: '604e5b6c-f0fa-4f26-98cf-e274601e36c7'
+      vstsPackageVersion: '1.0.0'
+      verbosity: 'Trace'
+  - script: 'dir /s'
+  
   - task: CMake@1
     inputs:
       workingDirectory: 'Build/Win32'
       cmakeArgs: ../..
+
   - task: MSBuild@1
     inputs:    
       solution: 'Build/Win32/cppnamelint.sln'        
       msbuildVersion: '15.0' 
       msbuildArchitecture: 'x86' #x86, x64
+      
+
 
   #- script: 'cppazurepipeline.exe'
   #  displayName: 'Execute generated binary file'
