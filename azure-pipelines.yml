@@ -12,7 +12,6 @@ jobs:
   steps:
   - script: echo hello from Windows
   - script: 'dir /s'
-  - script: 'mkdir Build/Win32'
   - checkout: self
     submodules: true
     
