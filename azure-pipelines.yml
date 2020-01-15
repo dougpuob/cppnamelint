@@ -1,19 +1,79 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+#==============================================================================
+# Windows
+#==============================================================================
+- job: Windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - script: echo hello from Windows
+  - script: 'mkdir Build/Win32'
+  - checkout: self
+    submodules: true
+    
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'Build/Win32'
+      cmakeArgs: ../..
+  - task: MSBuild@1
+    inputs:    
+      solution: 'Build/Win32/cppnamelint.sln'        
+      msbuildVersion: '15.0' 
+      msbuildArchitecture: 'x86' #x86, x64
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  #- script: 'cppazurepipeline.exe'
+  #  displayName: 'Execute generated binary file'
+  #  workingDirectory: build/Debug
+
+
+
+#==============================================================================
+# macOS
+#==============================================================================
+#- job: macOS
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - script: echo hello from macOS
+  - checkout: self
+    submodules: true
+
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'build'
+      cmakeArgs: ..
+
+  - script: 'make'
+    displayName: 'make this project'
+    workingDirectory: build
+
+  - script: './cppazurepipeline'
+    displayName: 'Execute generated binary file'
+    workingDirectory: build
+
+#==============================================================================
+# Linux
+#==============================================================================
+#- job: Linux
+  pool:
+    vmImage: 'ubuntu-18.04'
+  steps:
+  - script: echo hello from Linux
+  - checkout: self
+    submodules: true
+
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'build'
+      cmakeArgs: ..
+  - script: 'make'
+    displayName: 'make this project'
+    workingDirectory: build
+
+  - script: './cppazurepipeline'
+    displayName: 'Execute generated binary file'
+    workingDirectory: build
