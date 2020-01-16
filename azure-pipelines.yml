@@ -13,6 +13,8 @@ jobs:
   variables:
   - name: NAMELINT_LLVM_LIB
     value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
+  - name: BUILD_TYPE
+    value: Release
 
   pool:
     vmImage: 'vs2017-win2016'
