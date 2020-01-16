@@ -18,6 +18,7 @@ jobs:
 
   pool:
     vmImage: 'vs2017-win2016'
+
   steps:
   - script: echo hello from Windows
   - script: 'dir /s'
@@ -46,6 +47,8 @@ jobs:
       msbuildVersion: '15.0'
       configuration: 'Release'
       msbuildArchitecture: 'x86' #x86, x64      
+
+  - script: 'dir /s'
 
   #- script: 'cppazurepipeline.exe'
   #  displayName: 'Execute generated binary file'
