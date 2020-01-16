@@ -52,7 +52,7 @@ jobs:
 
   - task: badge-creator@1
     inputs:
-      nameString: 'build[win]'
+      nameString: 'build for win'
       versionString: '0.0.23'
       destinationPath: '$(build.artifactstagingdirectory)/badge.svg'
 
