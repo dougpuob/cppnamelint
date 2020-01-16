@@ -41,11 +41,11 @@ jobs:
       cmakeArgs: -DCMAKE_BUILD_TYPE=Release ../..
 
   - task: MSBuild@1
-    inputs:    
-      solution: 'Build/Win32/cppnamelint.sln'        
-      msbuildVersion: '15.0' 
+    inputs:
+      solution: 'Build/Win32/cppnamelint.sln'
+      msbuildVersion: '15.0'
+      configuration: 'Release'
       msbuildArchitecture: 'x86' #x86, x64      
-
 
   #- script: 'cppazurepipeline.exe'
   #  displayName: 'Execute generated binary file'
