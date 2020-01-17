@@ -52,7 +52,7 @@ jobs:
 
   - script: 'cppnamelint.exe'
     displayName: 'Execute generated binary file'
-    workingDirectory: 'Build/linux/Output'
+    workingDirectory: 'Build/Win32/Output'
 
 
 #==============================================================================
@@ -117,15 +117,15 @@ jobs:
   - name: BUILD_TYPE
     value: Release
   - name: CC
-    value: gcc
+    value: clang
   - name: CXX
-    value: g++
+    value: clang++
   pool:
     vmImage: 'macOS-10.13'
 
   steps:
   - script: echo hello from macOS
-  - script: 'ls -la'
+  - script: 'ls -ls -R'
   - checkout: self
     submodules: true
   
@@ -138,7 +138,7 @@ jobs:
       vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
       vstsPackageVersion: '0.0.2'
       verbosity: 'Trace'
-  - script: 'ls -la'
+  - script: 'ls -ls -R'
 
   - task: CMake@1  
     inputs:
@@ -152,4 +152,4 @@ jobs:
 
   - script: './cppnamelint test -a'
     displayName: 'Execute generated binary file'
-    workingDirectory: 'Build/linux/Output'
+    workingDirectory: 'Build/macos/Output'
