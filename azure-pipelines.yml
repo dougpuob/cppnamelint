@@ -86,7 +86,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/1d266e96-42a9-4468-83b0-69b039e87cb3'
       vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
-      vstsPackageVersion: '0.0.1'
+      vstsPackageVersion: '0.0.2'
       verbosity: 'Trace'
   - script: 'ls -la'
   - script: 'gcc   --version'
