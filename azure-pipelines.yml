@@ -107,7 +107,7 @@ jobs:
 
 
 #==============================================================================
-# Linux
+# macOS
 #==============================================================================
 - job: macOS
   
@@ -138,7 +138,7 @@ jobs:
       vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
       vstsPackageVersion: '0.0.2'
       verbosity: 'Trace'
-  - script: 'ls -ls -R'
+  - script: 'clang --version'
 
   - task: CMake@1  
     inputs:
