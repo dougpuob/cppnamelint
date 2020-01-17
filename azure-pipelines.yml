@@ -90,12 +90,15 @@ jobs:
       command: 'download'
       downloadDirectory: '$(System.DefaultWorkingDirectory)'
       feedsToUse: 'internal'
-      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/3dc15bc1-c48e-4b46-894b-1121b8510008'
-      vstsFeedPackage: 'cf9574f8-9f88-4bae-a44a-1a163e890de3'
+      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/b5685b00-e1cc-4c03-8f3a-3d3970ac92ee'
+      vstsFeedPackage: '2e412881-83ba-43fd-ac45-a050fbbbab59'
       vstsPackageVersion: '0.0.1'
       verbosity: 'Trace'
   - script: 'ls -la'
   
+
+
+
   - task: CMake@1  
     inputs:
       workingDirectory: 'build/linux'
