@@ -90,6 +90,9 @@ jobs:
       vstsPackageVersion: '0.0.1'
       verbosity: 'Trace'
   - script: 'ls -la'
+  - script: 'gcc   --version'
+  - script: 'gcc-7 --version'
+  - script: 'gcc-8 --version'
 
   - task: CMake@1  
     inputs:
