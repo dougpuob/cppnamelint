@@ -50,7 +50,7 @@ jobs:
 
   - script: 'dir /s'
 
-  - script: 'cppnamelint.exe'
+  - script: 'cppnamelint.exe test -a'
     displayName: 'Execute generated binary file'
     workingDirectory: 'Build\Win32\Output\Release'
 
@@ -107,7 +107,7 @@ jobs:
 
 
 #==============================================================================
-# macOS
+# Linux
 #==============================================================================
 - job: macOS
   
@@ -138,7 +138,7 @@ jobs:
       vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
       vstsPackageVersion: '0.0.2'
       verbosity: 'Trace'
-  - script: 'clang --version'
+  - script: 'ls -ls -R'
 
   - task: CMake@1  
     inputs:
