@@ -95,14 +95,11 @@ jobs:
       vstsPackageVersion: '0.0.1'
       verbosity: 'Trace'
   - script: 'ls -la'
-  
-
-
 
   - task: CMake@1  
     inputs:
       workingDirectory: 'build/linux'
-      cmakeArgs: -DCMAKE_BUILD_TYPE=Release ../..
+      cmakeArgs: -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8 ../..
 
   - script: make
     workingDirectory: 'build/linux'
