@@ -90,13 +90,11 @@ jobs:
       verbosity: 'Trace'
   - script: 'ls -la'
   - script: 'gcc   --version'
-  - script: 'gcc-7 --version'
-  - script: 'gcc-8 --version'
 
   - task: CMake@1  
     inputs:
       workingDirectory: 'build/linux'
-      cmakeArgs: -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-8 -DCMAKE_CXX_COMPILER=g++-8 ../..
+      cmakeArgs: -DCMAKE_BUILD_TYPE=Release  ../..
 
   - script: make
     workingDirectory: 'build/linux'
