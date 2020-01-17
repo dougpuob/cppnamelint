@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export CC="gcc-8"
-export CXX="g++-8"
+export CC="gcc"
+export CXX="g++"
 echo CC  =$CC 
 echo CXX =$CXX
 

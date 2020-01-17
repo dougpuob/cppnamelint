@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 
 namespace DcLib {
 
@@ -46,7 +48,7 @@ std::string Log::Fixed(size_t nValue, size_t nZeroCnt) {
   return std::string(nAppendZeroCount, '0').append(value_str);
 }
 
-size_t Log::Out(FlagInfo &FlagInfo, const char *szFmt, ...) {
+size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   static std::fstream FileStream;
 
   if (DcLib::m_LogFileName.length() == 0) {
