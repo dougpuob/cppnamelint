@@ -50,10 +50,9 @@ jobs:
 
   - script: 'dir /s'
 
-
-  #- script: 'cppazurepipeline.exe'
-  #  displayName: 'Execute generated binary file'
-  #  workingDirectory: build/Debug
+  - script: 'cppnamelint.exe'
+    displayName: 'Execute generated binary file'
+    workingDirectory: 'Build/linux/Output'
 
 
 #==============================================================================
@@ -99,8 +98,58 @@ jobs:
   - script: make
     workingDirectory: 'build/linux'
 
+  - script: 'ls -ls -R'
+
+  - script: './cppnamelint test -a'
+    displayName: 'Execute generated binary file'
+    workingDirectory: 'Build/linux/Output'
+
+
+
+#==============================================================================
+# Linux
+#==============================================================================
+- job: macOS
+  
+  variables:
+  - name: NAMELINT_LLVM_LIB
+    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_18_04_clang_x_x_rel_64bit
+  - name: BUILD_TYPE
+    value: Release
+  - name: CC
+    value: gcc
+  - name: CXX
+    value: g++
+  pool:
+    vmImage: 'macOS-10.13'
+
+  steps:
+  - script: echo hello from macOS
+  - script: 'ls -la'
+  - checkout: self
+    submodules: true
+  
+  - task: UniversalPackages@0
+    inputs:
+      command: 'download'
+      downloadDirectory: '$(System.DefaultWorkingDirectory)'
+      feedsToUse: 'internal'
+      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/1d266e96-42a9-4468-83b0-69b039e87cb3'
+      vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
+      vstsPackageVersion: '0.0.2'
+      verbosity: 'Trace'
   - script: 'ls -la'
 
-  #- script: 'cppazurepipeline.exe'
-  #  displayName: 'Execute generated binary file'
-  #  workingDirectory: build/Debug
+  - task: CMake@1  
+    inputs:
+      workingDirectory: 'build/linux'
+      cmakeArgs: -DCMAKE_BUILD_TYPE=Release  ../..
+
+  - script: make
+    workingDirectory: 'build/linux'
+
+  - script: 'ls -ls -R'
+
+  - script: './cppnamelint test -a'
+    displayName: 'Execute generated binary file'
+    workingDirectory: 'Build/linux/Output'
