@@ -50,11 +50,6 @@ jobs:
 
   - script: 'dir /s'
 
-  - task: badge-creator@1
-    inputs:
-      nameString: 'build for win'
-      versionString: '0.0.23'
-      destinationPath: '$(build.artifactstagingdirectory)/badge.svg'
 
   #- script: 'cppazurepipeline.exe'
   #  displayName: 'Execute generated binary file'
