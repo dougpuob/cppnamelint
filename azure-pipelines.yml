@@ -63,7 +63,7 @@ jobs:
   
   variables:
   - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc8_rel_64bit
+    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit
   - name: BUILD_TYPE
     value: Release
   - name: CC
