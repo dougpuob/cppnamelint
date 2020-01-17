@@ -67,10 +67,9 @@ jobs:
   - name: BUILD_TYPE
     value: Release
   - name: CC
-    value: gcc-8
+    value: gcc
   - name: CXX
-    value: g++-8
-
+    value: g++
   pool:
     vmImage: 'ubuntu-18.04'
 
