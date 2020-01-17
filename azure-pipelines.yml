@@ -71,6 +71,10 @@ jobs:
     value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc8_rel_64bit
   - name: BUILD_TYPE
     value: Release
+  - name: CC
+    value: gcc-8
+  - name: CXX
+    value: g++-8
 
   pool:
     vmImage: 'ubuntu-18.04'
