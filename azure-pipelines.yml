@@ -98,6 +98,8 @@ jobs:
       cmakeArgs: -DCMAKE_BUILD_TYPE=Release ../..
 
   - script: make
+    workingDirectory: 'build/linux'
+
   - script: 'ls -la'
 
   #- script: 'cppazurepipeline.exe'
