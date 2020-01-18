@@ -152,4 +152,4 @@ jobs:
 
   - script: './cppnamelint test -a'
     displayName: 'Execute generated binary file'
-    workingDirectory: '/build/darwin/Output'
+    workingDirectory: 'build/darwin/Output'
