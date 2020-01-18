@@ -113,7 +113,7 @@ jobs:
   
   variables:
   - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/lvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
+    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
   - name: BUILD_TYPE
     value: Release
   - name: CC
