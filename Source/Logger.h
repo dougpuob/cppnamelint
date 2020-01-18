@@ -42,8 +42,7 @@ public:
   bool bPrintLineNumber;
 };
 
-#define INFO_ALL                                                               \
-  DcLib::FlagInfo ( __FILE__, __func__, __LINE__, true, true, true )
+#define INFO_ALL DcLib::FlagInfo(__FILE__, __func__, __LINE__, true, true, true)
 #define INFO_NOTIME                                                            \
   DcLib::FlagInfo(__FILE__, __func__, __LINE__, false, true, true)
 

@@ -314,8 +314,9 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
       break;
 
     case CheckType::CT_Parameter:
-      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
-              pErrDetail->TargetName.c_str() ,pErrDetail->TypeName.c_str(),
+      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)",
+              pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
@@ -325,7 +326,8 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
       break;
 
     case CheckType::CT_Variable:
-      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)",
+              pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""),
               (pErrDetail->bIsArray ? "[]" : ""));
