@@ -142,14 +142,14 @@ jobs:
 
   - task: CMake@1  
     inputs:
-      workingDirectory: 'build/macos'
+      workingDirectory: 'build/darwin'
       cmakeArgs: -DCMAKE_BUILD_TYPE=Release  ../..
 
   - script: make
-    workingDirectory: 'build/macos'
+    workingDirectory: 'build/darwin'
 
   - script: 'ls -ls -R'
 
   - script: './cppnamelint test -a'
     displayName: 'Execute generated binary file'
-    workingDirectory: 'build/macos/Output'
+    workingDirectory: '/build/darwin/Output'
