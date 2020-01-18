@@ -113,7 +113,7 @@ jobs:
   
   variables:
   - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_18_04_clang_x_x_rel_64bit
+    value: $(System.DefaultWorkingDirectory)/lvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
   - name: BUILD_TYPE
     value: Release
   - name: CC
@@ -134,9 +134,9 @@ jobs:
       command: 'download'
       downloadDirectory: '$(System.DefaultWorkingDirectory)'
       feedsToUse: 'internal'
-      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/1d266e96-42a9-4468-83b0-69b039e87cb3'
-      vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
-      vstsPackageVersion: '0.0.2'
+      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/7bc16282-7635-45e1-821a-373ed55c68c5'
+      vstsFeedPackage: '1ea8f4a8-0c01-4eb1-8fbf-e514f8768b5e'
+      vstsPackageVersion: '0.0.1'
       verbosity: 'Trace'
   - script: 'ls -ls -R'
 
