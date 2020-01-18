@@ -16,7 +16,6 @@ The `cppnamelint` C/C++ naming convention checking tool which can run on Windows
 
 `#LLVM` `#Clang` `#LibTooling` `#Compiler` `#Naming` `#NamingConvention` `#Toml` `#CppNameLint`
 
-
 ----------
 
 ## **Usage**
