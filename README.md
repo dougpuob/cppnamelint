@@ -1,5 +1,6 @@
 # **CppNameLint**
 
+![](https://img.shields.io/azure-devops/build/CPPNAMELINT/78202891-aba0-41ab-952b-2152c4a57470/3?style=plastic)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/43b938056017438d886670b354e52485)](https://app.codacy.com/manual/dougpuob/cpp-namelint?utm_source=github.com&utm_medium=referral&utm_content=dougpuob/cpp-namelint&utm_campaign=Badge_Grade_Dashboard)
 
 | Windows | Linux | macOS |
