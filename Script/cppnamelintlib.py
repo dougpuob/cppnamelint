@@ -189,6 +189,7 @@ class Packer:
             self.file_list.append(self.make_file_info(False, exe_file, 'Script/Release'))
             self.file_list.append(self.make_file_info(False, 'Source/cppnamelint.toml', 'Script/Release'))
             self.file_list.append(self.make_file_info(False, 'Script/cppnamelint.py', 'Script/Release'))
+            self.file_list.append(self.make_file_info(False, 'Script/cppnamelintlib.py', 'Script/Release'))
             self.file_list.append(self.make_file_info(True, 'Source/Test', 'Script/Release/Test'))
             if 'Windows' == platform.system():
                 self.file_list.append(self.make_file_info(False, 'Script/TestWin32.cmd', 'Script/Release'))
