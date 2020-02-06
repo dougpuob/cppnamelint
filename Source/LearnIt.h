@@ -37,6 +37,8 @@ public:
   bool PrintDecl(FunctionDecl &Decl);
   bool PrintDecl(VarDecl &Decl);
   bool PrintDecl(ParmVarDecl &Decl);
+  bool PrintDecl(ValueDecl &Decl);
+  bool PrintDecl(NamedDecl &Decl);
 };
 
 #endif // __LEARN_IT_H__

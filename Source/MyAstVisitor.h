@@ -71,7 +71,7 @@ private:
   bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName,
                      bool &bIsPtr);
 
-  bool _GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
+  bool _GetVarInfo(ValueDecl *pDecl, string &VarType, string &VarName,
                    bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
 
 public:
@@ -83,8 +83,13 @@ public:
   bool VisitFunctionDecl(FunctionDecl *pDecl);
   bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
   bool VisitRecordDecl(RecordDecl *pDecl);
-  bool VisitVarDecl(VarDecl *pDecl);
+  bool VisitValueDecl(ValueDecl *pDecl);
+
   bool VisitReturnStmt(ReturnStmt *pRetStmt);
+
+private:
+	void GetDeclType(Decl *pDecl, string& strType);
+
 };
 
 #endif // __NAMELINT_MY_AST_VISITOR__H__
