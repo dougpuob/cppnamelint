@@ -45,13 +45,6 @@ private:
   void _PrintParmVarDecl(ParmVarDecl *pDecl);
   void _PrintRecordDecl(RecordDecl *pDecl);
 
-
-  /*
-  bool PrintDecl(RecordDecl &Decl);
-  bool PrintDecl(FunctionDecl &Decl);
-  bool PrintDecl(VarDecl &Decl);
-  bool PrintDecl(ParmVarDecl &Decl);
-  */
 };
 
 #endif // __LEARN_IT_H__
