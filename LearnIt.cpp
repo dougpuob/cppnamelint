@@ -165,5 +165,4 @@ void LearnIt::_PrintRecordDecl(RecordDecl *pDecl) {
 	DcLib::Log::Out(INFO_ALL, "RecordDecl.hasObjectMember()                  = %d", pDecl->hasObjectMember());
 	DcLib::Log::Out(INFO_ALL, "RecordDecl.hasVolatileMember()                = %d", pDecl->hasVolatileMember());
 	DcLib::Log::Out(INFO_ALL, "RecordDecl.isLambda()                         = %d", pDecl->isLambda());
-
 }
