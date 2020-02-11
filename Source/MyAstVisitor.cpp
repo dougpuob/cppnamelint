@@ -137,7 +137,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
   return true;
 }
 
-bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &VarType, string &VarName,
+bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
                                  bool &bIsPtr, bool &bIsArray,
                                  bool &bIsBuiltinType) {
   if (!pDecl) {
@@ -162,31 +162,31 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &VarType, string &VarN
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
   SourceLocation MyLoc = pDecl->getLocation();
-  string MyVarType =
+  string MyValueType =
       std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
                   this->m_pSrcMgr->getCharacterData(MyLoc) -
                       this->m_pSrcMgr->getCharacterData(MyBeginLoc));
-  size_t nPos = MyVarType.find(",");
+  size_t nPos = MyValueType.find(",");
 
   if (std::string::npos != nPos) {
-    nPos = MyVarType.find(" ");
-    MyVarType = MyVarType.substr(0, nPos);
+    nPos = MyValueType.find(" ");
+    MyValueType = MyValueType.substr(0, nPos);
   }
 
-  if (MyVarType.length() > 0) {
-    this->_ClassifyTypeName(MyVarType);
+  if (MyValueType.length() > 0) {
+    this->_ClassifyTypeName(MyValueType);
   }
 
   QualType MyQualType = pDecl->getType();
 
-  VarType = MyVarType;
-  VarName = pDecl->getNameAsString();
+  ValueType = MyValueType;
+  ValueName = pDecl->getNameAsString();
   bIsArray = MyQualType->isArrayType();
   bIsBuiltinType = MyQualType->isBuiltinType();
   bIsPtr = MyQualType->isPointerType();
 
-  String::Trim(VarType);
-  String::Trim(VarName);
+  String::Trim(ValueType);
+  String::Trim(ValueName);
 
   return true;
 }
@@ -223,15 +223,15 @@ ErrorDetail *MyASTVisitor::_CreateErrorDetail(
   return pNew;
 }
 
-bool MyASTVisitor::_CheckVariableForValue(ValueDecl *pDecl) {
-	string VarType;
-	string VarName;
+bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
+	string ValueType;
+	string ValueName;
 
 	bool bIsPtr = false;
 	bool bIsArray = false;
 	bool bIsBuiltinType = false;
 
-	bool bStauts = this->_GetValueInfo(pDecl, VarType, VarName, bIsPtr, bIsArray,
+	bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray,
 		bIsBuiltinType);
 
 	if (!bStauts)
@@ -240,7 +240,7 @@ bool MyASTVisitor::_CheckVariableForValue(ValueDecl *pDecl) {
 	}
 
 	bool bResult = this->m_Detect.CheckVariable(
-		this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+		this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
 		this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
 		bIsArray);
 
@@ -254,7 +254,7 @@ bool MyASTVisitor::_CheckVariableForValue(ValueDecl *pDecl) {
 		pAppCxt->TraceMemo.Error.nParameter++;
 
 		pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
-			pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, VarType, VarName, ""));
+			pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
 	}
 	return true;
 }
@@ -377,7 +377,7 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
     return true;
   }
 
-  return _CheckVariableForValue(pDecl);
+  return _CheckRuleForVariable(pDecl);
 }
 
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
@@ -385,7 +385,7 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
 		return true;
 	}
 
-	return _CheckVariableForValue(pDecl);
+	return _CheckRuleForVariable(pDecl);
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {

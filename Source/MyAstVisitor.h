@@ -71,10 +71,10 @@ private:
   bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName,
                      bool &bIsPtr);
 
-  bool _GetValueInfo(ValueDecl *pDecl, string &VarType, string &VarName,
+  bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
                      bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
 
-  bool _CheckVariableForValue(ValueDecl *pDecl);
+  bool _CheckRuleForVariable(ValueDecl *pDecl);
 
 public:
   MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
