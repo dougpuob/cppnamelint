@@ -83,12 +83,14 @@ public:
   // bool VisitCXXRecordDecl(CXXRecordDecl *D);
   // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
 
+  bool VisitCXXRecordDecl(CXXRecordDecl *D);
   bool VisitFunctionDecl(FunctionDecl *pDecl);
   bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
   bool VisitRecordDecl(RecordDecl *pDecl);
   bool VisitVarDecl(VarDecl *pDecl);
   bool VisitFieldDecl(FieldDecl *pDecl);
   bool VisitReturnStmt(ReturnStmt *pRetStmt);
+  bool VisitParmVarDecl(ParmVarDecl *pDecl);
 };
 
 #endif // __NAMELINT_MY_AST_VISITOR__H__

@@ -85,9 +85,11 @@ bool MyASTVisitor::_ClassifyTypeName(string &TyeName) {
 }
 
 bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
-  if (!pDecl->hasBody()) {
-    return false;
-  }
+//  if (!pDecl->hasBody()) {
+//    return false;
+//  }
+
+
   if (!this->_IsMainFile(pDecl)) {
     return false;
   }
@@ -251,7 +253,7 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
 	}
 	pAppCxt->TraceMemo.Checked.nVariable++;
 	if (!bResult) {
-		pAppCxt->TraceMemo.Error.nParameter++;
+		pAppCxt->TraceMemo.Error.nVariable++;
 
 		pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
 			pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
@@ -291,7 +293,15 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   }
 }
 
+bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
+	//std::cout << "VisitCXXRecordDecl " << D->getNameAsString() << std::endl;
+	return true;
+}
+
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
+	cout << "VisitFunctionDecl " << pDecl->getNameAsString() << endl;
+
+
   if (!this->m_pConfig->General.Options.bCheckFunctionName) {
     return true;
   }
@@ -319,51 +329,23 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
       pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
           pDecl, CheckType::CT_Function, bIsPtr, bIsArray, FuncName, ""));
     }
-
-    const clang::ArrayRef<clang::ParmVarDecl *> MyRefArray =
-        pDecl->parameters();
-    for (size_t nIdx = 0; nIdx < MyRefArray.size(); nIdx++) {
-      string VarType;
-      string VarName;
-
-      bool bIsPtr = false;
-      bool bIsArray = false;
-
-      ParmVarDecl *pParmVarDecl = MyRefArray[nIdx];
-
-      bStatus = this->_GetParmsInfo(pParmVarDecl, VarType, VarName, bIsPtr);
-      if (bStatus) {
-        bResult = this->m_Detect.CheckVariable(
-            this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-            this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
-            bIsArray);
-
-        pAppCxt->TraceMemo.Checked.nParameter++;
-        if (!bResult) {
-          pAppCxt->TraceMemo.Error.nParameter++;
-
-          pAppCxt->TraceMemo.ErrorDetailList.push_back(
-              this->_CreateErrorDetail(pParmVarDecl, CheckType::CT_Parameter,
-                                       bIsPtr, bIsArray, VarType, VarName, ""));
-        }
-      }
-    }
   }
 
   return bStatus;
 }
 
-bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { return true; }
+bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { 
+	return true;
+}
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
-  if (!this->_IsMainFile(pDecl)) {
-    return false;
-  }
+//  if (!this->_IsMainFile(pDecl)) {
+//    return false;
+//  }
 
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
   assert(pAppCxt);
 
-  // PLOGI << "VisitRecordDecl()";
   if (pAppCxt->TraceMemo.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(pDecl);
 
@@ -376,6 +358,12 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
     return true;
   }
+
+  if (isa<ParmVarDecl>(pDecl))
+  {
+	  return true;
+  }
+
 
   return _CheckRuleForVariable(pDecl);
 }
@@ -397,6 +385,46 @@ bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
     std::string MyTypeStr = MyQualType.getAsString();
     return true;
   }
-
   return false;
+}
+
+bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
+	string VarType;
+	string VarName;
+
+	bool bIsPtr = false;
+	bool bIsArray = false;
+	bool bResult = false;
+
+	APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+	assert(pAppCxt);
+
+	if (pAppCxt->TraceMemo.Option.bEnableLog) {
+		this->m_LearnIt.PrintDecl(pDecl);
+
+	}
+
+	bool bStatus = this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr);
+	if (VarName == "")  // if this variable doesn't have name, it doesn't need to be checked.
+	{
+		return true;
+	}
+
+	if (bStatus) {
+		bResult = this->m_Detect.CheckVariable(
+			this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+			this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
+			bIsArray);
+
+		pAppCxt->TraceMemo.Checked.nParameter++;
+		if (!bResult) {
+			pAppCxt->TraceMemo.Error.nParameter++;
+
+			pAppCxt->TraceMemo.ErrorDetailList.push_back(
+				this->_CreateErrorDetail(pDecl, CheckType::CT_Parameter,
+					bIsPtr, bIsArray, VarType, VarName, ""));
+		}
+	}
+
+	return true;
 }
