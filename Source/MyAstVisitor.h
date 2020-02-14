@@ -69,7 +69,7 @@ private:
   bool _GetFunctionInfo(FunctionDecl *pDecl, string &FuncName);
 
   bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName,
-                     bool &bIsPtr);
+                     bool &bIsPtr, bool &bAnonymous);
 
   bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
                      bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
