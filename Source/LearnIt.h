@@ -33,10 +33,18 @@ class LearnIt {
 private:
 public:
   LearnIt();
-  bool PrintDecl(RecordDecl &Decl);
-  bool PrintDecl(FunctionDecl &Decl);
-  bool PrintDecl(VarDecl &Decl);
-  bool PrintDecl(ParmVarDecl &Decl);
+
+  bool PrintDecl(Decl *pDecl);
+
+private:
+  void _PrintNamedDecl(NamedDecl *pDecl);
+  void _PrintValueDecl(ValueDecl *pDecl);
+  void _PrintFieldDecl(FieldDecl *pDecl);
+  void _PrintVarDecl(VarDecl *pDecl);
+  void _PrintFunctionDecl(FunctionDecl *pDecl);
+  void _PrintParmVarDecl(ParmVarDecl *pDecl);
+  void _PrintRecordDecl(RecordDecl *pDecl);
+
 };
 
 #endif // __LEARN_IT_H__

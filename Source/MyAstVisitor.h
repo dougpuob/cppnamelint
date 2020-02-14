@@ -69,10 +69,12 @@ private:
   bool _GetFunctionInfo(FunctionDecl *pDecl, string &FuncName);
 
   bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName,
-                     bool &bIsPtr);
+                     bool &bIsPtr, bool &bAnonymous);
 
-  bool _GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
-                   bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
+  bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
+                     bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
+
+  bool _CheckRuleForVariable(ValueDecl *pDecl);
 
 public:
   MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
@@ -80,11 +82,15 @@ public:
   // bool VisitStmt(Stmt *pStmt);
   // bool VisitCXXRecordDecl(CXXRecordDecl *D);
   // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
+
+  bool VisitCXXRecordDecl(CXXRecordDecl *D);
   bool VisitFunctionDecl(FunctionDecl *pDecl);
   bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
   bool VisitRecordDecl(RecordDecl *pDecl);
   bool VisitVarDecl(VarDecl *pDecl);
+  bool VisitFieldDecl(FieldDecl *pDecl);
   bool VisitReturnStmt(ReturnStmt *pRetStmt);
+  bool VisitParmVarDecl(ParmVarDecl *pDecl);
 };
 
 #endif // __NAMELINT_MY_AST_VISITOR__H__

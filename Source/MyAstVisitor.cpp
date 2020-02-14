@@ -85,15 +85,12 @@ bool MyASTVisitor::_ClassifyTypeName(string &TyeName) {
 }
 
 bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
-  if (!pDecl->hasBody()) {
-    return false;
-  }
   if (!this->_IsMainFile(pDecl)) {
     return false;
   }
 
   if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(*pDecl);
+    this->m_LearnIt.PrintDecl(pDecl);
   }
 
   Name = pDecl->getDeclName().getAsString();
@@ -101,7 +98,7 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
 }
 
 bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
-                                 string &VarName, bool &bIsPtr) {
+                                 string &VarName, bool &bIsPtr, bool &bAnonymous) {
   if (!pDecl) {
     return false;
   }
@@ -110,7 +107,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
   }
 
   if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(*pDecl);
+    this->m_LearnIt.PrintDecl(pDecl);
   }
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
@@ -134,12 +131,17 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
   String::Trim(VarType);
   String::Trim(VarName);
 
+  if (VarName == "")
+  {
+	  bAnonymous = true;
+  }
+
   return true;
 }
 
-bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
-                               bool &bIsPtr, bool &bIsArray,
-                               bool &bIsBuiltinType) {
+bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
+                                 bool &bIsPtr, bool &bIsArray,
+                                 bool &bIsBuiltinType) {
   if (!pDecl) {
     return false;
   }
@@ -149,7 +151,7 @@ bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
   }
 
   if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(*pDecl);
+    this->m_LearnIt.PrintDecl(pDecl);
   }
 
   // TODO:
@@ -162,31 +164,31 @@ bool MyASTVisitor::_GetVarInfo(VarDecl *pDecl, string &VarType, string &VarName,
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
   SourceLocation MyLoc = pDecl->getLocation();
-  string MyVarType =
+  string MyValueType =
       std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
                   this->m_pSrcMgr->getCharacterData(MyLoc) -
                       this->m_pSrcMgr->getCharacterData(MyBeginLoc));
-  size_t nPos = MyVarType.find(",");
+  size_t nPos = MyValueType.find(",");
 
   if (std::string::npos != nPos) {
-    nPos = MyVarType.find(" ");
-    MyVarType = MyVarType.substr(0, nPos);
+    nPos = MyValueType.find(" ");
+    MyValueType = MyValueType.substr(0, nPos);
   }
 
-  if (MyVarType.length() > 0) {
-    this->_ClassifyTypeName(MyVarType);
+  if (MyValueType.length() > 0) {
+    this->_ClassifyTypeName(MyValueType);
   }
 
   QualType MyQualType = pDecl->getType();
 
-  VarType = MyVarType;
-  VarName = pDecl->getNameAsString();
+  ValueType = MyValueType;
+  ValueName = pDecl->getNameAsString();
   bIsArray = MyQualType->isArrayType();
   bIsBuiltinType = MyQualType->isBuiltinType();
   bIsPtr = MyQualType->isPointerType();
 
-  String::Trim(VarType);
-  String::Trim(VarName);
+  String::Trim(ValueType);
+  String::Trim(ValueName);
 
   return true;
 }
@@ -223,6 +225,42 @@ ErrorDetail *MyASTVisitor::_CreateErrorDetail(
   return pNew;
 }
 
+bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
+	string ValueType;
+	string ValueName;
+
+	bool bIsPtr = false;
+	bool bIsArray = false;
+	bool bIsBuiltinType = false;
+
+	bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray,
+		bIsBuiltinType);
+
+	if (!bStauts)
+	{
+		return false;
+	}
+
+	bool bResult = this->m_Detect.CheckVariable(
+		this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
+		this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
+		bIsArray);
+
+	APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+	if (!pAppCxt) {
+		assert(pAppCxt);
+		return false;
+	}
+	pAppCxt->TraceMemo.Checked.nVariable++;
+	if (!bResult) {
+		pAppCxt->TraceMemo.Error.nVariable++;
+
+		pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
+			pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
+	}
+	return true;
+}
+
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
                            const Config *pConfig) {
   this->m_pSrcMgr = pSM;
@@ -255,6 +293,11 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   }
 }
 
+bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
+	//std::cout << "VisitCXXRecordDecl " << D->getNameAsString() << std::endl;
+	return true;
+}
+
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   if (!this->m_pConfig->General.Options.bCheckFunctionName) {
     return true;
@@ -283,41 +326,14 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
       pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
           pDecl, CheckType::CT_Function, bIsPtr, bIsArray, FuncName, ""));
     }
-
-    const clang::ArrayRef<clang::ParmVarDecl *> MyRefArray =
-        pDecl->parameters();
-    for (size_t nIdx = 0; nIdx < MyRefArray.size(); nIdx++) {
-      string VarType;
-      string VarName;
-
-      bool bIsPtr = false;
-      bool bIsArray = false;
-
-      ParmVarDecl *pParmVarDecl = MyRefArray[nIdx];
-
-      bStatus = this->_GetParmsInfo(pParmVarDecl, VarType, VarName, bIsPtr);
-      if (bStatus) {
-        bResult = this->m_Detect.CheckVariable(
-            this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-            this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
-            bIsArray);
-
-        pAppCxt->TraceMemo.Checked.nParameter++;
-        if (!bResult) {
-          pAppCxt->TraceMemo.Error.nParameter++;
-
-          pAppCxt->TraceMemo.ErrorDetailList.push_back(
-              this->_CreateErrorDetail(pParmVarDecl, CheckType::CT_Parameter,
-                                       bIsPtr, bIsArray, VarType, VarName, ""));
-        }
-      }
-    }
   }
 
   return bStatus;
 }
 
-bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { return true; }
+bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { 
+	return true;
+}
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   if (!this->_IsMainFile(pDecl)) {
@@ -327,9 +343,9 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
   assert(pAppCxt);
 
-  // PLOGI << "VisitRecordDecl()";
   if (pAppCxt->TraceMemo.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(*pDecl);
+    this->m_LearnIt.PrintDecl(pDecl);
+
   }
 
   return true;
@@ -340,36 +356,21 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
     return true;
   }
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  if (!pAppCxt) {
-    assert(pAppCxt);
-    return false;
+  if (isa<ParmVarDecl>(pDecl))
+  {
+	  return true;
   }
 
-  string VarType;
-  string VarName;
 
-  bool bIsPtr = false;
-  bool bIsArray = false;
-  bool bIsBuiltinType = false;
+  return _CheckRuleForVariable(pDecl);
+}
 
-  bool bStauts = this->_GetVarInfo(pDecl, VarType, VarName, bIsPtr, bIsArray,
-                                   bIsBuiltinType);
+bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
+	if (!this->m_pConfig->General.Options.bCheckVariableName) {
+		return true;
+	}
 
-  bool bResult = this->m_Detect.CheckVariable(
-      this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
-      bIsArray);
-
-  pAppCxt->TraceMemo.Checked.nVariable++;
-  if (!bResult) {
-    pAppCxt->TraceMemo.Error.nParameter++;
-
-    pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, VarType, VarName, ""));
-  }
-
-  return bStauts;
+	return _CheckRuleForVariable(pDecl);
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
@@ -381,6 +382,46 @@ bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
     std::string MyTypeStr = MyQualType.getAsString();
     return true;
   }
-
   return false;
+}
+
+bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
+	string VarType;
+	string VarName;
+
+	bool bIsPtr = false;
+	bool bIsArray = false;
+	bool bAnonymous = false;
+	bool bResult = false;
+	
+
+	APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+	assert(pAppCxt);
+
+	if (pAppCxt->TraceMemo.Option.bEnableLog) {
+		this->m_LearnIt.PrintDecl(pDecl);
+
+	}
+
+	bool bStatus = this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr, bAnonymous);
+	if (!bAnonymous)  // if this variable doesn't have name, it doesn't need to be checked.
+	{
+		if (bStatus) {
+			bResult = this->m_Detect.CheckVariable(
+				this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+				this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
+				bIsArray);
+
+			pAppCxt->TraceMemo.Checked.nParameter++;
+			if (!bResult) {
+				pAppCxt->TraceMemo.Error.nParameter++;
+
+				pAppCxt->TraceMemo.ErrorDetailList.push_back(
+					this->_CreateErrorDetail(pDecl, CheckType::CT_Parameter,
+						bIsPtr, bIsArray, VarType, VarName, ""));
+			}
+		}
+	}
+
+	return true;
 }

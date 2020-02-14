@@ -419,11 +419,6 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     }
   }
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  if (pAppCxt) {
-    pAppCxt->TraceMemo.Checked.nFunction++;
-  }
-
   bool bStatus = false;
   switch (Rule) {
   case RULETYPE_DEFAULT:
