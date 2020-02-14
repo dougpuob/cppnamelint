@@ -131,6 +131,11 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
   String::Trim(VarType);
   String::Trim(VarName);
 
+  if (VarName == "")
+  {
+	  bAnonymous = true;
+  }
+
   return true;
 }
 
