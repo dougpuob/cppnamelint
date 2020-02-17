@@ -1,157 +1,218 @@
-#!/usr/bin/python3
-
-"""cppnamelint.
-
-Usage:
-  cppnamelint.py check <srcdir> <config> [--includes=<dirs>] [--ignores=<paths>]
-  cppnamelint.py pack  <rootdir> <outputdir>
-  cppnamelint.py test  <srcdir> <config>
-  cppnamelint.py test-sample <sampledir>
-  cppnamelint.py (-h | --help)
-  cppnamelint.py (-v | --version)
-  cppnamelint.py --help     Show this screen.
-  cppnamelint.py --version  Show version.
-
-Options:
-    --log=<file>     [default: cppnamelint.log]
-"""
-
 import os
+import re
+import sys
+import copy
+import argparse
 
-from docopt import docopt
-from cppnamelintlib import Utility
-from cppnamelintlib import Helper
-from cppnamelintlib import Packer
+from cppnamelintlib import Exec
+from cppnamelintlib import File
 
+
+define_cmd_check: str    = 'check'
+define_cmd_test: str     = 'test'
+define_cmd_bldgtest: str = 'bldgtest'
+define_cmd_bldgpack: str = 'bldgpack'
+
+define_exec_name: str  = 'cppnamelint'
+define_build_dir: str  = '../Build'
+define_sample_dir: str = '../Source/Test/Sample'
 
 def main():
-    err_code_ok = 0
-    err_code_failed = 1
-    err_code_invalid_input = 2
-    err_code_file_not_found = 3
+    parser = argparse.ArgumentParser()
 
-    ret_err_code = err_code_ok
+    parser.add_argument("-verbose" ,  action="store_true", help="increase output verbosity")
+    parser.add_argument("-dbg"     ,  action="store_true", help="enable debug mode output verbosity")
+    parser.add_argument('-log'     ,  required=False     , help="log file path")
 
-    helper = Helper()
-    utility = Utility()
+    subparsers = parser.add_subparsers(dest='input_cmd')
 
-    arguments = docopt(__doc__, version='cppnamelint')
-    print("--includes=", arguments['--includes'])
-    inc_dirs = ""
+    subparser1 = subparsers.add_parser(define_cmd_check, help="check cmd")
+    subparser1.add_argument('src', help='Input source code file')
+    subparser1.add_argument('-cfg'  , required=False,  help="Config file path")
+    subparser1.add_argument('-json' , required=False,  help="Json result output file path")
+    subparser1.add_argument('-inc'  , required=False,  help="<dir1,dir2,...>")
 
-    def get_exe_file():
-        exe_file_path = ''
-        if os.path.exists('../Build'):
-            exe_file_path = utility.find_target_app('cppnamelint', '../Build')
+    subparser2 = subparsers.add_parser(define_cmd_test, help="test cmd")
+    mutualgroup = subparser2.add_mutually_exclusive_group(required=False)
+    mutualgroup.add_argument('-all'  , action="store_true",  help="run all tests")
+    mutualgroup.add_argument('-ut'   , action="store_true",  help="run unit test only")
 
-        if '' == exe_file_path:
-            exe_file_path = utility.find_target_app('cppnamelint', '.')
-            if '' == exe_file_path:
-                exe_file_path = utility.find_target_app('cppnamelint', '..')
-        return exe_file_path
+    subparser3 = subparsers.add_parser(define_cmd_bldgtest, help="test cmd for building this project")
+    mutualgroup = subparser3.add_mutually_exclusive_group(required=False)
+    mutualgroup.add_argument('-all', action="store_true", help="run all tests")
+    mutualgroup.add_argument('-ut', action="store_true",  help="run unit test only")
+    mutualgroup.add_argument('-it', action="store_true",  help="run integrated test only")
 
-    if arguments['check']:
-        src_dir = arguments['<srcdir>']
-        cfg_file = arguments['<config>']
+    subparser4 = subparsers.add_parser(define_cmd_bldgpack, help="test cmd for packing this project")
+    subparser4.add_argument('dir', help='target output folder')
 
-        print('src_dir   = ' + src_dir)
-        print('cfg_file  = ' + cfg_file)
+    py_args = parser.parse_args()
+    print(py_args)
 
-        if arguments['--includes']:
-            inc_dirs = arguments['--includes']
+    target_exe_path = os.path.join(os.path.abspath('.'), define_build_dir)
+    exec_file_path = get_newest_file_path(define_exec_name, target_exe_path)
+    if not os.path.exists(exec_file_path):
+        print('Failed to find utility executable binary file.')
+        print('exec_file_path=' + exec_file_path)
+        return  -1
 
-        if not os.path.exists(src_dir) or not os.path.exists(cfg_file):
-            ret_err_code = err_code_invalid_input
 
-        exe_file = get_exe_file()
-        if not os.path.exists(exe_file):
-            ret_err_code = err_code_file_not_found
+    error_code = 0
+    #--------------------------------------------------------------------------
+    if py_args.input_cmd == define_cmd_check:
+        args_list :[] = get_full_arg_list(py_args)
+        error_code, output_texts = run_util(exec_file_path, args_list)
 
-        if ret_err_code == err_code_ok:
-            # Remove previous .json file.
-            utility.del_file(".", ".json")
+    #--------------------------------------------------------------------------
+    elif py_args.input_cmd == define_cmd_bldgtest:
+        found_sample_files : [] = find_sample_files(define_sample_dir)
+        error_code = run_util_sample_files(exec_file_path, py_args, found_sample_files)
 
-            full_source_files = []
-            if os.path.isdir(src_dir):
-                # Find all source code files.
-                ext_name_list = [".c", ".cpp"]
-                utility.find_files(src_dir, ext_name_list, full_source_files)
-            else:
-                full_source_files.append(src_dir)
+    return error_code
 
-            # Run check for self source code files.
-            for file_path in full_source_files:
-                utility.run_file(exe_file, "check " + os.path.abspath(file_path) + " --config=" +
-                                 os.path.abspath(cfg_file) + " --includes=" + inc_dirs)
 
-    elif arguments['test']:
-        exe_file = get_exe_file()
+#==----------------------------------------------------------------------------
+# Command functions
+#==----------------------------------------------------------------------------
+def cmd_check():
+    error_code : int = 0
+    return error_code
 
-        if not os.path.exists(exe_file):
-            print('Failed to find executable binary file.')
+def cmd_test():
+    error_code : int = 0
+    return error_code
 
-        else:
-            print('exe_file = ' + exe_file)
+def cmd_pack():
+    error_code : int = 0
+    return error_code
 
-            # Remove previous .json file.
-            utility.del_file(".", ".json")
 
-            # Find all source code files.
-            root_path = arguments['<srcdir>']
-            ext_name_list = [".c", ".cpp"]
-            full_source_files = []
-            utility.find_files(root_path, ext_name_list, full_source_files)
+#==----------------------------------------------------------------------------
+#
+#==----------------------------------------------------------------------------
+def get_full_arg_list(py_args) -> str:
 
-            # Tick out any file in specific folder name, `Test`.
-            filtered_source_files = []
-            utility.exclude_folder(
-                'Test', full_source_files, filtered_source_files)
+    py_args_text = str(py_args)
+    full_args_str:str = ''
+    option_list_str: str = ''
 
-            # Run check for self source code files.
-            for file_path in filtered_source_files:
-                if not os.path.basename(file_path).startswith("Test"):
-                    utility.run_file(exe_file, "check " + file_path +
-                                     " --config=" + os.path.abspath(arguments['<config>']))
+    if -1 == py_args_text.find('dbg='):
+        option_list_str = option_list_str + '-dbg'
 
-    elif arguments['test-sample']:
-        exe_file = get_exe_file()
+    if -1 == py_args_text.find('log='):
+        option_list_str = option_list_str + ' --logfile=' + py_args.log
 
-        if not os.path.exists(exe_file):
-            print('Failed to find executable binary file.')
-        else:
-            print('exe_file = ' + exe_file)
+    if -1 == py_args_text.find('verbose='):
+        option_list_str = option_list_str + '-verbose'
 
-            path = os.path.abspath(arguments['<sampledir>'])
+    # cppnamelint check Sample.cpp --config=MyCfg.toml --includes=<dir1,dir2,...>
+    if py_args.input_cmd == define_cmd_check:
 
-            json_list = []
-            add2list_func = json_list.append
-            make_info_func = helper.make_test_info
+        if -1 != py_args_text.find('inc='):
+            regex = re.compile(r'<(\S+)>')
+            matched = regex.search(py_args.inc)
+            matched_target = matched.group(1)
+            input_inc_list = matched_target.split(',')
 
-            add2list_func(make_info_func(path, 'Sample01UpperCamel.c', 'Sample01UpperCamel.toml'))
-            add2list_func(make_info_func(path, 'Sample02_UpperCamel.c', 'Sample02_UpperCamel.toml'))
-            add2list_func(make_info_func(path, 'sample03_lower_snake.c', 'sample03_lower_snake.toml'))
-            add2list_func(make_info_func(path, 'sample04_lower_snake.cpp', 'sample04_lower_snake.toml'))
-            add2list_func(make_info_func(path, 'sample05HungarianNotation.cpp', 'sample05HungarianNotation.toml'))
-            add2list_func(make_info_func(path, 'Sample06LowerCamel.cpp', 'Sample06LowerCamel.toml'))
+        check_args_str : str = ''
+        if -1 != py_args_text.find('src='):
+            check_args_str = py_args.input_cmd + ' ' + py_args.src
 
-            for item in json_list:
-                test_argument_string = helper.make_test_argument_string(item)
-                utility.run_file(exe_file, test_argument_string)
+        if -1 != py_args_text.find('cfg='):
+            check_args_str = check_args_str + ' --config=' + py_args.cfg
 
-            # Run UnitTest.
-            utility.run_file(exe_file, 'test --all')
+        if -1 != py_args_text.find('json='):
+            check_args_str = check_args_str + ' --jsonout=' + py_args.json
 
-    elif arguments['pack']:
-        root_dir = arguments['<rootdir>']
-        output_dir = arguments['<outputdir>']
-        if not os.path.exists(root_dir):
-            return
+        if -1 != py_args_text.find('inc='):
+            if len(py_args.inc) > 0:
+                check_args_str = check_args_str + ' --includes=' + '<' + ','.join(input_inc_list) + '>'
 
-        packer = Packer()
-        packer.make(root_dir, output_dir)
+        full_args_str = check_args_str + ' ' + option_list_str
 
-    return ret_err_code
+    # cppnamelint test
+    elif py_args.input_cmd == define_cmd_test:
+        full_args_str = define_cmd_test + ' ' + option_list_str
+
+    # cppnamelint bldgtest
+    elif py_args.input_cmd == define_cmd_bldgtest:
+        full_args_str = option_list_str
+
+    full_args_str = full_args_str.strip().split(' ')
+    return full_args_str
+
+
+def find_sample_files(start_dir: str) -> []:
+    paired_list = []
+
+    include_src_files: [] = ['.c', '.cpp']
+    include_cfg_files: [] = ['.toml']
+
+    file_obj = File()
+    found_src_files = file_obj.find_files(start_dir, include_src_files)
+    found_cfg_files = file_obj.find_files(start_dir, include_cfg_files)
+
+    for src in found_src_files:
+        src_dir_name  = os.path.dirname(src)
+        src_file_name = os.path.basename(src)
+        src_ext_name  = ''
+        for ext in include_src_files:
+            if src_file_name.endswith(ext):
+                src_ext_name = ext
+                break
+
+        cfg_file_name = os.path.join(src_dir_name, src_file_name.replace(src_ext_name, '.toml'))
+        for cfg in found_cfg_files:
+            if cfg == cfg_file_name:
+                paired_list.append({'src': src,
+                                    'cfg': cfg})
+                break
+
+    return paired_list
+
+
+def get_newest_file_path(file_name:str, root_dir:str) ->str:
+    file_obj = File()
+    found = file_obj.find_newest_exe(file_name, root_dir)
+    return found
+
+
+def run_util(exec_name:str, arg_list:[], working_dir:str='') -> [int, str]:
+    print('ExeName    = ', exec_name)
+    print('ArgList    = ', arg_list)
+    print('WorkingDir = ', working_dir)
+
+    exec_obj = Exec()
+    ret_code, output_text_list = exec_obj.run(exec_name, arg_list, working_dir)
+
+    #print('RetErr     = ', ret_code)
+    #print('OutputMesg = ', ' '.join(output_texts))
+    output_text = ''.join(output_text_list)
+    return ret_code, output_text
+
+
+def run_util_sample_files(exec_file_path, py_args, paired_samples:[]) -> int:
+    first_error_code = 0
+
+    mock_py_args = copy.copy(py_args)
+    mock_py_args.input_cmd = define_cmd_check
+
+    for paired in paired_samples:
+
+        mock_py_args.src = paired['src']
+        mock_py_args.cfg = paired['cfg']
+
+        args_list: [] = get_full_arg_list(mock_py_args)
+        error_code, output_string = run_util(exec_file_path, args_list)
+
+        if first_error_code == 0 and error_code != 0:
+            first_error_code = error_code
+
+        print(output_string)
+
+    return first_error_code
 
 
 if __name__ == '__main__':
-    main()
+    ret_errcode = main()
+    sys.exit(ret_errcode)
