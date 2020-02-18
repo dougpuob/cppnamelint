@@ -40,20 +40,20 @@ def main():
 
     #--------------------------------------------------------------------------
     elif py_args.input_cmd == define_cmd_test:
-        args_list :[] = convert_py_args_to_exe_args(py_args)
+        args_list: [] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
         print(output_texts)
 
     #--------------------------------------------------------------------------
     elif py_args.input_cmd == define_cmd_bldgtest:
-        found_sample_files : [] = find_sample_files(define_sample_dir)
+        found_sample_files: [] = find_sample_files(define_sample_dir)
         error_code, output_texts = run_util_sample_files(exec_file_path, py_args, found_sample_files, True)
 
     #--------------------------------------------------------------------------
     elif py_args.input_cmd == define_cmd_bldgpack:
-        root_dir:str = os.path.abspath('..')
-        rel_dir:str  = os.path.join(os.path.abspath('.'), 'released')
-        error_code   = run_pack(exec_file_path, root_dir, rel_dir)
+        root_dir:str    = os.path.abspath(py_args.root)
+        output_dir:str  = os.path.abspath(py_args.output)
+        error_code      = run_pack(exec_file_path, root_dir, output_dir)
 
     return error_code
 
@@ -78,31 +78,17 @@ def make_cmd_table():
     mutualgroup.add_argument('-all'  , action="store_true",  help="run all tests")
     mutualgroup.add_argument('-ut'   , action="store_true",  help="run unit test only")
 
-    subparser3 = subparsers.add_parser(define_cmd_bldgtest, help="test cmd for building this project")
+    subparser3 = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest cmd for building this project")
     mutualgroup = subparser3.add_mutually_exclusive_group(required=False)
     mutualgroup.add_argument('-all', action="store_true", help="run all tests")
-    mutualgroup.add_argument('-ut', action="store_true",  help="run unit test only")
-    mutualgroup.add_argument('-it', action="store_true",  help="run integrated test only")
+    mutualgroup.add_argument('-ut' , action="store_true",  help="run unit test only")
+    mutualgroup.add_argument('-it' , action="store_true",  help="run integrated test only")
 
-    subparser4 = subparsers.add_parser(define_cmd_bldgpack, help="test cmd for packing this project")
-    subparser4.add_argument('dir', help='target output folder')
+    subparser4 = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack cmd for packing this project")
+    subparser4.add_argument('root'  , help='project root folder path')
+    subparser4.add_argument('output', help='target released output folder path')
 
     return parser
-
-#==----------------------------------------------------------------------------
-# Command functions
-#==----------------------------------------------------------------------------
-def cmd_check():
-    error_code : int = 0
-    return error_code
-
-def cmd_test():
-    error_code : int = 0
-    return error_code
-
-def cmd_pack():
-    error_code : int = 0
-    return error_code
 
 
 #==----------------------------------------------------------------------------
@@ -259,30 +245,55 @@ def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_outp
 
 def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
 
-    if os.path.exists(output_dir) and os.path.isdir(output_dir):
+    root_dir   = os.path.abspath(root_dir)
+    output_dir = os.path.abspath(output_dir)
+
+    if not os.path.isdir(root_dir) and\
+       not os.path.isdir(output_dir):
+        return -1
+
+    if output_dir == root_dir   or \
+       output_dir == os.path.join(root_dir, '.git')   or \
+       output_dir == os.path.join(root_dir, '.svn')   or \
+       output_dir == os.path.join(root_dir, '.idea')  or \
+       output_dir == os.path.join(root_dir, 'Build')  or \
+       output_dir == os.path.join(root_dir, 'Doc')    or \
+       output_dir == os.path.join(root_dir, 'Module') or \
+       output_dir == os.path.join(root_dir, 'Script'):
+        return -2
+
+    if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
         os.mkdir(output_dir)
     else:
         os.mkdir(output_dir)
 
     file_obj = File()
-    found = file_obj.find_newest_exe(file_name, root_dir)
-
+    found_generated_binary = file_obj.find_newest_exe(file_name, root_dir)
 
     selected_list = [
-        {'platform': 'Shared'   , 'dir': True  , 'src': 'Source/Test'          , 'dest': 'script/released/test'},
-        {'platform': 'Shared'   , 'dir': False , 'src': 'Script/*.py'          , 'dest': 'script/released'},
-        {'platform': 'Shared'   , 'dir': False , 'src': 'Source/*.toml'        , 'dest': 'script/released'},
-        {'platform': 'Windows'  , 'dir': False , 'src': 'Script/TestWin32.cmd' , 'dest': 'script/released'},
-        {'platform': 'Linux'    , 'dir': False , 'src': 'Script/TestLinux.sh'  , 'dest': 'script/released'},
-        {'platform': 'Darwin'   , 'dir': False , 'src': 'Script/TestLinux.sh'  , 'dest': 'script/released'},
+        {'platform': 'Shared'  , 'dir': True  , 'src': 'Source/Test'                 , 'dest': './Test'},
+        {'platform': 'Shared'  , 'dir': False , 'src': found_generated_binary        , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelint.py'       , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelintlib.py'    , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelint.py'   , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib.py', 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Source/cppnamelint.toml'     , 'dest': '.'},
+        {'platform': 'Windows' , 'dir': False , 'src': 'Script/TestWin32.cmd'        , 'dest': '.'},
+        {'platform': 'Linux'   , 'dir': False , 'src': 'Script/TestLinux.sh'         , 'dest': '.'},
+        {'platform': 'Darwin'  , 'dir': False , 'src': 'Script/TestLinux.sh'         , 'dest': '.'},
     ]
 
     for item in selected_list:
         if item['platform'] == 'Shared' or \
-           item['platform'] == os.system():
-            src = os.path.abspath(item['src'])
-            dst = os.path.abspath(item['dest'])
+           item['platform'] == platform.system():
+
+            src = os.path.abspath(os.path.join(root_dir, item['src']))
+            dst = os.path.abspath(os.path.join(output_dir, item['dest']))
+
+            if not os.path.exists(src):
+                continue
+
             if item['dir']:
                 shutil.copytree(src, dst)
             else:
