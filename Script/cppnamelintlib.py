@@ -27,6 +27,14 @@ def get_locale_lang() ->str:
         return 'utf8'
 
 
+class Pack:
+    def __init__(self):
+        self.name = ""
+
+
+
+
+
 class File:
     def __init__(self):
         self.name = ""

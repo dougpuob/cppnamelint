@@ -2,25 +2,52 @@
 
 import os
 import sys
-import re
 import unittest
-import cppnamelint as cppnamelint
+import cppnamelint
+
 import unittest.mock as Mocker
 
 
 class TestCppNameLint(unittest.TestCase):
 
-    def test_main_cmd_pack(self):
-        target_py_file    = ''
-        target_cmd_name   = 'pack'
-        target_cmd_param1 = os.path.abspath('..')
-        target_cmd_param2 = os.path.abspath('./Release')
-        sys.argv = [target_py_file, target_cmd_name , target_cmd_param1, target_cmd_param2]
-        ret_code = cppnamelint.main()
-        self.assertEqual(True, 0 == ret_code)
+
+    def test_get_full_arg_list_sample_check(self):
+        # [sample for check]
+        # cppnamelint.py -log=MyLog.log -dbg check MySource.c -cfg=MyConfig.toml -json=MyJson.json
+        mock_argv = ['-log=MyLog.log', '-dbg', 'check' , 'MySource.c', '-cfg=MyConfig.toml', '-json=MyJson.json', '-inc=<MyDir1:MyDir2:MyDir3>']
+        py_parser = cppnamelint.make_cmd_table()
+        py_args = py_parser.parse_args(mock_argv)
+
+        args_list: [] = cppnamelint.get_full_arg_list(py_args)
+        self.assertEqual(True, len(mock_argv) == len(args_list))
+        self.assertEqual(args_list[0], 'check')
+        self.assertEqual(args_list[1], 'MySource.c')
+        self.assertEqual(args_list[2], '--config=MyConfig.toml')
+        self.assertEqual(args_list[3], '--jsonout=MyJson.json')
+        self.assertEqual(args_list[4], '--includes=<MyDir1:MyDir2:MyDir3>')
+        self.assertEqual(args_list[5], '--dbg')
+        self.assertEqual(args_list[6], '--logfile=MyLog.log')
+
+        return
+
+    def test_get_full_arg_list_test(self):
+        # [sample for `test`]
+        # cppnamelint.py -log=MyLog.log -dbg test -all
+        mock_argv = ['-log=MyLog.log', '-dbg', 'test' , '-all']
+        py_parser = cppnamelint.make_cmd_table()
+        py_args = py_parser.parse_args(mock_argv)
+
+        args_list: [] = cppnamelint.get_full_arg_list(py_args)
+        self.assertEqual(True, len(mock_argv) == len(args_list))
+        self.assertEqual(args_list[0], 'test')
+        self.assertEqual(args_list[1], '--all')
+        self.assertEqual(args_list[2], '--dbg')
+        self.assertEqual(args_list[3], '--logfile=MyLog.log')
 
         return
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
