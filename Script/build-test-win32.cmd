@@ -7,6 +7,7 @@ python testcppnamelintlib-file.py   -v
 
 IF EXIST cppnamelint.exe (
 python testcppnamelint-main.py      -v
+cppnamelint.exe test --all
 )
 
 PAUSE

@@ -45,8 +45,7 @@ def main(forced_argv):
         exec_file_path = get_newest_file_path(define_exec_name, target_exe_path)
 
     if not os.path.exists(exec_file_path):
-        print('Failed to find utility executable binary file.')
-        print('exec_file_path=' + exec_file_path)
+        print('Failed to find utility executable binary file. (' + define_exec_name + ')')
         return  -1
 
 
