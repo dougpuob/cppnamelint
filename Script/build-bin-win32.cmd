@@ -1,64 +1,28 @@
 @ECHO OFF
 
-python --version        > NUL
-IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
+python --version > NUL 
+IF "9009"=="%ERRORLEVEL%"   (GOTO :NOPY)
 
-git --version           > NUL
-IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
-
-cmake --version         > NUL
-IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
-
-clang-format --version  > NUL
-IF "9009"=="%ERRORLEVEL%"   (GOTO :ERROR)
+python cppnamelint.py chkenv
+IF NOT "0"=="%ERRORLEVEL%"   (GOTO :NOTOOL)
 
 
-ECHO ==============================================================
-ECHO Git submodule
-ECHO ==============================================================
-PUSHD ..
-git submodule init
-git submodule update
-POPD
-
-ECHO.
-ECHO.
-ECHO ==============================================================
-ECHO Reformat source files
-ECHO ==============================================================
-python BuildFlow.py lint-format ..\Source
-
-ECHO.
-ECHO.
-ECHO ==============================================================
-ECHO Static source files analyzation
-ECHO ==============================================================
-::python build-flow.py lint analyze ..\Source
-ECHO Skipped
-
-ECHO.
 ECHO.
 ECHO ==============================================================
 ECHO Generate makefile via CMake
 ECHO ==============================================================
-SET BUILD_TYPE=
-IF /I "Release"=="%1"        (SET BUILD_TYPE="Release")
-IF /I "RelWithDebInfo"=="%1" (SET BUILD_TYPE="RelWithDebInfo")
-IF /I "Debug"=="%1"          (SET BUILD_TYPE="Debug")
-python BuildFlow.py proj-create .. ..\Build %BUILD_TYPE%
+SET ROOT_DIR=..
+SET BUILD_DIR=..\Build
+SET BUILD_TYPE=RELEASE
+::IF EXIST %BUILD_DIR% (RD %BUILD_DIR%)
+MKDIR %BUILD_DIR%
+python cppnamelint.py bldgcfg %ROOT_DIR% %BUILD_DIR% %BUILD_TYPE%
 
+
+:NOPY
+ECHO Please install python.
+:NOTOOL
 ECHO.
-ECHO.
-ECHO ==============================================================
-ECHO Build project
-ECHO ==============================================================
-::msbuild build-win32\namelint.sln /t:build /p:Configuration=Debug /p:Platform="Win32"
-
-GOTO :EXIT
-
-:ERROR
-
-:EXIT
+:PASS
 PAUSE
-
 @ECHO ON

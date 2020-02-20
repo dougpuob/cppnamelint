@@ -18,13 +18,14 @@ class TestCppNameLint_Main(unittest.TestCase):
         self.cppnamelint_exe_path = exe_name
         self.assertEqual(True, os.path.exists(self.cppnamelint_exe_path))
 
-    def test_samples(self):
+
+    def test_check_samples(self):
         found_sample_files: [] = cppnamelint.find_sample_files(cppnamelint.define_sample_dir)
 
         for item in found_sample_files:
             src_path = item['src']
             cfg_path = item['cfg']
-            
+
             self.assertEqual(True, os.path.exists(src_path))
             self.assertEqual(True, os.path.exists(cfg_path))
 
@@ -39,7 +40,19 @@ class TestCppNameLint_Main(unittest.TestCase):
             self.assertEqual(True, 0 == error_code)
             self.assertEqual(True, '' != output_string)
 
-        return
+
+    def test_test_unittest(self):
+        self.cppnamelint_exe_path
+
+        py_parser = cppnamelint.make_cmd_table()
+
+        mock_py_args = ['test', '-ut']
+        py_args = py_parser.parse_args(mock_py_args)
+        args_list: [] = cppnamelint.convert_py_args_to_exe_args(py_args)
+        error_code, output_string = cppnamelint.run_util(self.cppnamelint_exe_path, args_list)
+
+        self.assertEqual(True, 0 == error_code)
+        self.assertEqual(True, '' != output_string)
 
 
 if __name__ == '__main__':

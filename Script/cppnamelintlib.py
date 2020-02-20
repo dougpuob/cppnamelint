@@ -2,17 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 import os
-import sys
-import re
-import platform
-from subprocess import Popen, PIPE
-
-import os
-import re
 import locale
-import shutil
-import platform
 
+from enum import Enum
 from subprocess import Popen, PIPE
 
 
@@ -25,6 +17,10 @@ def get_locale_lang() ->str:
     else:
         return 'utf8'
 
+class BuildType(Enum):
+    DEFAULT = 0
+    RELEASE = 1
+    DEBUG   = 2
 
 class Cmake:
     def __init__(self):
@@ -159,3 +155,31 @@ class Exec:
             print(str(e))
 
         return ret_code, output_mix
+
+
+
+
+class Str:
+    def __init__(self):
+        self.name = ""
+
+    def remove_last_crlf(self, text:str):
+        new_text_list = text.split('\n')
+        if new_text_list[len(new_text_list) - 1] == '':
+            del new_text_list[len(new_text_list) - 1]
+
+        new_text = '\n'.join(new_text_list)
+        return new_text
+
+    def remove_all_empty_line(self, text:str):
+        old_text_list:[] = text.split('\n')
+        new_text_list:[] = []
+
+        for item in old_text_list:
+            if item != '':
+                new_text_list.append(item)
+
+        new_text = '\n'.join(new_text_list)
+        return new_text
+
+

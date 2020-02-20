@@ -10,17 +10,25 @@ import shutil
 import argparse
 import platform
 
+from cppnamelintlib import Str
 from cppnamelintlib import Exec
 from cppnamelintlib import File
+from cppnamelintlib import BuildType
 
-define_cmd_check: str    = 'check'
-define_cmd_test: str     = 'test'
-define_cmd_bldgtest: str = 'bldgtest'
-define_cmd_bldgpack: str = 'bldgpack'
+define_cmd_check:str    = 'check'
+define_cmd_test:str     = 'test'
+define_cmd_chkenv:str   = 'chkenv'
+define_cmd_bldgtest:str = 'bldgtest'
+define_cmd_bldgpack:str = 'bldgpack'
+define_cmd_bldgcfg:str  = 'bldgcfg'
+define_cmd_bldgmake:str = 'bldgmake'
 
 define_exec_name: str  = 'cppnamelint'
 define_build_dir: str  = '../Build'
 define_sample_dir: str = '../Source/Test/Sample'
+define_cmake_name: str = 'cmake'
+define_cmakelists: str = 'CMakeLists.txt'
+define_cmake_msvc:str  = 'Visual Studio 15 2017'
 
 def main(forced_argv):
 
@@ -32,7 +40,10 @@ def main(forced_argv):
     print(py_args)
 
     target_exe_path = os.path.join(os.path.abspath('.'), define_build_dir)
-    exec_file_path = get_newest_file_path(define_exec_name, target_exe_path)
+    exec_file_path = get_newest_file_path(define_exec_name, '.')
+    if '' == exec_file_path:
+        exec_file_path = get_newest_file_path(define_exec_name, target_exe_path)
+
     if not os.path.exists(exec_file_path):
         print('Failed to find utility executable binary file.')
         print('exec_file_path=' + exec_file_path)
@@ -41,27 +52,69 @@ def main(forced_argv):
 
     error_code = 0
     #--------------------------------------------------------------------------
+    # python cppnamelint.py check command
     if py_args.input_cmd == define_cmd_check:
         args_list :[] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
         print(output_texts)
 
     #--------------------------------------------------------------------------
+    # python cppnamelint.py test command
     elif py_args.input_cmd == define_cmd_test:
         args_list: [] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
         print(output_texts)
 
     #--------------------------------------------------------------------------
+    # python cppnamelint.py chkenv command
+    elif py_args.input_cmd == define_cmd_chkenv:
+        error_code_git   , output_git   = run_util('git',          ['--version'])
+        error_code_cmake , output_cmake = run_util('cmake',        ['--version'])
+        error_code_tidy  , output_tidy  = run_util('clang-tidy',   ['--version'])
+        error_code_fmt   , output_fmt   = run_util('clang-format', ['--version'])
+
+        str_obj = Str()
+        output_git   = str_obj.remove_all_empty_line(output_git)
+        output_cmake = str_obj.remove_all_empty_line(output_cmake)
+        output_tidy  = str_obj.remove_all_empty_line(output_tidy)
+        output_fmt   = str_obj.remove_all_empty_line(output_fmt)
+
+        print('checking `git`          : (' + str(error_code_git)   + ') ' + output_git)
+        print('checking `cmake`        : (' + str(error_code_cmake) + ') ' + output_cmake)
+        print('checking `clang-tidy`   : (' + str(error_code_tidy)  + ') ' + output_tidy)
+        print('checking `clang-format` : (' + str(error_code_fmt)   + ') ' + output_fmt)
+
+        error_code = error_code_git + error_code_cmake + error_code_tidy + error_code_fmt
+
+    #--------------------------------------------------------------------------
+    # python cppnamelint.py bldgtest command
     elif py_args.input_cmd == define_cmd_bldgtest:
         found_sample_files: [] = find_sample_files(define_sample_dir)
         error_code, output_texts = run_util_sample_files(exec_file_path, py_args, found_sample_files, True)
+        print(output_texts)
 
     #--------------------------------------------------------------------------
+    # python cppnamelint.py bldgpack command
     elif py_args.input_cmd == define_cmd_bldgpack:
         root_dir:str    = os.path.abspath(py_args.root)
         output_dir:str  = os.path.abspath(py_args.output)
         error_code      = run_pack(exec_file_path, root_dir, output_dir)
+
+    #--------------------------------------------------------------------------
+    # python cppnamelint.py bldgcfg command
+    elif py_args.input_cmd == define_cmd_bldgcfg:
+        root_dir:str    = os.path.abspath(py_args.root)
+        output_dir:str  = os.path.abspath(py_args.output)
+
+        if py_args.type.lower() == 'release':
+            build_type:BuildType = BuildType.RELEASE
+        elif py_args.type.lower() == 'debug':
+            build_type: BuildType = BuildType.DEBUG
+        else:
+            build_type: BuildType = BuildType.RELEASE
+
+        error_code, output_texts = run_cmake(root_dir, output_dir, build_type)
+        print(output_texts)
 
     return error_code
 
@@ -75,26 +128,33 @@ def make_cmd_table():
 
     subparsers = parser.add_subparsers(dest='input_cmd')
 
-    subparser1 = subparsers.add_parser(define_cmd_check, help="check cmd")
-    subparser1.add_argument('src', help='Input source code file')
-    subparser1.add_argument('-cfg'  , required=False,  help="Config file path")
-    subparser1.add_argument('-json' , required=False,  help="Json result output file path")
-    subparser1.add_argument('-inc'  , required=False,  help="<dir1:dir2:...>")
+    cmd_check = subparsers.add_parser(define_cmd_check, help="check cmd")
+    cmd_check.add_argument('src', help='Input source code file')
+    cmd_check.add_argument('-cfg'  , required=False,  help="Config file path")
+    cmd_check.add_argument('-json' , required=False,  help="Json result output file path")
+    cmd_check.add_argument('-inc'  , required=False,  help="<dir1:dir2:...>")
 
-    subparser2 = subparsers.add_parser(define_cmd_test, help="test cmd")
-    mutualgroup = subparser2.add_mutually_exclusive_group(required=False)
-    mutualgroup.add_argument('-all'  , action="store_true",  help="run all tests")
-    mutualgroup.add_argument('-ut'   , action="store_true",  help="run unit test only")
+    cmd_test = subparsers.add_parser(define_cmd_test, help="test cmd")
+    cmdtest_grp = cmd_test.add_mutually_exclusive_group(required=False)
+    cmdtest_grp.add_argument('-all'  , action="store_true",  help="run all tests")
+    cmdtest_grp.add_argument('-ut'   , action="store_true",  help="run unit test only")
 
-    subparser3 = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest cmd for building this project")
-    mutualgroup = subparser3.add_mutually_exclusive_group(required=False)
-    mutualgroup.add_argument('-all', action="store_true", help="run all tests")
-    mutualgroup.add_argument('-ut' , action="store_true",  help="run unit test only")
-    mutualgroup.add_argument('-it' , action="store_true",  help="run integrated test only")
+    chk_env = subparsers.add_parser(define_cmd_chkenv, help="chkenv cmd for checking build environment")
 
-    subparser4 = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack cmd for packing this project")
-    subparser4.add_argument('root'  , help='project root folder path')
-    subparser4.add_argument('output', help='target released output folder path')
+    bldgtest = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest cmd for building this project")
+    bldgtest_grp = bldgtest.add_mutually_exclusive_group(required=False)
+    bldgtest_grp.add_argument('-all', action="store_true", help="run all tests")
+    bldgtest_grp.add_argument('-ut' , action="store_true",  help="run unit test only")
+    bldgtest_grp.add_argument('-it' , action="store_true",  help="run integrated test only")
+
+    bldgpack = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack cmd for packing this project")
+    bldgpack.add_argument('root'  , help='project root folder path')
+    bldgpack.add_argument('output', help='target released output folder path')
+
+    bldgcfg = subparsers.add_parser(define_cmd_bldgcfg, help="bldgcfg cmd for doing config via Cmake")
+    bldgcfg.add_argument('root'  , help='project root folder path')
+    bldgcfg.add_argument('output', help='target build folder')
+    bldgcfg.add_argument('type'  , help='build type(release|debug)')
 
     return parser
 
@@ -150,7 +210,7 @@ def convert_py_args_to_exe_args(py_args) -> str:
             specific_cmd_args = specific_cmd_args + ' --all'
 
         if py_args.ut:
-            specific_cmd_args = specific_cmd_args + ' --ut'
+            specific_cmd_args = specific_cmd_args + ' --u'
 
         final_cmd_str = define_cmd_test + specific_cmd_args + common_args
 
@@ -161,7 +221,7 @@ def convert_py_args_to_exe_args(py_args) -> str:
             specific_cmd_args = specific_cmd_args + ' --all'
 
         if py_args.ut:
-            specific_cmd_args = specific_cmd_args + ' --ut'
+            specific_cmd_args = specific_cmd_args + ' --u'
 
         if py_args.it:
             specific_cmd_args = specific_cmd_args + ' --it'
@@ -276,19 +336,19 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     found_generated_binary = file_obj.find_newest_exe(file_name, root_dir)
 
     selected_list = [
-        {'platform': 'Shared'  , 'dir': True  , 'src': 'Source/Test'                        , 'dest': './Test'},
-        {'platform': 'Shared'  , 'dir': False , 'src': found_generated_binary               , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelint.py'              , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelintlib.py'           , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelint.py'          , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib.py'       , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib-file.py'  , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib-exec.py'  , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib-xxx.py'   , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Source/cppnamelint.toml'            , 'dest': '.'},
-        {'platform': 'Windows' , 'dir': False , 'src': 'Script/build-test-win32.cmd'        , 'dest': '.'},
-        {'platform': 'Linux'   , 'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
-        {'platform': 'Darwin'  , 'dir': False , 'src': 'Script/build-test-macos.sh'         , 'dest': '.'},
+        {'platform': 'Shared',  'dir': True ,  'src': 'Source/Test'                        , 'dest': './Test'},
+        {'platform': 'Shared',  'dir': False,  'src': found_generated_binary               , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Source/cppnamelint.toml'            , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/cppnamelint.py'              , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/cppnamelintlib.py'           , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelint.py'          , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelint-main.py'     , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib.py'       , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib-file.py'  , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib-exec.py'  , 'dest': '.'},
+        {'platform': 'Windows', 'dir': False , 'src': 'Script/build-test-win32.cmd'        , 'dest': '.'},
+        {'platform': 'Linux',   'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
+        {'platform': 'Darwin',  'dir': False , 'src': 'Script/build-test-macos.sh'         , 'dest': '.'},
     ]
 
     for item in selected_list:
@@ -307,6 +367,37 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
                 shutil.copy(src, dst)
 
     return 0
+
+
+
+def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
+    error_code:int = 0
+
+    if not os.path.exists(root_dir) or not os.path.exists(output_dir):
+        return -1
+
+    cmakelists_path = os.path.join(root_dir, define_cmakelists)
+    if not os.path.exists(cmakelists_path):
+        return -2
+
+    build_type_str = ''
+    if build_type == BuildType.RELEASE:
+        build_type_str = 'Release'
+    elif build_type == BuildType.DEBUG:
+        build_type_str = 'Debug'
+    else:
+        build_type_str = 'Release'
+
+    cmake_args: [] = [root_dir, '-B', output_dir, '-DCMAKE_BUILD_TYPE='+build_type_str]
+    if platform.system() == 'Windows':
+        cmake_args.extend(['-G', define_cmake_msvc])
+
+    error_code, output_texts = run_util(define_cmake_name, cmake_args)
+
+    return error_code, output_texts
+
+
+
 
 
 if __name__ == '__main__':
