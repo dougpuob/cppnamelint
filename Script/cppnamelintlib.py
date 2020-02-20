@@ -26,11 +26,18 @@ def get_locale_lang() ->str:
         return 'utf8'
 
 
-class Pack:
+class Cmake:
     def __init__(self):
         self.name = ""
 
+    def run(self, project_dir:str, output_dir:str) -> int:
+        if project_dir == '' or output_dir =='':
+            return -1, None
 
+        exec_obj = Exec()
+        error_code, output_message = exec_obj.run('cmake', [])
+
+        return error_code, output_message
 
 
 
@@ -58,7 +65,9 @@ class File:
                     abs_path = os.path.join(root_dir, dir_name, file_name)
                     norm_path = os.path.normpath(abs_path)
                     found_files.append(norm_path)
+
         return found_files
+
 
     def get_newest_file_loc(self, files:[]) -> str:
         files.sort(key=os.path.getmtime, reverse=True)
@@ -75,6 +84,7 @@ class File:
 
         if os.name == 'nt' and file_path.lower().endswith('.exe'):
             return True
+
         elif os.name == 'posix' and os.access(file_path, os.X_OK):
             return True
 
@@ -97,8 +107,10 @@ class File:
 
 
     def find_newest_exe(self, file_name, dir_path) -> str:
+
         found_list = self.find_exe(file_name, dir_path)
         newest_file = self.get_newest_file_loc(found_list)
+
         return newest_file
 
 
@@ -108,31 +120,40 @@ class Exec:
         self.name = ""
 
 
-    def run(self, file_name:str, args:[], working_dir:str) -> [int, str]:
-        ret_code : int = 0
-        stdout = []
-        stderr = []
-        output_mix = []
+    def run(self, file_name:str, args:[], working_dir:str='') -> [int, str]:
+
+        output_mix = ''
+        ret_code: int = 0
 
         try:
             cmd_and_arg = []
             cmd_and_arg.append(file_name)
             cmd_and_arg.extend(args)
+
             process = Popen(cmd_and_arg, stdout=PIPE, stderr=PIPE, universal_newlines=True)
 
             if process:
-                while process.poll() is None:
-                    line = process.stdout.readline()
-                    if line != "":
-                        stdout.append(line)
-                        output_mix.append(line)
+                text1 = None
+                text2 = None
 
-                    line = process.stderr.readline()
-                    if line != "":
-                        stderr.append(line)
-                        output_mix.append(line)
+                while '' != text1 or '' != text2:
+
+                    text1 = process.stdout.read()
+                    if text1 != "":
+                        output_mix = output_mix + text1
+
+                    text2 = process.stderr.read()
+                    if text2 != "":
+                        output_mix = output_mix + text2
+
+                process.stderr.close()
+                process.stdout.close()
+                process.wait(10)
 
                 ret_code = process.returncode
+                if None == ret_code:
+                    ret_code = 0
+
 
         except Exception as e:
             print(str(e))

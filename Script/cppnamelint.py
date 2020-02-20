@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
+
 import os
 import re
 import sys
@@ -18,9 +22,13 @@ define_exec_name: str  = 'cppnamelint'
 define_build_dir: str  = '../Build'
 define_sample_dir: str = '../Source/Test/Sample'
 
-def main():
+def main(forced_argv):
+
+    sys.argv = forced_argv
+
     parser = make_cmd_table()
     py_args = parser.parse_args()
+
     print(py_args)
 
     target_exe_path = os.path.join(os.path.abspath('.'), define_build_dir)
@@ -206,10 +214,6 @@ def get_newest_file_path(file_name:str, root_dir:str) ->str:
 
 
 def run_util(exec_name:str, arg_list:[], working_dir:str='') -> [int, str]:
-    print('ExeName    = ', exec_name)
-    print('ArgList    = ', arg_list)
-    print('WorkingDir = ', working_dir)
-
     exec_obj = Exec()
     ret_code, output_text_list = exec_obj.run(exec_name, arg_list, working_dir)
 
@@ -272,16 +276,19 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     found_generated_binary = file_obj.find_newest_exe(file_name, root_dir)
 
     selected_list = [
-        {'platform': 'Shared'  , 'dir': True  , 'src': 'Source/Test'                 , 'dest': './Test'},
-        {'platform': 'Shared'  , 'dir': False , 'src': found_generated_binary        , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelint.py'       , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelintlib.py'    , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelint.py'   , 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib.py', 'dest': '.'},
-        {'platform': 'Shared'  , 'dir': False , 'src': 'Source/cppnamelint.toml'     , 'dest': '.'},
-        {'platform': 'Windows' , 'dir': False , 'src': 'Script/TestWin32.cmd'        , 'dest': '.'},
-        {'platform': 'Linux'   , 'dir': False , 'src': 'Script/TestLinux.sh'         , 'dest': '.'},
-        {'platform': 'Darwin'  , 'dir': False , 'src': 'Script/TestLinux.sh'         , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': True  , 'src': 'Source/Test'                        , 'dest': './Test'},
+        {'platform': 'Shared'  , 'dir': False , 'src': found_generated_binary               , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelint.py'              , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/cppnamelintlib.py'           , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelint.py'          , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib.py'       , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib-file.py'  , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib-exec.py'  , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Script/testcppnamelintlib-xxx.py'   , 'dest': '.'},
+        {'platform': 'Shared'  , 'dir': False , 'src': 'Source/cppnamelint.toml'            , 'dest': '.'},
+        {'platform': 'Windows' , 'dir': False , 'src': 'Script/build-test-win32.cmd'        , 'dest': '.'},
+        {'platform': 'Linux'   , 'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
+        {'platform': 'Darwin'  , 'dir': False , 'src': 'Script/build-test-macos.sh'         , 'dest': '.'},
     ]
 
     for item in selected_list:
@@ -303,6 +310,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
 
 
 if __name__ == '__main__':
-    ret_errcode = main()
+    print(sys.argv)
+    ret_errcode = main(sys.argv)
     sys.exit(ret_errcode)
 

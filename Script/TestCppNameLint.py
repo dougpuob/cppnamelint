@@ -1,15 +1,11 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
 
-
-import os
-import sys
 import unittest
 import cppnamelint
 
-import unittest.mock as Mocker
-
 
 class TestCppNameLint(unittest.TestCase):
-
 
     def test_convert_py_args_to_exe_args_sample_check(self):
         # [sample for check]
