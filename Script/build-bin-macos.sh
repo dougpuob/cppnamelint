@@ -2,14 +2,14 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin:/usr/loc
 
 export CC=clang
 export CXX=clang++
-echo CC  =$CC 
+echo CC  =$CC
 echo CXX =$CXX
 
 
-pushd ..
+cd ..
 git submodule init
 git submodule update
-popd
+cd Script
 
 
 echo "============================================================"

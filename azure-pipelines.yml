@@ -141,6 +141,9 @@ jobs:
       - script: "cmake --version"
         displayName: "Show cmake version."
 
+      - script: "python --version"
+        displayName: "Show python version."
+
       - script: "export"
         displayName: "Dump Azure environment variables."
 
