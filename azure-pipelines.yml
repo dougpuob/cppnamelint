@@ -96,18 +96,21 @@ jobs:
       verbosity: 'Trace'
   - script: 'ls -la'
   
-  - script: 'build-bin-linux.sh'
+  - script: 'ls -la -R'
+    displayName: 'Drump folder hierarchy'
+
+  - script: './build-bin-linux.sh'
     displayName: 'build-bin-linux.sh'
     workingDirectory: 'Script'
     
   - script: make
     workingDirectory: 'build/linux'
 
-  - script: 'build-pack-linux.sh'
+  - script: './build-pack-linux.sh'
     displayName: 'build-pack-linux.sh'
     workingDirectory: 'Script'
 
-  - script: 'build-test-linux.sh'
+  - script: './build-test-linux.sh'
     displayName: 'build-test-linux.sh'
     workingDirectory: 'Script/release'
 
@@ -152,6 +155,9 @@ jobs:
       verbosity: 'Trace'
   - script: 'ls -ls -R'
 
+    - script: 'ls -la -R'
+    displayName: 'Drump folder hierarchy'
+
   - script: 'build-bin-macos.sh'
     displayName: 'build-bin-macos.sh'
     workingDirectory: 'Script'
@@ -166,4 +172,3 @@ jobs:
   - script: 'build-test-linux.sh'
     displayName: 'build-test-linux.sh'
     workingDirectory: 'Script/release'
-
