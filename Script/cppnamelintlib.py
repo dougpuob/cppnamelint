@@ -127,6 +127,7 @@ class Exec:
             cmd_and_arg.append(file_name)
             cmd_and_arg.extend(args)
 
+            print(cmd_and_arg)
             process = Popen(cmd_and_arg, stdout=PIPE, stderr=PIPE, universal_newlines=True)
 
             if process:
