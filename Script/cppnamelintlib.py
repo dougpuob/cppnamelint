@@ -10,6 +10,7 @@ from subprocess import Popen, PIPE
 
 def get_locale_lang() ->str:
     ret_locale = list(locale.getdefaultlocale())
+    ret_locale = list(locale.getdefaultlocale())
     if ret_locale[1] == 'cp950':
         return 'Big5'
     elif ret_locale[1] == 'cp1252':

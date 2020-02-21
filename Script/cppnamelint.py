@@ -24,7 +24,7 @@ define_cmd_bldgcfg:str  = 'bldgcfg'
 define_cmd_bldgmake:str = 'bldgmake'
 
 define_exec_name: str  = 'cppnamelint'
-define_build_dir: str  = '../Build'
+define_build_dir: str  = '../build'
 define_sample_dir: str = '../Source/Test/Sample'
 define_cmake_name: str = 'cmake'
 define_cmakelists: str = 'CMakeLists.txt'
@@ -319,7 +319,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
        output_dir == os.path.join(root_dir, '.git')   or \
        output_dir == os.path.join(root_dir, '.svn')   or \
        output_dir == os.path.join(root_dir, '.idea')  or \
-       output_dir == os.path.join(root_dir, 'Build')  or \
+       output_dir == os.path.join(root_dir, 'build')  or \
        output_dir == os.path.join(root_dir, 'Doc')    or \
        output_dir == os.path.join(root_dir, 'Module') or \
        output_dir == os.path.join(root_dir, 'Script'):
@@ -400,7 +400,6 @@ def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
 
 
 if __name__ == '__main__':
-    print(sys.argv)
     ret_errcode = main(sys.argv)
     sys.exit(ret_errcode)
 

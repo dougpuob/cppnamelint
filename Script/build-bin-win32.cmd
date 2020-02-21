@@ -12,7 +12,7 @@ ECHO ==============================================================
 ECHO Generate makefile via CMake
 ECHO ==============================================================
 SET ROOT_DIR=..
-SET BUILD_DIR=..\Build
+SET BUILD_DIR=..\build\windows
 SET BUILD_TYPE=RELEASE
 ::IF EXIST %BUILD_DIR% (RD %BUILD_DIR%)
 MKDIR %BUILD_DIR%
