@@ -155,9 +155,10 @@ jobs:
           vstsPackageVersion: "0.0.1"
           verbosity: "Trace"
 
-      - bash: "build-bin-macos.sh"
-        workingDirectory: "Script"
-        displayName: "build-bin-macos.sh"
+      - task: Bash@3
+        inputs:
+          filePath: 'build-bin-macos.sh'
+          workingDirectory: 'Script'
 
       - script: "ls -la -R"
         displayName: "Drump folder hierarchy"
