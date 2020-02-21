@@ -1,7 +1,7 @@
 @ECHO OFF
 
-IF EXIST Release (RD Release)
-python cppnamelint.py bldgpack .. .\Release
+IF EXIST release (RD release)
+python cppnamelint.py bldgpack .. .\release
 
 ECHO.
 ECHO.
