@@ -115,7 +115,7 @@ if(WIN32)
 elseif(UNIX AND NOT APPLE)
     set(OUTPUT_OS "linux")
 elseif(APPLE)
-    set(OUTPUT_OS "darwin")
+    set(OUTPUT_OS "macos")
 else()
     set(OUTPUT_OS "error")
 endif()
@@ -339,6 +339,6 @@ target_link_libraries(
     clangBasic
     LLVMSupport
     LLVMCore
-    LLVMMC        
+    LLVMMC
     ${EXTERNAL_LIB}
 )

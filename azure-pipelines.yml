@@ -2,184 +2,182 @@ trigger:
   - master
   - dev
 
-
 jobs:
-#==============================================================================
-# Windows
-#==============================================================================
-- job: Windows
+  #==============================================================================
+  # Windows
+  #==============================================================================
+  - job: Windows
 
-  variables:
-  - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
-  - name: BUILD_TYPE
-    value: Release
+    variables:
+      - name: NAMELINT_LLVM_LIB
+        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
+      - name: BUILD_TYPE
+        value: Release
 
-  pool:
-    vmImage: 'vs2017-win2016'
+    pool:
+      vmImage: "vs2017-win2016"
 
-  steps:
-  - script: 'set'
-    displayName: 'Dump Azure environment variables.'
+    steps:
+      - script: "set"
+        displayName: "Dump Azure environment variables."
 
-  - checkout: self
-    displayName: 'Checkout git submodules.'
-    submodules: true
+      - checkout: self
+        displayName: "Checkout git submodules."
+        submodules: true
 
-  - task: UniversalPackages@0
-    inputs:
-      command: 'download'
-      downloadDirectory: '$(System.DefaultWorkingDirectory)'
-      feedsToUse: 'internal'
-      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/5d6a84a9-b3ee-4af2-88a9-0e7ceb36156d'
-      vstsFeedPackage: '0a8bf302-6f44-4fd6-ab0f-cec0e21d1c99'
-      vstsPackageVersion: '0.0.1'
-      verbosity: 'Trace'
+      - task: UniversalPackages@0
+        inputs:
+          command: "download"
+          downloadDirectory: "$(System.DefaultWorkingDirectory)"
+          feedsToUse: "internal"
+          vstsFeed: "78202891-aba0-41ab-952b-2152c4a57470/5d6a84a9-b3ee-4af2-88a9-0e7ceb36156d"
+          vstsFeedPackage: "0a8bf302-6f44-4fd6-ab0f-cec0e21d1c99"
+          vstsPackageVersion: "0.0.1"
+          verbosity: "Trace"
 
-  - script: 'build-bin-win32.cmd'
-    displayName: 'build-bin-win32.cmd'
-    workingDirectory: 'Script'
+      - script: "build-bin-win32.cmd"
+        displayName: "build-bin-win32.cmd"
+        workingDirectory: "Script"
 
-  - task: MSBuild@1
-    inputs:
-      solution: 'build/windows/cppnamelint.sln'
-      msbuildVersion: '15.0'
-      configuration: 'Release'
-      msbuildArchitecture: 'x86' #x86, x64
+      - task: MSBuild@1
+        inputs:
+          solution: "build/windows/cppnamelint.sln"
+          msbuildVersion: "15.0"
+          configuration: "Release"
+          msbuildArchitecture: "x86" #x86, x64
 
-  - script: 'build-pack-win32.cmd'
-    displayName: 'build-pack-win32.cmd'
-    workingDirectory: 'Script'
+      - script: "build-pack-win32.cmd"
+        displayName: "build-pack-win32.cmd"
+        workingDirectory: "Script"
 
-  - script: 'build-test-win32.cmd'
-    displayName: 'build-test-win32.cmd'
-    workingDirectory: 'Script/release'
+      - script: "build-test-win32.cmd"
+        displayName: "build-test-win32.cmd"
+        workingDirectory: "Script/release"
 
+  #==============================================================================
+  # Linux
+  #==============================================================================
+  - job: Linux
 
+    variables:
+      - name: NAMELINT_LLVM_LIB
+        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit
+      - name: BUILD_TYPE
+        value: Release
+      - name: CC
+        value: gcc
+      - name: CXX
+        value: g++
+    pool:
+      vmImage: "ubuntu-18.04"
 
-#==============================================================================
-# Linux
-#==============================================================================
-- job: Linux
+    steps:
+      - script: "gcc --version"
+        displayName: "Show gcc version."
 
-  variables:
-  - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit
-  - name: BUILD_TYPE
-    value: Release
-  - name: CC
-    value: gcc
-  - name: CXX
-    value: g++
-  pool:
-    vmImage: 'ubuntu-18.04'
+      - script: "export"
+        displayName: "Dump Azure environment variables."
 
-  steps:
-  - script: 'gcc --version'  
-    displayName: 'Show gcc version.'   
-  
-  - script: 'export'
-    displayName: 'Dump Azure environment variables.'
-      
-  - checkout: self
-    displayName: 'Checkout git submodules.'
-    submodules: true
+      - checkout: self
+        displayName: "Checkout git submodules."
+        submodules: true
 
-  - task: UniversalPackages@0
-    inputs:
-      command: 'download'
-      downloadDirectory: '$(System.DefaultWorkingDirectory)'
-      feedsToUse: 'internal'
-      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/1d266e96-42a9-4468-83b0-69b039e87cb3'
-      vstsFeedPackage: 'e8febc2a-50f8-4b36-832d-87feb38f96f0'
-      vstsPackageVersion: '0.0.2'
-      verbosity: 'Trace'
-  - script: 'ls -la'
-  
-  - script: 'ls -la -R'
-    displayName: 'Drump folder hierarchy'
+      - task: UniversalPackages@0
+        inputs:
+          command: "download"
+          downloadDirectory: "$(System.DefaultWorkingDirectory)"
+          feedsToUse: "internal"
+          vstsFeed: "78202891-aba0-41ab-952b-2152c4a57470/1d266e96-42a9-4468-83b0-69b039e87cb3"
+          vstsFeedPackage: "e8febc2a-50f8-4b36-832d-87feb38f96f0"
+          vstsPackageVersion: "0.0.2"
+          verbosity: "Trace"
+      - script: "ls -la"
 
-  - script: './build-bin-linux.sh'
-    displayName: 'build-bin-linux.sh'
-    workingDirectory: 'Script'
-    
-  - script: make
-    workingDirectory: 'build/linux'
+      - script: "ls -la -R"
+        displayName: "Drump folder hierarchy"
 
-  - script: 'ls -la -R'
-    displayName: 'Drump folder hierarchy'
+      - script: "./build-bin-linux.sh"
+        displayName: "build-bin-linux.sh"
+        workingDirectory: "Script"
 
-  - script: './build-pack-linux.sh'
-    displayName: 'build-pack-linux.sh'
-    workingDirectory: 'Script'
+      - script: make
+        workingDirectory: "build/linux"
 
-  - script: 'ls -la -R'
-    displayName: 'Drump folder hierarchy'
+      - script: "ls -la -R"
+        displayName: "Drump folder hierarchy"
 
-  - script: './build-test-linux.sh'
-    displayName: 'build-test-linux.sh'
-    workingDirectory: 'Script/release'
+      - script: "./build-pack-linux.sh"
+        displayName: "build-pack-linux.sh"
+        workingDirectory: "Script"
 
+      - script: "ls -la -R"
+        displayName: "Drump folder hierarchy"
 
+      - script: "./build-test-linux.sh"
+        displayName: "build-test-linux.sh"
+        workingDirectory: "Script/release"
 
-#==============================================================================
-# macOS
-#==============================================================================
-- job: macOS
+  #==============================================================================
+  # macOS
+  #==============================================================================
+  - job: macOS
 
-  variables:
-  - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
-  - name: BUILD_TYPE
-    value: Release
-  - name: CC
-    value: clang
-  - name: CXX
-    value: clang++
-  pool:
-    vmImage: 'macOS-10.13'
+    variables:
+      - name: NAMELINT_LLVM_LIB
+        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
+      - name: BUILD_TYPE
+        value: Release
+      - name: CC
+        value: clang
+      - name: CXX
+        value: clang++
+    pool:
+      vmImage: "macOS-10.13"
 
-  steps:
-  - script: 'clang --version'  
-    displayName: 'Show gcc version.'   
-  
-  - script: 'export'
-    displayName: 'Dump Azure environment variables.'
-      
-  - checkout: self
-    displayName: 'Checkout git submodules.'
-    submodules: true
+    steps:
+      - script: "clang --version"
+        displayName: "Show gcc version."
 
-  - task: UniversalPackages@0
-    inputs:
-      command: 'download'
-      downloadDirectory: '$(System.DefaultWorkingDirectory)'
-      feedsToUse: 'internal'
-      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/7bc16282-7635-45e1-821a-373ed55c68c5'
-      vstsFeedPackage: '1ea8f4a8-0c01-4eb1-8fbf-e514f8768b5e'
-      vstsPackageVersion: '0.0.1'
-      verbosity: 'Trace'
-  
-  - script: 'ls -la -R'
-    displayName: 'Dump folder hierarchy'
+      - script: "cmake --version"
+        displayName: "Show cmake version."
 
-  - script: 'build-bin-macos.sh'
-    displayName: 'build-bin-macos.sh'
-    workingDirectory: 'Script'
+      - script: "export"
+        displayName: "Dump Azure environment variables."
 
-  - script: 'ls -la -R'
-    displayName: 'Drump folder hierarchy'
-    
-  - script: make
-    workingDirectory: 'build/macos'
+      - checkout: self
+        displayName: "Checkout git submodules."
+        submodules: true
 
-  - script: 'build-pack-linux.sh'
-    displayName: 'build-pack-linux.sh'
-    workingDirectory: 'Script'
+      - task: UniversalPackages@0
+        inputs:
+          command: "download"
+          downloadDirectory: "$(System.DefaultWorkingDirectory)"
+          feedsToUse: "internal"
+          vstsFeed: "78202891-aba0-41ab-952b-2152c4a57470/7bc16282-7635-45e1-821a-373ed55c68c5"
+          vstsFeedPackage: "1ea8f4a8-0c01-4eb1-8fbf-e514f8768b5e"
+          vstsPackageVersion: "0.0.1"
+          verbosity: "Trace"
 
-  - script: 'ls -la -R'
-    displayName: 'Drump folder hierarchy'
+      - script: "ls -la -R"
+        displayName: "Dump folder hierarchy"
 
-  - script: 'build-test-linux.sh'
-    displayName: 'build-test-linux.sh'
-    workingDirectory: 'Script/release'
+      - script: "build-bin-macos.sh"
+        displayName: "build-bin-macos.sh"
+        workingDirectory: "Script"
+
+      - script: "ls -la -R"
+        displayName: "Drump folder hierarchy"
+
+      - script: make
+        workingDirectory: "build/macos"
+
+      - script: "build-pack-linux.sh"
+        displayName: "build-pack-linux.sh"
+        workingDirectory: "Script"
+
+      - script: "ls -la -R"
+        displayName: "Drump folder hierarchy"
+
+      - script: "build-test-linux.sh"
+        displayName: "build-test-linux.sh"
+        workingDirectory: "Script/release"
