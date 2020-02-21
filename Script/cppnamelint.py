@@ -39,11 +39,11 @@ def main(forced_argv):
 
     print(py_args)
 
-    target_exe_path = os.path.join(os.path.abspath('.'), define_build_dir)
     exec_file_path = get_newest_file_path(define_exec_name, '.')
     if '' == exec_file_path:
+        target_exe_path = os.path.join(os.path.abspath('.'), define_build_dir)
+        target_exe_path = os.path.normpath(target_exe_path)
         exec_file_path = get_newest_file_path(define_exec_name, target_exe_path)
-    
 
     error_code = 0
     #--------------------------------------------------------------------------
@@ -93,7 +93,7 @@ def main(forced_argv):
     elif py_args.input_cmd == define_cmd_bldgpack:
         root_dir:str    = os.path.abspath(py_args.root)
         output_dir:str  = os.path.abspath(py_args.output)
-        error_code      = run_pack(exec_file_path, root_dir, output_dir)
+        error_code      = run_pack(define_exec_name, root_dir, output_dir)
 
     #--------------------------------------------------------------------------
     # python cppnamelint.py bldgcfg command
@@ -240,8 +240,8 @@ def find_sample_files(start_dir: str) -> []:
     include_cfg_files: [] = ['.toml']
 
     file_obj = File()
-    found_src_files = file_obj.find_files(start_dir, include_src_files)
-    found_cfg_files = file_obj.find_files(start_dir, include_cfg_files)
+    found_src_files = file_obj.find_files(start_dir, '*', include_src_files)
+    found_cfg_files = file_obj.find_files(start_dir, '*', include_cfg_files)
 
     for src in found_src_files:
         src_dir_name  = os.path.dirname(src)
@@ -321,14 +321,17 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
        output_dir == os.path.join(root_dir, 'Script'):
         return -2
 
+    file_obj = File()
+    found_generated_binary = file_obj.find_newest_exe(file_name, root_dir)
+    if '' == found_generated_binary:
+        return -3
+
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
         os.mkdir(output_dir)
     else:
         os.mkdir(output_dir)
 
-    file_obj = File()
-    found_generated_binary = file_obj.find_newest_exe(file_name, root_dir)
 
     selected_list = [
         {'platform': 'Shared',  'dir': True ,  'src': 'Source/Test'                        , 'dest': './Test'},
@@ -350,6 +353,9 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     for item in selected_list:
         if item['platform'] == 'Shared' or \
            item['platform'] == platform.system():
+
+            if '' == item['src'] or '' == item['dest']:
+                continue
 
             src = os.path.abspath(os.path.join(root_dir, item['src']))
             dst = os.path.abspath(os.path.join(output_dir, item['dest']))

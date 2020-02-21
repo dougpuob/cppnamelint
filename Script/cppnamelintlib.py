@@ -4,8 +4,10 @@
 import os
 import locale
 
+import subprocess
+
 from enum import Enum
-from subprocess import Popen, PIPE
+#from subprocess import Popen
 
 
 def get_locale_lang() ->str:
@@ -43,23 +45,33 @@ class File:
         self.name = ""
 
 
-    def find_files(self, root_dir:str, ext_name_list:[]) -> []:
+    def find_files(self, root_dir:str, target_file_name:str, ext_name_list:[]) -> []:
         root_dir = os.path.abspath(root_dir)
 
         found_files = []
         for dir_name, subdirList, fileList in os.walk(root_dir, topdown=False):
             for file_name in fileList:
+
                 is_matched = False
-                if 0 == len(ext_name_list):
+
+                if target_file_name == '*':
                     is_matched = True
                 else:
-                    for ext_name in ext_name_list:
-                        if file_name.endswith(ext_name):
-                            is_matched = True
-                            break
+                    split_name:[] = file_name.rsplit('.', 1)
+                    if len(split_name) != 2:
+                        is_matched = True
+                    else:
+                        if target_file_name == split_name[0]:
+                            if 0 == len(ext_name_list):
+                                is_matched = True
+                            else:
+                                for ext_name in ext_name_list:
+                                    if file_name.endswith(ext_name):
+                                        is_matched = True
+                                        break
 
                 if is_matched:
-                    abs_path = os.path.join(root_dir, dir_name, file_name)
+                    abs_path  = os.path.join(root_dir, dir_name, file_name)
                     norm_path = os.path.normpath(abs_path)
                     found_files.append(norm_path)
 
@@ -92,7 +104,7 @@ class File:
         basename = os.path.basename(file_name)
 
         include_ext_names = []
-        found_files: [] = self.find_files(root_dir, include_ext_names)
+        found_files: [] = self.find_files(root_dir, file_name, include_ext_names)
 
         found_exe_files: [] = []
         if len(found_files) > 0:
@@ -128,30 +140,17 @@ class Exec:
             cmd_and_arg.extend(args)
 
             print(cmd_and_arg)
-            process = Popen(cmd_and_arg, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-
+            process = subprocess.Popen(cmd_and_arg,              \
+                                       stdout=subprocess.PIPE,   \
+                                       stderr=subprocess.STDOUT, \
+                                       universal_newlines=True)
             if process:
-                text1 = None
-                text2 = None
-
-                while '' != text1 or '' != text2:
-
-                    text1 = process.stdout.read()
-                    if text1 != "":
-                        output_mix = output_mix + text1
-
-                    text2 = process.stderr.read()
-                    if text2 != "":
-                        output_mix = output_mix + text2
-
-                process.stderr.close()
-                process.stdout.close()
-                process.wait(10)
+                (std_output, err_output) = process.communicate()
+                output_mix = std_output
 
                 ret_code = process.returncode
                 if None == ret_code:
                     ret_code = 0
-
 
         except Exception as e:
             print(str(e))
