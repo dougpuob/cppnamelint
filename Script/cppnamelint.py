@@ -387,7 +387,7 @@ def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
     else:
         build_type_str = 'Release'
 
-    cmake_args: [] = [root_dir, '-B', output_dir, '-DCMAKE_BUILD_TYPE='+build_type_str]
+    cmake_args: [] = ['-B', output_dir, '-DCMAKE_BUILD_TYPE='+build_type_str, root_dir]
     if platform.system() == 'Windows':
         cmake_args.extend(['-G', define_cmake_msvc])
 
