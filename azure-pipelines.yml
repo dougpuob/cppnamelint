@@ -21,7 +21,7 @@ jobs:
 
   steps:
   - script: echo hello from Windows
-  - script: 'dir /s'
+  - script: 'set'
   - checkout: self
     submodules: true
   
@@ -46,7 +46,11 @@ jobs:
       configuration: 'Release'
       msbuildArchitecture: 'x86' #x86, x64      
 
-  - script: 'dir /s'
+  - script: 'build-pack-win32.cmd'
+    workingDirectory: 'Script'
+    
+  - script: 'build-test-win32.cmd'
+    workingDirectory: 'Script/release'    
 
   - script: 'cppnamelint.exe test -a'
     displayName: 'Execute generated binary file'
