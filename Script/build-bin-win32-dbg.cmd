@@ -32,5 +32,5 @@ ECHO Command result is FAILED.
 :PASS
 ECHO Command result is SUCCESSFUL.
 
-IF NOT ""=="%AGENT_VERSION%" (timeout /t 5)
+IF ""=="%AGENT_VERSION%" (timeout /t 5)
 @ECHO ON

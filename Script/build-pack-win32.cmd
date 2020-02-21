@@ -15,5 +15,5 @@ ECHO  SUCCESS!
 ECHO.
 ECHO.
 
-IF NOT ""=="%AGENT_VERSION%" (timeout /t 5)
+IF ""=="%AGENT_VERSION%" (timeout /t 5)
 @ECHO ON
