@@ -160,7 +160,7 @@ jobs:
 
       - task: Bash@3
         inputs:
-          filePath: 'build-bin-macos.sh'
+          filePath: 'Script/build-bin-macos.sh'
           workingDirectory: 'Script'
 
       - script: make
