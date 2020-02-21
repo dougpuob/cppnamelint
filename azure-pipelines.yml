@@ -163,13 +163,15 @@ jobs:
       - script: make
         workingDirectory: "build/macos"
 
-      - script: "Script/build-pack-linux.sh"
-        displayName: "build-pack-linux.sh"
-        workingDirectory: "Script"
+      - task: Bash@3
+        inputs:
+          filePath: 'Script/build-pack-linux.sh'
+          workingDirectory: 'Script'
 
       - script: "ls -la -R"
         displayName: "Drump folder hierarchy"
 
-      - script: "Script/release/build-test-linux.sh"
-        displayName: "build-test-linux.sh"
-        workingDirectory: "Script/release"
+      - task: Bash@3
+        inputs:
+          filePath: 'Script/release/build-test-linux.sh'
+          workingDirectory: 'Script/release'
