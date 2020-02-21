@@ -50,6 +50,10 @@ CMakeFiles
 # Directory
 Build
 Debug
+Release
+build
+debug
+release
 .vscode
 .idea
 *.pyc
