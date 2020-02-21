@@ -161,7 +161,7 @@ jobs:
       verbosity: 'Trace'
   
   - script: 'ls -la -R'
-    displayName: 'Drump folder hierarchy'
+    displayName: 'Dump folder hierarchy'
 
   - script: 'build-bin-macos.sh'
     displayName: 'build-bin-macos.sh'
