@@ -34,56 +34,6 @@ jobs:
       vstsFeedPackage: '0a8bf302-6f44-4fd6-ab0f-cec0e21d1c99'
       vstsPackageVersion: '0.0.1'
       verbosity: 'Trace'
-  - script: 'dir /s'
-
-  - task: CMake@1  
-    inputs:
-      workingDirectory: 'build/windows'
-      cmakeArgs: -DCMAKE_BUILD_TYPE=Release ../..
-
-  - task: MSBuild@1
-    inputs:
-      solution: 'build/windows/cppnamelint.sln'
-      msbuildVersion: '15.0'
-      configuration: 'Release'
-      msbuildArchitecture: 'x86' #x86, x64      
-
-  - script: 'dir /s'
-
-  - script: 'cppnamelint.exe test -a'
-    displayName: 'Execute generated binary file'
-    workingDirectory: 'build\windows\output\Release'
-
-
-#==============================================================================
-# Windows
-#==============================================================================
-- job: Windows(build-bin-win32.cmd)
-  
-  variables:
-  - name: NAMELINT_LLVM_LIB
-    value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
-  - name: BUILD_TYPE
-    value: Release
-
-  pool:
-    vmImage: 'vs2017-win2016'
-
-  steps:
-  - script: echo hello from Windows
-  - script: 'dir /s'
-  - checkout: self
-    submodules: true
-  
-  - task: UniversalPackages@0
-    inputs:
-      command: 'download'
-      downloadDirectory: '$(System.DefaultWorkingDirectory)'
-      feedsToUse: 'internal'
-      vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/5d6a84a9-b3ee-4af2-88a9-0e7ceb36156d'
-      vstsFeedPackage: '0a8bf302-6f44-4fd6-ab0f-cec0e21d1c99'
-      vstsPackageVersion: '0.0.1'
-      verbosity: 'Trace'
 
   - script: 'build-bin-win32.cmd'
     displayName: 'Execute cppnamelint.py to call CMake'
