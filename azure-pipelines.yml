@@ -153,9 +153,8 @@ jobs:
       vstsFeedPackage: '1ea8f4a8-0c01-4eb1-8fbf-e514f8768b5e'
       vstsPackageVersion: '0.0.1'
       verbosity: 'Trace'
-  - script: 'ls -ls -R'
-
-    - script: 'ls -la -R'
+  
+  - script: 'ls -la -R'
     displayName: 'Drump folder hierarchy'
 
   - script: 'build-bin-macos.sh'
