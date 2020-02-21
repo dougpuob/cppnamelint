@@ -347,7 +347,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
         {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib-cmake.py' , 'dest': '.'},
         {'platform': 'Windows', 'dir': False , 'src': 'Script/build-test-win32.cmd'        , 'dest': '.'},
         {'platform': 'Linux',   'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
-        {'platform': 'Darwin',  'dir': False , 'src': 'Script/build-test-macos.sh'         , 'dest': '.'},
+        {'platform': 'Darwin',  'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
     ]
 
     for item in selected_list:
