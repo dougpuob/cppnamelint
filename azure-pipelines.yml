@@ -106,9 +106,15 @@ jobs:
   - script: make
     workingDirectory: 'build/linux'
 
+  - script: 'ls -la -R'
+    displayName: 'Drump folder hierarchy'
+
   - script: './build-pack-linux.sh'
     displayName: 'build-pack-linux.sh'
     workingDirectory: 'Script'
+
+  - script: 'ls -la -R'
+    displayName: 'Drump folder hierarchy'
 
   - script: './build-test-linux.sh'
     displayName: 'build-test-linux.sh'
@@ -160,6 +166,9 @@ jobs:
   - script: 'build-bin-macos.sh'
     displayName: 'build-bin-macos.sh'
     workingDirectory: 'Script'
+
+  - script: 'ls -la -R'
+    displayName: 'Drump folder hierarchy'
     
   - script: make
     workingDirectory: 'build/macos'
@@ -167,6 +176,9 @@ jobs:
   - script: 'build-pack-linux.sh'
     displayName: 'build-pack-linux.sh'
     workingDirectory: 'Script'
+
+  - script: 'ls -la -R'
+    displayName: 'Drump folder hierarchy'
 
   - script: 'build-test-linux.sh'
     displayName: 'build-test-linux.sh'
