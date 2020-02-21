@@ -31,5 +31,5 @@ ECHO Command result is FAILED.
 
 :PASS
 ECHO Command result is SUCCESSFUL.
-PAUSE
+timeout /t 5
 @ECHO ON

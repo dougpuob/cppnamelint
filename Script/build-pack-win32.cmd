@@ -16,5 +16,4 @@ ECHO.
 ECHO.
 
 timeout /t 5
-
 @ECHO ON

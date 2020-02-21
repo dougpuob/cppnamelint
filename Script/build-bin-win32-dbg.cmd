@@ -24,5 +24,5 @@ ECHO Please install python.
 :NOTOOL
 ECHO.
 :PASS
-PAUSE
+timeout /t 5
 @ECHO ON

@@ -10,5 +10,5 @@ python testcppnamelint-main.py      -v
 cppnamelint.exe test --all
 )
 
-PAUSE
+timeout /t 5
 @ECHO ON
