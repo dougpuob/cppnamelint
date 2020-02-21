@@ -138,15 +138,6 @@ jobs:
       - script: "clang --version"
         displayName: "Show gcc version."
 
-      - script: "cmake --version"
-        displayName: "Show cmake version."
-
-      - script: "python --version"
-        displayName: "Show python version."
-
-      - script: "python3 --version"
-        displayName: "Show python3 version."
-
       - script: "export"
         displayName: "Dump Azure environment variables."
 
@@ -164,16 +155,9 @@ jobs:
           vstsPackageVersion: "0.0.1"
           verbosity: "Trace"
 
-      - script: "ls -la -R"
-        displayName: "Dump folder hierarchy"
-
-      - script: "build-test-linux.sh"
-        displayName: "build-test-linux.sh"
-        workingDirectory: "Script/release"
-
-      - script: "./build-bin-macos.sh"
+      - bash: "build-bin-macos.sh"
+        workingDirectory: "Script"
         displayName: "build-bin-macos.sh"
-        workingDirectory: "./Script"
 
       - script: "ls -la -R"
         displayName: "Drump folder hierarchy"
