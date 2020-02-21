@@ -52,7 +52,7 @@ jobs:
 
   - script: 'cppnamelint.exe test -a'
     displayName: 'Execute generated binary file'
-    workingDirectory: 'build\build\output\Release'
+    workingDirectory: 'build\output\Release'
 
 
 #==============================================================================
