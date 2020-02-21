@@ -144,6 +144,9 @@ jobs:
       - script: "python --version"
         displayName: "Show python version."
 
+      - script: "python3 --version"
+        displayName: "Show python3 version."
+
       - script: "export"
         displayName: "Dump Azure environment variables."
 
@@ -164,9 +167,13 @@ jobs:
       - script: "ls -la -R"
         displayName: "Dump folder hierarchy"
 
-      - script: "build-bin-macos.sh"
+      - script: "build-test-linux.sh"
+        displayName: "build-test-linux.sh"
+        workingDirectory: "Script/release"
+
+      - script: "./build-bin-macos.sh"
         displayName: "build-bin-macos.sh"
-        workingDirectory: "Script"
+        workingDirectory: "./Script"
 
       - script: "ls -la -R"
         displayName: "Drump folder hierarchy"
