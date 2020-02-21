@@ -10,5 +10,5 @@ python testcppnamelint-main.py      -v
 cppnamelint.exe test --all
 )
 
-timeout /t 5
+IF NOT ""=="%AGENT_VERSION%" (timeout /t 5)
 @ECHO ON

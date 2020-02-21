@@ -20,9 +20,11 @@ jobs:
     vmImage: 'vs2017-win2016'
 
   steps:
-  - script: echo hello from Windows
   - script: 'set'
+    displayName: 'Dump Azure environment variables.'
+    
   - checkout: self
+    displayName: 'Checkout git submodules.'
     submodules: true
   
   - task: UniversalPackages@0
@@ -36,7 +38,7 @@ jobs:
       verbosity: 'Trace'
 
   - script: 'build-bin-win32.cmd'
-    displayName: 'Execute cppnamelint.py to call CMake'
+    displayName: 'Run cppnamelint.py to call CMake'
     workingDirectory: 'Script'
 
   - task: MSBuild@1
@@ -47,9 +49,11 @@ jobs:
       msbuildArchitecture: 'x86' #x86, x64      
 
   - script: 'build-pack-win32.cmd'
+    displayName: 'Run cppnamelint.py to pack for releasing.'
     workingDirectory: 'Script'
     
   - script: 'build-test-win32.cmd'
+    displayName: 'Run cppnamelint.py to run test.'
     workingDirectory: 'Script/release'    
 
   - script: 'cppnamelint.exe test -a'
