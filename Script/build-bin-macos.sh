@@ -1,20 +1,25 @@
+#!/bin/bash
+
 export CC=clang
 export CXX=clang++
+echo CC  =$CC 
+echo CXX =$CXX
 
 
-echo "${1}"
-if   [ "${1}" == "Release" ] || [ "${1}" == "release" ] || [ "${1}" == "RELEASE" ]; then
-    BUILD_TYPE="Release"
-elif [ "${1}" == "Debug" ]   || [ "${1}" == "debug" ]   || [ "${1}" == "DEBUG" ]; then
-    BUILD_TYPE="Debug"
-else
-    UILD_TYPE="Release"
-fi
-
-
+pushd ..
 git submodule init
 git submodule update
+popd
 
 
-python BuildFlow.py lint-format ../Source
-python BuildFlow.py proj-create .. ../Build ${BUILD_TYPE}
+echo "============================================================"
+echo Generate makefile via cmake
+echo "============================================================"
+ROOT_DIR=..
+BUILD_DIR=../build/macos
+BUILD_TYPE=Release
+mkdir -p ${BUILD_DIR}
+
+
+# export NAMELINT_LLVM_LIB=~/my-data/my-cloud/@mydata/software/data/devtls/my-devtls/@Linux/3party-lib/ubuntu18.04.2-gcc8-x64/llvm
+python3 ./cppnamelint.py bldgcfg ${ROOT_DIR} ${BUILD_DIR} ${BUILD_TYPE}

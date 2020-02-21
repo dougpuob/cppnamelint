@@ -1,7 +1,6 @@
 trigger:
   - master
   - dev
-  - neville1
 
 
 jobs:
@@ -9,7 +8,7 @@ jobs:
 # Windows
 #==============================================================================
 - job: Windows
-  
+
   variables:
   - name: NAMELINT_LLVM_LIB
     value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
@@ -22,11 +21,11 @@ jobs:
   steps:
   - script: 'set'
     displayName: 'Dump Azure environment variables.'
-    
+
   - checkout: self
     displayName: 'Checkout git submodules.'
     submodules: true
-  
+
   - task: UniversalPackages@0
     inputs:
       command: 'download'
@@ -38,7 +37,7 @@ jobs:
       verbosity: 'Trace'
 
   - script: 'build-bin-win32.cmd'
-    displayName: 'Run cppnamelint.py to call CMake'
+    displayName: 'build-bin-win32.cmd'
     workingDirectory: 'Script'
 
   - task: MSBuild@1
@@ -46,25 +45,23 @@ jobs:
       solution: 'build/windows/cppnamelint.sln'
       msbuildVersion: '15.0'
       configuration: 'Release'
-      msbuildArchitecture: 'x86' #x86, x64      
+      msbuildArchitecture: 'x86' #x86, x64
 
   - script: 'build-pack-win32.cmd'
-    displayName: 'Run cppnamelint.py to pack for releasing.'
+    displayName: 'build-pack-win32.cmd'
     workingDirectory: 'Script'
-    
-  - script: 'build-test-win32.cmd'
-    displayName: 'Run cppnamelint.py to run test.'
-    workingDirectory: 'Script/release'    
 
-  - script: 'cppnamelint.exe test -a'
-    displayName: 'Execute generated binary file'
-    workingDirectory: 'build\windows\output\Release'
+  - script: 'build-test-win32.cmd'
+    displayName: 'build-test-win32.cmd'
+    workingDirectory: 'Script/release'
+
+
 
 #==============================================================================
 # Linux
 #==============================================================================
 - job: Linux
-  
+
   variables:
   - name: NAMELINT_LLVM_LIB
     value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit
@@ -78,11 +75,16 @@ jobs:
     vmImage: 'ubuntu-18.04'
 
   steps:
-  - script: echo hello from Linux
-  - script: 'ls -la'
-  - checkout: self
-    submodules: true
+  - script: 'gcc --version'  
+    displayName: 'Show gcc version.'   
   
+  - script: 'export'
+    displayName: 'Dump Azure environment variables.'
+      
+  - checkout: self
+    displayName: 'Checkout git submodules.'
+    submodules: true
+
   - task: UniversalPackages@0
     inputs:
       command: 'download'
@@ -93,21 +95,21 @@ jobs:
       vstsPackageVersion: '0.0.2'
       verbosity: 'Trace'
   - script: 'ls -la'
-  - script: 'gcc   --version'
-
-  - task: CMake@1  
-    inputs:
-      workingDirectory: 'build/linux'
-      cmakeArgs: -DCMAKE_BUILD_TYPE=Release  ../..
-
+  
+  - script: 'build-bin-linux.sh'
+    displayName: 'build-bin-linux.sh'
+    workingDirectory: 'Script'
+    
   - script: make
     workingDirectory: 'build/linux'
 
-  - script: 'ls -ls -R'
+  - script: 'build-pack-linux.sh'
+    displayName: 'build-pack-linux.sh'
+    workingDirectory: 'Script'
 
-  - script: './cppnamelint test -a'
-    displayName: 'Execute generated binary file'
-    workingDirectory: 'build/linux/output'
+  - script: 'build-test-linux.sh'
+    displayName: 'build-test-linux.sh'
+    workingDirectory: 'Script/release'
 
 
 
@@ -115,7 +117,7 @@ jobs:
 # Linux
 #==============================================================================
 - job: macOS
-  
+
   variables:
   - name: NAMELINT_LLVM_LIB
     value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
@@ -129,11 +131,16 @@ jobs:
     vmImage: 'macOS-10.13'
 
   steps:
-  - script: echo hello from macOS
-  - script: 'ls -ls -R'
-  - checkout: self
-    submodules: true
+  - script: 'clang --version'  
+    displayName: 'Show gcc version.'   
   
+  - script: 'export'
+    displayName: 'Dump Azure environment variables.'
+      
+  - checkout: self
+    displayName: 'Checkout git submodules.'
+    submodules: true
+
   - task: UniversalPackages@0
     inputs:
       command: 'download'
@@ -145,16 +152,18 @@ jobs:
       verbosity: 'Trace'
   - script: 'ls -ls -R'
 
-  - task: CMake@1  
-    inputs:
-      workingDirectory: 'build/darwin'
-      cmakeArgs: -DCMAKE_BUILD_TYPE=Release  ../..
-
+  - script: 'build-bin-macos.sh'
+    displayName: 'build-bin-macos.sh'
+    workingDirectory: 'Script'
+    
   - script: make
-    workingDirectory: 'build/darwin'
+    workingDirectory: 'build/macos'
 
-  - script: 'ls -ls -R'
+  - script: 'build-pack-linux.sh'
+    displayName: 'build-pack-linux.sh'
+    workingDirectory: 'Script'
 
-  - script: './cppnamelint test -a'
-    displayName: 'Execute generated binary file'
-    workingDirectory: 'build/darwin/output'
+  - script: 'build-test-linux.sh'
+    displayName: 'build-test-linux.sh'
+    workingDirectory: 'Script/release'
+

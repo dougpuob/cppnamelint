@@ -1,15 +1,13 @@
 #!/bin/bash
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin:/usr/local/Cellar:/anaconda3/bin:
 
+python3 testcppnamelint.py           -v
+python3 testcppnamelintlib-exec.py   -v
+python3 testcppnamelintlib-cmake.py  -v
+python3 testcppnamelintlib-file.py   -v
 
-if [ -d ../Source ]; then
-    python3 cppnamelint.py test  ../Source  ../Source/cppnamelint.toml
+if [ -f ./cppnamelint ]; then
+    python3 testcppnamelint-main.py      -v
+    cppnamelint test --all
 fi
 
-if [ -d ../Source/Test/Sample ]; then
-    python3 cppnamelint.py test-sample "../Source/Test/Sample"
-fi
-
-if [ -d ./Test/Sample ]; then
-    python3 cppnamelint.py test-sample "./Test/Sample"
-fi
