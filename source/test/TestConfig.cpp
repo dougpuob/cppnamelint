@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <numeric>
 #include <vector>
+#include <algorithm>
 
 #include "../Config.h"
 

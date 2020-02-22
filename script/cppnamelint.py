@@ -336,7 +336,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     selected_list = [
         {'platform': 'Shared',  'dir': True ,  'src': 'source/test'                        , 'dest': './test'},
         {'platform': 'Shared',  'dir': False,  'src': found_generated_binary               , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'source/cppnamelint.toml'            , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'cppnamelint.toml'                   , 'dest': '.'},
         {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelint.py'              , 'dest': '.'},
         {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelintlib.py'           , 'dest': '.'},
         {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint.py'          , 'dest': '.'},
