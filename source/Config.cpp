@@ -5,7 +5,7 @@
 #include "Common.h"
 #include "Config.h"
 
-#include "../Module/tinytoml.git/include/toml/toml.h"
+#include "../submodule/tinytoml.git/include/toml/toml.h"
 
 namespace namelint {
 Config::Config() {
