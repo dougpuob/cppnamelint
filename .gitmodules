@@ -9,6 +9,6 @@
 [submodule "submodule/nlohmannjson.git"]
 	path   = submodule/nlohmannjson.git
 	url    = https://github.com/nlohmann/json.git
-        branch = v3.6.1
+    branch = v3.6.1
 
 

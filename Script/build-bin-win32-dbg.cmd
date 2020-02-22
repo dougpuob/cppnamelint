@@ -22,15 +22,21 @@ GOTO :PASS
 
 :NOPY
 ECHO Please install python.
+GOTO :EXIT 
 
 :NOTOOL
 ECHO.
+GOTO :EXIT 
 
 :PYERR
 ECHO Command result is FAILED.
+GOTO :EXIT 
 
 :PASS
 ECHO Command result is SUCCESSFUL.
+GOTO :EXIT 
 
+:EXIT
 IF ""=="%AGENT_VERSION%" (timeout /t 5)
 @ECHO ON
+

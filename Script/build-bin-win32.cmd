@@ -7,6 +7,12 @@ python cppnamelint.py chkenv
 IF NOT "0"=="%ERRORLEVEL%"   (GOTO :NOTOOL)
 
 
+pushd ..
+git submodule init
+git submodule update
+popd
+
+
 ECHO.
 ECHO ==============================================================
 ECHO Generate makefile via CMake
@@ -22,15 +28,20 @@ GOTO :PASS
 
 :NOPY
 ECHO Please install python.
+GOTO :EXIT 
 
 :NOTOOL
 ECHO.
+GOTO :EXIT 
 
 :PYERR
 ECHO Command result is FAILED.
+GOTO :EXIT 
 
 :PASS
 ECHO Command result is SUCCESSFUL.
+GOTO :EXIT 
 
+:EXIT
 IF ""=="%AGENT_VERSION%" (timeout /t 5)
 @ECHO ON
