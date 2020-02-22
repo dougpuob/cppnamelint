@@ -63,9 +63,9 @@ include_directories(
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include
-    Module/googletest.git/googletest/include
-    Module/nlohmannjson.git/include
-    Module/docopt.cpp
+    submodule/googletest.git/googletest/include
+    submodule/nlohmannjson.git/include
+    submodule/docopt.cpp
 )
 
 link_directories(${NAMELINT_LLVM_LIB_PATH})
@@ -103,9 +103,9 @@ message("INC_PATH_5                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE
 ###############################################################################
 option(BUILD_TESTING "Turn OFF to build the testing tree (nlohmannjson)." OFF)
 
-add_subdirectory(Module/docopt.cpp)
-add_subdirectory(Module/googletest.git)
-add_subdirectory(Module/nlohmannjson.git)
+add_subdirectory(submodule/docopt.cpp)
+add_subdirectory(submodule/googletest.git)
+add_subdirectory(submodule/nlohmannjson.git)
 
 
 ###############################################################################
@@ -128,28 +128,28 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${OUTPUT_OS}/output
 ###############################################################################
 add_executable(
     cppnamelint
-    Module/tinytoml.git/include/toml/toml.h
-    Module/docopt.cpp/docopt.h
-    Source/TraceMemo.h
-    Source/Main.cpp
-    Source/Detection.h
-    Source/Detection.cpp
-    Source/Common.h
-    Source/Common.cpp
-    Source/Config.h
-    Source/Config.cpp
-	Source/Logger.h
-    Source/Logger.cpp
-    Source/LearnIt.h
-    Source/LearnIt.cpp
-    Source/MyFactory.h
-    Source/MyFactory.cpp
-    Source/MyAstVisitor.h
-    Source/MyAstVisitor.cpp
-    Source/MyAstConsumer.h
-    Source/MyAstConsumer.cpp
-    Source/Test/TestConfig.cpp
-    Source/Test/TestDetection.cpp
+    submodule/tinytoml.git/include/toml/toml.h
+    submodule/docopt.cpp/docopt.h
+    source/TraceMemo.h
+    source/Main.cpp
+    source/Detection.h
+    source/Detection.cpp
+    source/Common.h
+    source/Common.cpp
+    source/Config.h
+    source/Config.cpp
+	source/Logger.h
+    source/Logger.cpp
+    source/LearnIt.h
+    source/LearnIt.cpp
+    source/MyFactory.h
+    source/MyFactory.cpp
+    source/MyAstVisitor.h
+    source/MyAstVisitor.cpp
+    source/MyAstConsumer.h
+    source/MyAstConsumer.cpp
+    source/test/TestConfig.cpp
+    source/test/TestDetection.cpp
 )
 
 

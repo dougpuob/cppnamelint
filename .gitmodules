@@ -1,13 +1,13 @@
-[submodule "Module/tinytoml.git"]
-	path   = Module/tinytoml.git
+[submodule "submodule/tinytoml.git"]
+	path   = submodule/tinytoml.git
 	url    = https://github.com/mayah/tinytoml.git
     branch = master
-[submodule "Module/googletest.git"]
-	path   = Module/googletest.git
+[submodule "submodule/googletest.git"]
+	path   = submodule/googletest.git
 	url    = https://github.com/abseil/googletest.git
     branch = master
-[submodule "Module/nlohmannjson.git"]
-	path   = Module/nlohmannjson.git
+[submodule "submodule/nlohmannjson.git"]
+	path   = submodule/nlohmannjson.git
 	url    = https://github.com/nlohmann/json.git
         branch = v3.6.1
 

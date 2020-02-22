@@ -9,7 +9,7 @@ echo CXX =$CXX
 cd ..
 git submodule init
 git submodule update
-cd Script
+cd script
 
 
 echo "============================================================"

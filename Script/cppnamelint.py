@@ -25,7 +25,7 @@ define_cmd_bldgmake:str = 'bldgmake'
 
 define_exec_name: str  = 'cppnamelint'
 define_build_dir: str  = '../build'
-define_sample_dir: str = '../Source/Test/Sample'
+define_sample_dir: str = '../source/test/sample'
 define_cmake_name: str = 'cmake'
 define_cmakelists: str = 'CMakeLists.txt'
 define_cmake_msvc:str  = 'Visual Studio 15 2017'
@@ -316,9 +316,9 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
        output_dir == os.path.join(root_dir, '.svn')   or \
        output_dir == os.path.join(root_dir, '.idea')  or \
        output_dir == os.path.join(root_dir, 'build')  or \
-       output_dir == os.path.join(root_dir, 'Doc')    or \
-       output_dir == os.path.join(root_dir, 'Module') or \
-       output_dir == os.path.join(root_dir, 'Script'):
+       output_dir == os.path.join(root_dir, 'doc')    or \
+       output_dir == os.path.join(root_dir, 'submodule') or \
+       output_dir == os.path.join(root_dir, 'script'):
         return -2
 
     file_obj = File()
@@ -334,20 +334,20 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
 
 
     selected_list = [
-        {'platform': 'Shared',  'dir': True ,  'src': 'Source/Test'                        , 'dest': './Test'},
+        {'platform': 'Shared',  'dir': True ,  'src': 'source/test'                        , 'dest': './test'},
         {'platform': 'Shared',  'dir': False,  'src': found_generated_binary               , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Source/cppnamelint.toml'            , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/cppnamelint.py'              , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/cppnamelintlib.py'           , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelint.py'          , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelint-main.py'     , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib.py'       , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib-file.py'  , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib-exec.py'  , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'Script/testcppnamelintlib-cmake.py' , 'dest': '.'},
-        {'platform': 'Windows', 'dir': False , 'src': 'Script/build-test-win32.cmd'        , 'dest': '.'},
-        {'platform': 'Linux',   'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
-        {'platform': 'Darwin',  'dir': False , 'src': 'Script/build-test-linux.sh'         , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'source/cppnamelint.toml'            , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelint.py'              , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelintlib.py'           , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint.py'          , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint-main.py'     , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib.py'       , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-file.py'  , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-exec.py'  , 'dest': '.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-cmake.py' , 'dest': '.'},
+        {'platform': 'Windows', 'dir': False , 'src': 'script/build-test-win32.cmd'        , 'dest': '.'},
+        {'platform': 'Linux',   'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': '.'},
+        {'platform': 'Darwin',  'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': '.'},
     ]
 
     for item in selected_list:
