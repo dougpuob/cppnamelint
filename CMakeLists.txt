@@ -64,7 +64,7 @@ include_directories(
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include
     submodule/googletest.git/googletest/include
-    submodule/nlohmannjson.git/include
+    submodule/json.git/include
     submodule/docopt.cpp
 )
 
@@ -101,11 +101,11 @@ message("INC_PATH_5                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE
 
 
 ###############################################################################
-option(BUILD_TESTING "Turn OFF to build the testing tree (nlohmannjson)." OFF)
+option(BUILD_TESTING "Turn OFF to build the testing tree (json)." OFF)
 
 add_subdirectory(submodule/docopt.cpp)
 add_subdirectory(submodule/googletest.git)
-add_subdirectory(submodule/nlohmannjson.git)
+add_subdirectory(submodule/json.git)
 
 
 ###############################################################################

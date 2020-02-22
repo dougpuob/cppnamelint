@@ -6,9 +6,3 @@
 	path = submodule/googletest.git
 	url = https://github.com/abseil/googletest.git
 	branch = master
-[submodule "submodule/nlohmannjson.git"]
-	path = submodule/nlohmannjson.git
-	url = https://github.com/nlohmann/json.git
-	branch = master
-
-
