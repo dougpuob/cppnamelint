@@ -1,10 +1,11 @@
-#include "MyAstConsumer.h"
-#include "MyAstVisitor.h"
+#include <string>
 
 #include "Common.h"
 #include "Config.h"
 
-#include <string>
+#include "MyAstConsumer.h"
+#include "MyAstVisitor.h"
+
 
 using namespace std;
 

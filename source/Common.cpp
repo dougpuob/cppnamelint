@@ -1,7 +1,8 @@
-#include "Common.h"
-#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
+#include <algorithm>
+
+#include "Common.h"
 
 static APP_CONTEXT m_AppCxt;
 const APP_CONTEXT *GetAppCxt() { return &m_AppCxt; }

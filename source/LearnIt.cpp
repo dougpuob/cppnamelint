@@ -1,7 +1,8 @@
-﻿#include "LearnIt.h"
-
-#include <memory>
+﻿#include <memory>
 #include <string>
+
+#include "LearnIt.h"
+
 
 using namespace DcLib;
 

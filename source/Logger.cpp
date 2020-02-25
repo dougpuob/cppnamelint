@@ -1,11 +1,13 @@
-﻿#include "Logger.h"
-#include "Common.h"
-#include <algorithm>
+﻿#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "Common.h"
+#include "Logger.h"
+
 
 namespace DcLib {
 

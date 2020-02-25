@@ -1,38 +1,21 @@
+#include <map>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <iostream>
+
+#include <docopt.h>
+#include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
+
 #include "Common.h"
 #include "Config.h"
 #include "Detection.h"
-
-
-#include "llvm/Support/CommandLine.h"
-
-#include "clang/AST/AST.h"
-#include "clang/AST/ASTConsumer.h"
-#include "clang/AST/ASTContext.h"
-#include "clang/AST/Decl.h"
-#include "clang/AST/DeclVisitor.h"
-#include "clang/AST/RecursiveASTVisitor.h"
-#include "clang/Basic/Diagnostic.h"
-#include "clang/Frontend/ASTConsumers.h"
-#include "clang/Frontend/CompilerInstance.h"
-#include "clang/Frontend/FrontendActions.h"
-#include "clang/Lex/Preprocessor.h"
-#include "clang/Parse/Parser.h"
-#include "clang/Tooling/CommonOptionsParser.h"
-#include "clang/Tooling/Tooling.h"
-
 #include "MyAstConsumer.h"
 #include "MyAstVisitor.h"
 #include "MyFactory.h"
 
-#include <docopt.h>
-#include <fstream>
-#include <gtest/gtest.h>
-#include <iostream>
-#include <map>
-#include <nlohmann/json.hpp>
-#include <sstream>
-#include <string>
-#include <vector>
 
 using namespace nlohmann;
 using namespace namelint;

@@ -1,11 +1,14 @@
-#include <gtest/gtest.h>
-#include <numeric>
 #include <vector>
+#include <numeric>
 #include <algorithm>
+
+#include <gtest/gtest.h>
 
 #include "../Config.h"
 
+
 using namespace namelint;
+
 
 // clang-format off
 

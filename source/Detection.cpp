@@ -1,11 +1,12 @@
-#include "Detection.h"
-#include "Common.h"
 #include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <regex>
 #include <string>
 #include <vector>
+
+#include "Detection.h"
+#include "Common.h"
 
 //==---------------------------------------------------------------------------
 // Private Functions

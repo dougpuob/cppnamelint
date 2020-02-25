@@ -1,9 +1,11 @@
-#include <gtest/gtest.h>
 #include <numeric>
 #include <vector>
 
+#include <gtest/gtest.h>
+
 #include "../Config.h"
 #include "../Detection.h"
+
 
 using namespace namelint;
 
