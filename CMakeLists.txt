@@ -165,11 +165,28 @@ target_link_libraries(
     #----------------#
     #LLVM's libraries#
     #----------------#
+	LLVMBinaryFormat
+    LLVMBitReader
+    LLVMCore
+    LLVMDemangle
+	clangTooling
+	LLVMProfileData
+	LLVMOption
+	LLVMMCParser
+	clangAnalysis
+	clangSerialization
+	clangParse
+	clangDriver
+	# The foloowing are pending for checking.
+    clangIndex
+    clangSema
     clangAST
-    clangBasic
+    clangFrontend
+    clangEdit
     clangLex
-    LLVMBinaryFormat
+    clangBasic
     LLVMSupport
-    LLVMCore    
+    LLVMCore
+    LLVMMC
     ${EXTERNAL_LIB}
 )
