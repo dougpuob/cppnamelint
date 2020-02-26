@@ -177,16 +177,14 @@ target_link_libraries(
 	clangSerialization
 	clangParse
 	clangDriver
-	# The foloowing are pending for checking.
-    clangIndex
+    LLVMMC
     clangSema
-    clangAST
-    clangFrontend
     clangEdit
+    clangFrontend
+    clangAST
     clangLex
     clangBasic
     LLVMSupport
     LLVMCore
-    LLVMMC
     ${EXTERNAL_LIB}
 )
