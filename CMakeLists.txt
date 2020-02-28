@@ -138,7 +138,7 @@ add_executable(
     source/Common.cpp
     source/Config.h
     source/Config.cpp
-	source/Logger.h
+    source/Logger.h
     source/Logger.cpp
     source/LearnIt.h
     source/LearnIt.cpp
@@ -156,35 +156,219 @@ add_executable(
 ###############################################################################
 target_link_libraries(
     cppnamelint
-    #----------------#
-    #Submodules      #
-    #----------------#
+    #------------------------#
+    # Submodules             #
+    #------------------------#
     docopt
     gtest
     gtest_main
-    #----------------#
-    #LLVM's libraries#
-    #----------------#
-	LLVMBinaryFormat
+    #------------------------#
+    # LLVM's libraries       #
+    #------------------------#
+    LLVMBinaryFormat
     LLVMBitReader
     LLVMCore
     LLVMDemangle
-	clangTooling
-	LLVMProfileData
-	LLVMOption
-	LLVMMCParser
-	clangAnalysis
-	clangSerialization
-	clangParse
-	clangDriver
     LLVMMC
+    LLVMProfileData
+    LLVMOption
+    LLVMMCParser
+    LLVMSupport
+    LLVMCore
+    clangTooling
+    clangAnalysis
+    clangSerialization
+    clangParse
+    clangDriver
     clangSema
     clangEdit
     clangFrontend
     clangAST
     clangLex
     clangBasic
+    #------------------------#
+    # Build for Linux        #
+    #------------------------#
+    clangAnalysis
+    clangARCMigrate
+    clangAST
+    clangASTMatchers
+    clangBasic
+    clangCodeGen
+    clangCrossTU
+    clangDriver
+    clangDynamicASTMatchers
+    clangEdit
+    clangFormat
+    clangFrontend
+    clangFrontendTool
+    clangHandleCXX
+    clangHandleLLVM
+    clangIndex
+    clangLex
+    clangParse
+    clangRewrite
+    clangRewriteFrontend
+    clangSema
+    clangSerialization
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangStaticAnalyzerFrontend
+    clangTooling
+    clangToolingASTDiff
+    clangToolingCore
+    clangToolingInclusions
+    clangToolingRefactor
+    #libclang
+    LLVMAArch64AsmParser
+    LLVMAArch64AsmPrinter
+    LLVMAArch64CodeGen
+    LLVMAArch64Desc
+    LLVMAArch64Disassembler
+    LLVMAArch64Info
+    LLVMAArch64Utils
+    LLVMAggressiveInstCombine
+    LLVMAMDGPUAsmParser
+    LLVMAMDGPUAsmPrinter
+    LLVMAMDGPUCodeGen
+    LLVMAMDGPUDesc
+    LLVMAMDGPUDisassembler
+    LLVMAMDGPUInfo
+    LLVMAMDGPUUtils
+    LLVMAnalysis
+    LLVMARMAsmParser
+    LLVMARMAsmPrinter
+    LLVMARMCodeGen
+    LLVMARMDesc
+    LLVMARMDisassembler
+    LLVMARMInfo
+    LLVMARMUtils
+    LLVMAsmParser
+    LLVMAsmPrinter
+    LLVMBinaryFormat
+    LLVMBitReader
+    LLVMBitWriter
+    LLVMBPFAsmParser
+    LLVMBPFAsmPrinter
+    LLVMBPFCodeGen
+    LLVMBPFDesc
+    LLVMBPFDisassembler
+    LLVMBPFInfo
+    LLVMCodeGen
+    LLVMCore
+    LLVMCoroutines
+    LLVMCoverage
+    LLVMDebugInfoCodeView
+    LLVMDebugInfoDWARF
+    LLVMDebugInfoMSF
+    LLVMDebugInfoPDB
+    LLVMDemangle
+    LLVMDlltoolDriver
+    LLVMExecutionEngine
+    LLVMFuzzMutate
+    LLVMGlobalISel
+    LLVMHexagonAsmParser
+    LLVMHexagonCodeGen
+    LLVMHexagonDesc
+    LLVMHexagonDisassembler
+    LLVMHexagonInfo
+    LLVMInstCombine
+    LLVMInstrumentation
+    LLVMInterpreter
+    LLVMipo
+    LLVMIRReader
+    LLVMLanaiAsmParser
+    LLVMLanaiAsmPrinter
+    LLVMLanaiCodeGen
+    LLVMLanaiDesc
+    LLVMLanaiDisassembler
+    LLVMLanaiInfo
+    LLVMLibDriver
+    LLVMLineEditor
+    LLVMLinker
+    LLVMLTO
+    LLVMMC
+    LLVMMCDisassembler
+    LLVMMCJIT
+    LLVMMCParser
+    LLVMMipsAsmParser
+    LLVMMipsAsmPrinter
+    LLVMMipsCodeGen
+    LLVMMipsDesc
+    LLVMMipsDisassembler
+    LLVMMipsInfo
+    LLVMMIRParser
+    LLVMMSP430AsmPrinter
+    LLVMMSP430CodeGen
+    LLVMMSP430Desc
+    LLVMMSP430Info
+    LLVMNVPTXAsmPrinter
+    LLVMNVPTXCodeGen
+    LLVMNVPTXDesc
+    LLVMNVPTXInfo
+    LLVMObjCARCOpts
+    LLVMObject
+    LLVMObjectYAML
+    LLVMOption
+    LLVMOrcJIT
+    LLVMPasses
+    LLVMPowerPCAsmParser
+    LLVMPowerPCAsmPrinter
+    LLVMPowerPCCodeGen
+    LLVMPowerPCDesc
+    LLVMPowerPCDisassembler
+    LLVMPowerPCInfo
+    LLVMProfileData
+    LLVMRuntimeDyld
+    LLVMScalarOpts
+    LLVMSelectionDAG
+    LLVMSparcAsmParser
+    LLVMSparcAsmPrinter
+    LLVMSparcCodeGen
+    LLVMSparcDesc
+    LLVMSparcDisassembler
+    LLVMSparcInfo
+    LLVMSupport
+    LLVMSymbolize
+    LLVMSystemZAsmParser
+    LLVMSystemZAsmPrinter
+    LLVMSystemZCodeGen
+    LLVMSystemZDesc
+    LLVMSystemZDisassembler
+    LLVMSystemZInfo
+    LLVMTableGen
+    LLVMTarget
+    LLVMTestingSupport
+    LLVMTransformUtils
+    LLVMVectorize
+    LLVMWindowsManifest
+    LLVMX86AsmParser
+    LLVMX86AsmPrinter
+    LLVMX86CodeGen
+    LLVMX86Desc
+    LLVMX86Disassembler
+    LLVMX86Info
+    LLVMX86Utils
+    LLVMXCoreAsmPrinter
+    LLVMXCoreCodeGen
+    LLVMXCoreDesc
+    LLVMXCoreDisassembler
+    LLVMXCoreInfo
+    LLVMXRay
+    LTO
+    clangParse
+    clangSerialization
+    clangDriver
+    clangIndex
+    clangSema
+    clangAnalysis
+    clangAST
+    clangFrontend
+    clangEdit
+    clangLex
+    clangBasic
     LLVMSupport
     LLVMCore
+    LLVMMC
     ${EXTERNAL_LIB}
 )
