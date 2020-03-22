@@ -65,7 +65,7 @@ public:
   }
 };
 
-class TraceMemo {
+class MemoBoard {
 public:
   struct _Option {
     bool bEnableLog;
@@ -95,6 +95,7 @@ public:
   } Error;
 
   vector<ErrorDetail *> ErrorDetailList;
+  namelint::Config Config;
 };
 
 } // namespace namelint

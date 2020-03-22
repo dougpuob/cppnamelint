@@ -37,6 +37,6 @@ ECHO Command result is SUCCESSFUL.
 GOTO :EXIT 
 
 :EXIT
-IF ""=="%AGENT_VERSION%" (timeout /t 60)
+IF ""=="%AGENT_VERSION%" (PAUSE)
 @ECHO ON
 

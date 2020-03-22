@@ -1,14 +1,14 @@
 @ECHO OFF
 
-python testcppnamelint.py           -v
 python testcppnamelintlib-exec.py   -v
 python testcppnamelintlib-cmake.py  -v
 python testcppnamelintlib-file.py   -v
 
 IF EXIST cppnamelint.exe (
 python testcppnamelint-main.py      -v
-cppnamelint.exe test --all
+python cppnamelint.py bldgtest
+cppnamelint.exe test -all
 )
 
-IF ""=="%AGENT_VERSION%" (timeout /t 60)
+IF ""=="%AGENT_VERSION%" (PAUSE)
 @ECHO ON

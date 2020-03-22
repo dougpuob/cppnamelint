@@ -91,7 +91,7 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
     return false;
   }
 
-  if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
+  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(pDecl);
   }
 
@@ -108,7 +108,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
     return false;
   }
 
-  if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
+  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(pDecl);
   }
 
@@ -152,7 +152,7 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
     return false;
   }
 
-  if (GetAppCxt()->TraceMemo.Option.bEnableLog) {
+  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(pDecl);
   }
 
@@ -253,11 +253,11 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
 		assert(pAppCxt);
 		return false;
 	}
-	pAppCxt->TraceMemo.Checked.nVariable++;
+	pAppCxt->MemoBoard.Checked.nVariable++;
 	if (!bResult) {
-		pAppCxt->TraceMemo.Error.nVariable++;
+		pAppCxt->MemoBoard.Error.nVariable++;
 
-		pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
+		pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
 			pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
 	}
 	return true;
@@ -321,11 +321,11 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     bResult = this->m_Detect.CheckFunction(
         this->m_pConfig->General.Rules.FunctionName, FuncName);
 
-    pAppCxt->TraceMemo.Checked.nFunction++;
+    pAppCxt->MemoBoard.Checked.nFunction++;
     if (!bResult) {
-      pAppCxt->TraceMemo.Error.nFunction++;
+      pAppCxt->MemoBoard.Error.nFunction++;
 
-      pAppCxt->TraceMemo.ErrorDetailList.push_back(this->_CreateErrorDetail(
+      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
           pDecl, CheckType::CT_Function, bIsPtr, bIsArray, FuncName, ""));
     }
   }
@@ -345,7 +345,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
   assert(pAppCxt);
 
-  if (pAppCxt->TraceMemo.Option.bEnableLog) {
+  if (pAppCxt->MemoBoard.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(pDecl);
 
   }
@@ -400,7 +400,7 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
 	APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 	assert(pAppCxt);
 
-	if (pAppCxt->TraceMemo.Option.bEnableLog) {
+	if (pAppCxt->MemoBoard.Option.bEnableLog) {
 		this->m_LearnIt.PrintDecl(pDecl);
 
 	}
@@ -414,11 +414,11 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
 				this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
 				bIsArray);
 
-			pAppCxt->TraceMemo.Checked.nParameter++;
+			pAppCxt->MemoBoard.Checked.nParameter++;
 			if (!bResult) {
-				pAppCxt->TraceMemo.Error.nParameter++;
+				pAppCxt->MemoBoard.Error.nParameter++;
 
-				pAppCxt->TraceMemo.ErrorDetailList.push_back(
+				pAppCxt->MemoBoard.ErrorDetailList.push_back(
 					this->_CreateErrorDetail(pDecl, CheckType::CT_Parameter,
 						bIsPtr, bIsArray, VarType, VarName, ""));
 			}

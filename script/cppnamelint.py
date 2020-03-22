@@ -30,6 +30,7 @@ define_cmake_name: str = 'cmake'
 define_cmakelists: str = 'CMakeLists.txt'
 define_cmake_msvc:str  = 'Visual Studio 15 2017'
 
+
 def main(forced_argv):
 
     sys.argv = forced_argv
@@ -49,6 +50,7 @@ def main(forced_argv):
     #--------------------------------------------------------------------------
     # python cppnamelint.py check command
     if py_args.input_cmd == define_cmd_check:
+        print('Dispatched to `CHECK`')
         args_list :[] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
         print(output_texts)
@@ -56,6 +58,7 @@ def main(forced_argv):
     #--------------------------------------------------------------------------
     # python cppnamelint.py test command
     elif py_args.input_cmd == define_cmd_test:
+        print('Dispatched to `TEST`')
         args_list: [] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
         print(output_texts)
@@ -63,6 +66,7 @@ def main(forced_argv):
     #--------------------------------------------------------------------------
     # python cppnamelint.py chkenv command
     elif py_args.input_cmd == define_cmd_chkenv:
+        print('Dispatched to `CHKENV`')
         error_code_git   , output_git   = run_util('git',          ['--version'])
         error_code_cmake , output_cmake = run_util('cmake',        ['--version'])
         error_code_tidy  , output_tidy  = run_util('clang-tidy',   ['--version'])
@@ -74,23 +78,30 @@ def main(forced_argv):
         output_tidy  = str_obj.remove_all_empty_line(output_tidy)
         output_fmt   = str_obj.remove_all_empty_line(output_fmt)
 
-        print('checking `git`          : (' + str(error_code_git)   + ') ' + output_git)
         print('checking `cmake`        : (' + str(error_code_cmake) + ') ' + output_cmake)
+        print('checking `git`          : (' + str(error_code_git)   + ') ' + output_git)
         print('checking `clang-tidy`   : (' + str(error_code_tidy)  + ') ' + output_tidy)
         print('checking `clang-format` : (' + str(error_code_fmt)   + ') ' + output_fmt)
 
-        error_code = error_code_git + error_code_cmake + error_code_tidy + error_code_fmt
+        if platform.system() == 'Windows':
+            error_code = error_code_git + error_code_cmake
+        else:
+            error_code = error_code_git + error_code_cmake + error_code_tidy + error_code_fmt
 
     #--------------------------------------------------------------------------
     # python cppnamelint.py bldgtest command
     elif py_args.input_cmd == define_cmd_bldgtest:
+        print('Dispatched to `BLDGTEST`')
         found_sample_files: [] = find_sample_files(define_sample_dir)
+        if (len(found_sample_files) == 0):
+            found_sample_files: [] = find_sample_files('test/sample')
         error_code, output_texts = run_util_sample_files(exec_file_path, py_args, found_sample_files, True)
         print(output_texts)
 
     #--------------------------------------------------------------------------
     # python cppnamelint.py bldgpack command
     elif py_args.input_cmd == define_cmd_bldgpack:
+        print('Dispatched to `BLDGPACK`')
         root_dir:str    = os.path.abspath(py_args.root)
         output_dir:str  = os.path.abspath(py_args.output)
         error_code      = run_pack(define_exec_name, root_dir, output_dir)
@@ -98,6 +109,7 @@ def main(forced_argv):
     #--------------------------------------------------------------------------
     # python cppnamelint.py bldgcfg command
     elif py_args.input_cmd == define_cmd_bldgcfg:
+        print('Dispatched to `BLDGCFG`')
         root_dir:str    = os.path.abspath(py_args.root)
         output_dir:str  = os.path.abspath(py_args.output)
 
@@ -117,39 +129,39 @@ def main(forced_argv):
 def make_cmd_table():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-verbose" ,  action="store_true", help="increase output verbosity")
-    parser.add_argument("-dbg"     ,  action="store_true", help="enable debug mode output verbosity")
-    parser.add_argument('-log'     ,  required=False     , help="log file path")
+    parser.add_argument("-verbose"  ,  action="store_true"  , help="increase output verbosity")
+    parser.add_argument("-dbg"      ,  action="store_true"  , help="enable debug mode output verbosity")
+    parser.add_argument('-log'      ,  required=False       , help="log file path")
 
     subparsers = parser.add_subparsers(dest='input_cmd')
 
     cmd_check = subparsers.add_parser(define_cmd_check, help="check cmd")
-    cmd_check.add_argument('src', help='Input source code file')
-    cmd_check.add_argument('-cfg'  , required=False,  help="Config file path")
-    cmd_check.add_argument('-json' , required=False,  help="Json result output file path")
-    cmd_check.add_argument('-inc'  , required=False,  help="<dir1:dir2:...>")
+    cmd_check.add_argument('src'    , help='Input source code file')
+    cmd_check.add_argument('-cfg'   , required=False        , help="Config file path")
+    cmd_check.add_argument('-json'  , required=False        , help="Json result output file path")
+    cmd_check.add_argument('-inc'   , required=False        , help="<dir1:dir2:...>")
 
     cmd_test = subparsers.add_parser(define_cmd_test, help="test cmd")
     cmdtest_grp = cmd_test.add_mutually_exclusive_group(required=False)
-    cmdtest_grp.add_argument('-all'  , action="store_true",  help="run all tests")
-    cmdtest_grp.add_argument('-ut'   , action="store_true",  help="run unit test only")
+    cmdtest_grp.add_argument('-all' , action="store_true"   , help="run all tests")
+    cmdtest_grp.add_argument('-ut'  , action="store_true"   , help="run unit test only")
 
     chk_env = subparsers.add_parser(define_cmd_chkenv, help="chkenv cmd for checking build environment")
 
     bldgtest = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest cmd for building this project")
     bldgtest_grp = bldgtest.add_mutually_exclusive_group(required=False)
-    bldgtest_grp.add_argument('-all', action="store_true", help="run all tests")
-    bldgtest_grp.add_argument('-ut' , action="store_true",  help="run unit test only")
-    bldgtest_grp.add_argument('-it' , action="store_true",  help="run integrated test only")
+    bldgtest_grp.add_argument('-all', action="store_true"   , help="run all tests")
+    bldgtest_grp.add_argument('-ut' , action="store_true"   , help="run unit test only")
+    bldgtest_grp.add_argument('-it' , action="store_true"   , help="run integrated test only")
 
     bldgpack = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack cmd for packing this project")
-    bldgpack.add_argument('root'  , help='project root folder path')
-    bldgpack.add_argument('output', help='target released output folder path')
+    bldgpack.add_argument('root'    , help='project root folder path')
+    bldgpack.add_argument('output'  , help='target released output folder path')
 
     bldgcfg = subparsers.add_parser(define_cmd_bldgcfg, help="bldgcfg cmd for doing config via Cmake")
-    bldgcfg.add_argument('root'  , help='project root folder path')
-    bldgcfg.add_argument('output', help='target build folder')
-    bldgcfg.add_argument('type'  , help='build type(release|debug)')
+    bldgcfg.add_argument('root'     , help='project root folder path')
+    bldgcfg.add_argument('output'   , help='target build folder')
+    bldgcfg.add_argument('type'     , help='build type(release|debug)')
 
     return parser
 
@@ -161,17 +173,14 @@ def convert_py_args_to_exe_args(py_args) -> str:
 
     common_args: str = ''
 
-    #if -1 == py_args_text.find('dbg='):
     if py_args.dbg:
-        common_args = common_args + ' --dbg'
+        common_args = common_args + ' -dbg'
 
-    #if -1 == py_args_text.find('log='):
     if py_args.log:
-        common_args = common_args + ' --logfile=' + py_args.log
+        common_args = common_args + ' -logfile=' + py_args.log
 
-    #if -1 == py_args_text.find('verbose='):
     if py_args.verbose:
-        common_args = common_args + ' --verbose'
+        common_args = common_args + ' -verbose'
 
     final_cmd_str: str = ''
     specific_cmd_args: str = ''
@@ -187,14 +196,14 @@ def convert_py_args_to_exe_args(py_args) -> str:
             specific_cmd_args = py_args.input_cmd + ' ' + py_args.src
 
         if py_args.cfg:
-            specific_cmd_args = specific_cmd_args + ' --config=' + py_args.cfg
+            specific_cmd_args = specific_cmd_args + ' -config ' + py_args.cfg
 
         if py_args.json:
-            specific_cmd_args = specific_cmd_args + ' --jsonout=' + py_args.json
+            specific_cmd_args = specific_cmd_args + ' -jsonout ' + py_args.json
 
         if py_args.inc:
             if len(py_args.inc) > 0:
-                specific_cmd_args = specific_cmd_args + ' --includes=' + '<' + ':'.join(input_inc_list) + '>'
+                specific_cmd_args = specific_cmd_args + ' -includes ' + '<' + ':'.join(input_inc_list) + '>'
 
         final_cmd_str = specific_cmd_args + common_args
 
@@ -202,10 +211,10 @@ def convert_py_args_to_exe_args(py_args) -> str:
     elif py_args.input_cmd == define_cmd_test:
 
         if py_args.all:
-            specific_cmd_args = specific_cmd_args + ' --all'
+            specific_cmd_args = specific_cmd_args + ' -all'
 
         if py_args.ut:
-            specific_cmd_args = specific_cmd_args + ' --u'
+            specific_cmd_args = specific_cmd_args + ' -ut'
 
         final_cmd_str = define_cmd_test + specific_cmd_args + common_args
 
@@ -213,13 +222,13 @@ def convert_py_args_to_exe_args(py_args) -> str:
     elif py_args.input_cmd == define_cmd_bldgtest:
 
         if py_args.all:
-            specific_cmd_args = specific_cmd_args + ' --all'
+            specific_cmd_args = specific_cmd_args + ' -all'
 
         if py_args.ut:
-            specific_cmd_args = specific_cmd_args + ' --u'
+            specific_cmd_args = specific_cmd_args + ' -ut'
 
         if py_args.it:
-            specific_cmd_args = specific_cmd_args + ' --it'
+            specific_cmd_args = specific_cmd_args + ' -it'
 
         final_cmd_str = define_cmd_bldgtest + specific_cmd_args + common_args
 
@@ -279,8 +288,9 @@ def run_util(exec_name:str, arg_list:[], working_dir:str='') -> [int, str]:
 def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_output:bool) -> int:
     first_error_code = 0
 
-    mock_py_args = copy.copy(py_args)
-    mock_py_args.input_cmd = define_cmd_check
+    sys.argv = ['prog', 'check', 'input.c', '-cfg=config.toml', '-json=output.json', '-inc=<A:B:C>']
+    parser = make_cmd_table()
+    mock_py_args = parser.parse_args()
 
     full_output_string = ''
 
@@ -290,14 +300,15 @@ def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_outp
         mock_py_args.cfg = paired['cfg']
 
         args_list: [] = convert_py_args_to_exe_args(mock_py_args)
+        print(args_list)
         error_code, output_string = run_util(exec_file_path, args_list)
 
         if first_error_code == 0 and error_code != 0:
             first_error_code = error_code
 
         if print_output:
-            full_output_string = full_output_string + '\n' + output_string
-            print(output_string)
+            full_output_string = output_string
+            #print(output_string)
 
     return first_error_code, full_output_string
 
@@ -371,7 +382,6 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     return 0
 
 
-
 def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
     error_code:int = 0
 
@@ -397,9 +407,6 @@ def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
     error_code, output_texts = run_util(define_cmake_name, cmake_args)
 
     return error_code, output_texts
-
-
-
 
 
 if __name__ == '__main__':

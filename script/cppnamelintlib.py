@@ -7,7 +7,6 @@ import locale
 import subprocess
 
 from enum import Enum
-#from subprocess import Popen
 
 
 def get_locale_lang() ->str:
@@ -129,34 +128,43 @@ class Exec:
         self.name = ""
 
 
-    def run(self, file_name:str, args:[], working_dir:str='') -> [int, str]:
+    def run(self, file_name:str, args:[], working_dir:str='', timeout_sec=30) -> [int, str]:
 
         output_mix = ''
         ret_code: int = 0
 
-        try:
-            cmd_and_arg = []
-            cmd_and_arg.append(file_name)
-            cmd_and_arg.extend(args)
+        cmd_and_arg = []
+        cmd_and_arg.append(file_name)
+        cmd_and_arg.extend(args)
 
-            print(cmd_and_arg)
+        try:
+            #print(cmd_and_arg)
             process = subprocess.Popen(cmd_and_arg,              \
                                        stdout=subprocess.PIPE,   \
                                        stderr=subprocess.STDOUT, \
                                        universal_newlines=True)
-            if process:
-                (std_output, err_output) = process.communicate()
-                output_mix = std_output
+            try:
+                std_output, err_output = process.communicate(timeout=timeout_sec)
+            except TimeoutExpired:
+                process.kill()
+                std_output, err_output = process.communicate()
 
+            if None == std_output:
+                output_mix = str(std_output)
+
+            if None == err_output:
+                output_mix =  str(output_mix) + '\n' + str(err_output)
+
+            if None == ret_code:
+                ret_code = 0
+            else:
                 ret_code = process.returncode
-                if None == ret_code:
-                    ret_code = 0
-
+        
         except Exception as e:
-            print(str(e))
+            output_mix = str(e)
+            ret_code   = -1000
 
         return ret_code, output_mix
-
 
 
 

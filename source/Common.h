@@ -8,7 +8,7 @@ using namespace std;
 
 typedef struct _APP_CONTEXT {
   void *pTomlConfig;
-  namelint::TraceMemo TraceMemo;
+  namelint::MemoBoard MemoBoard;
   string FileName;
 } APP_CONTEXT;
 

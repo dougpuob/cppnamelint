@@ -65,7 +65,6 @@ include_directories(
     $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include
     submodule/googletest.git/googletest/include
     submodule/json.git/include
-    submodule/docopt.cpp
 )
 
 link_directories(${NAMELINT_LLVM_LIB_PATH})
@@ -103,7 +102,6 @@ message("INC_PATH_5                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE
 ###############################################################################
 option(BUILD_TESTING "Turn OFF to build the testing tree (json)." OFF)
 
-add_subdirectory(submodule/docopt.cpp)
 add_subdirectory(submodule/googletest.git)
 add_subdirectory(submodule/json.git)
 
@@ -129,8 +127,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${OUTPUT_OS}/output
 add_executable(
     cppnamelint
     submodule/tinytoml.git/include/toml/toml.h
-    submodule/docopt.cpp/docopt.h
     source/TraceMemo.h
+    source/CommandLine.h
     source/Main.cpp
     source/Detection.h
     source/Detection.cpp
@@ -159,7 +157,6 @@ target_link_libraries(
     #------------------------#
     # Submodules             #
     #------------------------#
-    docopt
     gtest
     gtest_main
     #------------------------#

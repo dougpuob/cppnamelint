@@ -94,8 +94,8 @@ jobs:
           verbosity: "Trace"
       - script: "ls -la"
 
-      - script: "ls -la -R"
-        displayName: "Drump folder hierarchy"
+      #- script: "ls -la -R"
+      #  displayName: "Dump folder hierarchy"
 
       - script: "./build-bin-linux.sh"
         displayName: "build-bin-linux.sh"
@@ -104,22 +104,23 @@ jobs:
       - script: make
         workingDirectory: "build/linux"
 
-      - script: "ls -la -R"
-        displayName: "Drump folder hierarchy"
+      #- script: "ls -la -R"
+      #  displayName: "Dump folder hierarchy"
 
       - script: "./build-pack-linux.sh"
         displayName: "build-pack-linux.sh"
         workingDirectory: "script"
 
-      - script: "ls -la -R"
-        displayName: "Drump folder hierarchy"
+      #- script: "ls -la -R"
+      #  displayName: "Dump folder hierarchy"
 
       - script: "./build-test-linux.sh"
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release"
 
+
   #==============================================================================
-  # macOS
+  # macOS ("macOS-10.14")
   #==============================================================================
   - job: macOS
 
@@ -133,7 +134,7 @@ jobs:
       - name: CXX
         value: clang++
     pool:
-      vmImage: "macOS-10.13"
+      vmImage: "macOS-10.14"
 
     steps:
       - script: "clang --version"
@@ -169,8 +170,8 @@ jobs:
           filePath: 'script/build-pack-linux.sh'
           workingDirectory: 'script'
 
-      - script: "ls -la -R"
-        displayName: "Drump folder hierarchy"
+      #- script: "ls -la -R"
+      #  displayName: "Dump folder hierarchy"
 
       - task: Bash@3
         inputs:

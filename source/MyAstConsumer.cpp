@@ -24,11 +24,9 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
       FileName = FullLocation.getFileLoc().getFileEntry()->getName();
     }
 
-    if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {
-      namelint::Config *pCfg = (namelint::Config *)GetAppCxt()->pTomlConfig;
-
+    if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {      
       const SourceManager &SrcMgr = ASTCxt.getSourceManager();
-      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, pCfg);
+      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, &(GetAppCxt()->MemoBoard.Config));
       myVisitor.TraverseDecl(*Iter);
     }
   }

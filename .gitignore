@@ -64,3 +64,4 @@ Release
 *.ninja
 *.pc
 compile_commands.*
+__pycache__

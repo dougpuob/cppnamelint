@@ -23,4 +23,3 @@ mkdir -p ${BUILD_DIR}
 
 # export NAMELINT_LLVM_LIB=~/my-data/my-cloud/@mydata/software/data/devtls/my-devtls/@Linux/3party-lib/ubuntu18.04.2-gcc8-x64/llvm
 python3 ./cppnamelint.py bldgcfg ${ROOT_DIR} ${BUILD_DIR} ${BUILD_TYPE}
-

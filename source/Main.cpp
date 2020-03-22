@@ -5,7 +5,6 @@
 #include <fstream>
 #include <iostream>
 
-#include <docopt.h>
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
@@ -15,212 +14,169 @@
 #include "MyAstConsumer.h"
 #include "MyAstVisitor.h"
 #include "MyFactory.h"
+#include "CommandLine.h"
+
+#include "clang/Tooling/CompilationDatabase.h"
+
 
 
 using namespace nlohmann;
 using namespace namelint;
 
-size_t GetTotalError(const TraceMemo &TraceMemo);
 
-bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc);
+size_t GetTotalError(const MemoBoard &MemoBoard);
+bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc);
+bool PrintTraceMemo(const MemoBoard &MemoBoard);
+bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath);
 
-bool PrintTraceMemo(const TraceMemo &TraceMemo);
 
-bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath);
 
-int main(int iArgc, char **pszArgv) {
-  const char *szTitle = "cppnamelint utility v0.2.5";
-  static const char *szUsage =
-      R"(
-  Usage:
-    cppnamelint check <file> [--config=<file>] [--logfile=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>]
-    cppnamelint test   [-a | --all] [-u | --unittest] [--logfile=<file>]
-    cppnamelint --help
-    cppnamelint --version
-  )";
+int RunCheck(namelint::MemoBoard& Memo) {
+	int iRet = 0;
+	string InputFile  = CheckInputSrc;
+	string InpuConfig = CheckInputConfig;
+	string OutputJson = CheckOutputJson;
+	vector<string> InputIncs;
+	
+	DcLib::Log::Out(INFO_ALL, "InputFile  = %s", InputFile.c_str());
+	DcLib::Log::Out(INFO_ALL, "InpuConfig = %s", InpuConfig.c_str());
+	DcLib::Log::Out(INFO_ALL, "OutputJson = %s", OutputJson.c_str());
 
-  map<string, docopt::value> Arguments =
-      docopt::docopt(szUsage, {pszArgv + 1, pszArgv + iArgc},
-                     false, // show help if requested
-                     "");   // version string
+	if (!llvm::sys::fs::exists(InputFile)) {
+		cout << "Error: Failed to find input source file." << endl;
+		return 1;
+	}
 
-  int iReturn = 0;
+	if (!llvm::sys::fs::exists(InpuConfig)) {
+		cout << "Error: Failed to find config file." << endl;
+		return 2;
+	}
 
-  //
-  //
-  //
-  if (Arguments["--logfile"]) {
-    DcLib::Log::Init(Arguments["--logfile"].asString().c_str());
-  }
+	if (!Memo.Config.LoadFile(InpuConfig)) {
+		cout << "Error: Failed to load config file (format wrong)." << endl;
+		return 3;
+	}
 
-  cout << szTitle << endl;
+	if (OutputJson.length() == 0) {
+		OutputJson = "cppnamelint.json";
+	}
+
+	std::string ErrorMessage;
+	std::unique_ptr<CompilationDatabase> Compilations =
+		FixedCompilationDatabase::loadFromFile(InputFile, ErrorMessage);
+
+	Memo.File.Source = InputFile;
+	Memo.File.Config = InpuConfig;
+	Memo.Dir.Includes = InputIncs;
+
+	vector<string> SingleFileInList = { InputFile };
+	ClangTool Tool(*Compilations, SingleFileInList);
+
+	Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
+
+	MyFactory MyFactory;
+	std::unique_ptr<FrontendActionFactory> Factory =
+		newFrontendActionFactory(&MyFactory);
+
+	Detection Detect;
+	shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
+    GeneralOptions* pOptions = &pConfig->General.Options;
+	if (pOptions->bCheckFileName) {
+		RuleOfFile Rule;
+		Rule.bAllowedUnderscopeChar = pOptions->bAllowedUnderscopeChar;
+		Detect.ApplyRuleForFile(Rule);
+
+		Memo.Checked.nFile++;
+
+		string FileBaseName = Path::FindFileName(InputFile);
+        GeneralRules* pRules = &pConfig->General.Rules;
+		if (!Detect.CheckFile(pRules->FileName, FileBaseName)) {
+			Memo.Error.nFile++;
+			Memo.ErrorDetailList.push_back(
+				new ErrorDetail(FileBaseName, ""));
+		}
+	}
+
+	if (0 == Tool.run(Factory.get())) {
+		iRet = GetTotalError(Memo);
+		PrintTraceMemo(Memo);
+		WriteJsonResult(Memo, OutputJson);
+	}
+	else {
+		iRet = -1;
+	}
+         
+	return iRet;
+}
+
+int RunTest() {
+	int iRet = 0;
+	return iRet;
+}
+
+int RunDump() {
+	int iRet = 0;
+	return iRet;
+}
+
+int main(int Argc, const char **Argv) {
+   
+  cout << "cppnamelint utility v0.3.0" << endl;
   cout << "---------------------------------------------------" << endl;
-  if (Arguments["check"].asBool() &&
-      Arguments["<file>"].asString().length() > 0) {
-    APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
-    //
-    //
-    //
-    namelint::Config Config;
-    if (Arguments["--logfile"]) {
-      pAppCxt->TraceMemo.Option.bEnableLog = true;
-    }
+  
+  cl::HideUnrelatedOptions(CppNameLintCategory);
+  cl::ParseCommandLineOptions(Argc, Argv);
+ 
 
-    //
-    //
-    //
-    string ConfigFilePath = Arguments["--config"].asString();
-    bool bResult = Path::IsExist(ConfigFilePath);
-    if (bResult) {
-      bResult = Config.LoadFile(ConfigFilePath);
-      if (!bResult) {
-        cout << "Error: Failed to load config file (format wrong)" << endl;
-      }
-    } else {
-      cout << "Error: Failed to find a config file" << endl;
-    }
-
-    //
-    //
-    //
-    string JsonOutFilePath = "cppnamelint.json";
-    if (Arguments["--jsonout"]) {
-      JsonOutFilePath = Arguments["--jsonout"].asString();
-    }
-
-    pAppCxt->TraceMemo.File.Config = ConfigFilePath;
-    pAppCxt->pTomlConfig = &Config;
-
-    //
-    //
-    //
-    if (Arguments["--includes"]) {
-      vector<string> IncludeDirs;
-      size_t nCount =
-          String::Split(Arguments["--includes"].asString(), IncludeDirs, ',');
-      for (size_t nIdx = 0; nIdx < nCount; nIdx++) {
-        string FullPath;
-        if (Path::NormPath(IncludeDirs[nIdx].c_str(), FullPath)) {
-          string IncArg = "-I" + FullPath;
-          pAppCxt->TraceMemo.Dir.Includes.push_back(IncArg);
-        }
-      }
-    }
-
-    //
-    //
-    //
-    int iMyArgc = 3 + pAppCxt->TraceMemo.Dir.Includes.size();
-    char **pszMyArgV = new char *[iMyArgc];
-    pszMyArgV[0] = strdup("");
-    pszMyArgV[1] = strdup("*.*");
-    pszMyArgV[2] = strdup("--");
-    size_t nIdx = 3;
-    for (auto Item : pAppCxt->TraceMemo.Dir.Includes) {
-      pszMyArgV[nIdx] = strdup(Item.c_str());
-      nIdx++;
-    }
-
-    //
-    //
-    //
-    static llvm::cl::OptionCategory NameLintOptions("NameLintOptions");
-    CommonOptionsParser NullOptionsParser(iMyArgc, (const char **)pszMyArgV,
-                                          NameLintOptions);
-
-    string FileNamePath = Arguments["<file>"].asString();
-    string FileName = Path::FindFileName(FileNamePath);
-
-    DcLib::Log::Out(INFO_ALL, "File path    = %s", FileNamePath.c_str());
-    DcLib::Log::Out(INFO_ALL, "Config path  = %s", ConfigFilePath.c_str());
-    DcLib::Log::Out(INFO_ALL, "JsonLog path = %s", JsonOutFilePath.c_str());
-
-    pAppCxt->TraceMemo.File.Source = FileNamePath;
-
-    // Utility to run a FrontendAction over a set of files.
-    vector<string> SourcePathList;
-    SourcePathList.push_back(FileNamePath);
-    ClangTool Tool(NullOptionsParser.getCompilations(), SourcePathList);
-
-    // [DiagnosticConsume class]
-    // Abstract interface, implemented by clients of the front-end, which
-    // formats and prints fully processed diagnostics.
-    Tool.setDiagnosticConsumer(
-        /*(clang::DiagnosticConsumer*)*/ new IgnoringDiagConsumer());
-
-    MyFactory MyFactory;
-    std::unique_ptr<FrontendActionFactory> Factory =
-        newFrontendActionFactory(&MyFactory);
-
-    Detection dect;
-    shared_ptr<ConfigData> pConfig = Config.GetData();
-    if (pConfig->General.Options.bCheckFileName) {
-      RuleOfFile Rule;
-      Rule.bAllowedUnderscopeChar =
-          pConfig->General.Options.bAllowedUnderscopeChar;
-      dect.ApplyRuleForFile(Rule);
-
-      pAppCxt->TraceMemo.Checked.nFile++;
-      if (!dect.CheckFile(pConfig->General.Rules.FileName, FileName)) {
-        pAppCxt->TraceMemo.Error.nFile++;
-        pAppCxt->TraceMemo.ErrorDetailList.push_back(
-            new ErrorDetail(FileName, ""));
-      }
-    }
-
-    if (0 == Tool.run(Factory.get())) {
-      iReturn = GetTotalError(GetAppCxt()->TraceMemo);
-      PrintTraceMemo(GetAppCxt()->TraceMemo);
-      WriteJsonResult(GetAppCxt()->TraceMemo, JsonOutFilePath);
-    } else {
-      iReturn = -1;
-    }
-
-    for (size_t nIdx = 0; nIdx < (size_t)iMyArgc; nIdx++) {
-      free(pszMyArgV[nIdx]);
-    }
-    delete[] pszMyArgV;
-
-  } else if (Arguments["test"].asBool()) {
-    testing::InitGoogleTest(&iArgc, (char **)pszArgv);
-    iReturn = RUN_ALL_TESTS();
-  } else if (Arguments["nonono"].asBool()) {
-    std::cout << "<file>   = " << Arguments["<file>"] << endl;
-  } else {
-    // Command miss matched.
-    iReturn = -1 /* Error */;
+  int iRet = 0;
+  if (LogFile.length() > 0) {
+      DcLib::Log::Init(LogFile.c_str());
   }
 
-  return iReturn;
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+  pAppCxt->MemoBoard.Option.bEnableLog = (LogFile.length() > 0);
+
+  if (CheckSubcommand) {
+      iRet = RunCheck(pAppCxt->MemoBoard);
+  }
+  else if (TestSubcommand) {
+      testing::InitGoogleTest(&Argc, (char**)Argv);
+      iRet = RUN_ALL_TESTS();
+  }
+  else {
+      iRet = -1; /* Error (Command miss matched.) */
+  }
+
+  return iRet;
 }
 
-size_t GetTotalError(const TraceMemo &TraceMemo) {
-  return TraceMemo.Error.nFile + TraceMemo.Error.nParameter +
-         TraceMemo.Error.nFunction + TraceMemo.Error.nVariable;
+size_t GetTotalError(const MemoBoard &MemoBoard) {
+  return MemoBoard.Error.nFile + MemoBoard.Error.nParameter +
+         MemoBoard.Error.nFunction + MemoBoard.Error.nVariable;
 }
 
-size_t GetTotalChecked(const TraceMemo &TraceMemo) {
-  return TraceMemo.Checked.nFile + TraceMemo.Checked.nParameter +
-         TraceMemo.Checked.nFunction + TraceMemo.Checked.nVariable;
+size_t GetTotalChecked(const MemoBoard &MemoBoard) {
+  return MemoBoard.Checked.nFile + MemoBoard.Checked.nParameter +
+         MemoBoard.Checked.nFunction + MemoBoard.Checked.nVariable;
 }
 
-bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
+bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
   json TotalList = json::array();
-  JsonDoc["File"]["Source"] = TraceMemo.File.Source;
-  JsonDoc["File"]["Config"] = TraceMemo.File.Config;
+  JsonDoc["File"]["Source"] = MemoBoard.File.Source;
+  JsonDoc["File"]["Config"] = MemoBoard.File.Config;
 
-  JsonDoc["Checked"]["Function"] = TraceMemo.Checked.nFunction;
-  JsonDoc["Checked"]["Parameter"] = TraceMemo.Checked.nParameter;
-  JsonDoc["Checked"]["Variable"] = TraceMemo.Checked.nVariable;
+  JsonDoc["Checked"]["Function"] = MemoBoard.Checked.nFunction;
+  JsonDoc["Checked"]["Parameter"] = MemoBoard.Checked.nParameter;
+  JsonDoc["Checked"]["Variable"] = MemoBoard.Checked.nVariable;
 
-  JsonDoc["Error"]["Function"] = TraceMemo.Error.nFunction;
-  JsonDoc["Error"]["Parameter"] = TraceMemo.Error.nParameter;
-  JsonDoc["Error"]["Variable"] = TraceMemo.Error.nVariable;
+  JsonDoc["Error"]["Function"] = MemoBoard.Error.nFunction;
+  JsonDoc["Error"]["Parameter"] = MemoBoard.Error.nParameter;
+  JsonDoc["Error"]["Variable"] = MemoBoard.Error.nVariable;
 
   json JsonErrDetail;
   json ErrorDetailList = json::array();
-  for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
+  for (const ErrorDetail *pErrDetail : MemoBoard.ErrorDetailList) {
     JsonErrDetail["Line"] = pErrDetail->Pos.nLine;
     JsonErrDetail["Column"] = pErrDetail->Pos.nColumn;
     JsonErrDetail["Type"] = (int)pErrDetail->Type;
@@ -239,48 +195,48 @@ bool DataToJson(const TraceMemo &TraceMemo, json &JsonDoc) {
   return true;
 }
 
-bool PrintTraceMemo(const TraceMemo &TraceMemo) {
+bool PrintTraceMemo(const MemoBoard &MemoBoard) {
 
   bool bStatus = true;
   char szText[512] = {0};
 
-  cout << " File    = " << TraceMemo.File.Source << endl;
-  cout << " Config  = " << TraceMemo.File.Config << endl;
-  for (size_t nIdx = 0; nIdx < TraceMemo.Dir.Includes.size(); nIdx++) {
+  cout << " File    = " << MemoBoard.File.Source << endl;
+  cout << " Config  = " << MemoBoard.File.Config << endl;
+  for (size_t nIdx = 0; nIdx < MemoBoard.Dir.Includes.size(); nIdx++) {
     sprintf(szText, " Inc[%2d] = %s", nIdx + 1,
-            TraceMemo.Dir.Includes[nIdx].c_str());
+            MemoBoard.Dir.Includes[nIdx].c_str());
     printf("%s\n", szText);
-    if (TraceMemo.Option.bEnableLog) {
+    if (MemoBoard.Option.bEnableLog) {
       DcLib::Log::Out(INFO_ALL, szText);
     }
   }
 
   sprintf(szText, " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
-          GetTotalChecked(TraceMemo), TraceMemo.Checked.nFile,
-          TraceMemo.Checked.nFunction, TraceMemo.Checked.nParameter,
-          TraceMemo.Checked.nVariable);
+          GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile,
+          MemoBoard.Checked.nFunction, MemoBoard.Checked.nParameter,
+          MemoBoard.Checked.nVariable);
   printf("%s\n", szText);
-  if (TraceMemo.Option.bEnableLog) {
+  if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
   sprintf(szText, " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
-          GetTotalError(TraceMemo), TraceMemo.Error.nFile,
-          TraceMemo.Error.nFunction, TraceMemo.Error.nParameter,
-          TraceMemo.Error.nVariable);
+          GetTotalError(MemoBoard), MemoBoard.Error.nFile,
+          MemoBoard.Error.nFunction, MemoBoard.Error.nParameter,
+          MemoBoard.Error.nVariable);
   printf("%s\n", szText);
-  if (TraceMemo.Option.bEnableLog) {
+  if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
   printf("------------------------------------------------------------\n");
-  if (TraceMemo.Option.bEnableLog) {
+  if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(
         INFO_ALL,
         "------------------------------------------------------------");
   }
 
-  for (const ErrorDetail *pErrDetail : TraceMemo.ErrorDetailList) {
+  for (const ErrorDetail *pErrDetail : MemoBoard.ErrorDetailList) {
     switch (pErrDetail->Type) {
     case CheckType::CT_File:
       cout << std::left << "  < 0, 0 >" << std::left << std::setw(15)
@@ -292,7 +248,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      if (TraceMemo.Option.bEnableLog) {
+      if (MemoBoard.Option.bEnableLog) {
         DcLib::Log::Out(INFO_ALL, szText);
       }
       break;
@@ -304,7 +260,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
-      if (TraceMemo.Option.bEnableLog) {
+      if (MemoBoard.Option.bEnableLog) {
         DcLib::Log::Out(INFO_ALL, szText);
       }
       break;
@@ -317,7 +273,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
               (pErrDetail->bIsArray ? "[]" : ""));
 
       printf("%s\n", szText);
-      if (TraceMemo.Option.bEnableLog) {
+      if (MemoBoard.Option.bEnableLog) {
         DcLib::Log::Out(INFO_ALL, szText);
       }
       break;
@@ -330,7 +286,7 @@ bool PrintTraceMemo(const TraceMemo &TraceMemo) {
   return bStatus;
 }
 
-bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
+bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath) {
   if (!Path::IsExist(FilePath)) {
     json JasonEmty = json::array();
     ofstream MyFile;
@@ -353,7 +309,7 @@ bool WriteJsonResult(const TraceMemo &TraceMemo, const string &FilePath) {
     JsonAll = json::array();
   }
 
-  if (DataToJson(TraceMemo, JsonNew)) {
+  if (DataToJson(MemoBoard, JsonNew)) {
     ofstream MyFile;
     MyFile.open(FilePath);
     JsonAll.push_back(JsonNew);
