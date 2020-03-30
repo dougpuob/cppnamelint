@@ -146,6 +146,7 @@ int main(int Argc, const char **Argv) {
   }
   else {
       iRet = -1; /* Error (Command miss matched.) */
+      cl::PrintHelpMessage();
   }
 
   return iRet;
