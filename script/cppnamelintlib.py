@@ -132,7 +132,7 @@ class Exec:
     def __init__(self):
         self.name = ""
 
-    def run(self, file_name: str, args: [], working_dir: str = '', timeout_sec=30) -> [int, str]:
+    def run(self, file_name:str, args:[], working_dir:str='', timeout_sec=60) -> [int, str]:
 
         output_mix = ''
         ret_code: int = 0

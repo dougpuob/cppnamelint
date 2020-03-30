@@ -1,8 +1,7 @@
 #include <iomanip>
 
-#include "MyAstVisitor.h"
 #include "Common.h"
-
+#include "MyAstVisitor.h"
 
 using namespace namelint;
 
@@ -100,7 +99,8 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
 }
 
 bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
-                                 string &VarName, bool &bIsPtr, bool &bAnonymous) {
+                                 string &VarName, bool &bIsPtr,
+                                 bool &bAnonymous) {
   if (!pDecl) {
     return false;
   }
@@ -133,17 +133,16 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType,
   String::Trim(VarType);
   String::Trim(VarName);
 
-  if (VarName == "")
-  {
-	  bAnonymous = true;
+  if (VarName == "") {
+    bAnonymous = true;
   }
 
   return true;
 }
 
-bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
-                                 bool &bIsPtr, bool &bIsArray,
-                                 bool &bIsBuiltinType) {
+bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType,
+                                 string &ValueName, bool &bIsPtr,
+                                 bool &bIsArray, bool &bIsBuiltinType) {
   if (!pDecl) {
     return false;
   }
@@ -228,39 +227,39 @@ ErrorDetail *MyASTVisitor::_CreateErrorDetail(
 }
 
 bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
-	string ValueType;
-	string ValueName;
+  string ValueType;
+  string ValueName;
 
-	bool bIsPtr = false;
-	bool bIsArray = false;
-	bool bIsBuiltinType = false;
+  bool bIsPtr = false;
+  bool bIsArray = false;
+  bool bIsBuiltinType = false;
 
-	bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray,
-		bIsBuiltinType);
+  bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr,
+                                     bIsArray, bIsBuiltinType);
 
-	if (!bStauts)
-	{
-		return false;
-	}
+  if (!bStauts) {
+    return false;
+  }
 
-	bool bResult = this->m_Detect.CheckVariable(
-		this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
-		this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
-		bIsArray);
+  bool bResult = this->m_Detect.CheckVariable(
+      this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
+      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
+      bIsArray);
 
-	APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-	if (!pAppCxt) {
-		assert(pAppCxt);
-		return false;
-	}
-	pAppCxt->MemoBoard.Checked.nVariable++;
-	if (!bResult) {
-		pAppCxt->MemoBoard.Error.nVariable++;
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  if (!pAppCxt) {
+    assert(pAppCxt);
+    return false;
+  }
+  pAppCxt->MemoBoard.Checked.nVariable++;
+  if (!bResult) {
+    pAppCxt->MemoBoard.Error.nVariable++;
 
-		pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-			pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
-	}
-	return true;
+    pAppCxt->MemoBoard.ErrorDetailList.push_back(
+        this->_CreateErrorDetail(pDecl, CheckType::CT_Variable, bIsPtr,
+                                 bIsArray, ValueType, ValueName, ""));
+  }
+  return true;
 }
 
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
@@ -296,8 +295,8 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
 }
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
-	//std::cout << "VisitCXXRecordDecl " << D->getNameAsString() << std::endl;
-	return true;
+  // std::cout << "VisitCXXRecordDecl " << D->getNameAsString() << std::endl;
+  return true;
 }
 
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
@@ -333,9 +332,7 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   return bStatus;
 }
 
-bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { 
-	return true;
-}
+bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { return true; }
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   if (!this->_IsMainFile(pDecl)) {
@@ -347,7 +344,6 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
     this->m_LearnIt.PrintDecl(pDecl);
-
   }
 
   return true;
@@ -358,21 +354,19 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
     return true;
   }
 
-  if (isa<ParmVarDecl>(pDecl))
-  {
-	  return true;
+  if (isa<ParmVarDecl>(pDecl)) {
+    return true;
   }
-
 
   return _CheckRuleForVariable(pDecl);
 }
 
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
-	if (!this->m_pConfig->General.Options.bCheckVariableName) {
-		return true;
-	}
+  if (!this->m_pConfig->General.Options.bCheckVariableName) {
+    return true;
+  }
 
-	return _CheckRuleForVariable(pDecl);
+  return _CheckRuleForVariable(pDecl);
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
@@ -388,42 +382,42 @@ bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
 }
 
 bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
-	string VarType;
-	string VarName;
+  string VarType;
+  string VarName;
 
-	bool bIsPtr = false;
-	bool bIsArray = false;
-	bool bAnonymous = false;
-	bool bResult = false;
-	
+  bool bIsPtr = false;
+  bool bIsArray = false;
+  bool bAnonymous = false;
+  bool bResult = false;
 
-	APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-	assert(pAppCxt);
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  assert(pAppCxt);
 
-	if (pAppCxt->MemoBoard.Option.bEnableLog) {
-		this->m_LearnIt.PrintDecl(pDecl);
+  if (pAppCxt->MemoBoard.Option.bEnableLog) {
+    this->m_LearnIt.PrintDecl(pDecl);
+  }
 
-	}
+  bool bStatus =
+      this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr, bAnonymous);
+  if (!bAnonymous) // if this variable doesn't have name, it doesn't need to be
+                   // checked.
+  {
+    if (bStatus) {
+      bResult = this->m_Detect.CheckVariable(
+          this->m_pConfig->General.Rules.VariableName, VarType, VarName,
+          this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
+          bIsArray);
 
-	bool bStatus = this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr, bAnonymous);
-	if (!bAnonymous)  // if this variable doesn't have name, it doesn't need to be checked.
-	{
-		if (bStatus) {
-			bResult = this->m_Detect.CheckVariable(
-				this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-				this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr,
-				bIsArray);
+      pAppCxt->MemoBoard.Checked.nParameter++;
+      if (!bResult) {
+        pAppCxt->MemoBoard.Error.nParameter++;
 
-			pAppCxt->MemoBoard.Checked.nParameter++;
-			if (!bResult) {
-				pAppCxt->MemoBoard.Error.nParameter++;
+        pAppCxt->MemoBoard.ErrorDetailList.push_back(
+            this->_CreateErrorDetail(pDecl, CheckType::CT_Parameter, bIsPtr,
+                                     bIsArray, VarType, VarName, ""));
+      }
+    }
+  }
 
-				pAppCxt->MemoBoard.ErrorDetailList.push_back(
-					this->_CreateErrorDetail(pDecl, CheckType::CT_Parameter,
-						bIsPtr, bIsArray, VarType, VarName, ""));
-			}
-		}
-	}
-
-	return true;
+  return true;
 }

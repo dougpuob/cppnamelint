@@ -4,7 +4,6 @@
 
 #include "MyFactory.h"
 
-
 using namespace std;
 
 unique_ptr<MyASTConsumer> MyFactory::newASTConsumer() {
