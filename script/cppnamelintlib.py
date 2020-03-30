@@ -44,26 +44,28 @@ class File:
     def __init__(self):
         self.name = ""
 
-    def _match_all(self, intput_file_name: str, ext_name_list: []):
+    def match_name_all(self, intput_file_name: str, ext_name_list: []):
         ext_name_str = '|'.join(ext_name_list)
-        regex_pattern = '([a-zA-Z0-9\\s~!@$#%=^&*_\\\\.\\-\\(\\):])+(' + ext_name_str + ')$'
+        ext_name_str = ext_name_str.replace('.', '\\.')
+
+        regex_pattern = '[\S]+(' + ext_name_str + ')$'
+
         regex = re.compile(regex_pattern)
         matched = regex.search(intput_file_name)
-        print(matched)
-        return matched
+        return None != matched
 
 
-    def _match_specific(self, intput_file_name: str, specific_name: str, ext_name_list: []):
+    def match_specific_name(self, intput_file_name: str, specific_name: str, ext_name_list: []):
         if 0 == len(ext_name_list):
             regex_pattern = '(' + specific_name + ')'
         else:
             ext_name_str = '|'.join(ext_name_list)
-            regex_pattern = '(' + specific_name + ').(' + ext_name_str + ')$'
+            ext_name_str = ext_name_str.replace('.', '\\.')
+            regex_pattern = specific_name + '(' + ext_name_str + ')$'
 
         regex = re.compile(regex_pattern)
         matched = regex.search(intput_file_name)
-        print(matched)
-        return matched
+        return None != matched
 
 
     def find_files(self, root_dir: str, specific_file_name: str, ext_name_list: []) -> []:
@@ -73,9 +75,9 @@ class File:
         for dir_name, subdirList, fileList in os.walk(root_dir, topdown=False):
             for file_name in fileList:
                 if '*' == specific_file_name:
-                    is_matched = self._match_all(file_name, ext_name_list)
+                    is_matched = self.match_name_all(file_name, ext_name_list)
                 else:
-                    is_matched = self._match_specific(file_name, specific_file_name, ext_name_list)
+                    is_matched = self.match_specific_name(file_name, specific_file_name, ext_name_list)
 
                 if is_matched:
                     abs_path  = os.path.join(root_dir, dir_name, file_name)
