@@ -430,10 +430,11 @@ def run_clang_format(src_dir_path:str, ext_name_list: []):
 
     lint_obj = Lint()
     file_obj = File()
-    found_src_files = file_obj.find_files(src_dir_path, '*', include_src_files)
-    #for path in found_src_files:
-        #lint_obj.clang_format(path)
-    return -2
+    found_src_files = file_obj.find_files(src_dir_path, '*', ext_name_list)
+    for path in found_src_files:
+        error_code, output_texts = lint_obj.clang_format(path)
+
+    return error_code, output_texts
 
 if __name__ == '__main__':
     ret_errcode = main(sys.argv)
