@@ -68,9 +68,10 @@ def main(forced_argv):
     # python cppnamelint.py format command
     elif py_args.input_cmd == define_cmd_format:
         print('Dispatched to `FORMAT`')
-        src_dir_path = os.path.abspath(py_args.dir)
+        proj_dir_path = os.path.abspath(py_args.projdir)
+        src_dir_path = os.path.abspath(py_args.srcdir)
         include_ext_name_list: [] = ['.c', '.cpp', '.h']
-        error_code, output_texts = run_clang_format(src_dir_path, include_ext_name_list)
+        error_code, output_texts = run_clang_format(proj_dir_path, src_dir_path, include_ext_name_list)
         print(output_texts)
 
 
@@ -153,7 +154,8 @@ def make_cmd_table():
     cmd_check.add_argument('-inc'   , required=False        , help="<dir1:dir2:...>")
 
     cmd_fmt = subparsers.add_parser(define_cmd_format, help="format cmd")
-    cmd_fmt.add_argument('dir'    , help='Input source directory.')
+    cmd_fmt.add_argument('projdir'   , help='Project root directory(location of .clangformat).')
+    cmd_fmt.add_argument('srcdir'    , help='Input source directory.')
 
     cmd_test = subparsers.add_parser(define_cmd_test, help="test cmd")
     cmdtest_grp = cmd_test.add_mutually_exclusive_group(required=False)
@@ -424,7 +426,7 @@ def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
 
 
 
-def run_clang_format(src_dir_path:str, ext_name_list: []):
+def run_clang_format(proj_dir: str, src_dir_path:str, ext_name_list: []):
     if not os.path.exists(src_dir_path):
         return -1
 
@@ -433,7 +435,7 @@ def run_clang_format(src_dir_path:str, ext_name_list: []):
     found_src_files = file_obj.find_files(src_dir_path, '*', ext_name_list)
     for path in found_src_files:
         print(path)
-        error_code, output_texts = lint_obj.clang_format(path)
+        error_code, output_texts = lint_obj.clang_format(path, proj_dir)
         if error_code != 0:
             break
 

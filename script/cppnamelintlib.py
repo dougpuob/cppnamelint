@@ -200,7 +200,7 @@ class Lint():
         self.name = ""
         self.exec_obj = Exec()
 
-    def clang_format(self, src_file_path):
+    def clang_format(self, src_file_path, project_dir: str):
         src_file_path = os.path.abspath(src_file_path)
 
         style_file = "-style=file"
@@ -210,7 +210,7 @@ class Lint():
         style_jsonfmt = "-style=\"{BasedOnStyle: mozilla, IndentWidth: 8}" + "\""
 
         style_target = style_file
-        error_code, output_message = self.exec_obj.run('clang-format', ["-i", style_target, src_file_path])
+        error_code, output_message = self.exec_obj.run('clang-format', ["-i", style_target, src_file_path], project_dir)
 
         return error_code, output_message
 
