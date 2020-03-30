@@ -47,7 +47,8 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
 	";
 
   Config MyConfig;
-  bool bStatus = MyConfig.LoadStream(content);
+  string errorReason;
+  bool bStatus = MyConfig.LoadStream(content, errorReason);
   EXPECT_EQ(true, bStatus);
 
   GeneralOptions *pGeneral = &MyConfig.GetData()->General.Options;
@@ -75,7 +76,8 @@ TEST(GeneralOptions, Chk_GeneralRules) {
 		VariableName = 4 \r\n";
 
   Config MyConfig;
-  bool bStatus = MyConfig.LoadStream(content);
+  string errorReason;
+  bool bStatus = MyConfig.LoadStream(content, errorReason);
   // EXPECT_EQ(true, bStatus);
 
   // GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
@@ -91,7 +93,8 @@ TEST(GeneralOptions, Fake_WhiteList) {
 		VariablePrefix 	 = [ \"m_\", \"g_\" ]";
 
   Config MyConfig;
-  bool bStatus = MyConfig.LoadStream(content);
+  string errorReason;
+  bool bStatus = MyConfig.LoadStream(content, errorReason);
   EXPECT_EQ(true, bStatus);
 
   GeneralIgnoredList *pIgnoredList = &MyConfig.GetData()->General.IgnoredList;

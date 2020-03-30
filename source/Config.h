@@ -82,8 +82,8 @@ private:
 
 public:
   Config();
-  bool LoadFile(string ConfigFilePath);
-  bool LoadStream(string ConfigContent);
+  bool LoadFile(string ConfigFilePath, string &errorReason);
+  bool LoadStream(string ConfigContent, string &errorReason);
   bool Save(string DstPath);
   shared_ptr<ConfigData> GetData() const;
 };

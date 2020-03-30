@@ -47,8 +47,10 @@ int RunCheck(namelint::MemoBoard &Memo) {
     return 2;
   }
 
-  if (!Memo.Config.LoadFile(InpuConfig)) {
+  string errorReason;
+  if (!Memo.Config.LoadFile(InpuConfig, errorReason)) {
     cout << "Error: Failed to load config file (format wrong)." << endl;
+    cout << errorReason << endl;
     return 3;
   }
 
@@ -138,6 +140,7 @@ int main(int Argc, const char **Argv) {
     cl::PrintHelpMessage();
   }
 
+  cout << endl;
   return iRet;
 }
 

@@ -153,11 +153,11 @@ class Exec:
                 process.kill()
                 std_output, err_output = process.communicate()
 
-            if None == std_output:
+            if None != std_output:
                 output_mix = str(std_output)
 
-            if None == err_output:
-                output_mix = str(output_mix) + '\n' + str(err_output)
+            if None != err_output:
+                output_mix = output_mix + '\n' + str(err_output)
 
             if None == ret_code:
                 ret_code = 0
