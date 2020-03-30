@@ -137,6 +137,7 @@ int main(int Argc, const char **Argv) {
     iRet = RUN_ALL_TESTS();
   } else {
     iRet = -1; /* Error (Command miss matched.) */
+    cl::PrintHelpMessage();
   }
 
   cout << endl;
