@@ -1,6 +1,6 @@
 trigger:
   - master
-  - dev
+  - #32*
   - m_douglas*
 
 jobs:

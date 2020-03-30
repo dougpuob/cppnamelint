@@ -103,6 +103,7 @@ int RunCheck(namelint::MemoBoard& Memo) {
 		WriteJsonResult(Memo, OutputJson);
 	}
 	else {
+        cl::PrintHelpMessage();
 		iRet = -1;
 	}
          
@@ -146,6 +147,7 @@ int main(int Argc, const char **Argv) {
   }
   else {
       iRet = -1; /* Error (Command miss matched.) */
+      cl::PrintHelpMessage();
   }
 
   return iRet;
