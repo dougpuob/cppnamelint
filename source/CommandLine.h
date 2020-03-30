@@ -9,9 +9,11 @@ static cl::OptionCategory CppNameLintCategory("CppNameLint options");
 //==-----------------------------------------------------------------------
 // Generic options
 //==-----------------------------------------------------------------------
-static cl::opt<string> LogFile(
-    "logfile", cl::desc("Print log message to the specific a log file."),
-    cl::value_desc("LogName"), cl::Optional, cl::cat(CppNameLintCategory));
+static cl::opt<string>
+    LogFile("logfile",
+            cl::desc("Print log message to the specific a log file."),
+            cl::value_desc("LogName"), cl::Optional,
+            cl::cat(CppNameLintCategory), cl::sub(*cl::AllSubCommands));
 
 //==-----------------------------------------------------------------------
 // SubCommand: check

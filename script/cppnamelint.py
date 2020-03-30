@@ -74,7 +74,6 @@ def main(forced_argv):
         error_code, output_texts = run_clang_format(proj_dir_path, src_dir_path, include_ext_name_list)
         print(output_texts)
 
-
     #--------------------------------------------------------------------------
     # python cppnamelint.py chkenv command
     elif py_args.input_cmd == define_cmd_chkenv:
@@ -108,7 +107,6 @@ def main(forced_argv):
         if (len(found_sample_files) == 0):
             found_sample_files: [] = find_sample_files('test/sample')
         error_code, output_texts = run_util_sample_files(exec_file_path, py_args, found_sample_files, True)
-        print(output_texts)
 
     #--------------------------------------------------------------------------
     # python cppnamelint.py bldgpack command
@@ -324,7 +322,7 @@ def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_outp
 
         if print_output:
             full_output_string = output_string
-            #print(output_string)
+            print(output_string)
 
     return first_error_code, full_output_string
 
