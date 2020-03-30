@@ -103,7 +103,6 @@ int RunCheck(namelint::MemoBoard& Memo) {
 		WriteJsonResult(Memo, OutputJson);
 	}
 	else {
-        cl::PrintHelpMessage();
 		iRet = -1;
 	}
          

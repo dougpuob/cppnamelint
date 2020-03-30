@@ -5,7 +5,6 @@
 import os
 import re
 import sys
-import copy
 import shutil
 import argparse
 import platform
@@ -13,10 +12,12 @@ import platform
 from cppnamelintlib import Str
 from cppnamelintlib import Exec
 from cppnamelintlib import File
+from cppnamelintlib import Lint
 from cppnamelintlib import BuildType
 
 define_cmd_check:str    = 'check'
 define_cmd_test:str     = 'test'
+define_cmd_format:str   = 'format'
 define_cmd_chkenv:str   = 'chkenv'
 define_cmd_bldgtest:str = 'bldgtest'
 define_cmd_bldgpack:str = 'bldgpack'
@@ -62,6 +63,17 @@ def main(forced_argv):
         args_list: [] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
         print(output_texts)
+
+    #--------------------------------------------------------------------------
+    # python cppnamelint.py format command
+    elif py_args.input_cmd == define_cmd_format:
+        print('Dispatched to `FORMAT`')
+        proj_dir_path = os.path.abspath(py_args.projdir)
+        src_dir_path = os.path.abspath(py_args.srcdir)
+        include_ext_name_list: [] = ['.c', '.cpp', '.h']
+        error_code, output_texts = run_clang_format(proj_dir_path, src_dir_path, include_ext_name_list)
+        print(output_texts)
+
 
     #--------------------------------------------------------------------------
     # python cppnamelint.py chkenv command
@@ -140,6 +152,10 @@ def make_cmd_table():
     cmd_check.add_argument('-cfg'   , required=False        , help="Config file path")
     cmd_check.add_argument('-json'  , required=False        , help="Json result output file path")
     cmd_check.add_argument('-inc'   , required=False        , help="<dir1:dir2:...>")
+
+    cmd_fmt = subparsers.add_parser(define_cmd_format, help="format cmd")
+    cmd_fmt.add_argument('projdir'   , help='Project root directory(location of .clangformat).')
+    cmd_fmt.add_argument('srcdir'    , help='Input source directory.')
 
     cmd_test = subparsers.add_parser(define_cmd_test, help="test cmd")
     cmdtest_grp = cmd_test.add_mutually_exclusive_group(required=False)
@@ -408,6 +424,22 @@ def run_cmake(root_dir:str, output_dir: str, build_type:BuildType) -> int:
 
     return error_code, output_texts
 
+
+
+def run_clang_format(proj_dir: str, src_dir_path:str, ext_name_list: []):
+    if not os.path.exists(src_dir_path):
+        return -1
+
+    lint_obj = Lint()
+    file_obj = File()
+    found_src_files = file_obj.find_files(src_dir_path, '*', ext_name_list)
+    for path in found_src_files:
+        print(path)
+        error_code, output_texts = lint_obj.clang_format(path, proj_dir)
+        if error_code != 0:
+            break
+
+    return error_code, output_texts
 
 if __name__ == '__main__':
     ret_errcode = main(sys.argv)
