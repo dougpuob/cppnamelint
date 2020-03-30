@@ -6,7 +6,6 @@
 #include "../Config.h"
 #include "../Detection.h"
 
-
 using namespace namelint;
 
 // clang-format off

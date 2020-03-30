@@ -6,7 +6,6 @@
 #include "MyAstConsumer.h"
 #include "MyAstVisitor.h"
 
-
 using namespace std;
 
 bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
@@ -24,9 +23,10 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
       FileName = FullLocation.getFileLoc().getFileEntry()->getName();
     }
 
-    if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {      
+    if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {
       const SourceManager &SrcMgr = ASTCxt.getSourceManager();
-      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, &(GetAppCxt()->MemoBoard.Config));
+      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt,
+                             &(GetAppCxt()->MemoBoard.Config));
       myVisitor.TraverseDecl(*Iter);
     }
   }

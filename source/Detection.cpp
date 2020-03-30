@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "Detection.h"
 #include "Common.h"
+#include "Detection.h"
 
 //==---------------------------------------------------------------------------
 // Private Functions

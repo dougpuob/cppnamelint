@@ -8,7 +8,6 @@
 #include "Common.h"
 #include "Logger.h"
 
-
 namespace DcLib {
 
 std::string Log::Format(const char *szFmt, va_list vaList) {

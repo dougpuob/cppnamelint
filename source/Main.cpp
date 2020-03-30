@@ -1,152 +1,141 @@
+#include <fstream>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <iostream>
 
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
+#include "CommandLine.h"
 #include "Common.h"
 #include "Config.h"
 #include "Detection.h"
 #include "MyAstConsumer.h"
 #include "MyAstVisitor.h"
 #include "MyFactory.h"
-#include "CommandLine.h"
 
 #include "clang/Tooling/CompilationDatabase.h"
 
-
-
 using namespace nlohmann;
 using namespace namelint;
-
 
 size_t GetTotalError(const MemoBoard &MemoBoard);
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc);
 bool PrintTraceMemo(const MemoBoard &MemoBoard);
 bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath);
 
+int RunCheck(namelint::MemoBoard &Memo) {
+  int iRet = 0;
+  string InputFile = CheckInputSrc;
+  string InpuConfig = CheckInputConfig;
+  string OutputJson = CheckOutputJson;
+  vector<string> InputIncs;
 
+  DcLib::Log::Out(INFO_ALL, "InputFile  = %s", InputFile.c_str());
+  DcLib::Log::Out(INFO_ALL, "InpuConfig = %s", InpuConfig.c_str());
+  DcLib::Log::Out(INFO_ALL, "OutputJson = %s", OutputJson.c_str());
 
-int RunCheck(namelint::MemoBoard& Memo) {
-	int iRet = 0;
-	string InputFile  = CheckInputSrc;
-	string InpuConfig = CheckInputConfig;
-	string OutputJson = CheckOutputJson;
-	vector<string> InputIncs;
-	
-	DcLib::Log::Out(INFO_ALL, "InputFile  = %s", InputFile.c_str());
-	DcLib::Log::Out(INFO_ALL, "InpuConfig = %s", InpuConfig.c_str());
-	DcLib::Log::Out(INFO_ALL, "OutputJson = %s", OutputJson.c_str());
+  if (!llvm::sys::fs::exists(InputFile)) {
+    cout << "Error: Failed to find input source file." << endl;
+    return 1;
+  }
 
-	if (!llvm::sys::fs::exists(InputFile)) {
-		cout << "Error: Failed to find input source file." << endl;
-		return 1;
-	}
+  if (!llvm::sys::fs::exists(InpuConfig)) {
+    cout << "Error: Failed to find config file." << endl;
+    return 2;
+  }
 
-	if (!llvm::sys::fs::exists(InpuConfig)) {
-		cout << "Error: Failed to find config file." << endl;
-		return 2;
-	}
+  if (!Memo.Config.LoadFile(InpuConfig)) {
+    cout << "Error: Failed to load config file (format wrong)." << endl;
+    return 3;
+  }
 
-	if (!Memo.Config.LoadFile(InpuConfig)) {
-		cout << "Error: Failed to load config file (format wrong)." << endl;
-		return 3;
-	}
+  if (OutputJson.length() == 0) {
+    OutputJson = "cppnamelint.json";
+  }
 
-	if (OutputJson.length() == 0) {
-		OutputJson = "cppnamelint.json";
-	}
+  std::string ErrorMessage;
+  std::unique_ptr<CompilationDatabase> Compilations =
+      FixedCompilationDatabase::loadFromFile(InputFile, ErrorMessage);
 
-	std::string ErrorMessage;
-	std::unique_ptr<CompilationDatabase> Compilations =
-		FixedCompilationDatabase::loadFromFile(InputFile, ErrorMessage);
+  Memo.File.Source = InputFile;
+  Memo.File.Config = InpuConfig;
+  Memo.Dir.Includes = InputIncs;
 
-	Memo.File.Source = InputFile;
-	Memo.File.Config = InpuConfig;
-	Memo.Dir.Includes = InputIncs;
+  vector<string> SingleFileInList = {InputFile};
+  ClangTool Tool(*Compilations, SingleFileInList);
 
-	vector<string> SingleFileInList = { InputFile };
-	ClangTool Tool(*Compilations, SingleFileInList);
+  Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
 
-	Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
+  MyFactory MyFactory;
+  std::unique_ptr<FrontendActionFactory> Factory =
+      newFrontendActionFactory(&MyFactory);
 
-	MyFactory MyFactory;
-	std::unique_ptr<FrontendActionFactory> Factory =
-		newFrontendActionFactory(&MyFactory);
+  Detection Detect;
+  shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
+  GeneralOptions *pOptions = &pConfig->General.Options;
+  if (pOptions->bCheckFileName) {
+    RuleOfFile Rule;
+    Rule.bAllowedUnderscopeChar = pOptions->bAllowedUnderscopeChar;
+    Detect.ApplyRuleForFile(Rule);
 
-	Detection Detect;
-	shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
-    GeneralOptions* pOptions = &pConfig->General.Options;
-	if (pOptions->bCheckFileName) {
-		RuleOfFile Rule;
-		Rule.bAllowedUnderscopeChar = pOptions->bAllowedUnderscopeChar;
-		Detect.ApplyRuleForFile(Rule);
+    Memo.Checked.nFile++;
 
-		Memo.Checked.nFile++;
+    string FileBaseName = Path::FindFileName(InputFile);
+    GeneralRules *pRules = &pConfig->General.Rules;
+    if (!Detect.CheckFile(pRules->FileName, FileBaseName)) {
+      Memo.Error.nFile++;
+      Memo.ErrorDetailList.push_back(new ErrorDetail(FileBaseName, ""));
+    }
+  }
 
-		string FileBaseName = Path::FindFileName(InputFile);
-        GeneralRules* pRules = &pConfig->General.Rules;
-		if (!Detect.CheckFile(pRules->FileName, FileBaseName)) {
-			Memo.Error.nFile++;
-			Memo.ErrorDetailList.push_back(
-				new ErrorDetail(FileBaseName, ""));
-		}
-	}
+  if (0 == Tool.run(Factory.get())) {
+    iRet = GetTotalError(Memo);
+    PrintTraceMemo(Memo);
+    WriteJsonResult(Memo, OutputJson);
+  } else {
+    iRet = -1;
+  }
 
-	if (0 == Tool.run(Factory.get())) {
-		iRet = GetTotalError(Memo);
-		PrintTraceMemo(Memo);
-		WriteJsonResult(Memo, OutputJson);
-	}
-	else {
-		iRet = -1;
-	}
-         
-	return iRet;
+  return iRet;
 }
 
 int RunTest() {
-	int iRet = 0;
-	return iRet;
+  int iRet = 0;
+  return iRet;
 }
 
 int RunDump() {
-	int iRet = 0;
-	return iRet;
+  int iRet = 0;
+  return iRet;
 }
 
 int main(int Argc, const char **Argv) {
-   
+
   cout << "cppnamelint utility v0.3.0" << endl;
   cout << "---------------------------------------------------" << endl;
 
-  
   cl::HideUnrelatedOptions(CppNameLintCategory);
   cl::ParseCommandLineOptions(Argc, Argv);
- 
 
   int iRet = 0;
   if (LogFile.length() > 0) {
-      DcLib::Log::Init(LogFile.c_str());
+    DcLib::Log::Init(LogFile.c_str());
   }
 
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
   pAppCxt->MemoBoard.Option.bEnableLog = (LogFile.length() > 0);
 
   if (CheckSubcommand) {
-      iRet = RunCheck(pAppCxt->MemoBoard);
-  }
-  else if (TestSubcommand) {
-      testing::InitGoogleTest(&Argc, (char**)Argv);
-      iRet = RUN_ALL_TESTS();
-  }
-  else {
-      iRet = -1; /* Error (Command miss matched.) */
-      cl::PrintHelpMessage();
+    iRet = RunCheck(pAppCxt->MemoBoard);
+  } else if (TestSubcommand) {
+    testing::InitGoogleTest(&Argc, (char **)Argv);
+    iRet = RUN_ALL_TESTS();
+  } else {
+    iRet = -1; /* Error (Command miss matched.) */
+    cl::PrintHelpMessage();
   }
 
   return iRet;
