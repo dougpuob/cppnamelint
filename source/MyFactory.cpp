@@ -6,6 +6,4 @@
 
 using namespace std;
 
-unique_ptr<MyASTConsumer> MyFactory::newASTConsumer() {
-  return llvm::make_unique<MyASTConsumer>();
-}
+unique_ptr<MyASTConsumer> MyFactory::newASTConsumer() { return llvm::make_unique<MyASTConsumer>(); }

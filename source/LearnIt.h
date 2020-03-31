@@ -34,6 +34,7 @@ private:
   void _PrintFunctionDecl(FunctionDecl *pDecl);
   void _PrintParmVarDecl(ParmVarDecl *pDecl);
   void _PrintRecordDecl(RecordDecl *pDecl);
+  void _PrintTypedefDecl(TypedefDecl *pDecl);
 };
 
 #endif // __LEARN_IT_H__

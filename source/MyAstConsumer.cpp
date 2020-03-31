@@ -12,9 +12,8 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
   string FileName;
   const APP_CONTEXT *pAppCxt = GetAppCxt();
 
-  for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(),
-                              e = MyDeclGroupRef.end();
-       Iter != e; ++Iter) {
+  for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(), e = MyDeclGroupRef.end(); Iter != e;
+       ++Iter) {
     Decl *pDecl = *Iter;
     const ASTContext &ASTCxt = pDecl->getASTContext();
 
@@ -25,8 +24,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
 
     if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {
       const SourceManager &SrcMgr = ASTCxt.getSourceManager();
-      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt,
-                             &(GetAppCxt()->MemoBoard.Config));
+      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, &(GetAppCxt()->MemoBoard.Config));
       myVisitor.TraverseDecl(*Iter);
     }
   }

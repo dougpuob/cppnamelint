@@ -1,0 +1,155 @@
+[General.Options]
+Version                 = 0.2
+FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckVariableName       = true
+CheckFunctionName       = true
+CheckFileName           = false
+AllowedUnderscopeChar   = false
+AllowedArrayAffected    = false
+
+
+[General.Rules]
+FileName                = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 3: lower_snake
+
+FunctionName            = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+
+VariableName            = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 4: Hungarian
+
+[General.IgnoredList]
+FunctionPrefix          = [ "_",
+                            "__" ]
+VariablePrefix          = [ "m_" ]
+
+FunctionName            = ["main", "newASTConsumer"]
+
+[Hungarian.Others]
+PreferUpperCamelIfMissed = true
+
+[Hungarian.NullStringList]
+"char*"                  = "sz"
+"wchar_t*"               = "wsz"
+"char**"                 = "psz"
+"wchar_t**"              = "pwsz"
+"char[]"                 = "sz"
+"wchar_t[]"              = "wsz"
+
+[Hungarian.WordList]
+# C Primitive Type
+"void"                   = ""
+"size_t"                 = "n"
+"int8_t"                 = "i8"
+"int16_t"                = "i16"
+"int32_t"                = "i32"
+"int64_t"                = "i64"
+"uint8_t"                = "u8"
+"uint16_t"               = "u16"
+"uint32_t"               = "u32"
+"uint64_t"               = "u64"
+"char"                   = "c"
+"_Bool"                  = "b"
+"bool"                   = "b"
+"int"                    = "i"
+"wchar_t"                = "wc"
+"signed char"            = "sc"
+"unsigned char"          = "uc"
+"short"                  = "s"
+"short int"              = "si"
+"signed short"           = "ss"
+"signed short int"       = "ssi"
+"unsigned short"         = "us"
+"unsigned short int"     = "usi"
+"signed"                 = "s"
+"signed int"             = "si"
+"unsigned"               = "u"
+"unsigned int"           = "ui"
+"long"                   = "l"
+"long int"               = "li"
+"signed long"            = "sl"
+"signed long int"        = "sli"
+"unsigned long"          = "ul"
+"unsigned long int"      = "uli"
+"long long"              = "ll"
+"long long int"          = "lli"
+"signed long long"       = "sll"
+"signed long long int"   = "slli"
+"unsigned long long"     = "ull"
+"unsigned long long int" = "ulli"
+"float"                  = "f"
+"double"                 = "d"
+"long double"            = "ld"
+
+# Windows Type - Variable
+"ULONG"                  = "ul"
+"UINT"                   = "ui"
+"DWORD"                  = "dw"
+"DWORD64"                = "dw64"
+"WORD"                   = "w"
+"CHAR"                   = "c"
+"BYTE"                   = "by"
+"BOOL"                   = "b"
+"BOOLEAN"                = "b"
+"LONGLONG"               = "ll"
+"UCHAR"                  = "uc"
+
+# Windows Type - Handle
+HANDLE                   = "h"
+HACCEL                   = "h"
+HBITMAP                  = "h"
+HBRUSH                   = "h"
+HCOLORSPACE              = "h"
+HCONV                    = "h"
+HCONVLIST                = "h"
+HCURSOR                  = "h"
+HDC                      = "h"
+HDDEDATA                 = "h"
+HDESK                    = "h"
+HDROP                    = "h"
+HDWP                     = "h"
+HENHMETAFILE             = "h"
+HFILE                    = "h"
+HFONT                    = "h"
+HGDIOBJ                  = "h"
+HGLOBAL                  = "h"
+HHOOK                    = "h"
+HICON                    = "h"
+HINSTANCE                = "h"
+HKEY                     = "h"
+HLOCAL                   = "h"
+HMENU                    = "h"
+HMETAFILE                = "h"
+HMODULE                  = "h"
+HMONITOR                 = "h"
+HPALETTE                 = "h"
+HPEN                     = "h"
+HRGN                     = "h"
+HRSRC                    = "h"
+HSZ                      = "h"
+HWINSTA                  = "h"
+HWND                     = "h"
+LPHANDLE                 = "h"
+PHANDLE                  = "h"
+SC_HANDLE                = "h"
+SERVICE_STATUS_HANDLE    = "h"
+
+# Windows Type - Parameter
+WPARAM                   = "w"
+LPARAM                   = "l"
+
+# Redefined pointer types
+# PINT8                  = "i8"   # PINT8  pi8Value  = NULL;
+# PINT16                 = "i16"  # PINT16 pi16Value = NULL;
+# PINT32                 = "i32"  # PINT32 pi32Value = NULL;
+# PINT64                 = "i64"  # PINT64 pi64Value = NULL;
+# PUINT8                 = "u8"   # PINT8  pu8Value  = NULL;
+# PUINT16                = "u16"  # PINT16 pu16Value = NULL;
+# PUINT32                = "u32"  # PINT32 pu32Value = NULL;
+# PUINT64                = "u64"  # PINT64 pu64Value = NULL;

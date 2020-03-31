@@ -10,8 +10,7 @@
 namespace namelint {
 Config::Config() {
   // General
-  this->m_pConfig->General.Options.FileExtNameList.assign(
-      {"*.c", "*.h", "*.cpp"});
+  this->m_pConfig->General.Options.FileExtNameList.assign({"*.c", "*.h", "*.cpp"});
   this->m_pConfig->General.Options.bCheckFileName = true;
   this->m_pConfig->General.Options.bCheckFunctionName = true;
   this->m_pConfig->General.Options.bCheckVariableName = true;
@@ -55,37 +54,30 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
   // [General.Options]
   // ==----------------------------------------------------------------------------------
   // General.Options.FileExtNameList
-  const toml::Value *pFileExtNameList =
-      ParseRsValue.find("General.Options.FileExtNameList");
+  const toml::Value *pFileExtNameList = ParseRsValue.find("General.Options.FileExtNameList");
   if (pFileExtNameList && pFileExtNameList->is<toml::Array>()) {
     this->m_pConfig->General.Options.FileExtNameList.clear();
     [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
       for (toml::Value Item : InputVect) {
         OutStrVect.push_back(Item.as<string>());
       }
-    }(this->m_pConfig->General.Options.FileExtNameList,
-      pFileExtNameList->as<toml::Array>());
+    }(this->m_pConfig->General.Options.FileExtNameList, pFileExtNameList->as<toml::Array>());
   }
 
   // General.Options.CheckVariableName
-  const toml::Value *pChkVarName =
-      ParseRsValue.find("General.Options.CheckVariableName");
+  const toml::Value *pChkVarName = ParseRsValue.find("General.Options.CheckVariableName");
   if (pChkVarName && pChkVarName->is<bool>()) {
-    this->m_pConfig->General.Options.bCheckVariableName =
-        pChkVarName->as<bool>();
+    this->m_pConfig->General.Options.bCheckVariableName = pChkVarName->as<bool>();
   }
 
   // General.Options.CheckFunctionName
-  const toml::Value *pChkFuncName =
-      ParseRsValue.find("General.Options.CheckFunctionName");
+  const toml::Value *pChkFuncName = ParseRsValue.find("General.Options.CheckFunctionName");
   if (pChkFuncName && pChkFuncName->is<bool>()) {
-    this->m_pConfig->General.Options.bCheckFunctionName =
-        pChkFuncName->as<bool>();
+    this->m_pConfig->General.Options.bCheckFunctionName = pChkFuncName->as<bool>();
   }
 
   // General.Options.CheckFileName
-  const toml::Value *pChkFileName =
-      ParseRsValue.find("General.Options.CheckFileName");
+  const toml::Value *pChkFileName = ParseRsValue.find("General.Options.CheckFileName");
   if (pChkFileName && pChkFileName->is<bool>()) {
     this->m_pConfig->General.Options.bCheckFileName = pChkFileName->as<bool>();
   }
@@ -94,85 +86,71 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
   const toml::Value *pAllowUnderscopeChar =
       ParseRsValue.find("General.Options.AllowedUnderscopeChar");
   if (pAllowUnderscopeChar && pAllowUnderscopeChar->is<bool>()) {
-    this->m_pConfig->General.Options.bAllowedUnderscopeChar =
-        pAllowUnderscopeChar->as<bool>();
+    this->m_pConfig->General.Options.bAllowedUnderscopeChar = pAllowUnderscopeChar->as<bool>();
   }
 
   // General.Options.AllowedArrayAffected
   const toml::Value *pAllowArrayAffected =
       ParseRsValue.find(" General.Options.AllowedArrayAffected");
   if (pAllowArrayAffected && pAllowArrayAffected->is<bool>()) {
-    this->m_pConfig->General.Options.bAllowedArrayAffected =
-        pAllowArrayAffected->as<bool>();
+    this->m_pConfig->General.Options.bAllowedArrayAffected = pAllowArrayAffected->as<bool>();
   }
 
   // ==----------------------------------------------------------------------------------
   // [General.Rules]
   // ==----------------------------------------------------------------------------------
   // General.Rules.FileName
-  const toml::Value *pRuleFileName =
-      ParseRsValue.find("General.Rules.FileName");
+  const toml::Value *pRuleFileName = ParseRsValue.find("General.Rules.FileName");
   if (pRuleFileName && pRuleFileName->is<int>()) {
-    this->m_pConfig->General.Rules.FileName =
-        (RULETYPE)pRuleFileName->as<int>();
+    this->m_pConfig->General.Rules.FileName = (RULETYPE)pRuleFileName->as<int>();
   }
 
   // General.Rules.FunctionName
-  const toml::Value *pRuleFunctionName =
-      ParseRsValue.find("General.Rules.FunctionName");
+  const toml::Value *pRuleFunctionName = ParseRsValue.find("General.Rules.FunctionName");
   if (pRuleFunctionName && pRuleFunctionName->is<int>()) {
-    this->m_pConfig->General.Rules.FunctionName =
-        (RULETYPE)pRuleFunctionName->as<int>();
+    this->m_pConfig->General.Rules.FunctionName = (RULETYPE)pRuleFunctionName->as<int>();
   }
 
   // General.Rules.VariableName
-  const toml::Value *pRuleVariableName =
-      ParseRsValue.find("General.Rules.VariableName");
+  const toml::Value *pRuleVariableName = ParseRsValue.find("General.Rules.VariableName");
   if (pRuleVariableName && pRuleVariableName->is<int>()) {
-    this->m_pConfig->General.Rules.VariableName =
-        (RULETYPE)pRuleVariableName->as<int>();
+    this->m_pConfig->General.Rules.VariableName = (RULETYPE)pRuleVariableName->as<int>();
   }
 
   // ==----------------------------------------------------------------------------------
   // [General.IgnoredList]
   // ==----------------------------------------------------------------------------------
   // General.IgnoredList.FunctionPrefix
-  const toml::Value *pIgnoredFuncPrefix =
-      ParseRsValue.find("General.IgnoredList.FunctionPrefix");
+  const toml::Value *pIgnoredFuncPrefix = ParseRsValue.find("General.IgnoredList.FunctionPrefix");
   if (pIgnoredFuncPrefix && pIgnoredFuncPrefix->is<toml::Array>()) {
     this->m_pConfig->General.IgnoredList.FunctionPrefix.clear();
     [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
       for (toml::Value Item : InputVect) {
         OutStrVect.push_back(Item.as<string>());
       }
-    }(this->m_pConfig->General.IgnoredList.FunctionPrefix,
-      pIgnoredFuncPrefix->as<toml::Array>());
+    }(this->m_pConfig->General.IgnoredList.FunctionPrefix, pIgnoredFuncPrefix->as<toml::Array>());
   }
 
   // General.IgnoredList.VariablePrefix
-  const toml::Value *pIgnoredVarPrefix =
-      ParseRsValue.find("General.IgnoredList.VariablePrefix");
+  const toml::Value *pIgnoredVarPrefix = ParseRsValue.find("General.IgnoredList.VariablePrefix");
   if (pIgnoredVarPrefix && pIgnoredVarPrefix->is<toml::Array>()) {
     this->m_pConfig->General.IgnoredList.VariablePrefix.clear();
     [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
       for (toml::Value Item : InputVect) {
         OutStrVect.push_back(Item.as<string>());
       }
-    }(this->m_pConfig->General.IgnoredList.VariablePrefix,
-      pIgnoredVarPrefix->as<toml::Array>());
+    }(this->m_pConfig->General.IgnoredList.VariablePrefix, pIgnoredVarPrefix->as<toml::Array>());
   }
 
   // General.IgnoredList.FunctionName
-  const toml::Value *pIgnoredFuncName =
-      ParseRsValue.find("General.IgnoredList.FunctionName");
+  const toml::Value *pIgnoredFuncName = ParseRsValue.find("General.IgnoredList.FunctionName");
   if (pIgnoredFuncName && pIgnoredFuncName->is<toml::Array>()) {
     this->m_pConfig->General.IgnoredList.FunctionName.clear();
     [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
       for (toml::Value Item : InputVect) {
         OutStrVect.push_back(Item.as<string>());
       }
-    }(this->m_pConfig->General.IgnoredList.FunctionName,
-      pIgnoredFuncName->as<toml::Array>());
+    }(this->m_pConfig->General.IgnoredList.FunctionName, pIgnoredFuncName->as<toml::Array>());
   }
 
   // ==----------------------------------------------------------------------------------
@@ -189,55 +167,46 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
   // ==----------------------------------------------------------------------------------
   // [Hungarian.ArrayList]
   // ==----------------------------------------------------------------------------------
-  const toml::Value *pHungarianArrayList =
-      ParseRsValue.find("Hungarian.ArrayList");
+  const toml::Value *pHungarianArrayList = ParseRsValue.find("Hungarian.ArrayList");
   if (pHungarianArrayList && pHungarianArrayList->is<toml::Table>()) {
     this->m_pConfig->Hungarian.ArrayList.clear();
     [](map<string, string> &OutStrMap, toml::Table InputTable) {
-      for (toml::Table::iterator Iter = InputTable.begin();
-           Iter != InputTable.end(); Iter++) {
+      for (toml::Table::iterator Iter = InputTable.begin(); Iter != InputTable.end(); Iter++) {
         auto Str1 = Iter->first;
         auto Str2 = Iter->second.as<string>();
         OutStrMap.insert(std::pair<string, string>(Str1, Str2));
       }
-    }(this->m_pConfig->Hungarian.ArrayList,
-      pHungarianArrayList->as<toml::Table>());
+    }(this->m_pConfig->Hungarian.ArrayList, pHungarianArrayList->as<toml::Table>());
   }
 
   // ==----------------------------------------------------------------------------------
   // [Hungarian.NullStringList]
   // ==----------------------------------------------------------------------------------
-  const toml::Value *pHungarianNullStringList =
-      ParseRsValue.find("Hungarian.NullStringList");
+  const toml::Value *pHungarianNullStringList = ParseRsValue.find("Hungarian.NullStringList");
   if (pHungarianNullStringList && pHungarianNullStringList->is<toml::Table>()) {
     this->m_pConfig->Hungarian.NullStringList.clear();
     [](vector<MappingPair> &OutStrMap, toml::Table InputTable) {
-      for (toml::Table::iterator Iter = InputTable.begin();
-           Iter != InputTable.end(); Iter++) {
+      for (toml::Table::iterator Iter = InputTable.begin(); Iter != InputTable.end(); Iter++) {
         auto Str1 = Iter->first;
         auto Str2 = Iter->second.as<string>();
         OutStrMap.push_back(MappingPair(Str1, Str2));
       }
-    }(this->m_pConfig->Hungarian.NullStringList,
-      pHungarianNullStringList->as<toml::Table>());
+    }(this->m_pConfig->Hungarian.NullStringList, pHungarianNullStringList->as<toml::Table>());
   }
 
   // ==----------------------------------------------------------------------------------
   // [Hungarian.WordList]
   // ==----------------------------------------------------------------------------------
-  const toml::Value *pHungarianWordList =
-      ParseRsValue.find("Hungarian.WordList");
+  const toml::Value *pHungarianWordList = ParseRsValue.find("Hungarian.WordList");
   if (pHungarianWordList && pHungarianWordList->is<toml::Table>()) {
     this->m_pConfig->Hungarian.WordList.clear();
     [](map<string, string> &OutStrMap, toml::Table InputTable) {
-      for (toml::Table::iterator Iter = InputTable.begin();
-           Iter != InputTable.end(); Iter++) {
+      for (toml::Table::iterator Iter = InputTable.begin(); Iter != InputTable.end(); Iter++) {
         auto Str1 = Iter->first;
         auto Str2 = Iter->second.as<string>();
         OutStrMap.insert(std::pair<string, string>(Str1, Str2));
       }
-    }(this->m_pConfig->Hungarian.WordList,
-      pHungarianWordList->as<toml::Table>());
+    }(this->m_pConfig->Hungarian.WordList, pHungarianWordList->as<toml::Table>());
   }
 
   return bStatus;

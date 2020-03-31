@@ -1,6 +1,6 @@
 @ECHO OFF
 
-IF EXIST release (RD release)
+IF EXIST release (DIR /S /Q release/*)
 python cppnamelint.py bldgpack .. .\release
 
 ECHO.
