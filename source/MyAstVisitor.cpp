@@ -421,3 +421,12 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
 
   return true;
 }
+
+bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+
+  if (pAppCxt->MemoBoard.Option.bEnableLog) {
+    this->m_LearnIt.PrintDecl(pDecl);
+  }
+  return true;
+}
