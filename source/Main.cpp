@@ -30,11 +30,10 @@ int RunCheck(namelint::MemoBoard &Memo) {
   int iRet = 0;
 
   string OutputJson = CheckOutputJson;
-  vector<string> InputIncs;
 
   Memo.File.Source = CheckInputSrc;
   Memo.File.Config = CheckInputConfig;
-  Memo.Dir.Includes = InputIncs;
+  Memo.Dir.Includes = CheckIncludes;
 
   if (OutputJson.length() == 0) {
     OutputJson = "cppnamelint.json";
@@ -75,8 +74,11 @@ int RunCheck(namelint::MemoBoard &Memo) {
   //
   vector<string> SingleFileInList = {Memo.File.Source};
   ClangTool Tool(*Compilations, SingleFileInList);
-  // Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--I./",
-  // ArgumentInsertPosition::BEGIN));
+  for (auto inc : Memo.Dir.Includes) {
+    auto arg = "--I" + inc;
+    Tool.appendArgumentsAdjuster(
+        getInsertArgumentAdjuster(arg.c_str(), ArgumentInsertPosition::BEGIN));
+  }
   // Tool.appendArgumentsAdjuster(
   //    getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
   Tool.appendArgumentsAdjuster(

@@ -149,7 +149,7 @@ def make_cmd_table():
     cmd_check.add_argument('src'    , help='Input source code file')
     cmd_check.add_argument('-cfg'   , required=False        , help="Config file path")
     cmd_check.add_argument('-json'  , required=False        , help="Json result output file path")
-    cmd_check.add_argument('-inc'   , required=False        , help="<dir1:dir2:...>")
+    cmd_check.add_argument('-inc'   , action='append'       , help='None or more include directory. (-inc Dir1 -inc Dir2 ...)', required=False)
 
     cmd_fmt = subparsers.add_parser(define_cmd_format, help="format cmd")
     cmd_fmt.add_argument('projdir'   , help='Project root directory(location of .clangformat).')
@@ -216,8 +216,8 @@ def convert_py_args_to_exe_args(py_args) -> str:
             specific_cmd_args = specific_cmd_args + ' -jsonout ' + py_args.json
 
         if py_args.inc:
-            if len(py_args.inc) > 0:
-                specific_cmd_args = specific_cmd_args + ' -includes ' + '<' + ':'.join(input_inc_list) + '>'
+            for inc in py_args.inc:
+                specific_cmd_args = specific_cmd_args + ' -include ' + inc
 
         final_cmd_str = specific_cmd_args + common_args
 
@@ -351,10 +351,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     if '' == found_generated_binary:
         return -3
 
-    if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)
-        os.mkdir(output_dir)
-    else:
+    if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
 

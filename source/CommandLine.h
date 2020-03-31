@@ -29,9 +29,10 @@ static cl::opt<string> CheckOutputJson("jsonout", cl::desc("Generate result to a
                                        cl::value_desc("FileName"), cl::cat(CppNameLintCategory),
                                        cl::sub(CheckSubcommand));
 
-static cl::opt<string> ChkIncludes("includes", cl::desc("Specific header folers."),
-                                   cl::value_desc("<Dir1:Dir2:...>"), cl::cat(CppNameLintCategory),
-                                   cl::sub(CheckSubcommand));
+static cl::list<string> CheckIncludes("include", cl::desc("Specific header folers."),
+                                      cl::value_desc("-include Dir1 -include Dir2 ..."),
+                                      cl::ZeroOrMore, cl::cat(CppNameLintCategory),
+                                      cl::sub(CheckSubcommand));
 
 //==-----------------------------------------------------------------------
 // SubCommand: test
