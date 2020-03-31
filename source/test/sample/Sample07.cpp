@@ -1,4 +1,4 @@
-﻿#include "Sample07.h"
+#include "Sample07.h"
 #include "Sample07a.h"
 
 #define min2(X, Y) ((X) < (Y) ? (X) : (Y))

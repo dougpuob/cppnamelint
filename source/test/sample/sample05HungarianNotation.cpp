@@ -1,4 +1,4 @@
-﻿// [General.Rules]
+// [General.Rules]
 // FileName                = 1 # 1: UpperCamel
 // FunctionName            = 1 # 1: UpperCamel
 // VariableName            = 4 # 4: Hungarian

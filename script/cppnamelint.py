@@ -259,7 +259,7 @@ def convert_py_args_to_exe_args(py_args) -> str:
 def find_sample_files(start_dir: str) -> []:
     paired_list = []
 
-    include_src_files: [] = ['.c', '.cpp']
+    include_src_files: [] = ['.c', '.cpp', '.h']
     include_cfg_files: [] = ['.toml']
 
     file_obj = File()
