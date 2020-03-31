@@ -1,4 +1,4 @@
-﻿[General.Options]
+[General.Options]
 Version                 = 0.2
 FileExtNameList         = ["*.c","*.h","*.cpp"]
 CheckVariableName       = true
