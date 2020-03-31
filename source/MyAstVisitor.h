@@ -31,38 +31,32 @@ private:
   bool _IsMainFile(Decl *pDecl);
   bool _PrintPosition(Decl *pDecl);
   void _KeepFileName(string &Path);
-  bool _GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb,
-                    size_t &nColNumb);
+  bool _GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb, size_t &nColNumb);
 
   bool _ClassifyTypeName(string &TyeName);
 
-  ErrorDetail *_CreateErrorDetail(const string &FileName,
-                                  const string &Suggestion);
+  ErrorDetail *_CreateErrorDetail(const string &FileName, const string &Suggestion);
 
-  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
-                                  const bool &bIsPtr, const bool &bIsArray,
-                                  const string &TargetName,
+  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
+                                  const bool &bIsArray, const string &TargetName,
                                   const string &Expected);
 
-  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType,
-                                  const bool &bIsPtr, const bool &bIsArray,
-                                  const string &TypeName,
-                                  const string &TargetName,
-                                  const string &Suggestion);
+  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
+                                  const bool &bIsArray, const string &TypeName,
+                                  const string &TargetName, const string &Suggestion);
 
   bool _GetFunctionInfo(FunctionDecl *pDecl, string &FuncName);
 
-  bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName,
-                     bool &bIsPtr, bool &bAnonymous);
+  bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr,
+                     bool &bAnonymous);
 
-  bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
-                     bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType);
+  bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName, bool &bIsPtr,
+                     bool &bIsArray, bool &bIsBuiltinType);
 
   bool _CheckRuleForVariable(ValueDecl *pDecl);
 
 public:
-  MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
-               const Config *pConfig);
+  MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt, const Config *pConfig);
   // bool VisitStmt(Stmt *pStmt);
   // bool VisitCXXRecordDecl(CXXRecordDecl *D);
   // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);

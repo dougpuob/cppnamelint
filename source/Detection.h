@@ -51,22 +51,18 @@ private:
   bool _IsUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs,
                                const bool AllowedUnderscopeChar = false);
 
-  bool _IsLowerCamelCaseString(const string &Name,
-                               vector<string> IgnorePrefixs);
-  bool _IsLowerSeperatedString(const string &Name,
-                               vector<string> IgnorePrefixs);
+  bool _IsLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
+  bool _IsLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs);
   bool _IsHungarianNotationString(const string &TypeStr, const string &NameStr,
-                                  const bool &bPreferUpperCamel,
-                                  const bool &bIsPtr, const bool &bIsArray,
-                                  const vector<string> &IgnorePrefixs,
+                                  const bool &bPreferUpperCamel, const bool &bIsPtr,
+                                  const bool &bIsArray, const vector<string> &IgnorePrefixs,
                                   const map<string, string> &TypeNamingMap,
                                   const vector<MappingPair> &NullStringMap,
                                   const map<string, string> &ArrayNamingMap);
 
   size_t _FindHowManyChar(const string &InputStr, char cChar);
   bool _RemoveNamespacesAndElements(string &Text);
-  bool _SkipIgnoreFunctions(const string &Name,
-                            const vector<string> &IgnoreList);
+  bool _SkipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList);
 
 public:
   bool ApplyRuleForFile(const RuleOfFile &Rule);
@@ -75,9 +71,8 @@ public:
 
   bool CheckFile(const RULETYPE Rule, const string &Name);
   bool CheckFunction(const RULETYPE Rule, const string &Name);
-  bool CheckVariable(const RULETYPE Rule, const string &Type,
-                     const string &Name, const bool &bPreferUpperCamel,
-                     const bool &bIsPtr, const bool &bIsArray);
+  bool CheckVariable(const RULETYPE Rule, const string &Type, const string &Name,
+                     const bool &bPreferUpperCamel, const bool &bIsPtr, const bool &bIsArray);
 };
 } // namespace namelint
 

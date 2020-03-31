@@ -68,8 +68,7 @@ int RunCheck(namelint::MemoBoard &Memo) {
   // Load source code file then create compilatation database.
   //
   std::string ErrorMessage;
-  auto Compilations =
-      FixedCompilationDatabase::loadFromFile(Memo.File.Source, ErrorMessage);
+  auto Compilations = FixedCompilationDatabase::loadFromFile(Memo.File.Source, ErrorMessage);
 
   //
   // Create clang tool then add clang tool arguments.
@@ -80,9 +79,9 @@ int RunCheck(namelint::MemoBoard &Memo) {
   // ArgumentInsertPosition::BEGIN));
   // Tool.appendArgumentsAdjuster(
   //    getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
-  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(
-      "--language=c++",
-      ArgumentInsertPosition::BEGIN)); // Make it parses header file.
+  Tool.appendArgumentsAdjuster(
+      getInsertArgumentAdjuster("--language=c++",
+                                ArgumentInsertPosition::BEGIN)); // Make it parses header file.
 
   Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
 
@@ -105,8 +104,7 @@ int RunCheck(namelint::MemoBoard &Memo) {
   }
 
   MyFactory MyFactory;
-  std::unique_ptr<FrontendActionFactory> Factory =
-      newFrontendActionFactory(&MyFactory);
+  std::unique_ptr<FrontendActionFactory> Factory = newFrontendActionFactory(&MyFactory);
 
   // Go
   if (0 == Tool.run(Factory.get())) {
@@ -161,13 +159,13 @@ int main(int Argc, const char **Argv) {
 }
 
 size_t GetTotalError(const MemoBoard &MemoBoard) {
-  return MemoBoard.Error.nFile + MemoBoard.Error.nParameter +
-         MemoBoard.Error.nFunction + MemoBoard.Error.nVariable;
+  return MemoBoard.Error.nFile + MemoBoard.Error.nParameter + MemoBoard.Error.nFunction +
+         MemoBoard.Error.nVariable;
 }
 
 size_t GetTotalChecked(const MemoBoard &MemoBoard) {
-  return MemoBoard.Checked.nFile + MemoBoard.Checked.nParameter +
-         MemoBoard.Checked.nFunction + MemoBoard.Checked.nVariable;
+  return MemoBoard.Checked.nFile + MemoBoard.Checked.nParameter + MemoBoard.Checked.nFunction +
+         MemoBoard.Checked.nVariable;
 }
 
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
@@ -189,9 +187,8 @@ bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
     JsonErrDetail["Line"] = pErrDetail->Pos.nLine;
     JsonErrDetail["Column"] = pErrDetail->Pos.nColumn;
     JsonErrDetail["Type"] = (int)pErrDetail->Type;
-    JsonErrDetail["TypeName"] = pErrDetail->TypeName +
-                                (pErrDetail->bIsPtr ? "*" : "") +
-                                (pErrDetail->bIsArray ? "[]" : "");
+    JsonErrDetail["TypeName"] =
+        pErrDetail->TypeName + (pErrDetail->bIsPtr ? "*" : "") + (pErrDetail->bIsArray ? "[]" : "");
     JsonErrDetail["TargetName"] = pErrDetail->TargetName;
     JsonErrDetail["Expected"] = pErrDetail->Suggestion;
     ErrorDetailList.push_back(JsonErrDetail);
@@ -209,13 +206,10 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   bool bStatus = true;
   char szText[512] = {0};
 
-  cout << " File    = "
-       << llvm::sys::path::filename(MemoBoard.File.Source).data() << endl;
-  cout << " Config  = "
-       << llvm::sys::path::filename(MemoBoard.File.Config).data() << endl;
+  cout << " File    = " << llvm::sys::path::filename(MemoBoard.File.Source).data() << endl;
+  cout << " Config  = " << llvm::sys::path::filename(MemoBoard.File.Config).data() << endl;
   for (size_t nIdx = 0; nIdx < MemoBoard.Dir.Includes.size(); nIdx++) {
-    sprintf(szText, " Inc[%2d] = %s", nIdx + 1,
-            MemoBoard.Dir.Includes[nIdx].c_str());
+    sprintf(szText, " Inc[%2d] = %s", nIdx + 1, MemoBoard.Dir.Includes[nIdx].c_str());
     printf("%s\n", szText);
     if (MemoBoard.Option.bEnableLog) {
       DcLib::Log::Out(INFO_ALL, szText);
@@ -223,18 +217,16 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   }
 
   sprintf(szText, " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
-          GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile,
-          MemoBoard.Checked.nFunction, MemoBoard.Checked.nParameter,
-          MemoBoard.Checked.nVariable);
+          GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile, MemoBoard.Checked.nFunction,
+          MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
   sprintf(szText, " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
-          GetTotalError(MemoBoard), MemoBoard.Error.nFile,
-          MemoBoard.Error.nFunction, MemoBoard.Error.nParameter,
-          MemoBoard.Error.nVariable);
+          GetTotalError(MemoBoard), MemoBoard.Error.nFile, MemoBoard.Error.nFunction,
+          MemoBoard.Error.nParameter, MemoBoard.Error.nVariable);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
@@ -242,9 +234,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
 
   printf("------------------------------------------------------------\n");
   if (MemoBoard.Option.bEnableLog) {
-    DcLib::Log::Out(
-        INFO_ALL,
-        "------------------------------------------------------------");
+    DcLib::Log::Out(INFO_ALL, "------------------------------------------------------------");
   }
 
   for (const ErrorDetail *pErrDetail : MemoBoard.ErrorDetailList) {
@@ -255,8 +245,8 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Function:
-      sprintf(szText, "  <%4d, %4d> Function: %s", pErrDetail->Pos.nLine,
-              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
+      sprintf(szText, "  <%4d, %4d> Function: %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
       if (MemoBoard.Option.bEnableLog) {
@@ -265,9 +255,8 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Parameter:
-      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)",
-              pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
-              pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
+      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
@@ -277,11 +266,9 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Variable:
-      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)",
-              pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
-              pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
-              (pErrDetail->bIsPtr ? "*" : ""),
-              (pErrDetail->bIsArray ? "[]" : ""));
+      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
+              (pErrDetail->bIsPtr ? "*" : ""), (pErrDetail->bIsArray ? "[]" : ""));
 
       printf("%s\n", szText);
       if (MemoBoard.Option.bEnableLog) {

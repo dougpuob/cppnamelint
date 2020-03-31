@@ -41,9 +41,8 @@ public:
     this->Suggestion = Suggestion;
   }
 
-  ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr,
-              const bool &bIsArray, const string &TypeName,
-              const string &Suggestion) {
+  ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr, const bool &bIsArray,
+              const string &TypeName, const string &Suggestion) {
     this->bIsPtr = bIsPtr;
     this->bIsArray = bIsArray;
     this->Pos = Pos;
@@ -52,9 +51,8 @@ public:
     this->Suggestion = Suggestion;
   }
 
-  ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr,
-              const bool &bIsArray, const string &TypeName,
-              const string &TargetName, const string &Suggestion) {
+  ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr, const bool &bIsArray,
+              const string &TypeName, const string &TargetName, const string &Suggestion) {
     this->bIsPtr = bIsPtr;
     this->bIsArray = bIsArray;
     this->Pos = Pos;
