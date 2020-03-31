@@ -47,18 +47,18 @@ int RunCheck(namelint::MemoBoard &Memo) {
   DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
   DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
 
-  if (!llvm::sys::fs::exists(CheckInputSrc)) {
+  if (!llvm::sys::fs::exists(Memo.File.Source)) {
     cout << "Error: Failed to find input source file." << endl;
     return 1;
   }
 
-  if (!llvm::sys::fs::exists(CheckInputConfig)) {
+  if (!llvm::sys::fs::exists(Memo.File.Config)) {
     cout << "Error: Failed to find config file." << endl;
     return 2;
   }
 
   string errorReason;
-  if (!Memo.Config.LoadFile(CheckInputSrc, errorReason)) {
+  if (!Memo.Config.LoadFile(Memo.File.Config, errorReason)) {
     cout << "Error: Failed to load config file (format wrong)." << endl;
     cout << errorReason << endl;
     return 3;
@@ -78,8 +78,8 @@ int RunCheck(namelint::MemoBoard &Memo) {
   ClangTool Tool(*Compilations, SingleFileInList);
   // Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--I./",
   // ArgumentInsertPosition::BEGIN));
-  Tool.appendArgumentsAdjuster(
-      getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
+  // Tool.appendArgumentsAdjuster(
+  //    getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
   Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(
       "--language=c++",
       ArgumentInsertPosition::BEGIN)); // Make it parses header file.
@@ -209,8 +209,10 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   bool bStatus = true;
   char szText[512] = {0};
 
-  cout << " File    = " << MemoBoard.File.Source << endl;
-  cout << " Config  = " << MemoBoard.File.Config << endl;
+  cout << " File    = "
+       << llvm::sys::path::filename(MemoBoard.File.Source).data() << endl;
+  cout << " Config  = "
+       << llvm::sys::path::filename(MemoBoard.File.Config).data() << endl;
   for (size_t nIdx = 0; nIdx < MemoBoard.Dir.Includes.size(); nIdx++) {
     sprintf(szText, " Inc[%2d] = %s", nIdx + 1,
             MemoBoard.Dir.Includes[nIdx].c_str());
