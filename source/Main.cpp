@@ -74,14 +74,15 @@ int RunCheck(namelint::MemoBoard &Memo) {
   //
   // Create clang tool then add clang tool arguments.
   //
-  vector<string> SingleFileInList = { Memo.File.Source };
+  vector<string> SingleFileInList = {Memo.File.Source};
   ClangTool Tool(*Compilations, SingleFileInList);
   // Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--I./",
   // ArgumentInsertPosition::BEGIN));
   Tool.appendArgumentsAdjuster(
       getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
   Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(
-      "--language=c++", ArgumentInsertPosition::BEGIN)); // Make it parses header file.
+      "--language=c++",
+      ArgumentInsertPosition::BEGIN)); // Make it parses header file.
 
   Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
 
