@@ -348,7 +348,6 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-
     selected_list = [
         {'platform': 'Shared',  'dir': True ,  'src': 'source/test'                        , 'dest': './test'},
         {'platform': 'Shared',  'dir': False,  'src': found_generated_binary               , 'dest': '.'},

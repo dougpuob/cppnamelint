@@ -233,9 +233,15 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
   // Remove pointer chars.
   // Remove hungarian prefix chars.
   //
-  bool bSzStringMatched = false;
+  bool bStatus = false;
   if (bIsPtr || bIsArray) {
+    // Remove `p` chars.
     size_t nLowerPCount = this->_RemoveHeadingPtrChar(NewNameStr);
+    if (nLowerPCount > 0) {
+      bStatus = true;
+    }
+
+    // Remove hungarian notion of C null string.
     for (auto Iter : NullStringMap) {
       const auto IterType = Iter.Key;
       const auto IterPrefix = Iter.Value;
@@ -244,50 +250,41 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
         if (0 == nNewStrPos) {
           const size_t nPrefixLen = IterPrefix.length();
-
-          bSzStringMatched = true;
+          bStatus = true;
           NewNameStr = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
           break;
         }
       }
     }
+  } else {
+    bStatus = true;
   }
 
-  bool bStatus = true;
-  bool bSpecificTypeMatched = false;
-  if (!bSzStringMatched) {
+  // Match Hungarian notation.
+  if (bStatus) {
     for (map<string, string>::const_iterator Iter = TypeNamingMap.begin();
          Iter != TypeNamingMap.end(); Iter++) {
+
       const auto IterType = Iter->first;
       const auto IterPrefix = Iter->second;
+
       if (IterType == NewTypeStr) {
-        bStatus = false;
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
-        if (0 == nNewStrPos) {
+        bStatus = (0 == nNewStrPos);
+        if (bStatus) {
           const size_t nPrefixLen = IterPrefix.length();
 
-          bStatus = true;
-          bSpecificTypeMatched = true;
+          // Remove hungarian notation.
           NewNameStr = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
-          break;
         }
+
+        break;
       }
     }
   }
 
-  // bool bStatus = (bSzStringMatched || bSpecificTypeMatched) ||	//
-  // Eithor
-  // one.
-  //		      !(bSzStringMatched || bSpecificTypeMatched);
-  ////
-  // Both
-  // not.
-  if (bStatus) {
-    if (bPreferUpperCamel) {
-      bStatus = this->_IsUpperCamelCaseString(NewNameStr, IgnorePrefixs);
-    } else {
-      bStatus = this->_IsLowerCamelCaseString(NewNameStr, IgnorePrefixs);
-    }
+  if (bStatus && bPreferUpperCamel) {
+    bStatus = this->_IsUpperCamelCaseString(NewNameStr, IgnorePrefixs);
   }
 
   return bStatus;
