@@ -250,7 +250,6 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
         if (0 == nNewStrPos) {
           const size_t nPrefixLen = IterPrefix.length();
-
           bStatus = true;
           NewNameStr = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
           break;
