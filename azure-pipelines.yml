@@ -36,8 +36,8 @@ jobs:
           vstsPackageVersion: "0.0.1"
           verbosity: "Trace"
 
-      - script: "build-bin-win32.cmd"
-        displayName: "build-bin-win32.cmd"
+      - script: "build-bin-win32.ps1"
+        displayName: "build-bin-win32.ps1"
         workingDirectory: "script"
 
       - task: MSBuild@1
