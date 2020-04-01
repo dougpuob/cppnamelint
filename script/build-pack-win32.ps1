@@ -30,7 +30,7 @@ if (0 -ne $LastExitCode) {
 Write-Output ''
 Write-Output 'INFO: Succss to execute this PS1 script.'
 Write-Output ''
-if (-Not $GITLAB_CI) {
+if ("" -eq "$AGENT_VERSION") {
     CMD /c PAUSE
 }
 $LastExitCode=0
