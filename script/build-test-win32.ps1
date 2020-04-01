@@ -40,8 +40,8 @@ if (Test-Path("cppnamelint.exe")) {
 Write-Output ''
 Write-Output 'INFO: Succss to execute this PS1 script.'
 Write-Output ''
-if ($null -eq $AGENT_VERSION) {
-    CMD /c PAUSE
-}
+#if ($null -eq $AGENT_VERSION) {
+#    CMD /c PAUSE
+#}
 $LastExitCode=0
 Exit $LastExitCode
