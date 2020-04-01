@@ -50,10 +50,12 @@ Write-Output ""
 Write-Output "=============================================================="
 Write-Output " Reformating source code by Clang-Format utility."
 Write-Output "=============================================================="
-& python cppnamelint.py format  $ROOT_DIR $SOURCE_DIR
-if (0 -ne $LastExitCode) {
-    Write-Output 'ERR : Failed to use `cppnamelint.py format` command'
-    Exit $LastExitCode
+if ($null -eq $AGENT_VERSION) {
+    & python cppnamelint.py format  $ROOT_DIR $SOURCE_DIR
+    if (0 -ne $LastExitCode) {
+        Write-Output 'ERR : Failed to use `cppnamelint.py format` command'
+        Exit $LastExitCode
+    }
 }
 
 
