@@ -36,9 +36,10 @@ jobs:
           vstsPackageVersion: "0.0.1"
           verbosity: "Trace"
 
-      - script: ".\build-bin-win32.ps1"
-        displayName: "build-bin-win32.ps1"
-        workingDirectory: "script"
+      - task: PowerShell@2
+        inputs:
+          filePath: 'build-bin-win32.ps1'
+          workingDirectory: 'script'
 
       - task: MSBuild@1
         inputs:
@@ -46,14 +47,17 @@ jobs:
           msbuildVersion: "15.0"
           configuration: "Release"
           msbuildArchitecture: "x86" #x86, x64
+          
+      - task: PowerShell@2
+        inputs:
+          filePath: 'build-pack-win32.ps1'
+          workingDirectory: 'script'
 
-      - script: ".\build-pack-win32.ps1"
-        displayName: "build-pack-win32.ps1"
-        workingDirectory: "script"
+      - task: PowerShell@2
+        inputs:
+          filePath: 'build-test-win32.ps1'
+          workingDirectory: 'script'
 
-      - script: ".\build-test-win32.ps1"
-        displayName: "build-test-win32.ps1"
-        workingDirectory: "script/release"
 
   #==============================================================================
   # Linux
