@@ -38,7 +38,7 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          filePath: 'build-bin-win32.ps1'
+          filePath: 'script/build-bin-win32.ps1'
           workingDirectory: 'script'
 
       - task: MSBuild@1
@@ -50,12 +50,12 @@ jobs:
           
       - task: PowerShell@2
         inputs:
-          filePath: 'build-pack-win32.ps1'
+          filePath: 'script/build-pack-win32.ps1'
           workingDirectory: 'script'
 
       - task: PowerShell@2
         inputs:
-          filePath: 'build-test-win32.ps1'
+          filePath: 'script/build-test-win32.ps1'
           workingDirectory: 'script'
 
 
