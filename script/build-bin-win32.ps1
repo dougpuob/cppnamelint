@@ -76,7 +76,9 @@ if (0 -ne $LastExitCode) {
 #==----------------------------------------------------------------------------
 # Successful
 #==----------------------------------------------------------------------------
+Write-Output ''
 Write-Output 'INFO: Succss to execute this PS1 script.'
+Write-Output ''
 if (-Not $GITLAB_CI) {
     CMD /c PAUSE
 }
