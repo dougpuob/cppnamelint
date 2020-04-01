@@ -200,12 +200,6 @@ def convert_py_args_to_exe_args(py_args) -> str:
     specific_cmd_args: str = ''
     if py_args.input_cmd == define_cmd_check:
 
-        if py_args.inc:
-            regex = re.compile(r'<(\S+)>')
-            matched = regex.search(py_args.inc)
-            matched_target = matched.group(1)
-            input_inc_list = matched_target.split(':')
-
         if py_args.src:
             specific_cmd_args = py_args.input_cmd + ' ' + py_args.src
 
@@ -302,7 +296,7 @@ def run_util(exec_name:str, arg_list:[], working_dir:str='') -> [int, str]:
 def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_output:bool) -> int:
     first_error_code = 0
 
-    sys.argv = ['prog', 'check', 'input.c', '-cfg=config.toml', '-json=output.json', '-inc=<A:B:C>']
+    sys.argv = ['prog', 'check', 'input.c', '-cfg=config.toml', '-json=output.json', '-inc=A', '-inc=B']
     parser = make_cmd_table()
     mock_py_args = parser.parse_args()
 
@@ -366,7 +360,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
         {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-file.py'  , 'dest': '.'},
         {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-exec.py'  , 'dest': '.'},
         {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-cmake.py' , 'dest': '.'},
-        {'platform': 'Windows', 'dir': False , 'src': 'script/build-test-win32.cmd'        , 'dest': '.'},
+        {'platform': 'Windows', 'dir': False , 'src': 'script/build-test-win32.ps1'        , 'dest': '.'},
         {'platform': 'Linux',   'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': '.'},
         {'platform': 'Darwin',  'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': '.'},
     ]
