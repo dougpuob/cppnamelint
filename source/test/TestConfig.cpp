@@ -21,12 +21,9 @@ TEST(GeneralOptions, Default) {
   std::vector<string> *pVect =
       &MyConfig.GetData()->General.Options.FileExtNameList;
   EXPECT_EQ(true, 3 == pVect->size());
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.h"));
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.cpp"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.h"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.cpp"));
 
   //
   // Rule
@@ -54,14 +51,10 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
   GeneralOptions *pGeneral = &MyConfig.GetData()->General.Options;
   std::vector<string> *pVect = &pGeneral->FileExtNameList;
   EXPECT_EQ(true, 4 == pVect->size());
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.a"));
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.b"));
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
-  EXPECT_EQ(true,
-            pVect->end() != std::find(pVect->begin(), pVect->end(), "*.d"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.a"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.b"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.c"));
+  EXPECT_EQ(true, pVect->end() != std::find(pVect->begin(), pVect->end(), "*.d"));
 
   EXPECT_EQ(true, false == pGeneral->bCheckFileName);
   EXPECT_EQ(true, false == pGeneral->bCheckFunctionName);

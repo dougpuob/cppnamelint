@@ -292,9 +292,9 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
 {
 	RuleOfVariable Rule;
     Detection Detect;
-	Rule.WordListMap.insert(std::pair<string, string>("int"    , "i"));
-	Rule.WordListMap.insert(std::pair<string, string>("uin8_t" , "u8"));
-	Rule.WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
+	Rule.WordListMap.insert(std::pair<string, string>("int"     , "i"));
+	Rule.WordListMap.insert(std::pair<string, string>("uint8_t" , "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
 
 	Rule.NullStringMap.push_back(MappingPair("char*"	 , "sz"));
 	Rule.NullStringMap.push_back(MappingPair("char**"	 , "psz"));
@@ -304,33 +304,54 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
     Rule.NullStringMap.push_back(MappingPair("char[]"	 , "sz"));
     Rule.NullStringMap.push_back(MappingPair("wchar_t[]" , "wsz"));
 
-	bool bPrefer = true;
-	bool bIsPtr   = false;
-	bool bIsArray = false;
+	bool bPrefer   = true;
+	bool bIsPtr    = true;
+	bool bNotPtr   = false;
+	bool bIsArray  = true;
+	bool bNotArray = false;
 	Detect.ApplyRuleForVariable(Rule);
 	    
     // ...........................................................vvvvvvvvv <-- * character should be removed.
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"     , bPrefer, true  , bIsArray));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "pszStr"    , bPrefer, true  , bIsArray));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t" , "wszStr"    , bPrefer, true  , bIsArray));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "pwszStr"   , bPrefer, true  , bIsArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"      , bPrefer, bIsPtr, bNotArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "pszStr"     , bPrefer, bIsPtr, bNotArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t" , "wszStr"     , bPrefer, bIsPtr, bNotArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "pwszStr"    , bPrefer, bIsPtr, bNotArray));
 
     // ...........................................................vvvvvvvvv <-- [] characters should be removed.
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"     , bPrefer, false , true));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "wszStr"    , bPrefer, false , true));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"      , bPrefer, bNotPtr, bIsArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "wszStr"     , bPrefer, bNotPtr, bIsArray));
 
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"		, "piMyValue" , bPrefer, true  , bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uin8_t"  , "MyFunc"    , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uin8_t"  , "MyFunc"    , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uin8_t"  , "myFunc"    , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uin8_t"  , "my_func"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"     , "iMyFunc"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uin8_t"  , "u8MyFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uin16_t" , "u16MyFunc" , bPrefer, bIsPtr, bIsArray));
+	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"		 , "piMyValue" , bPrefer, bIsPtr,  bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t"  , "MyFunc"    , bPrefer, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t"  , "MyFunc"    , bPrefer, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , "myFunc"    , bPrefer, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uint8_t"  , "my_func"   , bPrefer, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"      , "iMyFunc"   , bPrefer, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uint8_t"  , "u8MyFunc"  , bPrefer, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uint16_t" , "u16MyFunc" , bPrefer, bNotPtr, bNotArray));
 	
 	Rule.IgnorePrefixs.push_back("m_");
 	Detect.ApplyRuleForVariable(Rule);
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"     , "m_iMyFunc" , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"      , "m_iMyFunc" , bPrefer, bNotPtr, bNotArray));
+}
+
+TEST(Config_Detect_CheckVariable, PreferUpperCamelIfMissed)
+{
+    RuleOfVariable Rule;
+    Detection Detect;
+
+	bool bIsPtr = true;
+	bool bNotPtr = false;
+	bool bIsArray = true;
+	bool bNotArray = false;
+    bool bPreferUpperCamel = true;
+
+    Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    Rule.WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
+	Detect.ApplyRuleForVariable(Rule);
+
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN,  "int",     "MyValue", bPreferUpperCamel, bNotPtr, bNotArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyValue", bPreferUpperCamel, bNotPtr, bNotArray));
 }
 
 TEST(Config_Detect_CheckVariable, InputParms_Bad)
@@ -338,27 +359,26 @@ TEST(Config_Detect_CheckVariable, InputParms_Bad)
 	RuleOfVariable Rule;
 	Detection Detect;
 
-	Rule.WordListMap.insert(std::pair<string, string>("uin8_t", "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
 	Rule.WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
 
 	bool bPrefer = true;
 	bool bIsPtr  = false;
 	bool bIsArray = false;
 	Detect.ApplyRuleForVariable(Rule);
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_DEFAULT		, "uin8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uin8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uin8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uin8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uin8_t"  , ""			, bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin8_t"  , "u8my_name"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin8_t"  , "u8my_Name"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin8_t"  , "u8my_Name"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin8_t"  , "u16AnyName"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t" , "u8AnyName"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin8_t"  , "u8_my_func"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t" , "u16_my_func" , bPrefer, bIsPtr, bIsArray));
-	
-	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "int" 	, "iMyValue" 	, bPrefer, true,   bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""			 , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_name"   , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u16AnyName"  , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u8AnyName"   , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8_my_func"  , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u16_my_func" , bPrefer, bIsPtr, bIsArray));	
+	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "int" 	 , "iMyValue" 	 , bPrefer, true,   bIsArray));
 }
 
 //-------------------------------------------------------------------------
@@ -370,16 +390,16 @@ TEST(Config_Detect_CheckVariable, GoodCases)
 	RuleOfVariable Rule;
 	Detection Detect;
 
-	Rule.WordListMap.insert(std::pair<string, string>("uin8_t", "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
 
 	bool bPrefer = true;
 	bool bIsPtr = false;
 	bool bIsArray = false;
 	Detect.ApplyRuleForVariable(Rule);
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uin8_t", "MyFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uin8_t", "MyFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uin8_t", "myFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE   , "uin8_t", "my_func" , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t", "MyFunc"  , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t", "MyFunc"  , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t", "myFunc"  , bPrefer, bIsPtr, bIsArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE   , "uint8_t", "my_func" , bPrefer, bIsPtr, bIsArray));
 }
 
 TEST(Config_Detect_CheckVariable, Hungarian_Bad)
@@ -387,13 +407,13 @@ TEST(Config_Detect_CheckVariable, Hungarian_Bad)
 	RuleOfVariable Rule;
 	Detection Detect;
 
-	Rule.WordListMap.insert(std::pair<string, string>("uin8_t", "u8"));
+	Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
 
 	bool bPrefer = true;
 	bool bIsPtr = false;
 	bool bIsArray = false;
 	Detect.ApplyRuleForVariable(Rule);
-	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uin8_t", "MyFunc", bPrefer, bIsPtr, bIsArray));
+	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyFunc", bPrefer, bIsPtr, bIsArray));
 }
 
 }  // namespace CheckVariable
