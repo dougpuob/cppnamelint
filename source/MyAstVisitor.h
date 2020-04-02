@@ -6,7 +6,7 @@
 
 #include "Config.h"
 #include "Detection.h"
-#include "LearnIt.h"
+#include "DumpDecl.h"
 #include "MyAstConsumer.h"
 #include "TraceMemo.h"
 
@@ -20,7 +20,7 @@ using namespace namelint;
 
 class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 private:
-  LearnIt m_LearnIt;
+  DumpDecl m_DumpDecl;
 
   ASTContext *m_pAstCxt;
   const SourceManager *m_pSrcMgr;

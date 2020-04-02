@@ -19,10 +19,10 @@ using namespace llvm;
 using namespace clang::driver;
 using namespace clang::tooling;
 
-class LearnIt {
+class DumpDecl {
 private:
 public:
-  LearnIt();
+  DumpDecl();
 
   bool PrintDecl(Decl *pDecl);
 

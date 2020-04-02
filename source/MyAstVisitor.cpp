@@ -90,7 +90,7 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
   }
 
   if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(pDecl);
+    this->m_DumpDecl.PrintDecl(pDecl);
   }
 
   Name = pDecl->getDeclName().getAsString();
@@ -107,7 +107,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
   }
 
   if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(pDecl);
+    this->m_DumpDecl.PrintDecl(pDecl);
   }
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
@@ -148,7 +148,7 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
   }
 
   if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(pDecl);
+    this->m_DumpDecl.PrintDecl(pDecl);
   }
 
   // TODO:
@@ -329,7 +329,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   assert(pAppCxt);
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(pDecl);
+    this->m_DumpDecl.PrintDecl(pDecl);
   }
 
   return true;
@@ -380,7 +380,7 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   assert(pAppCxt);
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(pDecl);
+    this->m_DumpDecl.PrintDecl(pDecl);
   }
 
   bool bStatus = this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr, bAnonymous);
@@ -409,7 +409,7 @@ bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_LearnIt.PrintDecl(pDecl);
+    this->m_DumpDecl.PrintDecl(pDecl);
   }
   return true;
 }
