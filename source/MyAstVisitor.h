@@ -71,7 +71,9 @@ public:
   bool VisitParmVarDecl(ParmVarDecl *pDecl);
   bool VisitTypedefDecl(TypedefDecl *pDecl);
   bool VisitEnumConstantDecl(EnumConstantDecl *pDecl);
-  bool VisitEnumDecl(EnumDecl *pDecl);;;
+  bool VisitEnumDecl(EnumDecl *pDecl);
+  ;
+  ;
 };
 
 /*

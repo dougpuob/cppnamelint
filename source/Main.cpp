@@ -218,17 +218,21 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
     }
   }
 
-  sprintf(szText, " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d]",
+  sprintf(szText,
+          " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d]",
           GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile, MemoBoard.Checked.nFunction,
-          MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum, MemoBoard.Checked.nStruct);
+          MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum,
+          MemoBoard.Checked.nStruct);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
-  sprintf(szText, " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d]",
+  sprintf(szText,
+          " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d]",
           GetTotalError(MemoBoard), MemoBoard.Error.nFile, MemoBoard.Error.nFunction,
-          MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum, MemoBoard.Error.nStruct);
+          MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum,
+          MemoBoard.Error.nStruct);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
@@ -279,24 +283,25 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_EnumTag:
-        sprintf(szText, "  <%4d, %4d> Enum Tag: %s", pErrDetail->Pos.nLine,
-            pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
+      sprintf(szText, "  <%4d, %4d> Enum Tag: %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str());
 
-        printf("%s\n", szText);
-        if (MemoBoard.Option.bEnableLog) {
-            DcLib::Log::Out(INFO_ALL, szText);
-        }
-        break;
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
 
     case CheckType::CT_EnumVal:
-        sprintf(szText, "  <%4d, %4d> Enum Tag: %s (%s)", pErrDetail->Pos.nLine,
-            pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str());
+      sprintf(szText, "  <%4d, %4d> Enum Tag: %s (%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
+              pErrDetail->TypeName.c_str());
 
-        printf("%s\n", szText);
-        if (MemoBoard.Option.bEnableLog) {
-            DcLib::Log::Out(INFO_ALL, szText);
-        }
-        break;
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
 
     default:
       bStatus = false;

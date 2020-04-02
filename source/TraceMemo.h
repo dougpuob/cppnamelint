@@ -88,7 +88,7 @@ public:
     size_t nParameter;
     size_t nVariable;
     size_t nEnum;
-    size_t nStruct;    
+    size_t nStruct;
   } Checked;
 
   struct _Error {
