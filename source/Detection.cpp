@@ -34,6 +34,9 @@ void RuleOfVariable::Reset() {
   this->ArrayNamingMap.clear();
 }
 
+RuleOfEnumAndStruct::RuleOfEnumAndStruct() { this->Reset(); }
+void RuleOfEnumAndStruct::Reset() { this->IgnorePrefixs.clear(); }
+
 bool Detection::_RemoveHeadingUnderscore(string &Text) {
   bool bStatus = false;
 
@@ -162,7 +165,8 @@ bool Detection::_IsLowerCamelCaseString(const string &Name, vector<string> Ignor
   return bStatus;
 }
 
-bool Detection::_IsLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs) {
+bool Detection::_IsSnakeString(const string &Name, SNAKETYPE SnakeType,
+                               vector<string> IgnorePrefixs) {
   vector<string> NewIgnorePrefixs = IgnorePrefixs;
 
   auto wayToSort = [](string strA, string strB) { return strA.length() > strB.length(); };
@@ -384,7 +388,7 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
     break;
 
   case RULETYPE_LOWER_SNAKE:
-    bStatus = this->_IsLowerSeperatedString(Name, NullIgnorePrefixs);
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, NullIgnorePrefixs);
     break;
   }
   return bStatus;
@@ -415,7 +419,7 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     break;
 
   case RULETYPE_LOWER_SNAKE:
-    bStatus = this->_IsLowerSeperatedString(Name, this->m_RuleOfFunction.IgnorePrefixs);
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, this->m_RuleOfFunction.IgnorePrefixs);
     break;
   }
   return bStatus;
@@ -441,7 +445,7 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
     break;
 
   case RULETYPE_LOWER_SNAKE:
-    bStatus = this->_IsLowerSeperatedString(Name, this->m_RuleOfVariable.IgnorePrefixs);
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, this->m_RuleOfVariable.IgnorePrefixs);
     break;
 
   case RULETYPE_HUNGARIAN:
@@ -449,6 +453,40 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
         Type, Name, bPreferUpperCamel, bIsPtr, bIsArray, this->m_RuleOfVariable.IgnorePrefixs,
         this->m_RuleOfVariable.WordListMap, this->m_RuleOfVariable.NullStringMap,
         this->m_RuleOfVariable.ArrayNamingMap);
+    break;
+  }
+  return bStatus;
+}
+
+bool Detection::CheckEnumAndStruct(const RULETYPE Rule, const string &Name) {
+  if (Name.length() == 0) {
+    return false;
+  }
+
+  bool bStatus = false;
+  switch (Rule) {
+  case RULETYPE_DEFAULT:
+  case RULETYPE_HUNGARIAN:
+    bStatus = false; // Don't support.
+    break;
+
+  case RULETYPE_UPPER_CAMEL:
+    bStatus = this->_IsUpperCamelCaseString(Name, this->m_RuleOfEnumAndStruct.IgnorePrefixs,
+                                            this->m_RuleOfVariable.bAllowedUnderscopeChar);
+    break;
+
+  case RULETYPE_LOWER_CAMEL:
+    bStatus = this->_IsLowerCamelCaseString(Name, this->m_RuleOfEnumAndStruct.IgnorePrefixs);
+    break;
+
+  case RULETYPE_LOWER_SNAKE:
+    bStatus =
+        this->_IsSnakeString(Name, SNAKETYPE_LOWER, this->m_RuleOfEnumAndStruct.IgnorePrefixs);
+    break;
+
+  case RULETYPE_UPPER_SNAKE:
+    bStatus =
+        this->_IsSnakeString(Name, SNAKETYPE_UPPER, this->m_RuleOfEnumAndStruct.IgnorePrefixs);
     break;
   }
   return bStatus;

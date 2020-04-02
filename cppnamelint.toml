@@ -27,21 +27,21 @@ VariableName            = 4 # 0: Default (UpperCamel)
                             # 2: lowerCamel
                             # 3: lower_snake
                             # 4: Hungarian
-                            
+
 EnumName                = 4 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower_snake
                             # 4: Hungarian
                             # 5: UPPER_SNAKE
-                            
+
 StructName              = 4 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower_snake
                             # 4: Hungarian
                             # 5: UPPER_SNAKE
-                            
+
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
@@ -176,3 +176,10 @@ LPARAM                   = "l"
 # PUINT16                = "u16"  # PINT16 pu16Value = NULL;
 # PUINT32                = "u32"  # PINT32 pu32Value = NULL;
 # PUINT64                = "u64"  # PINT64 pu64Value = NULL;
+
+[Debug.Log]
+Main        = true
+DumpDecl    = true
+AstVisitor  = true
+Detection   = true
+Config      = true

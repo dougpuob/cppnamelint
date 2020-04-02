@@ -38,11 +38,19 @@ struct RuleOfVariable {
   void Reset();
 };
 
+struct RuleOfEnumAndStruct {
+  vector<string> IgnorePrefixs;
+
+  RuleOfEnumAndStruct();
+  void Reset();
+};
+
 class Detection {
 private:
   RuleOfFile m_RuleOfFile;
   RuleOfFunction m_RuleOfFunction;
   RuleOfVariable m_RuleOfVariable;
+  RuleOfEnumAndStruct m_RuleOfEnumAndStruct;
 
 private:
   bool _RemoveHeadingUnderscore(string &Text);
@@ -52,7 +60,7 @@ private:
                                const bool AllowedUnderscopeChar = false);
 
   bool _IsLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
-  bool _IsLowerSeperatedString(const string &Name, vector<string> IgnorePrefixs);
+  bool _IsSnakeString(const string &Name, SNAKETYPE SnakeType, vector<string> IgnorePrefixs);
   bool _IsHungarianNotationString(const string &TypeStr, const string &NameStr,
                                   const bool &bPreferUpperCamel, const bool &bIsPtr,
                                   const bool &bIsArray, const vector<string> &IgnorePrefixs,
@@ -73,6 +81,7 @@ public:
   bool CheckFunction(const RULETYPE Rule, const string &Name);
   bool CheckVariable(const RULETYPE Rule, const string &Type, const string &Name,
                      const bool &bPreferUpperCamel, const bool &bIsPtr, const bool &bIsArray);
+  bool CheckEnumAndStruct(const RULETYPE Rule, const string &Name);
 };
 } // namespace namelint
 
