@@ -7,8 +7,12 @@ CheckFileName           = false
 AllowedUnderscopeChar   = false
 AllowedArrayAffected    = false
 
-
 [General.Rules]
+# UpperCamel: `MyValue`
+# LowerCamel: `myValue`
+# UpperSname: `MY_VALUE`
+# LowerCamel: `my_value`
+# Hungarian : `int iMyValue`
 FileName                = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 3: lower_snake
@@ -23,7 +27,21 @@ VariableName            = 4 # 0: Default (UpperCamel)
                             # 2: lowerCamel
                             # 3: lower_snake
                             # 4: Hungarian
-
+                            
+EnumName                = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 4: Hungarian
+                            # 5: UPPER_SNAKE
+                            
+StructName              = 4 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 4: Hungarian
+                            # 5: UPPER_SNAKE
+                            
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
@@ -32,6 +50,9 @@ FunctionPrefix          = [ "_",
 VariablePrefix          = [ "m_" ]
 
 FunctionName            = ["main", "newASTConsumer"]
+
+EnumPrefix              = [ "e" ]
+StructPrefix            = [ "s" ]
 
 [Hungarian.Others]
 PreferUpperCamelIfMissed = true
