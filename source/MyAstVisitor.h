@@ -70,6 +70,8 @@ public:
   bool VisitReturnStmt(ReturnStmt *pRetStmt);
   bool VisitParmVarDecl(ParmVarDecl *pDecl);
   bool VisitTypedefDecl(TypedefDecl *pDecl);
+  bool VisitEnumConstantDecl(EnumConstantDecl *pDecl);
+  bool VisitEnumDecl(EnumDecl *pDecl);;;
 };
 
 /*

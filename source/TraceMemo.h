@@ -22,6 +22,10 @@ typedef enum _CheckType {
   CT_Function,
   CT_Parameter,
   CT_Variable,
+  CT_EnumTag,
+  CT_EnumVal,
+  CT_StructTag,
+  CT_StructVal,
   CT_Max
 } CheckType;
 
@@ -83,6 +87,8 @@ public:
     size_t nFunction;
     size_t nParameter;
     size_t nVariable;
+    size_t nEnum;
+    size_t nStruct;    
   } Checked;
 
   struct _Error {
@@ -90,6 +96,8 @@ public:
     size_t nFunction;
     size_t nParameter;
     size_t nVariable;
+    size_t nEnum;
+    size_t nStruct;
   } Error;
 
   vector<ErrorDetail *> ErrorDetailList;

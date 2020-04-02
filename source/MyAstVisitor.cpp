@@ -3,6 +3,13 @@
 #include "Common.h"
 #include "MyAstVisitor.h"
 
+
+static const bool bIsPtr    = true;
+static const bool bIsArray  = true;
+static const bool bNotPtr   = false;
+static const bool bNotArray = false;
+
+
 using namespace namelint;
 
 bool MyASTVisitor::_IsMainFile(Decl *pDecl) {
@@ -413,3 +420,45 @@ bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
   }
   return true;
 }
+
+bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl)
+{
+    APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+
+    if (pAppCxt->MemoBoard.Option.bEnableLog) {
+        this->m_DumpDecl.PrintDecl(pDecl);
+    }
+    pAppCxt->MemoBoard.Checked.nEnum++;
+
+    string EnumName = pDecl->getName();
+    bool bStatus = this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumName, EnumName);
+    if (!bStatus) {
+        pAppCxt->MemoBoard.Error.nEnum++;
+        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+            pDecl, CheckType::CT_EnumVal, bNotPtr, bNotArray, "", EnumName, ""));
+    }
+
+    return true;
+}
+
+bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl)
+{
+    APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+
+    if (pAppCxt->MemoBoard.Option.bEnableLog) {
+        this->m_DumpDecl.PrintDecl(pDecl);
+    }
+
+    pAppCxt->MemoBoard.Checked.nEnum++;
+
+    string EnumName = pDecl->getName();
+    bool bStatus = this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumName, EnumName);
+    if (!bStatus) {
+        pAppCxt->MemoBoard.Error.nEnum++;
+        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+            pDecl, CheckType::CT_EnumTag, bNotPtr, bNotArray, "", EnumName, ""));
+    }
+    
+    return true;
+}
+
