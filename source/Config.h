@@ -16,8 +16,14 @@ typedef enum _RULETYPE {
   RULETYPE_LOWER_CAMEL,
   RULETYPE_LOWER_SNAKE,
   RULETYPE_HUNGARIAN,
+  RULETYPE_UPPER_SNAKE,
   RULETYPE_NA,
 } RULETYPE;
+
+typedef enum _SNAKETYPE {
+  SNAKETYPE_LOWER = 1,
+  SNAKETYPE_UPPER = 2,
+} SNAKETYPE;
 
 struct GeneralOptions {
   vector<string> FileExtNameList;
@@ -32,12 +38,16 @@ struct GeneralRules {
   RULETYPE FileName;
   RULETYPE FunctionName;
   RULETYPE VariableName;
+  RULETYPE EnumName;
+  RULETYPE StructName;
 };
 
 struct GeneralIgnoredList {
   vector<string> FunctionPrefix;
   vector<string> VariablePrefix;
   vector<string> FunctionName;
+  vector<string> EnumName;
+  vector<string> StructName;
 };
 
 struct General {
