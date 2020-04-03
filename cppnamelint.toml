@@ -1,9 +1,13 @@
 [General.Options]
 Version                 = 0.2
 FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckFileName           = false
 CheckVariableName       = true
 CheckFunctionName       = true
-CheckFileName           = false
+CheckEnum               = true
+CheckStruct             = true
+AllowedPrintResult      = true
+AllowedWriteJsonResult  = true
 AllowedUnderscopeChar   = false
 AllowedArrayAffected    = false
 
@@ -67,11 +71,11 @@ FunctionPrefix          = [ "_",
                             "~" #dtor]
 
 VariablePrefix          = [ "m_" ]
+EnumTagPrefix           = [ "_", "e" ]
+StructTagPrefix         = [ "_", "s" ]
 
 FunctionName            = ["main", "newASTConsumer"]
 
-EnumPrefix              = [ "e" ]
-StructPrefix            = [ "s" ]
 
 [Hungarian.Others]
 PreferUpperCamelIfMissed = true

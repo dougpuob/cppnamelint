@@ -148,6 +148,7 @@ add_executable(
     source/MyAstConsumer.cpp
     source/test/TestConfig.cpp
     source/test/TestDetection.cpp
+    source/test/TestRunCheck.cpp
 )
 
 

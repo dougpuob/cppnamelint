@@ -49,7 +49,7 @@ private:
 
   bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr,
                      bool &bAnonymous);
-
+  bool _GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr);
   bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName, bool &bIsPtr,
                      bool &bIsArray, bool &bIsBuiltinType);
 

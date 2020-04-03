@@ -3,11 +3,6 @@
 #include "Common.h"
 #include "MyAstVisitor.h"
 
-static const bool bIsPtr = true;
-static const bool bIsArray = true;
-static const bool bNotPtr = false;
-static const bool bNotArray = false;
-
 using namespace namelint;
 
 bool MyASTVisitor::_IsMainFile(Decl *pDecl) {
@@ -142,6 +137,37 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
   return true;
 }
 
+bool MyASTVisitor::_GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &VarName,
+                                     bool &bIsPtr) {
+  if (!pDecl) {
+    return false;
+  }
+  if (!this->_IsMainFile(pDecl)) {
+    return false;
+  }
+
+  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
+    this->m_DumpDecl.PrintDecl(pDecl);
+  }
+
+  SourceLocation MyBeginLoc = pDecl->getBeginLoc();
+  SourceLocation MyLoc = pDecl->getLocation();
+  string MyVarType = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
+                                 this->m_pSrcMgr->getCharacterData(MyLoc) -
+                                     this->m_pSrcMgr->getCharacterData(MyBeginLoc));
+
+  VarType = MyVarType;
+  VarName = pDecl->getName().data();
+
+  QualType MyQualType = pDecl->getType();
+  bIsPtr = MyQualType->isPointerType();
+
+  String::Trim(VarType);
+  String::Trim(VarName);
+
+  return true;
+}
+
 bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName,
                                  bool &bIsPtr, bool &bIsArray, bool &bIsBuiltinType) {
   if (!pDecl) {
@@ -242,10 +268,7 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
       this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  if (!pAppCxt) {
-    assert(pAppCxt);
-    return false;
-  }
+
   pAppCxt->MemoBoard.Checked.nVariable++;
   if (!bResult) {
     pAppCxt->MemoBoard.Error.nVariable++;
@@ -253,38 +276,31 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
         pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
   }
+
   return true;
 }
 
 bool MyASTVisitor::_CheckRuleForStructValue(ValueDecl *pDecl) {
+  bool bIsPtr = false;
   string ValueType;
   string ValueName;
 
-  bool bIsPtr = false;
-  bool bIsArray = false;
-  bool bIsBuiltinType = false;
-
-  bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray, bIsBuiltinType);
-
-  if (!bStauts) {
+  bool bStatus = this->_GetStructVarInfo(pDecl, ValueType, ValueName, bIsPtr);
+  if (!bStatus) {
     return false;
   }
 
-  bool bResult = this->m_Detect.CheckVariable(
-      this->m_pConfig->General.Rules.StructValueName, ValueType, ValueName,
-      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
+  bool bResult = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructValueName,
+                                               ValueType, ValueName, bIsPtr);
 
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  if (!pAppCxt) {
-    assert(pAppCxt);
-    return false;
-  }
-  pAppCxt->MemoBoard.Checked.nVariable++;
+
+  pAppCxt->MemoBoard.Checked.nStruct++;
   if (!bResult) {
-    pAppCxt->MemoBoard.Error.nVariable++;
+    pAppCxt->MemoBoard.Error.nStruct++;
 
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_StructVal, bIsPtr, bIsArray, ValueType, ValueName, ""));
+        pDecl, CheckType::CT_StructVal, bIsPtr, NOT_ARRAY, ValueType, ValueName, ""));
   }
   return true;
 }
@@ -339,6 +355,18 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
 
     this->m_Detect.ApplyRuleForVariable(Rule);
   }
+
+  {
+    RuleOfEnum Rule;
+    Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.EnumTagPrefix;
+    this->m_Detect.ApplyRuleForEnum(Rule);
+  }
+
+  {
+    RuleOfStruct Rule;
+    Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.StructTagPrefix;
+    this->m_Detect.ApplyRuleForStruct(Rule);
+  }
 }
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
@@ -356,10 +384,6 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   }
 
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  if (!pAppCxt) {
-    assert(pAppCxt);
-    return false;
-  }
 
   string FuncName;
   bool bResult = false;
@@ -391,49 +415,50 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  assert(pAppCxt);
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
     this->m_DumpDecl.PrintDecl(pDecl);
   }
 
-  string Name = pDecl->getName();
+  string VarName = pDecl->getName();
+  bool bStatus = false;
+
   switch (pDecl->getTagKind()) {
   case TTK_Struct: {
     pAppCxt->MemoBoard.Checked.nStruct++;
 
-    bool bStatus =
-        this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructTagName, Name);
+    bool bStatus = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructTagName,
+                                                 "" /*no type*/, VarName, NOT_PTR);
     if (!bStatus) {
       pAppCxt->MemoBoard.Error.nStruct++;
       pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-          pDecl, CheckType::CT_StructTag, bNotPtr, bNotArray, "", Name, ""));
+          pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
     }
     break;
   }
   case TTK_Class: {
+
     pAppCxt->MemoBoard.Checked.nClass++;
 
-    bool bStatus =
-        this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.ClassName, Name);
+    bool bStatus = this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.ClassName, VarName);
     if (!bStatus) {
       pAppCxt->MemoBoard.Error.nClass++;
-      pAppCxt->MemoBoard.ErrorDetailList.push_back(
-          this->_CreateErrorDetail(pDecl, CheckType::CT_Class, bNotPtr, bNotArray, "", Name, ""));
+      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+          pDecl, CheckType::CT_Class, NOT_PTR, NOT_ARRAY, "", VarName, ""));
     }
     break;
   }
   case TTK_Interface:
-    Name = "TTK_Interface";
+    VarName = "TTK_Interface";
     break;
   case TTK_Union:
-    Name = "TTK_Union";
+    VarName = "TTK_Union";
     break;
   case TTK_Enum:
-    Name = "TTK_Enum";
+    VarName = "TTK_Enum";
     break;
   default:
-    Name = "??";
+    VarName = "??";
   }
 
   return true;
@@ -544,7 +569,7 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
     }
     pAppCxt->MemoBoard.Error.nEnum++;
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_EnumVal, bNotPtr, bNotArray, EnumTagName, EnumValName, "???2"));
+        pDecl, CheckType::CT_EnumVal, NOT_PTR, NOT_ARRAY, EnumTagName, EnumValName, "???2"));
   }
 
   return true;
@@ -563,11 +588,11 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
 
   string EnumTagName = pDecl->getName();
   bool bStatus =
-      this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
+      this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
   if (!bStatus) {
     pAppCxt->MemoBoard.Error.nEnum++;
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_EnumTag, bNotPtr, bNotArray, "", EnumTagName, ""));
+        pDecl, CheckType::CT_EnumTag, NOT_PTR, NOT_ARRAY, "", EnumTagName, ""));
   }
 
   return true;

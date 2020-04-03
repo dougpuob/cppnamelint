@@ -3,10 +3,23 @@
 
 #include <gtest/gtest.h>
 
+#include "../Common.h"
 #include "../Config.h"
 #include "../Detection.h"
 
 using namespace namelint;
+
+void SetUp() {
+  const string ConfigToml = "\
+        [General.Options]                                       \n\
+          CheckStruct             = true                        \n\
+        [General.IgnoredList]                                   \n\
+          StructTagPrefix         = [ \"e\", \"En\" ]           \n\
+        ";
+
+  string errorReason;
+  ((APP_CONTEXT *)GetAppCxt())->MemoBoard.Config.LoadStream(ConfigToml, errorReason);
+}
 
 // clang-format off
 //==-------------------------------------------------------------------------==
@@ -418,4 +431,157 @@ TEST(Config_Detect_CheckVariable, Hungarian_Bad)
 
 }  // namespace CheckVariable
 
+
+//==-------------------------------------------------------------------------==
+// Detection.CheckEnum()
+//==-------------------------------------------------------------------------==
+namespace TargetIsEnum {
+    TEST(Config_Detect_CheckEnum, UpperCamel)
+    {
+        RuleOfEnum Rule;
+        Detection Detect;        
+
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_CAMEL, "UsbType10"));
+        EXPECT_EQ(false, Detect.CheckEnumVal(RULETYPE_UPPER_CAMEL, "eUsbType11"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_CAMEL, "EnUsbType20"));
+                
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForEnum(Rule);
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_CAMEL, "UsbType21"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_CAMEL, "e_UsbType30"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_CAMEL, "En_UsbType31"));
+    }
+
+    TEST(Config_Detect_CheckEnum, LowerCamel)
+    {
+        RuleOfEnum Rule;
+        Detection Detect;
+
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_CAMEL, "usbType10"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_CAMEL, "eUsbType11"));
+        EXPECT_EQ(false, Detect.CheckEnumVal(RULETYPE_LOWER_CAMEL, "EnUsbType20"));
+
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForEnum(Rule);
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_CAMEL, "usbType21"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_CAMEL, "e_usbType30"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_CAMEL, "En_usbType31"));
+    }
+
+    TEST(Config_Detect_CheckEnum, LowerSnake)
+    {
+        RuleOfEnum Rule;
+        Detection Detect;
+
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_SNAKE, "usb_type_10"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_SNAKE, "e_usb_type_11"));
+        EXPECT_EQ(false, Detect.CheckEnumVal(RULETYPE_LOWER_SNAKE, "En_usb_type_20"));
+
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForEnum(Rule);
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_SNAKE, "usb_type_10"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_SNAKE, "e_usb_type_11"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_LOWER_SNAKE, "En_usb_type_20"));
+    }
+
+    TEST(Config_Detect_CheckEnum, UpperSnake)
+    {
+        RuleOfEnum Rule;
+        Detection Detect;
+
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_SNAKE, "USB_TYPE_10"));
+        EXPECT_EQ(false, Detect.CheckEnumVal(RULETYPE_UPPER_SNAKE, "e_USB_TYPE_11"));
+        EXPECT_EQ(false, Detect.CheckEnumVal(RULETYPE_UPPER_SNAKE, "En_USB_TYPE_20"));
+
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForEnum(Rule);
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_SNAKE, "USB_TYPE_10"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_SNAKE, "e_USB_TYPE_11"));
+        EXPECT_EQ(true, Detect.CheckEnumVal(RULETYPE_UPPER_SNAKE, "En_USB_TYPE_20"));
+    }
+}
+
+
+//==-------------------------------------------------------------------------==
+// Detection.CheckStruct()
+//==-------------------------------------------------------------------------==
+namespace TargetIsStruct {
+    TEST(Config_Detect_CheckStruct, UpperCamel)
+    {
+        Detection Detect;
+        RuleOfStruct Rule;
+
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_CAMEL, "int", "UsbType10", NOT_PTR));
+        EXPECT_EQ(false, Detect.CheckStructVal(RULETYPE_UPPER_CAMEL, "int", "eUsbType11", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_CAMEL, "int", "EnUsbType20", NOT_PTR));
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForStruct(Rule);
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_CAMEL, "int", "UsbType21", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_CAMEL, "int", "e_UsbType30", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_CAMEL, "int", "En_UsbType31", NOT_PTR));
+    }
+
+    TEST(Config_Detect_CheckStruct, LowerCamel)
+    {
+        RuleOfStruct Rule;
+        Detection Detect;
+
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_CAMEL, "int", "usbType10", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_CAMEL, "int", "eUsbType11", NOT_PTR));
+        EXPECT_EQ(false, Detect.CheckStructVal(RULETYPE_LOWER_CAMEL, "int", "EnUsbType20", NOT_PTR));
+
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForStruct(Rule);
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_CAMEL, "int", "usbType21", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_CAMEL, "int", "e_usbType30", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_CAMEL, "int", "En_usbType31", NOT_PTR));
+    }
+
+    TEST(Config_Detect_CheckStruct, LowerSnake)
+    {
+        RuleOfStruct Rule;
+        Detection Detect;
+
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_SNAKE, "int", "usb_type_10", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_SNAKE, "int", "e_usb_type_11", NOT_PTR));
+        EXPECT_EQ(false, Detect.CheckStructVal(RULETYPE_LOWER_SNAKE, "int", "En_usb_type_20", NOT_PTR));
+
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForStruct(Rule);
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_SNAKE, "int", "usb_type_10", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_SNAKE, "int", "e_usb_type_11", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_LOWER_SNAKE, "int", "En_usb_type_20", NOT_PTR));
+    }
+
+    TEST(Config_Detect_CheckStruct, UpperSnake)
+    {
+        RuleOfStruct Rule;
+        Detection Detect;
+
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_SNAKE, "int", "USB_TYPE_10", NOT_PTR));
+        EXPECT_EQ(false, Detect.CheckStructVal(RULETYPE_UPPER_SNAKE, "int", "e_USB_TYPE_11", NOT_PTR));
+        EXPECT_EQ(false, Detect.CheckStructVal(RULETYPE_UPPER_SNAKE, "int", "En_USB_TYPE_20", NOT_PTR));
+
+
+        Rule.IgnorePrefixs.push_back("e_");
+        Rule.IgnorePrefixs.push_back("En_");
+        Detect.ApplyRuleForStruct(Rule);
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_SNAKE, "int", "USB_TYPE_10", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_SNAKE, "int", "e_USB_TYPE_11", NOT_PTR));
+        EXPECT_EQ(true, Detect.CheckStructVal(RULETYPE_UPPER_SNAKE, "int", "En_USB_TYPE_20", NOT_PTR));
+    }
+}
 // clang-format on

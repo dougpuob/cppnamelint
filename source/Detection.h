@@ -38,10 +38,17 @@ struct RuleOfVariable {
   void Reset();
 };
 
-struct RuleOfEnumAndStruct {
+struct RuleOfStruct {
   vector<string> IgnorePrefixs;
 
-  RuleOfEnumAndStruct();
+  RuleOfStruct();
+  void Reset();
+};
+
+struct RuleOfEnum {
+  vector<string> IgnorePrefixs;
+
+  RuleOfEnum();
   void Reset();
 };
 
@@ -50,7 +57,8 @@ private:
   RuleOfFile m_RuleOfFile;
   RuleOfFunction m_RuleOfFunction;
   RuleOfVariable m_RuleOfVariable;
-  RuleOfEnumAndStruct m_RuleOfEnumAndStruct;
+  RuleOfEnum m_RuleOfEnum;
+  RuleOfStruct m_RuleOfStruct;
 
 private:
   bool _RemoveHeadingUnderscore(string &Text);
@@ -76,12 +84,15 @@ public:
   bool ApplyRuleForFile(const RuleOfFile &Rule);
   bool ApplyRuleForFunction(const RuleOfFunction &Rule);
   bool ApplyRuleForVariable(const RuleOfVariable &Rule);
+  bool ApplyRuleForEnum(const RuleOfEnum &Rule);
+  bool ApplyRuleForStruct(const RuleOfStruct &Rule);
 
   bool CheckFile(const RULETYPE Rule, const string &Name);
   bool CheckFunction(const RULETYPE Rule, const string &Name);
   bool CheckVariable(const RULETYPE Rule, const string &Type, const string &Name,
                      const bool &bPreferUpperCamel, const bool &bIsPtr, const bool &bIsArray);
-  bool CheckEnumAndStruct(const RULETYPE Rule, const string &Name);
+  bool CheckEnumVal(const RULETYPE Rule, const string &Name);
+  bool CheckStructVal(const RULETYPE Rule, const string &Type, const string &Name, bool bIsPtr);
 };
 } // namespace namelint
 

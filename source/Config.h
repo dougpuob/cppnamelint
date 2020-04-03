@@ -30,6 +30,10 @@ struct GeneralOptions {
   bool bCheckVariableName;
   bool bCheckFunctionName;
   bool bCheckFileName;
+  bool bCheckEnum;
+  bool bCheckStruct;
+  bool bAllowedPrintResult;
+  bool bAllowedWriteJsonResult;
   bool bAllowedUnderscopeChar;
   bool bAllowedArrayAffected;
 };
@@ -49,8 +53,8 @@ struct GeneralIgnoredList {
   vector<string> FunctionPrefix;
   vector<string> VariablePrefix;
   vector<string> FunctionName;
-  vector<string> EnumTagName;
-  vector<string> StructTagName;
+  vector<string> EnumTagPrefix;
+  vector<string> StructTagPrefix;
 };
 
 struct General {

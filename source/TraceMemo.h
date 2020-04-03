@@ -73,6 +73,7 @@ class MemoBoard {
 public:
   struct _Option {
     bool bEnableLog;
+    bool bWriteJsonResult;
   } Option;
 
   struct _File {
@@ -107,6 +108,15 @@ public:
   vector<ErrorDetail *> ErrorDetailList;
   namelint::Config Config;
   clang::EnumDecl *pLastEnumDecl;
+
+  MemoBoard() {
+    memset(&this->Option, 0, sizeof(this->Option));
+    memset(&this->Checked, 0, sizeof(this->Checked));
+    memset(&this->Error, 0, sizeof(this->Error));
+    this->Dir.Includes.clear();
+    this->ErrorDetailList.clear();
+    this->pLastEnumDecl = NULL;
+  }
 };
 
 } // namespace namelint
