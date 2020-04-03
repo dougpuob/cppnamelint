@@ -2,6 +2,8 @@
 #include <string>
 
 #include "DumpDecl.h"
+#include <clang\AST\Decl.h>
+
 
 using namespace DcLib;
 
@@ -14,7 +16,17 @@ bool DumpDecl::PrintDecl(Decl *pDecl) {
   // clang-format off
 
     DcLib::Log::Out(INFO_ALL, "");
-	DcLib::Log::Out(INFO_ALL, "v--start line--------------------------------------------------------------------v");
+    DcLib::Log::Out(INFO_ALL, "V==start line====================================================================V");
+
+    if (isa<EnumConstantDecl>(pDecl))
+    {
+        _PrintEnumConstantDecl(dyn_cast<EnumConstantDecl> (pDecl));
+    }
+
+    if (isa<EnumDecl>(pDecl))
+    {
+        _PrintEnumDecl(dyn_cast<EnumDecl> (pDecl));
+    }
 
 	if (isa<RecordDecl>(pDecl))
 	{
@@ -51,23 +63,24 @@ bool DumpDecl::PrintDecl(Decl *pDecl) {
         _PrintTypedefDecl(dyn_cast<TypedefDecl> (pDecl));
     }
 
+    DcLib::Log::Out(INFO_ALL, "----------------------------------------------------------------------------------");
     // Keep this as the last.
     if (isa<NamedDecl>(pDecl))
     {
         _PrintNamedDecl(dyn_cast<NamedDecl> (pDecl));
     }
 
-	DcLib::Log::Out(INFO_ALL, "^--end line-----------------------------------------------------------------------^");
+	DcLib::Log::Out(INFO_ALL, "^==end line=======================================================================^");
   // clang-format on
 
   return true;
 }
 
 void DumpDecl::_PrintNamedDecl(NamedDecl *pDecl) {
-
   // clang-format off
   DcLib::Log::Out(INFO_ALL, "NamedDecl");
-  DcLib::Log::Out(INFO_ALL, "Decl.getName()                                = %s", pDecl->getName().str().c_str());
+  
+  //DcLib::Log::Out(INFO_ALL, "Decl.getName()                                = %s", pDecl->getName().str().c_str());
   DcLib::Log::Out(INFO_ALL, "Decl.getNameAsString()                        = %s", pDecl->getNameAsString().c_str());
   DcLib::Log::Out(INFO_ALL, "Decl.getDeclName()                            = %s", pDecl->getDeclName().getAsString().c_str());
   DcLib::Log::Out(INFO_ALL, "Decl.getDeclKindName()                        = %s", pDecl->getDeclKindName());
@@ -169,8 +182,30 @@ void DumpDecl::_PrintParmVarDecl(ParmVarDecl *pDecl) {
 }
 
 void DumpDecl::_PrintRecordDecl(RecordDecl *pDecl) {
+
+    char* szTagKind = NULL;
+    switch (pDecl->getTagKind()) {
+    case TTK_Struct:
+        szTagKind = "TTK_Struct";
+        break;
+    case TTK_Interface:
+        szTagKind = "TTK_Interface";
+        break;
+    case TTK_Union:
+        szTagKind = "TTK_Union";
+        break;
+    case TTK_Class:
+        szTagKind = "TTK_Class";
+        break;
+    case TTK_Enum:
+        szTagKind = "TTK_Enum";
+        break;
+    }
+    
+
   // clang-format off
   DcLib::Log::Out(INFO_ALL, "RecordDecl");
+  DcLib::Log::Out(INFO_ALL, "RecordDecl.getTagKind() [switch-case]         = %s", szTagKind);
   DcLib::Log::Out(INFO_ALL, "RecordDecl.hasFlexibleArrayMember()           = %d", pDecl->hasFlexibleArrayMember());
   DcLib::Log::Out(INFO_ALL, "RecordDecl.isAnonymousStructOrUnion()         = %d", pDecl->isAnonymousStructOrUnion());
   DcLib::Log::Out(INFO_ALL, "RecordDecl.hasObjectMember()                  = %d", pDecl->hasObjectMember());
@@ -186,4 +221,16 @@ void DumpDecl::_PrintTypedefDecl(TypedefDecl *pDecl) {
   // static bool classof(const Decl *D) { return classofKind(D->getKind()); }
   // static bool classofKind(Kind K) { return K == Typedef; }
   // clang-format on
+}
+
+void DumpDecl::_PrintEnumConstantDecl(EnumConstantDecl *pDecl) {
+    // clang-format of
+    DcLib::Log::Out(INFO_ALL, "EnumConstantDecl");
+    // clang-format on
+}
+
+void DumpDecl::_PrintEnumDecl(EnumDecl *pDecl) {
+    // clang-format of
+    DcLib::Log::Out(INFO_ALL, "EnumDecl");
+    // clang-format on
 }

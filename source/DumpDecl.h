@@ -35,6 +35,8 @@ private:
   void _PrintParmVarDecl(ParmVarDecl *pDecl);
   void _PrintRecordDecl(RecordDecl *pDecl);
   void _PrintTypedefDecl(TypedefDecl *pDecl);
+  void _PrintEnumConstantDecl(EnumConstantDecl *pDecl);
+  void _PrintEnumDecl(EnumDecl *pDecl);
 };
 
 #endif // __LEARN_IT_H__

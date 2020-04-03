@@ -162,12 +162,12 @@ int main(int Argc, const char **Argv) {
 
 size_t GetTotalError(const MemoBoard &MemoBoard) {
   return MemoBoard.Error.nFile + MemoBoard.Error.nParameter + MemoBoard.Error.nFunction +
-         MemoBoard.Error.nVariable;
+         MemoBoard.Error.nVariable + MemoBoard.Error.nEnum + MemoBoard.Error.nStruct;
 }
 
 size_t GetTotalChecked(const MemoBoard &MemoBoard) {
   return MemoBoard.Checked.nFile + MemoBoard.Checked.nParameter + MemoBoard.Checked.nFunction +
-         MemoBoard.Checked.nVariable;
+         MemoBoard.Checked.nVariable+ MemoBoard.Checked.nEnum+ MemoBoard.Checked.nStruct;
 }
 
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
@@ -293,7 +293,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_EnumVal:
-      sprintf(szText, "  <%4d, %4d> Enum Tag: %s (%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Enum Val: %s (%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
               pErrDetail->TypeName.c_str());
 

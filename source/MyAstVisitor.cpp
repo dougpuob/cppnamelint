@@ -337,6 +337,36 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     this->m_DumpDecl.PrintDecl(pDecl);
   }
 
+  switch(pDecl->getKind() == TTK_Struct)  {
+  case TTK_Struct:
+  {
+      pAppCxt->MemoBoard.Checked.nStruct++;
+
+      string StructName = pDecl->getName();
+      bool bStatus =
+          this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructName, StructName);
+      if (!bStatus) {
+          pAppCxt->MemoBoard.Error.nStruct++;
+          pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+              pDecl, CheckType::CT_StructTag, bNotPtr, bNotArray, "", StructName, ""));
+      }
+      break;
+  }
+  case TTK_Class:
+  {
+      pAppCxt->MemoBoard.Checked.nStruct++;
+
+      string ClassName = pDecl->getName();
+      bool bStatus =
+          this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructName, ClassName);
+      if (!bStatus) {
+          pAppCxt->MemoBoard.Error.nStruct++;
+          pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+              pDecl, CheckType::CT_Class, bNotPtr, bNotArray, "", ClassName, ""));
+      }
+      break;
+  }}
+
   return true;
 }
 
@@ -427,13 +457,18 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   }
   pAppCxt->MemoBoard.Checked.nEnum++;
 
+
   string EnumName = pDecl->getName();
   bool bStatus =
       this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumName, EnumName);
   if (!bStatus) {
+      string EnumTagName = "";
+    if (pAppCxt->MemoBoard.pLastEnumDecl) {
+        EnumTagName = pAppCxt->MemoBoard.pLastEnumDecl->getName();
+    }
     pAppCxt->MemoBoard.Error.nEnum++;
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_EnumVal, bNotPtr, bNotArray, "", EnumName, ""));
+        pDecl, CheckType::CT_EnumVal, bNotPtr, bNotArray, EnumTagName, EnumName, ""));
   }
 
   return true;
@@ -446,6 +481,7 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
     this->m_DumpDecl.PrintDecl(pDecl);
   }
 
+  pAppCxt->MemoBoard.pLastEnumDecl = pDecl;
   pAppCxt->MemoBoard.Checked.nEnum++;
 
   string EnumName = pDecl->getName();

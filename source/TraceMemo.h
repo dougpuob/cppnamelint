@@ -1,5 +1,6 @@
 #ifndef __NAMELINT_TRACE_MEMO__H__
 #define __NAMELINT_TRACE_MEMO__H__
+#include "clang/AST/Decl.h"
 
 #include "Config.h"
 #include <map>
@@ -26,6 +27,7 @@ typedef enum _CheckType {
   CT_EnumVal,
   CT_StructTag,
   CT_StructVal,
+  CT_Class,
   CT_Max
 } CheckType;
 
@@ -89,6 +91,7 @@ public:
     size_t nVariable;
     size_t nEnum;
     size_t nStruct;
+    size_t nClass;
   } Checked;
 
   struct _Error {
@@ -98,10 +101,13 @@ public:
     size_t nVariable;
     size_t nEnum;
     size_t nStruct;
+    size_t nClass;
   } Error;
 
   vector<ErrorDetail *> ErrorDetailList;
   namelint::Config Config;
+  clang::EnumDecl* pLastEnumDecl;
+  
 };
 
 } // namespace namelint

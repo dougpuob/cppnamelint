@@ -40,6 +40,7 @@ struct GeneralRules {
   RULETYPE VariableName;
   RULETYPE EnumName;
   RULETYPE StructName;
+  RULETYPE ClassName;
 };
 
 struct GeneralIgnoredList {
