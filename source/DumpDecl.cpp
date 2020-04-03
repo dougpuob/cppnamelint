@@ -2,7 +2,7 @@
 #include <string>
 
 #include "DumpDecl.h"
-#include <clang\AST\Decl.h>
+#include <clang/AST/Decl.h>
 
 using namespace DcLib;
 

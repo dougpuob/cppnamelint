@@ -397,33 +397,43 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     this->m_DumpDecl.PrintDecl(pDecl);
   }
 
-  switch (pDecl->getKind()) {
+  string Name = pDecl->getName();
+  switch (pDecl->getTagKind()) {
   case TTK_Struct: {
     pAppCxt->MemoBoard.Checked.nStruct++;
 
-    string StructTagName = pDecl->getName();
-    bool bStatus = this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructTagName,
-                                                     StructTagName);
+    bool bStatus =
+        this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructTagName, Name);
     if (!bStatus) {
       pAppCxt->MemoBoard.Error.nStruct++;
       pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-          pDecl, CheckType::CT_StructTag, bNotPtr, bNotArray, "", StructTagName, ""));
+          pDecl, CheckType::CT_StructTag, bNotPtr, bNotArray, "", Name, ""));
     }
     break;
   }
   case TTK_Class: {
-    pAppCxt->MemoBoard.Checked.nStruct++;
+    pAppCxt->MemoBoard.Checked.nClass++;
 
-    string ClassName = pDecl->getName();
     bool bStatus =
-        this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructTagName, ClassName);
+        this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.ClassName, Name);
     if (!bStatus) {
-      pAppCxt->MemoBoard.Error.nStruct++;
-      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-          pDecl, CheckType::CT_Class, bNotPtr, bNotArray, "", ClassName, ""));
+      pAppCxt->MemoBoard.Error.nClass++;
+      pAppCxt->MemoBoard.ErrorDetailList.push_back(
+          this->_CreateErrorDetail(pDecl, CheckType::CT_Class, bNotPtr, bNotArray, "", Name, ""));
     }
     break;
   }
+  case TTK_Interface:
+    Name = "TTK_Interface";
+    break;
+  case TTK_Union:
+    Name = "TTK_Union";
+    break;
+  case TTK_Enum:
+    Name = "TTK_Enum";
+    break;
+  default:
+    Name = "??";
   }
 
   return true;

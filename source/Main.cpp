@@ -286,6 +286,16 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       }
       break;
 
+    case CheckType::CT_Class:
+      sprintf(szText, "  <%4d, %4d> Class     : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
     case CheckType::CT_EnumTag:
       sprintf(szText, "  <%4d, %4d> Enum Tag  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
