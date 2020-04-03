@@ -4,12 +4,6 @@
 #include "TraceMemo.h"
 #include <string>
 
-// static const bool bPreferUpperCamel = true;
-// static const bool bIsPtr = true;
-// static const bool bIsArray = true;
-// static const bool bNotPtr = false;
-// static const bool bNotArray = false;
-
 static const bool PREFER_UPPER_CAMEL = true;
 static const bool IS_PTR = true;
 static const bool IS_ARRAY = true;

@@ -115,14 +115,14 @@ TEST(Config_Detect_CheckFile, LowerSeperated_Good)
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "test_name.h"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "test_name.cpp"));
     EXPECT_EQ(true, Detect.CheckFile(RuleType, "test_name_.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RuleType, "lowername.CPP"));
 }
 
 TEST(Config_Detect_CheckFile, LowerSeperated_Bad)
 {
     Detection Detect;
     const RULETYPE RuleType = RULETYPE_LOWER_SNAKE;
-
-    EXPECT_EQ(false, Detect.CheckFile(RuleType, "lowername.CPP"));
+        
     EXPECT_EQ(false, Detect.CheckFile(RuleType, "lowerName.cpp"));
     EXPECT_EQ(false, Detect.CheckFile(RuleType, "testName.cpp"));
     EXPECT_EQ(false, Detect.CheckFile(RuleType, "test_Name.cpp"));

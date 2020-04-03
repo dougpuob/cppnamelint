@@ -61,6 +61,10 @@ private:
   RuleOfStruct m_RuleOfStruct;
 
 private:
+  int _FindContinuedUnderscope(const string &Name);
+  int _FindLower(const string &Name);
+  int _FindUpper(const string &Name);
+
   bool _RemoveHeadingUnderscore(string &Text);
   size_t _RemoveHeadingPtrChar(string &Text);
   bool _CaptureLowerCasePrefix(string &Name);
