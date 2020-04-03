@@ -256,11 +256,66 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
   return true;
 }
 
+bool MyASTVisitor::_CheckRuleForStructValue(ValueDecl *pDecl) {
+  string ValueType;
+  string ValueName;
+
+  bool bIsPtr = false;
+  bool bIsArray = false;
+  bool bIsBuiltinType = false;
+
+  bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray, bIsBuiltinType);
+
+  if (!bStauts) {
+    return false;
+  }
+
+  bool bResult = this->m_Detect.CheckVariable(
+      this->m_pConfig->General.Rules.StructValueName, ValueType, ValueName,
+      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
+
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  if (!pAppCxt) {
+    assert(pAppCxt);
+    return false;
+  }
+  pAppCxt->MemoBoard.Checked.nVariable++;
+  if (!bResult) {
+    pAppCxt->MemoBoard.Error.nVariable++;
+
+    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+        pDecl, CheckType::CT_StructVal, bIsPtr, bIsArray, ValueType, ValueName, ""));
+  }
+  return true;
+}
+
+bool MyASTVisitor::_CheckRuleForEnumValue(EnumConstantDecl *pDecl) {
+  string ValueType;
+  string ValueName;
+
+  bool bIsPtr = false;
+  bool bIsArray = false;
+  bool bIsBuiltinType = false;
+
+  bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray, bIsBuiltinType);
+
+  if (!bStauts) {
+    return false;
+  }
+
+  bStauts = this->m_Detect.CheckVariable(
+      this->m_pConfig->General.Rules.EnumValueName, ValueType, ValueName,
+      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
+
+  return bStauts;
+}
+
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
                            const Config *pConfig) {
   this->m_pSrcMgr = pSM;
   this->m_pAstCxt = (ASTContext *)pAstCxt;
   this->m_pConfig = pConfig->GetData();
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
 
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
@@ -287,12 +342,16 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
 }
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
   // std::cout << "VisitCXXRecordDecl " << D->getNameAsString() << std::endl;
   return true;
 }
 
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
+
   if (!this->m_pConfig->General.Options.bCheckFunctionName) {
+    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFunctionName)");
     return true;
   }
 
@@ -330,6 +389,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     return false;
   }
 
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
   assert(pAppCxt);
 
@@ -337,41 +397,43 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     this->m_DumpDecl.PrintDecl(pDecl);
   }
 
-  switch(pDecl->getKind() == TTK_Struct)  {
-  case TTK_Struct:
-  {
-      pAppCxt->MemoBoard.Checked.nStruct++;
+  switch (pDecl->getKind()) {
+  case TTK_Struct: {
+    pAppCxt->MemoBoard.Checked.nStruct++;
 
-      string StructName = pDecl->getName();
-      bool bStatus =
-          this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructName, StructName);
-      if (!bStatus) {
-          pAppCxt->MemoBoard.Error.nStruct++;
-          pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-              pDecl, CheckType::CT_StructTag, bNotPtr, bNotArray, "", StructName, ""));
-      }
-      break;
+    string StructTagName = pDecl->getName();
+    bool bStatus = this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructTagName,
+                                                     StructTagName);
+    if (!bStatus) {
+      pAppCxt->MemoBoard.Error.nStruct++;
+      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+          pDecl, CheckType::CT_StructTag, bNotPtr, bNotArray, "", StructTagName, ""));
+    }
+    break;
   }
-  case TTK_Class:
-  {
-      pAppCxt->MemoBoard.Checked.nStruct++;
+  case TTK_Class: {
+    pAppCxt->MemoBoard.Checked.nStruct++;
 
-      string ClassName = pDecl->getName();
-      bool bStatus =
-          this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructName, ClassName);
-      if (!bStatus) {
-          pAppCxt->MemoBoard.Error.nStruct++;
-          pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-              pDecl, CheckType::CT_Class, bNotPtr, bNotArray, "", ClassName, ""));
-      }
-      break;
-  }}
+    string ClassName = pDecl->getName();
+    bool bStatus =
+        this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.StructTagName, ClassName);
+    if (!bStatus) {
+      pAppCxt->MemoBoard.Error.nStruct++;
+      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+          pDecl, CheckType::CT_Class, bNotPtr, bNotArray, "", ClassName, ""));
+    }
+    break;
+  }
+  }
 
   return true;
 }
 
 bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
+
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
+    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckVariableName)");
     return true;
   }
 
@@ -383,15 +445,18 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
 }
 
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
+
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
+    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckVariableName)");
     return true;
   }
 
-  return _CheckRuleForVariable(pDecl);
+  return _CheckRuleForStructValue(pDecl);
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
-  assert(pRetStmt);
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
 
   const Expr *pExpr = pRetStmt->getRetValue();
   if (pExpr) {
@@ -411,8 +476,8 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   bool bAnonymous = false;
   bool bResult = false;
 
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  assert(pAppCxt);
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
     this->m_DumpDecl.PrintDecl(pDecl);
@@ -441,6 +506,7 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
 }
 
 bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
@@ -450,6 +516,7 @@ bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
 }
 
 bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
@@ -457,24 +524,24 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   }
   pAppCxt->MemoBoard.Checked.nEnum++;
 
+  string EnumValName = pDecl->getName();
 
-  string EnumName = pDecl->getName();
-  bool bStatus =
-      this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumName, EnumName);
+  bool bStatus = _CheckRuleForEnumValue(pDecl);
   if (!bStatus) {
-      string EnumTagName = "";
+    string EnumTagName = "???1";
     if (pAppCxt->MemoBoard.pLastEnumDecl) {
-        EnumTagName = pAppCxt->MemoBoard.pLastEnumDecl->getName();
+      EnumTagName = pAppCxt->MemoBoard.pLastEnumDecl->getName();
     }
     pAppCxt->MemoBoard.Error.nEnum++;
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_EnumVal, bNotPtr, bNotArray, EnumTagName, EnumName, ""));
+        pDecl, CheckType::CT_EnumVal, bNotPtr, bNotArray, EnumTagName, EnumValName, "???2"));
   }
 
   return true;
 }
 
 bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   if (pAppCxt->MemoBoard.Option.bEnableLog) {
@@ -484,13 +551,13 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   pAppCxt->MemoBoard.pLastEnumDecl = pDecl;
   pAppCxt->MemoBoard.Checked.nEnum++;
 
-  string EnumName = pDecl->getName();
+  string EnumTagName = pDecl->getName();
   bool bStatus =
-      this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumName, EnumName);
+      this->m_Detect.CheckEnumAndStruct(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
   if (!bStatus) {
     pAppCxt->MemoBoard.Error.nEnum++;
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_EnumTag, bNotPtr, bNotArray, "", EnumName, ""));
+        pDecl, CheckType::CT_EnumTag, bNotPtr, bNotArray, "", EnumTagName, ""));
   }
 
   return true;

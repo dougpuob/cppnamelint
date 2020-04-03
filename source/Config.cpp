@@ -117,6 +117,36 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
     this->m_pConfig->General.Rules.VariableName = (RULETYPE)pRuleVariableName->as<int>();
   }
 
+  // General.Rules.ClassName
+  const toml::Value *pRuleClassName = ParseRsValue.find("General.Rules.ClassName");
+  if (pRuleClassName && pRuleClassName->is<int>()) {
+    this->m_pConfig->General.Rules.ClassName = (RULETYPE)pRuleClassName->as<int>();
+  }
+
+  // General.Rules.EnumTagName
+  const toml::Value *pRuleEnumTagName = ParseRsValue.find("General.Rules.EnumTagName");
+  if (pRuleEnumTagName && pRuleEnumTagName->is<int>()) {
+    this->m_pConfig->General.Rules.EnumTagName = (RULETYPE)pRuleEnumTagName->as<int>();
+  }
+
+  // General.Rules.EnumValueName
+  const toml::Value *pRuleEnumValueName = ParseRsValue.find("General.Rules.EnumValueName");
+  if (pRuleEnumValueName && pRuleEnumValueName->is<int>()) {
+    this->m_pConfig->General.Rules.EnumValueName = (RULETYPE)pRuleEnumValueName->as<int>();
+  }
+
+  // General.Rules.StructTagName
+  const toml::Value *pRuleStructTagName = ParseRsValue.find("General.Rules.StructTagName");
+  if (pRuleStructTagName && pRuleStructTagName->is<int>()) {
+    this->m_pConfig->General.Rules.StructTagName = (RULETYPE)pRuleStructTagName->as<int>();
+  }
+
+  // General.Rules.StructValueName
+  const toml::Value *pRuleStructValueName = ParseRsValue.find("General.Rules.StructValueName");
+  if (pRuleStructValueName && pRuleStructValueName->is<int>()) {
+    this->m_pConfig->General.Rules.StructValueName = (RULETYPE)pRuleStructValueName->as<int>();
+  }
+
   // ==----------------------------------------------------------------------------------
   // [General.IgnoredList]
   // ==----------------------------------------------------------------------------------

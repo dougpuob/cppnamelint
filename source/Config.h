@@ -38,17 +38,19 @@ struct GeneralRules {
   RULETYPE FileName;
   RULETYPE FunctionName;
   RULETYPE VariableName;
-  RULETYPE EnumName;
-  RULETYPE StructName;
   RULETYPE ClassName;
+  RULETYPE EnumTagName;
+  RULETYPE EnumValueName;
+  RULETYPE StructTagName;
+  RULETYPE StructValueName;
 };
 
 struct GeneralIgnoredList {
   vector<string> FunctionPrefix;
   vector<string> VariablePrefix;
   vector<string> FunctionName;
-  vector<string> EnumName;
-  vector<string> StructName;
+  vector<string> EnumTagName;
+  vector<string> StructTagName;
 };
 
 struct General {

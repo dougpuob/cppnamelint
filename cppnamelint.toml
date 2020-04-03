@@ -28,6 +28,12 @@ VariableName            = 4 # 0: Default (UpperCamel)
                             # 3: lower_snake
                             # 4: Hungarian
 
+ClassName               = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 5: UPPER_SNAKE
+
 EnumTagName             = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
@@ -54,11 +60,6 @@ StructValueName         = 0 # 0: Default (UpperCamel)
                             # 4: Hungarian
                             # 5: UPPER_SNAKE
 
-ClassName               = 0 # 0: Default (UpperCamel)
-                            # 1: UpperCamel
-                            # 2: lowerCamel
-                            # 3: lower_snake
-                            # 5: UPPER_SNAKE
 
 [General.IgnoredList]
 FunctionPrefix          = [ "_",

@@ -54,6 +54,8 @@ private:
                      bool &bIsArray, bool &bIsBuiltinType);
 
   bool _CheckRuleForVariable(ValueDecl *pDecl);
+  bool _CheckRuleForStructValue(ValueDecl *pDecl);
+  bool _CheckRuleForEnumValue(EnumConstantDecl *pDecl);
 
 public:
   MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt, const Config *pConfig);

@@ -106,8 +106,7 @@ public:
 
   vector<ErrorDetail *> ErrorDetailList;
   namelint::Config Config;
-  clang::EnumDecl* pLastEnumDecl;
-  
+  clang::EnumDecl *pLastEnumDecl;
 };
 
 } // namespace namelint

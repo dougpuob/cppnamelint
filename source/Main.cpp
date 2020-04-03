@@ -90,7 +90,9 @@ int RunCheck(namelint::MemoBoard &Memo) {
   Detection Detect;
   shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
   GeneralOptions *pOptions = &pConfig->General.Options;
-  if (pOptions->bCheckFileName) {
+  if (!pOptions->bCheckFileName) {
+    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFileName)");
+  } else {
     RuleOfFile Rule;
     Rule.bAllowedUnderscopeChar = pOptions->bAllowedUnderscopeChar;
     Detect.ApplyRuleForFile(Rule);
@@ -167,7 +169,7 @@ size_t GetTotalError(const MemoBoard &MemoBoard) {
 
 size_t GetTotalChecked(const MemoBoard &MemoBoard) {
   return MemoBoard.Checked.nFile + MemoBoard.Checked.nParameter + MemoBoard.Checked.nFunction +
-         MemoBoard.Checked.nVariable+ MemoBoard.Checked.nEnum+ MemoBoard.Checked.nStruct;
+         MemoBoard.Checked.nVariable + MemoBoard.Checked.nEnum + MemoBoard.Checked.nStruct;
 }
 
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
@@ -219,20 +221,22 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   }
 
   sprintf(szText,
-          " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d]",
+          " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d | "
+          "Class:%3d]",
           GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile, MemoBoard.Checked.nFunction,
           MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum,
-          MemoBoard.Checked.nStruct);
+          MemoBoard.Checked.nStruct, MemoBoard.Checked.nClass);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
   sprintf(szText,
-          " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d]",
+          " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d | "
+          "Class:%3d]",
           GetTotalError(MemoBoard), MemoBoard.Error.nFile, MemoBoard.Error.nFunction,
           MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum,
-          MemoBoard.Error.nStruct);
+          MemoBoard.Error.nStruct, MemoBoard.Error.nClass);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
@@ -251,7 +255,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Function:
-      sprintf(szText, "  <%4d, %4d> Function: %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4d, %4d> Function  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -261,7 +265,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Parameter:
-      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Parameter : %s (%s%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""));
 
@@ -272,7 +276,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Variable:
-      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Variable  : %s (%s%s%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""), (pErrDetail->bIsArray ? "[]" : ""));
 
@@ -283,7 +287,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_EnumTag:
-      sprintf(szText, "  <%4d, %4d> Enum Tag: %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4d, %4d> Enum Tag  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -293,7 +297,29 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_EnumVal:
-      sprintf(szText, "  <%4d, %4d> Enum Val: %s (%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Enum Val  : %s (%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
+              pErrDetail->TypeName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_StructTag:
+      sprintf(szText, "  <%4d, %4d> Struct Tag: %s (%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
+              pErrDetail->TypeName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_StructVal:
+      sprintf(szText, "  <%4d, %4d> Struct Val: %s (%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
               pErrDetail->TypeName.c_str());
 

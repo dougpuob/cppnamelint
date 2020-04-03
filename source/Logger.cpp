@@ -83,7 +83,7 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   if (FlagInfo.bPrintLineNumber) {
     FileStream << "@" << FlagInfo.LineNumber;
   }
-  FileStream << "]";
+  FileStream << "]\t";
 
   //
   // Text Message

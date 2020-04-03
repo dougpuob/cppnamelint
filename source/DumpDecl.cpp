@@ -4,7 +4,6 @@
 #include "DumpDecl.h"
 #include <clang\AST\Decl.h>
 
-
 using namespace DcLib;
 
 DumpDecl::DumpDecl() {}
@@ -183,25 +182,24 @@ void DumpDecl::_PrintParmVarDecl(ParmVarDecl *pDecl) {
 
 void DumpDecl::_PrintRecordDecl(RecordDecl *pDecl) {
 
-    char* szTagKind = NULL;
-    switch (pDecl->getTagKind()) {
-    case TTK_Struct:
-        szTagKind = "TTK_Struct";
-        break;
-    case TTK_Interface:
-        szTagKind = "TTK_Interface";
-        break;
-    case TTK_Union:
-        szTagKind = "TTK_Union";
-        break;
-    case TTK_Class:
-        szTagKind = "TTK_Class";
-        break;
-    case TTK_Enum:
-        szTagKind = "TTK_Enum";
-        break;
-    }
-    
+  char *szTagKind = NULL;
+  switch (pDecl->getTagKind()) {
+  case TTK_Struct:
+    szTagKind = "TTK_Struct";
+    break;
+  case TTK_Interface:
+    szTagKind = "TTK_Interface";
+    break;
+  case TTK_Union:
+    szTagKind = "TTK_Union";
+    break;
+  case TTK_Class:
+    szTagKind = "TTK_Class";
+    break;
+  case TTK_Enum:
+    szTagKind = "TTK_Enum";
+    break;
+  }
 
   // clang-format off
   DcLib::Log::Out(INFO_ALL, "RecordDecl");
@@ -224,13 +222,13 @@ void DumpDecl::_PrintTypedefDecl(TypedefDecl *pDecl) {
 }
 
 void DumpDecl::_PrintEnumConstantDecl(EnumConstantDecl *pDecl) {
-    // clang-format of
-    DcLib::Log::Out(INFO_ALL, "EnumConstantDecl");
-    // clang-format on
+  // clang-format of
+  DcLib::Log::Out(INFO_ALL, "EnumConstantDecl");
+  // clang-format on
 }
 
 void DumpDecl::_PrintEnumDecl(EnumDecl *pDecl) {
-    // clang-format of
-    DcLib::Log::Out(INFO_ALL, "EnumDecl");
-    // clang-format on
+  // clang-format of
+  DcLib::Log::Out(INFO_ALL, "EnumDecl");
+  // clang-format on
 }
