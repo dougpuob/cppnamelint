@@ -1,10 +1,14 @@
 [General.Options]
-Version                 = 0.2
+Version                 = 0.3
 FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckFileName           = false
 CheckVariableName       = true
 CheckFunctionName       = true
-CheckFileName           = true
-AllowedUnderscopeChar   = true
+CheckEnum               = true
+CheckStruct             = true
+AllowedPrintResult      = true
+AllowedWriteJsonResult  = true
+AllowedUnderscopeChar   = false
 AllowedArrayAffected    = false
 
 
