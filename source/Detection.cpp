@@ -168,6 +168,34 @@ bool Detection::_IsLowerCamelCaseString(const string &Name, vector<string> Ignor
   return bStatus;
 }
 
+int Detection::_FindUpper(const string &Name) {
+  char *szNext = (char *)Name.c_str();
+  for (size_t nIdx = 0; nIdx < Name.length(); nIdx++) {
+    if (isupper(Name[nIdx])) {
+      return nIdx;
+    }
+  }
+  return -1;
+}
+
+int Detection::_FindContinuedUnderscope(const string &Name) {
+  size_t nRet = Name.find("__");
+  if (string::npos == nRet) {
+    return -1;
+  }
+  return nRet;
+}
+
+int Detection::_FindLower(const string &Name) {
+  char *szNext = (char *)Name.c_str();
+  for (size_t nIdx = 0; nIdx < Name.length(); nIdx++) {
+    if (islower(Name[nIdx])) {
+      return nIdx;
+    }
+  }
+  return -1;
+}
+
 bool Detection::_IsSnakeString(const string &Name, SNAKETYPE SnakeType,
                                vector<string> IgnorePrefixs) {
   vector<string> NewIgnorePrefixs = IgnorePrefixs;
@@ -185,38 +213,33 @@ bool Detection::_IsSnakeString(const string &Name, SNAKETYPE SnakeType,
     }
   }
 
-  char *szText = (char *)NewName.c_str();
-  if (szText[0] == '_') {
-    return false;
-  }
+  std::smatch Match;
+  std::string Result;
+  string NewRegexPatn;
+  bool bStatus = (_FindContinuedUnderscope(NewName) < 0);
 
-  switch (SnakeType) {
-  case SNAKETYPE_LOWER:
-    for (size_t nIdx = 0; szText[nIdx] != '\0'; nIdx++) {
-      if (isupper(szText[nIdx])) {
-        return false;
+  if (bStatus) {
+    switch (SnakeType) {
+    case SNAKETYPE_LOWER:
+      bStatus = (-1 == _FindUpper(NewName));
+      if (bStatus) {
+        NewRegexPatn = "\\b[a-z0-9_]+";
       }
-    }
-    break;
-  case SNAKETYPE_UPPER:
-    for (size_t nIdx = 0; szText[nIdx] != '\0'; nIdx++) {
-      if (islower(szText[nIdx])) {
-        return false;
+      break;
+    case SNAKETYPE_UPPER:
+      bStatus = (-1 == _FindLower(NewName));
+      if (bStatus) {
+        NewRegexPatn = "\\b[A-Z0-9_]+";
       }
+      break;
     }
-    break;
-  }
 
-  bool bStatus = true;
-  while (*szText != '\0') {
-    if (*szText == '_') {
-      szText++;
-      if (*szText == '_') {
-        bStatus = false;
-        break;
+    if (bStatus) {
+      std::regex Regex(NewRegexPatn);
+      if (std::regex_search(NewName, Match, Regex) && Match.size() >= 1) {
+        bStatus = true;
       }
     }
-    szText++;
   }
 
   return bStatus;
@@ -399,20 +422,26 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
     return false;
   }
 
+  string NewName = Name;
+  size_t nFoundPos = NewName.find_last_of(".");
+  if (-1 != nFoundPos) {
+    NewName = NewName.substr(0, nFoundPos);
+  }
+
   vector<string> NullIgnorePrefixs;
   switch (Rule) {
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL:
-    bStatus = this->_IsUpperCamelCaseString(Name, NullIgnorePrefixs,
+    bStatus = this->_IsUpperCamelCaseString(NewName, NullIgnorePrefixs,
                                             this->m_RuleOfFile.bAllowedUnderscopeChar);
     break;
 
   case RULETYPE_LOWER_CAMEL:
-    bStatus = this->_IsLowerCamelCaseString(Name, NullIgnorePrefixs);
+    bStatus = this->_IsLowerCamelCaseString(NewName, NullIgnorePrefixs);
     break;
 
   case RULETYPE_LOWER_SNAKE:
-    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, NullIgnorePrefixs);
+    bStatus = this->_IsSnakeString(NewName, SNAKETYPE_LOWER, NullIgnorePrefixs);
     break;
   }
   return bStatus;
