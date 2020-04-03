@@ -25,26 +25,15 @@ size_t GetTotalError(const MemoBoard &MemoBoard);
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc);
 bool PrintTraceMemo(const MemoBoard &MemoBoard);
 bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath);
+int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool);
+int RunCheckFormFile(namelint::MemoBoard &Memo);
 
-int RunCheck(namelint::MemoBoard &Memo) {
+int RunCheckFormFile(namelint::MemoBoard &Memo) {
   int iRet = 0;
-
-  string OutputJson = CheckOutputJson;
 
   Memo.File.Source = CheckInputSrc;
   Memo.File.Config = CheckInputConfig;
   Memo.Dir.Includes = CheckIncludes;
-
-  if (OutputJson.length() == 0) {
-    OutputJson = "cppnamelint.json";
-  }
-
-  //
-  // Check input parameters.
-  //
-  DcLib::Log::Out(INFO_ALL, "Source File = %s", Memo.File.Source.c_str());
-  DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
-  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
 
   if (!llvm::sys::fs::exists(Memo.File.Source)) {
     cout << "Error: Failed to find input source file." << endl;
@@ -74,6 +63,46 @@ int RunCheck(namelint::MemoBoard &Memo) {
   //
   vector<string> SingleFileInList = {Memo.File.Source};
   ClangTool Tool(*Compilations, SingleFileInList);
+
+  RunCheck(Memo, Tool);
+  return iRet;
+}
+
+int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent) {
+  int iRet = 0;
+
+  //
+  // Load source code file then create compilatation database.
+  //
+  std::string ErrorMessage;
+  FixedCompilationDatabase Compilations("./", std::vector<std::string>());
+
+  //
+  // Create clang tool then add clang tool arguments.
+  //
+  ClangTool Tool(Compilations, std::vector<std::string>(1, "./a.cc"));
+  Tool.mapVirtualFile("./a.cc", SourceContent);
+
+  RunCheck(Memo, Tool);
+  return iRet;
+}
+
+int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
+  int iRet = 0;
+
+  string OutputJson = CheckOutputJson;
+
+  if (OutputJson.length() == 0) {
+    OutputJson = "cppnamelint.json";
+  }
+
+  //
+  // Check input parameters.
+  //
+  DcLib::Log::Out(INFO_ALL, "Source File = %s", Memo.File.Source.c_str());
+  DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
+  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
+
   for (auto inc : Memo.Dir.Includes) {
     auto arg = "--I" + inc;
     Tool.appendArgumentsAdjuster(
@@ -90,7 +119,9 @@ int RunCheck(namelint::MemoBoard &Memo) {
   Detection Detect;
   shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
   GeneralOptions *pOptions = &pConfig->General.Options;
-  if (pOptions->bCheckFileName) {
+  if (!pOptions->bCheckFileName) {
+    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFileName)");
+  } else {
     RuleOfFile Rule;
     Rule.bAllowedUnderscopeChar = pOptions->bAllowedUnderscopeChar;
     Detect.ApplyRuleForFile(Rule);
@@ -111,8 +142,12 @@ int RunCheck(namelint::MemoBoard &Memo) {
   // Go
   if (0 == Tool.run(Factory.get())) {
     iRet = GetTotalError(Memo);
-    PrintTraceMemo(Memo);
-    WriteJsonResult(Memo, OutputJson);
+    if (Memo.Config.GetData()->General.Options.bAllowedPrintResult) {
+      PrintTraceMemo(Memo);
+    }
+    if (Memo.Option.bWriteJsonResult) {
+      WriteJsonResult(Memo, OutputJson);
+    }
   } else {
     iRet = -1;
   }
@@ -147,7 +182,7 @@ int main(int Argc, const char **Argv) {
   pAppCxt->MemoBoard.Option.bEnableLog = (LogFile.length() > 0);
 
   if (CheckSubcommand) {
-    iRet = RunCheck(pAppCxt->MemoBoard);
+    iRet = RunCheckFormFile(pAppCxt->MemoBoard);
   } else if (TestSubcommand) {
     testing::InitGoogleTest(&Argc, (char **)Argv);
     iRet = RUN_ALL_TESTS();
@@ -162,12 +197,12 @@ int main(int Argc, const char **Argv) {
 
 size_t GetTotalError(const MemoBoard &MemoBoard) {
   return MemoBoard.Error.nFile + MemoBoard.Error.nParameter + MemoBoard.Error.nFunction +
-         MemoBoard.Error.nVariable;
+         MemoBoard.Error.nVariable + MemoBoard.Error.nEnum + MemoBoard.Error.nStruct;
 }
 
 size_t GetTotalChecked(const MemoBoard &MemoBoard) {
   return MemoBoard.Checked.nFile + MemoBoard.Checked.nParameter + MemoBoard.Checked.nFunction +
-         MemoBoard.Checked.nVariable;
+         MemoBoard.Checked.nVariable + MemoBoard.Checked.nEnum + MemoBoard.Checked.nStruct;
 }
 
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
@@ -218,17 +253,23 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
     }
   }
 
-  sprintf(szText, " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
+  sprintf(szText,
+          " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d | "
+          "Class:%3d]",
           GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile, MemoBoard.Checked.nFunction,
-          MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable);
+          MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum,
+          MemoBoard.Checked.nStruct, MemoBoard.Checked.nClass);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
   }
 
-  sprintf(szText, " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d]",
+  sprintf(szText,
+          " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d | "
+          "Class:%3d]",
           GetTotalError(MemoBoard), MemoBoard.Error.nFile, MemoBoard.Error.nFunction,
-          MemoBoard.Error.nParameter, MemoBoard.Error.nVariable);
+          MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum,
+          MemoBoard.Error.nStruct, MemoBoard.Error.nClass);
   printf("%s\n", szText);
   if (MemoBoard.Option.bEnableLog) {
     DcLib::Log::Out(INFO_ALL, szText);
@@ -247,7 +288,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Function:
-      sprintf(szText, "  <%4d, %4d> Function: %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4d, %4d> Function  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -257,7 +298,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Parameter:
-      sprintf(szText, "  <%4d, %4d> Parameter: %s (%s%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Parameter : %s (%s%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""));
 
@@ -268,9 +309,62 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Variable:
-      sprintf(szText, "  <%4d, %4d> Variable : %s (%s%s%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4d, %4d> Variable  : %s (%s%s%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""), (pErrDetail->bIsArray ? "[]" : ""));
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_Class:
+      sprintf(szText, "  <%4d, %4d> Class     : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_EnumTag:
+      sprintf(szText, "  <%4d, %4d> Enum Tag  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+              pErrDetail->TargetName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_EnumVal:
+      sprintf(szText, "  <%4d, %4d> Enum Val  : %s (%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
+              pErrDetail->TypeName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_StructTag:
+      sprintf(szText, "  <%4d, %4d> Struct Tag: %s (%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
+              pErrDetail->TypeName.c_str());
+
+      printf("%s\n", szText);
+      if (MemoBoard.Option.bEnableLog) {
+        DcLib::Log::Out(INFO_ALL, szText);
+      }
+      break;
+
+    case CheckType::CT_StructVal:
+      sprintf(szText, "  <%4d, %4d> Struct Val: %s (%s)", pErrDetail->Pos.nLine,
+              pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
+              pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
       if (MemoBoard.Option.bEnableLog) {

@@ -64,6 +64,12 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
     }(this->m_pConfig->General.Options.FileExtNameList, pFileExtNameList->as<toml::Array>());
   }
 
+  // General.Options.CheckFileName
+  const toml::Value *pChkFileName = ParseRsValue.find("General.Options.CheckFileName");
+  if (pChkFileName && pChkFileName->is<bool>()) {
+    this->m_pConfig->General.Options.bCheckFileName = pChkFileName->as<bool>();
+  }
+
   // General.Options.CheckVariableName
   const toml::Value *pChkVarName = ParseRsValue.find("General.Options.CheckVariableName");
   if (pChkVarName && pChkVarName->is<bool>()) {
@@ -76,10 +82,29 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
     this->m_pConfig->General.Options.bCheckFunctionName = pChkFuncName->as<bool>();
   }
 
-  // General.Options.CheckFileName
-  const toml::Value *pChkFileName = ParseRsValue.find("General.Options.CheckFileName");
-  if (pChkFileName && pChkFileName->is<bool>()) {
-    this->m_pConfig->General.Options.bCheckFileName = pChkFileName->as<bool>();
+  // General.Options.CheckEnum
+  const toml::Value *pCheckEnum = ParseRsValue.find("General.Options.CheckEnum");
+  if (pCheckEnum && pCheckEnum->is<bool>()) {
+    this->m_pConfig->General.Options.bCheckEnum = pCheckEnum->as<bool>();
+  }
+
+  // General.Options.CheckStruct
+  const toml::Value *pChkStruct = ParseRsValue.find("General.Options.CheckStruct");
+  if (pChkStruct && pChkStruct->is<bool>()) {
+    this->m_pConfig->General.Options.bCheckStruct = pChkStruct->as<bool>();
+  }
+
+  // General.Options.AllowedPrintResult
+  const toml::Value *pAllowedPrintResult = ParseRsValue.find("General.Options.AllowedPrintResult");
+  if (pAllowedPrintResult && pAllowedPrintResult->is<bool>()) {
+    this->m_pConfig->General.Options.bAllowedPrintResult = pAllowedPrintResult->as<bool>();
+  }
+
+  // General.Options.AllowedWriteJsonResult
+  const toml::Value *pAllowedWriteJsonResult =
+      ParseRsValue.find("General.Options.AllowedWriteJsonResult");
+  if (pAllowedWriteJsonResult && pAllowedWriteJsonResult->is<bool>()) {
+    this->m_pConfig->General.Options.bAllowedWriteJsonResult = pAllowedWriteJsonResult->as<bool>();
   }
 
   // General.Options.AllowedUnderscopeChar
@@ -117,6 +142,36 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
     this->m_pConfig->General.Rules.VariableName = (RULETYPE)pRuleVariableName->as<int>();
   }
 
+  // General.Rules.ClassName
+  const toml::Value *pRuleClassName = ParseRsValue.find("General.Rules.ClassName");
+  if (pRuleClassName && pRuleClassName->is<int>()) {
+    this->m_pConfig->General.Rules.ClassName = (RULETYPE)pRuleClassName->as<int>();
+  }
+
+  // General.Rules.EnumTagName
+  const toml::Value *pRuleEnumTagName = ParseRsValue.find("General.Rules.EnumTagName");
+  if (pRuleEnumTagName && pRuleEnumTagName->is<int>()) {
+    this->m_pConfig->General.Rules.EnumTagName = (RULETYPE)pRuleEnumTagName->as<int>();
+  }
+
+  // General.Rules.EnumValueName
+  const toml::Value *pRuleEnumValueName = ParseRsValue.find("General.Rules.EnumValueName");
+  if (pRuleEnumValueName && pRuleEnumValueName->is<int>()) {
+    this->m_pConfig->General.Rules.EnumValueName = (RULETYPE)pRuleEnumValueName->as<int>();
+  }
+
+  // General.Rules.StructTagName
+  const toml::Value *pRuleStructTagName = ParseRsValue.find("General.Rules.StructTagName");
+  if (pRuleStructTagName && pRuleStructTagName->is<int>()) {
+    this->m_pConfig->General.Rules.StructTagName = (RULETYPE)pRuleStructTagName->as<int>();
+  }
+
+  // General.Rules.StructValueName
+  const toml::Value *pRuleStructValueName = ParseRsValue.find("General.Rules.StructValueName");
+  if (pRuleStructValueName && pRuleStructValueName->is<int>()) {
+    this->m_pConfig->General.Rules.StructValueName = (RULETYPE)pRuleStructValueName->as<int>();
+  }
+
   // ==----------------------------------------------------------------------------------
   // [General.IgnoredList]
   // ==----------------------------------------------------------------------------------
@@ -140,6 +195,30 @@ bool Config::LoadStream(string ConfigContent, string &errorReason) {
         OutStrVect.push_back(Item.as<string>());
       }
     }(this->m_pConfig->General.IgnoredList.VariablePrefix, pIgnoredVarPrefix->as<toml::Array>());
+  }
+
+  // General.IgnoredList.EnumTagPrefix
+  const toml::Value *pIgnoredEnumTagPrefix = ParseRsValue.find("General.IgnoredList.EnumTagPrefix");
+  if (pIgnoredEnumTagPrefix && pIgnoredEnumTagPrefix->is<toml::Array>()) {
+    this->m_pConfig->General.IgnoredList.EnumTagPrefix.clear();
+    [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
+      for (toml::Value Item : InputVect) {
+        OutStrVect.push_back(Item.as<string>());
+      }
+    }(this->m_pConfig->General.IgnoredList.EnumTagPrefix, pIgnoredEnumTagPrefix->as<toml::Array>());
+  }
+
+  // General.IgnoredList.StructTagPrefix
+  const toml::Value *pIgnoredStructTagPrefix =
+      ParseRsValue.find("General.IgnoredList.StructTagPrefix");
+  if (pIgnoredStructTagPrefix && pIgnoredStructTagPrefix->is<toml::Array>()) {
+    this->m_pConfig->General.IgnoredList.StructTagPrefix.clear();
+    [](vector<string> &OutStrVect, vector<toml::Value> InputVect) {
+      for (toml::Value Item : InputVect) {
+        OutStrVect.push_back(Item.as<string>());
+      }
+    }(this->m_pConfig->General.IgnoredList.StructTagPrefix,
+      pIgnoredStructTagPrefix->as<toml::Array>());
   }
 
   // General.IgnoredList.FunctionName

@@ -6,7 +6,7 @@
 
 #include "Config.h"
 #include "Detection.h"
-#include "LearnIt.h"
+#include "DumpDecl.h"
 #include "MyAstConsumer.h"
 #include "TraceMemo.h"
 
@@ -20,7 +20,7 @@ using namespace namelint;
 
 class MyASTVisitor : public RecursiveASTVisitor<MyASTVisitor> {
 private:
-  LearnIt m_LearnIt;
+  DumpDecl m_DumpDecl;
 
   ASTContext *m_pAstCxt;
   const SourceManager *m_pSrcMgr;
@@ -49,11 +49,13 @@ private:
 
   bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr,
                      bool &bAnonymous);
-
+  bool _GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr);
   bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName, bool &bIsPtr,
                      bool &bIsArray, bool &bIsBuiltinType);
 
   bool _CheckRuleForVariable(ValueDecl *pDecl);
+  bool _CheckRuleForStructValue(ValueDecl *pDecl);
+  bool _CheckRuleForEnumValue(EnumConstantDecl *pDecl);
 
 public:
   MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt, const Config *pConfig);
@@ -70,6 +72,10 @@ public:
   bool VisitReturnStmt(ReturnStmt *pRetStmt);
   bool VisitParmVarDecl(ParmVarDecl *pDecl);
   bool VisitTypedefDecl(TypedefDecl *pDecl);
+  bool VisitEnumConstantDecl(EnumConstantDecl *pDecl);
+  bool VisitEnumDecl(EnumDecl *pDecl);
+  ;
+  ;
 };
 
 /*

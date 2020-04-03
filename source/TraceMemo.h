@@ -1,5 +1,6 @@
 #ifndef __NAMELINT_TRACE_MEMO__H__
 #define __NAMELINT_TRACE_MEMO__H__
+#include "clang/AST/Decl.h"
 
 #include "Config.h"
 #include <map>
@@ -22,6 +23,11 @@ typedef enum _CheckType {
   CT_Function,
   CT_Parameter,
   CT_Variable,
+  CT_EnumTag,
+  CT_EnumVal,
+  CT_StructTag,
+  CT_StructVal,
+  CT_Class,
   CT_Max
 } CheckType;
 
@@ -67,6 +73,7 @@ class MemoBoard {
 public:
   struct _Option {
     bool bEnableLog;
+    bool bWriteJsonResult;
   } Option;
 
   struct _File {
@@ -83,6 +90,9 @@ public:
     size_t nFunction;
     size_t nParameter;
     size_t nVariable;
+    size_t nEnum;
+    size_t nStruct;
+    size_t nClass;
   } Checked;
 
   struct _Error {
@@ -90,10 +100,23 @@ public:
     size_t nFunction;
     size_t nParameter;
     size_t nVariable;
+    size_t nEnum;
+    size_t nStruct;
+    size_t nClass;
   } Error;
 
   vector<ErrorDetail *> ErrorDetailList;
   namelint::Config Config;
+  clang::EnumDecl *pLastEnumDecl;
+
+  MemoBoard() {
+    memset(&this->Option, 0, sizeof(this->Option));
+    memset(&this->Checked, 0, sizeof(this->Checked));
+    memset(&this->Error, 0, sizeof(this->Error));
+    this->Dir.Includes.clear();
+    this->ErrorDetailList.clear();
+    this->pLastEnumDecl = NULL;
+  }
 };
 
 } // namespace namelint

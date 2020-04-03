@@ -138,8 +138,8 @@ add_executable(
     source/Config.cpp
     source/Logger.h
     source/Logger.cpp
-    source/LearnIt.h
-    source/LearnIt.cpp
+    source/DumpDecl.h
+    source/DumpDecl.cpp
     source/MyFactory.h
     source/MyFactory.cpp
     source/MyAstVisitor.h
@@ -148,6 +148,7 @@ add_executable(
     source/MyAstConsumer.cpp
     source/test/TestConfig.cpp
     source/test/TestDetection.cpp
+    source/test/TestRunCheck.cpp
 )
 
 

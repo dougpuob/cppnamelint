@@ -13,6 +13,10 @@ static cl::opt<string> LogFile("logfile", cl::desc("Print log message to the spe
                                cl::value_desc("LogName"), cl::Optional,
                                cl::cat(CppNameLintCategory), cl::sub(*cl::AllSubCommands));
 
+static cl::opt<bool> VerboseMode("verbose", cl::desc("Enable verbose mode."),
+                                 cl::value_desc("Verbose"), cl::Optional,
+                                 cl::cat(CppNameLintCategory), cl::sub(*cl::AllSubCommands));
+
 //==-----------------------------------------------------------------------
 // SubCommand: check
 //==-----------------------------------------------------------------------

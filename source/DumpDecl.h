@@ -19,10 +19,10 @@ using namespace llvm;
 using namespace clang::driver;
 using namespace clang::tooling;
 
-class LearnIt {
+class DumpDecl {
 private:
 public:
-  LearnIt();
+  DumpDecl();
 
   bool PrintDecl(Decl *pDecl);
 
@@ -35,6 +35,8 @@ private:
   void _PrintParmVarDecl(ParmVarDecl *pDecl);
   void _PrintRecordDecl(RecordDecl *pDecl);
   void _PrintTypedefDecl(TypedefDecl *pDecl);
+  void _PrintEnumConstantDecl(EnumConstantDecl *pDecl);
+  void _PrintEnumDecl(EnumDecl *pDecl);
 };
 
 #endif // __LEARN_IT_H__

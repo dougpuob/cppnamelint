@@ -1,14 +1,22 @@
 [General.Options]
 Version                 = 0.2
 FileExtNameList         = ["*.c","*.h","*.cpp"]
+CheckFileName           = false
 CheckVariableName       = true
 CheckFunctionName       = true
-CheckFileName           = false
+CheckEnum               = true
+CheckStruct             = true
+AllowedPrintResult      = true
+AllowedWriteJsonResult  = true
 AllowedUnderscopeChar   = false
 AllowedArrayAffected    = false
 
-
 [General.Rules]
+# UpperCamel: `MyValue`
+# LowerCamel: `myValue`
+# UpperSname: `MY_VALUE`
+# LowerCamel: `my_value`
+# Hungarian : `int iMyValue`
 FileName                = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 3: lower_snake
@@ -24,14 +32,50 @@ VariableName            = 4 # 0: Default (UpperCamel)
                             # 3: lower_snake
                             # 4: Hungarian
 
+ClassName               = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 5: UPPER_SNAKE
+
+EnumTagName             = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 5: UPPER_SNAKE
+
+EnumValueName           = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 4: Hungarian
+                            # 5: UPPER_SNAKE
+
+StructTagName           = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 5: UPPER_SNAKE
+
+StructValueName         = 0 # 0: Default (UpperCamel)
+                            # 1: UpperCamel
+                            # 2: lowerCamel
+                            # 3: lower_snake
+                            # 4: Hungarian
+                            # 5: UPPER_SNAKE
+
+
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
-                            "~" ]
+                            "~" #dtor]
 
 VariablePrefix          = [ "m_" ]
+EnumTagPrefix           = [ "_", "e" ]
+StructTagPrefix         = [ "_", "s" ]
 
 FunctionName            = ["main", "newASTConsumer"]
+
 
 [Hungarian.Others]
 PreferUpperCamelIfMissed = true
@@ -155,3 +199,10 @@ LPARAM                   = "l"
 # PUINT16                = "u16"  # PINT16 pu16Value = NULL;
 # PUINT32                = "u32"  # PINT32 pu32Value = NULL;
 # PUINT64                = "u64"  # PINT64 pu64Value = NULL;
+
+[Debug.Log]
+Main                     = true
+DumpDecl                 = true
+AstVisitor               = true
+Detection                = true
+Config                   = true
