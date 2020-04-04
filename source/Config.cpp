@@ -104,7 +104,7 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
   bool bStatus                 = ParseRs.valid();
 
   if (!bStatus) {
-    ErrorReason = ParseRs.ErrorReason;
+    ErrorReason = ParseRs.errorReason;
     return bStatus;
   }
 
