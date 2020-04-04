@@ -42,28 +42,28 @@ public:
   string Suggestion;
 
   ErrorDetail(const string &FileName, const string &Suggestion) {
-    this->Type = CT_File;
+    this->Type       = CT_File;
     this->TargetName = FileName;
     this->Suggestion = Suggestion;
   }
 
   ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr, const bool &bIsArray,
               const string &TypeName, const string &Suggestion) {
-    this->bIsPtr = bIsPtr;
-    this->bIsArray = bIsArray;
-    this->Pos = Pos;
-    this->Type = Type;
+    this->bIsPtr     = bIsPtr;
+    this->bIsArray   = bIsArray;
+    this->Pos        = Pos;
+    this->Type       = Type;
     this->TargetName = TypeName;
     this->Suggestion = Suggestion;
   }
 
   ErrorDetail(const CodePos &Pos, const CheckType &Type, const bool &bIsPtr, const bool &bIsArray,
               const string &TypeName, const string &TargetName, const string &Suggestion) {
-    this->bIsPtr = bIsPtr;
-    this->bIsArray = bIsArray;
-    this->Pos = Pos;
-    this->Type = Type;
-    this->TypeName = TypeName;
+    this->bIsPtr     = bIsPtr;
+    this->bIsArray   = bIsArray;
+    this->Pos        = Pos;
+    this->Type       = Type;
+    this->TypeName   = TypeName;
     this->TargetName = TargetName;
     this->Suggestion = Suggestion;
   }
@@ -73,7 +73,6 @@ class MemoBoard {
 public:
   struct _Option {
     bool bEnableLog;
-    bool bWriteJsonResult;
   } Option;
 
   struct _File {
@@ -109,14 +108,16 @@ public:
   namelint::Config Config;
   clang::EnumDecl *pLastEnumDecl;
 
-  MemoBoard() {
+  void Clear() {
     memset(&this->Option, 0, sizeof(this->Option));
     memset(&this->Checked, 0, sizeof(this->Checked));
     memset(&this->Error, 0, sizeof(this->Error));
     this->Dir.Includes.clear();
     this->ErrorDetailList.clear();
     this->pLastEnumDecl = NULL;
+    this->Config.Clear();
   }
+  MemoBoard() { Clear(); }
 };
 
 } // namespace namelint

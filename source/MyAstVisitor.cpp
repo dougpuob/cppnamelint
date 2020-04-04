@@ -39,7 +39,7 @@ bool MyASTVisitor::_GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb
 
     if ((FileName != GetAppCxt()->FileName) || ("" == GetAppCxt()->FileName)) {
       APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-      pAppCxt->FileName = FileName;
+      pAppCxt->FileName    = FileName;
 
       string Path1;
       Path::NormPath(FileName.c_str(), Path1);
@@ -50,8 +50,8 @@ bool MyASTVisitor::_GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb
     }
 
     nLineNumb = FullLocation.getSpellingLineNumber();
-    nColNumb = FullLocation.getSpellingColumnNumber();
-    bStatus = true;
+    nColNumb  = FullLocation.getSpellingColumnNumber();
+    bStatus   = true;
   }
 
   return bStatus;
@@ -60,8 +60,8 @@ bool MyASTVisitor::_GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb
 bool MyASTVisitor::_PrintPosition(Decl *pDecl) {
   string FileName;
   size_t nLineNumb = 0;
-  size_t nColNumb = 0;
-  bool bStatus = _GetPosition(pDecl, FileName, nLineNumb, nColNumb);
+  size_t nColNumb  = 0;
+  bool bStatus     = _GetPosition(pDecl, FileName, nLineNumb, nColNumb);
   if (bStatus) {
     cout << "  <" << nLineNumb << "," << nColNumb << ">" << setw(12);
   }
@@ -111,8 +111,8 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
   }
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
-  SourceLocation MyLoc = pDecl->getLocation();
-  string MyVarType = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
+  SourceLocation MyLoc      = pDecl->getLocation();
+  string MyVarType          = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
                                  this->m_pSrcMgr->getCharacterData(MyLoc) -
                                      this->m_pSrcMgr->getCharacterData(MyBeginLoc));
 
@@ -121,7 +121,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
   QualType MyQualType = pDecl->getType();
 
   VarName = pDecl->getName().data();
-  bIsPtr = MyQualType->isPointerType();
+  bIsPtr  = MyQualType->isPointerType();
 
   if (VarType.length() > 0) {
     this->_ClassifyTypeName(VarType);
@@ -151,8 +151,8 @@ bool MyASTVisitor::_GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &
   }
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
-  SourceLocation MyLoc = pDecl->getLocation();
-  string MyVarType = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
+  SourceLocation MyLoc      = pDecl->getLocation();
+  string MyVarType          = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
                                  this->m_pSrcMgr->getCharacterData(MyLoc) -
                                      this->m_pSrcMgr->getCharacterData(MyBeginLoc));
 
@@ -160,7 +160,7 @@ bool MyASTVisitor::_GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &
   VarName = pDecl->getName().data();
 
   QualType MyQualType = pDecl->getType();
-  bIsPtr = MyQualType->isPointerType();
+  bIsPtr              = MyQualType->isPointerType();
 
   String::Trim(VarType);
   String::Trim(VarName);
@@ -191,14 +191,14 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
   // auto VarType = pDecl->getType().getAsString();
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
-  SourceLocation MyLoc = pDecl->getLocation();
-  string MyValueType = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
+  SourceLocation MyLoc      = pDecl->getLocation();
+  string MyValueType        = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
                                    this->m_pSrcMgr->getCharacterData(MyLoc) -
                                        this->m_pSrcMgr->getCharacterData(MyBeginLoc));
-  size_t nPos = MyValueType.find(",");
+  size_t nPos               = MyValueType.find(",");
 
   if (std::string::npos != nPos) {
-    nPos = MyValueType.find(" ");
+    nPos        = MyValueType.find(" ");
     MyValueType = MyValueType.substr(0, nPos);
   }
 
@@ -208,11 +208,11 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
 
   QualType MyQualType = pDecl->getType();
 
-  ValueType = MyValueType;
-  ValueName = pDecl->getNameAsString();
-  bIsArray = MyQualType->isArrayType();
+  ValueType      = MyValueType;
+  ValueName      = pDecl->getNameAsString();
+  bIsArray       = MyQualType->isArrayType();
   bIsBuiltinType = MyQualType->isBuiltinType();
-  bIsPtr = MyQualType->isPointerType();
+  bIsPtr         = MyQualType->isPointerType();
 
   String::Trim(ValueType);
   String::Trim(ValueName);
@@ -253,8 +253,8 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
   string ValueType;
   string ValueName;
 
-  bool bIsPtr = false;
-  bool bIsArray = false;
+  bool bIsPtr         = false;
+  bool bIsArray       = false;
   bool bIsBuiltinType = false;
 
   bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray, bIsBuiltinType);
@@ -309,8 +309,8 @@ bool MyASTVisitor::_CheckRuleForEnumValue(EnumConstantDecl *pDecl) {
   string ValueType;
   string ValueName;
 
-  bool bIsPtr = false;
-  bool bIsArray = false;
+  bool bIsPtr         = false;
+  bool bIsArray       = false;
   bool bIsBuiltinType = false;
 
   bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray, bIsBuiltinType);
@@ -336,22 +336,13 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
   {
-    RuleOfFunction Rule;
-    Rule.bAllowedUnderscopeChar = this->m_pConfig->General.Options.bAllowedUnderscopeChar;
-    Rule.IgnoreNames = this->m_pConfig->General.IgnoredList.FunctionName;
-    Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.FunctionPrefix;
-
-    this->m_Detect.ApplyRuleForFunction(Rule);
-  }
-
-  {
     RuleOfVariable Rule;
     Rule.bAllowedUnderscopeChar = this->m_pConfig->General.Options.bAllowedUnderscopeChar;
 
-    Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.VariablePrefix;
-    Rule.WordListMap = this->m_pConfig->Hungarian.WordList;
+    Rule.IgnorePrefixs  = this->m_pConfig->General.IgnoredList.VariablePrefix;
+    Rule.WordListMap    = this->m_pConfig->Hungarian.WordList;
     Rule.ArrayNamingMap = this->m_pConfig->Hungarian.ArrayList;
-    Rule.NullStringMap = this->m_pConfig->Hungarian.NullStringList;
+    Rule.NullStringMap  = this->m_pConfig->Hungarian.NullStringList;
 
     this->m_Detect.ApplyRuleForVariable(Rule);
   }
@@ -360,12 +351,6 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
     RuleOfEnum Rule;
     Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.EnumTagPrefix;
     this->m_Detect.ApplyRuleForEnum(Rule);
-  }
-
-  {
-    RuleOfStruct Rule;
-    Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.StructTagPrefix;
-    this->m_Detect.ApplyRuleForStruct(Rule);
   }
 }
 
@@ -386,10 +371,10 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   string FuncName;
-  bool bResult = false;
-  bool bIsPtr = false;
+  bool bResult  = false;
+  bool bIsPtr   = false;
   bool bIsArray = false;
-  bool bStatus = this->_GetFunctionInfo(pDecl, FuncName);
+  bool bStatus  = this->_GetFunctionInfo(pDecl, FuncName);
 
   if (bStatus) {
     bResult = this->m_Detect.CheckFunction(this->m_pConfig->General.Rules.FunctionName, FuncName);
@@ -420,19 +405,25 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     this->m_DumpDecl.PrintDecl(pDecl);
   }
 
+  bool bStatus   = false;
   string VarName = pDecl->getName();
-  bool bStatus = false;
 
   switch (pDecl->getTagKind()) {
   case TTK_Struct: {
-    pAppCxt->MemoBoard.Checked.nStruct++;
+    if (VarName.empty()) {
+      DcLib::Log::Out(INFO_ALL, "It is an anonymous structure.");
+      bStatus = true;
+    } else {
+      pAppCxt->MemoBoard.Checked.nStruct++;
 
-    bool bStatus = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructTagName,
-                                                 "" /*no type*/, VarName, NOT_PTR);
-    if (!bStatus) {
-      pAppCxt->MemoBoard.Error.nStruct++;
-      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-          pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
+      RULETYPE RuleType = this->m_pConfig->General.Rules.StructTagName;
+
+      bStatus = this->m_Detect.CheckStructVal(RuleType, "" /*no type*/, VarName, NOT_PTR);
+      if (!bStatus) {
+        pAppCxt->MemoBoard.Error.nStruct++;
+        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+            pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
+      }
     }
     break;
   }
@@ -496,7 +487,7 @@ bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
   const Expr *pExpr = pRetStmt->getRetValue();
   if (pExpr) {
     clang::QualType MyQualType = pExpr->getType();
-    std::string MyTypeStr = MyQualType.getAsString();
+    std::string MyTypeStr      = MyQualType.getAsString();
     return true;
   }
   return false;
@@ -506,10 +497,10 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   string VarType;
   string VarName;
 
-  bool bIsPtr = false;
-  bool bIsArray = false;
+  bool bIsPtr     = false;
+  bool bIsArray   = false;
   bool bAnonymous = false;
-  bool bResult = false;
+  bool bResult    = false;
 
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());

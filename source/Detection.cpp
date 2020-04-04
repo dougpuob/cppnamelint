@@ -50,14 +50,14 @@ bool Detection::_RemoveHeadingUnderscore(string &Text) {
 
   if (std::regex_search(Text, Match, Regex) && Match.size() >= 1) {
     bStatus = true;
-    Text = Text.substr(Match.size(), Text.length() - Match.size());
+    Text    = Text.substr(Match.size(), Text.length() - Match.size());
   }
 
   return bStatus;
 }
 
 size_t Detection::_RemoveHeadingPtrChar(string &Text) {
-  size_t nIdx = 0;
+  size_t nIdx  = 0;
   char *szText = (char *)Text.c_str();
   for (nIdx = 0; nIdx < Text.length(); nIdx++) {
     if ('p' != *szText) {
@@ -84,7 +84,7 @@ bool Detection::_CaptureLowerCasePrefix(string &Name) {
 
   if (std::regex_search(Name, Match, Regex) && Match.size() >= 1) {
     bStatus = true;
-    Name = Match[0];
+    Name    = Match[0];
   }
 
   return bStatus;
@@ -149,7 +149,7 @@ bool Detection::_IsUpperCamelCaseString(const string &Name, vector<string> Ignor
 }
 
 bool Detection::_IsLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs) {
-  bool bStatus = false;
+  bool bStatus                    = false;
   vector<string> NewIgnorePrefixs = IgnorePrefixs;
   NewIgnorePrefixs.push_back("");
 
@@ -284,15 +284,15 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
 
     // Remove hungarian notion of C null string.
     for (auto Iter : NullStringMap) {
-      const auto IterType = Iter.Key;
+      const auto IterType   = Iter.Key;
       const auto IterPrefix = Iter.Value;
       string IterTypeNoStar = IterType;
       if (IterTypeNoStar == NewTypeStr) {
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
         if (0 == nNewStrPos) {
           const size_t nPrefixLen = IterPrefix.length();
-          bStatus = true;
-          NewNameStr = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
+          bStatus                 = true;
+          NewNameStr              = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
           break;
         }
       }
@@ -306,12 +306,12 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
     for (map<string, string>::const_iterator Iter = TypeNamingMap.begin();
          Iter != TypeNamingMap.end(); Iter++) {
 
-      const auto IterType = Iter->first;
+      const auto IterType   = Iter->first;
       const auto IterPrefix = Iter->second;
 
       if (IterType == NewTypeStr) {
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
-        bStatus = (0 == nNewStrPos);
+        bStatus                 = (0 == nNewStrPos);
         if (bStatus) {
           const size_t nPrefixLen = IterPrefix.length();
 
@@ -357,7 +357,7 @@ bool Detection::_RemoveNamespacesAndElements(string &Text) {
   std::size_t nFound = Text.find_last_of("::");
   if (nFound < std::numeric_limits<size_t>::max()) {
     bStatus = true;
-    Text = Text.substr(nFound + 1, Text.length() - nFound - 1);
+    Text    = Text.substr(nFound + 1, Text.length() - nFound - 1);
   }
 
   return bStatus;
@@ -379,21 +379,10 @@ bool Detection::_SkipIgnoreFunctions(const string &Name, const vector<string> &I
 //==---------------------------------------------------------------------------
 namespace namelint {
 
-bool Detection::ApplyRuleForFile(const RuleOfFile &Rule) {
-  this->m_RuleOfFile.bAllowedUnderscopeChar = Rule.bAllowedUnderscopeChar;
-  return true;
-}
-
-bool Detection::ApplyRuleForFunction(const RuleOfFunction &Rule) {
-  this->m_RuleOfFunction.bAllowedUnderscopeChar = Rule.bAllowedUnderscopeChar;
-  this->m_RuleOfFunction.IgnoreNames = Rule.IgnoreNames;
-  this->m_RuleOfFunction.IgnorePrefixs = Rule.IgnorePrefixs;
-  return true;
-}
 bool Detection::ApplyRuleForVariable(const RuleOfVariable &Rule) {
-  this->m_RuleOfVariable.IgnorePrefixs = Rule.IgnorePrefixs;
-  this->m_RuleOfVariable.WordListMap = Rule.WordListMap;
-  this->m_RuleOfVariable.ArrayNamingMap = Rule.ArrayNamingMap;
+  this->m_RuleOfVariable.IgnorePrefixs          = Rule.IgnorePrefixs;
+  this->m_RuleOfVariable.WordListMap            = Rule.WordListMap;
+  this->m_RuleOfVariable.ArrayNamingMap         = Rule.ArrayNamingMap;
   this->m_RuleOfVariable.bAllowedUnderscopeChar = Rule.bAllowedUnderscopeChar;
 
   this->m_RuleOfVariable.NullStringMap.clear();
@@ -411,18 +400,15 @@ bool Detection::ApplyRuleForEnum(const RuleOfEnum &Rule) {
   return true;
 }
 
-bool Detection::ApplyRuleForStruct(const RuleOfStruct &Rule) {
-  this->m_RuleOfStruct.IgnorePrefixs = Rule.IgnorePrefixs;
-  return true;
-}
-
 bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
   bool bStatus = false;
   if (Name.length() == 0) {
     return false;
   }
 
-  string NewName = Name;
+  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+
+  string NewName   = Name;
   size_t nFoundPos = NewName.find_last_of(".");
   if (-1 != nFoundPos) {
     NewName = NewName.substr(0, nFoundPos);
@@ -431,18 +417,19 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
   vector<string> NullIgnorePrefixs;
   switch (Rule) {
   case RULETYPE_DEFAULT:
-  case RULETYPE_UPPER_CAMEL:
+  case RULETYPE_UPPER_CAMEL: {
     bStatus = this->_IsUpperCamelCaseString(NewName, NullIgnorePrefixs,
-                                            this->m_RuleOfFile.bAllowedUnderscopeChar);
+                                            pCfgData->General.Options.bAllowedUnderscopeChar);
     break;
-
-  case RULETYPE_LOWER_CAMEL:
+  }
+  case RULETYPE_LOWER_CAMEL: {
     bStatus = this->_IsLowerCamelCaseString(NewName, NullIgnorePrefixs);
     break;
-
-  case RULETYPE_LOWER_SNAKE:
+  }
+  case RULETYPE_LOWER_SNAKE: {
     bStatus = this->_IsSnakeString(NewName, SNAKETYPE_LOWER, NullIgnorePrefixs);
     break;
+  }
   }
   return bStatus;
 }
@@ -452,8 +439,12 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     return false;
   }
 
-  if (this->m_RuleOfFunction.IgnorePrefixs.size() > 0) {
-    bool bResult = this->_SkipIgnoreFunctions(Name, this->m_RuleOfFunction.IgnoreNames);
+  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.FunctionPrefix;
+  vector<string> &IgnoreNames     = pCfgData->General.IgnoredList.FunctionName;
+
+  if (IgnorePrefixs.size() > 0) {
+    bool bResult = this->_SkipIgnoreFunctions(Name, IgnoreNames);
     if (bResult) {
       return true;
     }
@@ -462,18 +453,19 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
   bool bStatus = false;
   switch (Rule) {
   case RULETYPE_DEFAULT:
-  case RULETYPE_UPPER_CAMEL:
-    bStatus = this->_IsUpperCamelCaseString(Name, this->m_RuleOfFunction.IgnorePrefixs,
-                                            this->m_RuleOfFunction.bAllowedUnderscopeChar);
+  case RULETYPE_UPPER_CAMEL: {
+    bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
+                                            pCfgData->General.Options.bAllowedUnderscopeChar);
     break;
-
-  case RULETYPE_LOWER_CAMEL:
-    bStatus = this->_IsLowerCamelCaseString(Name, this->m_RuleOfFunction.IgnorePrefixs);
+  }
+  case RULETYPE_LOWER_CAMEL: {
+    bStatus = this->_IsLowerCamelCaseString(Name, IgnorePrefixs);
     break;
-
-  case RULETYPE_LOWER_SNAKE:
-    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, this->m_RuleOfFunction.IgnorePrefixs);
+  }
+  case RULETYPE_LOWER_SNAKE: {
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, IgnorePrefixs);
     break;
+  }
   }
   return bStatus;
 }
@@ -484,6 +476,9 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
   if (Name.length() == 0) {
     return false;
   }
+
+  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.VariablePrefix;
 
   bool bStatus = false;
   switch (Rule) {
@@ -516,7 +511,8 @@ bool Detection::CheckEnumVal(const RULETYPE Rule, const string &Name) {
     return false;
   }
 
-  vector<string> &IgnorePrefixs = this->m_RuleOfEnum.IgnorePrefixs;
+  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.EnumTagPrefix;
 
   bool bStatus = false;
   switch (Rule) {
@@ -551,18 +547,23 @@ bool Detection::CheckStructVal(const RULETYPE Rule, const string &Type, const st
     return false;
   }
 
-  vector<string> &IgnorePrefixs = this->m_RuleOfStruct.IgnorePrefixs;
+  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.StructTagPrefix;
 
   bool bStatus = false;
   switch (Rule) {
-  case RULETYPE_HUNGARIAN:
-    // Apply the same `m_RuleOfVariable` too.
-    bStatus = this->_IsHungarianNotationString(Type, Name, !PREFER_UPPER_CAMEL, bIsPtr, NOT_ARRAY,
-                                               IgnorePrefixs, this->m_RuleOfVariable.WordListMap,
-                                               this->m_RuleOfVariable.NullStringMap,
-                                               this->m_RuleOfVariable.ArrayNamingMap);
-    break;
+  case RULETYPE_HUNGARIAN: {
+    const bool bPreferUpperCamelIfMissed = pCfgData->Hungarian.Others.PreferUpperCamelIfMissed;
+    const auto &WordListMap              = pCfgData->Hungarian.WordList;
+    const auto &NullStringMap            = pCfgData->Hungarian.NullStringList;
+    const auto &ArrayNamingMap           = pCfgData->Hungarian.ArrayList;
 
+    // Apply the same `m_RuleOfVariable` too.
+    bStatus =
+        this->_IsHungarianNotationString(Type, Name, bPreferUpperCamelIfMissed, bIsPtr, NOT_ARRAY,
+                                         IgnorePrefixs, WordListMap, NullStringMap, ArrayNamingMap);
+    break;
+  }
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL:
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,

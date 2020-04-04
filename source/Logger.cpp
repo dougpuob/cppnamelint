@@ -13,7 +13,7 @@ namespace DcLib {
 std::string Log::Format(const char *szFmt, va_list vaList) {
   if (!DcLib::m_szBuf) {
     DcLib::m_nBufSize = 256;
-    DcLib::m_szBuf = (char *)malloc(DcLib::m_nBufSize);
+    DcLib::m_szBuf    = (char *)malloc(DcLib::m_nBufSize);
     memset(DcLib::m_szBuf, 0, DcLib::m_nBufSize);
   }
 
@@ -23,7 +23,7 @@ std::string Log::Format(const char *szFmt, va_list vaList) {
     DcLib::m_szBuf = NULL;
 
     DcLib::m_nBufSize = iRetSize * 2;
-    DcLib::m_szBuf = (char *)malloc(DcLib::m_nBufSize);
+    DcLib::m_szBuf    = (char *)malloc(DcLib::m_nBufSize);
   }
 
   iRetSize = vsnprintf(DcLib::m_szBuf, DcLib::m_nBufSize, szFmt, vaList);
@@ -40,7 +40,7 @@ bool Log::Init(const char *szFileName) {
 }
 
 std::string Log::Fixed(size_t nValue, size_t nZeroCnt) {
-  std::string value_str = std::to_string(nValue);
+  std::string value_str   = std::to_string(nValue);
   size_t nAppendZeroCount = nZeroCnt - value_str.length();
   if (nAppendZeroCount < 0) {
     nAppendZeroCount = 0;
@@ -65,7 +65,7 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   //
   if (FlagInfo.bPrintDateTime) {
     time_t now = time(0);
-    tm *ltm = localtime(&now);
+    tm *ltm    = localtime(&now);
 
     FileStream << "[" << Log::Fixed(1900 + ltm->tm_year, 4) << Log::Fixed(ltm->tm_mon, 2)
                << Log::Fixed(ltm->tm_mday, 2);

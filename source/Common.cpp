@@ -9,7 +9,7 @@ const APP_CONTEXT *GetAppCxt() { return &m_AppCxt; }
 
 namespace Path {
 bool IsExist(const string &Path) {
-  FILE *pFile = fopen(Path.c_str(), "r");
+  FILE *pFile  = fopen(Path.c_str(), "r");
   bool bStatus = (NULL != pFile);
   if (bStatus) {
     fclose(pFile);
@@ -35,7 +35,7 @@ bool NormPath(const char *szPath, string &NewPath) {
   }
 
   bool bStatus = false;
-  size_t nRet = 0;
+  size_t nRet  = 0;
 
   char szBuf[4096];
 
@@ -76,7 +76,7 @@ bool IsLower(const string &Source) {
 }
 
 void Replace(string &Source, const string &Patn, const string &New) {
-  string::size_type Pos = 0;
+  string::size_type Pos    = 0;
   string::size_type SrcLen = Patn.size();
   string::size_type DstLen = New.size();
   while ((Pos = Source.find(Patn, Pos)) != string::npos) {
@@ -97,7 +97,7 @@ void Trim(string &Source) {
 }
 
 size_t Split(const std::string &txt, std::vector<std::string> &strs, char ch) {
-  size_t pos = txt.find(ch);
+  size_t pos        = txt.find(ch);
   size_t initialPos = 0;
   strs.clear();
 

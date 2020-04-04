@@ -9,42 +9,91 @@
 
 namespace namelint {
 Config::Config() {
-  // General
+  // [General.Options]
   this->m_pConfig->General.Options.FileExtNameList.assign({"*.c", "*.h", "*.cpp"});
-  this->m_pConfig->General.Options.bCheckFileName = true;
-  this->m_pConfig->General.Options.bCheckFunctionName = true;
-  this->m_pConfig->General.Options.bCheckVariableName = true;
+  this->m_pConfig->General.Options.bCheckVariableName      = true;
+  this->m_pConfig->General.Options.bCheckFunctionName      = true;
+  this->m_pConfig->General.Options.bCheckFileName          = false;
+  this->m_pConfig->General.Options.bCheckEnum              = true;
+  this->m_pConfig->General.Options.bCheckStruct            = true;
+  this->m_pConfig->General.Options.bAllowedPrintResult     = true;
+  this->m_pConfig->General.Options.bAllowedWriteJsonResult = true;
+  this->m_pConfig->General.Options.bAllowedUnderscopeChar  = false;
+  this->m_pConfig->General.Options.bAllowedArrayAffected   = false;
 
-  // Rule
-  this->m_pConfig->General.Rules.FileName = RULETYPE::RULETYPE_DEFAULT;
-  this->m_pConfig->General.Rules.FunctionName = RULETYPE::RULETYPE_DEFAULT;
-  this->m_pConfig->General.Rules.VariableName = RULETYPE::RULETYPE_DEFAULT;
+  // [General.Rules]
+  this->m_pConfig->General.Rules.FileName        = RULETYPE::RULETYPE_DEFAULT;
+  this->m_pConfig->General.Rules.FunctionName    = RULETYPE::RULETYPE_DEFAULT;
+  this->m_pConfig->General.Rules.VariableName    = RULETYPE::RULETYPE_HUNGARIAN;
+  this->m_pConfig->General.Rules.ClassName       = RULETYPE::RULETYPE_DEFAULT;
+  this->m_pConfig->General.Rules.EnumTagName     = RULETYPE::RULETYPE_DEFAULT;
+  this->m_pConfig->General.Rules.EnumValueName   = RULETYPE::RULETYPE_DEFAULT;
+  this->m_pConfig->General.Rules.StructTagName   = RULETYPE::RULETYPE_DEFAULT;
+  this->m_pConfig->General.Rules.StructValueName = RULETYPE::RULETYPE_DEFAULT;
 
-  // WhiteList
-  this->m_pConfig->General.IgnoredList.FunctionPrefix.assign({""});
-  this->m_pConfig->General.IgnoredList.VariablePrefix.assign({""});
+  // [General.IgnoredList]
+  this->m_pConfig->General.IgnoredList.FunctionPrefix.assign({"_", "__", "~"});
+  this->m_pConfig->General.IgnoredList.VariablePrefix.assign({"m_"});
+  this->m_pConfig->General.IgnoredList.EnumTagPrefix.assign({"_", "e"});
+  this->m_pConfig->General.IgnoredList.StructTagPrefix.assign({"_", "s"});
+  this->m_pConfig->General.IgnoredList.FunctionName.assign({"main", "newASTConsumer", "TEST"});
+
+  // [Hungarian.Others]
+  this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed = true;
+
+  //[ Hungarian.WordList]
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("size_t", "n"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("uint8_t", "u8"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("uint16_t", "u16"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("uint32_t", "u32"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("char", "c"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("_Bool", "b"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("bool", "b"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("int", "i"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("long long", "ll"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("float", "f"));
+  this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("double", "d"));
 }
 
 shared_ptr<ConfigData> Config::GetData() const { return this->m_pConfig; }
+bool Config::Clear() {
+  this->m_pConfig->General.IgnoredList.FunctionPrefix.clear();
+  this->m_pConfig->General.IgnoredList.VariablePrefix.clear();
+  this->m_pConfig->General.IgnoredList.FunctionName.clear();
+  this->m_pConfig->General.IgnoredList.EnumTagPrefix.clear();
+  this->m_pConfig->General.IgnoredList.StructTagPrefix.clear();
 
-bool Config::LoadFile(string ConfigFilePath, string &errorReason) {
+  memset(&this->m_pConfig->General.Options, 0, sizeof(this->m_pConfig->General.Options));
+
+  this->m_pConfig->Hungarian.ArrayList.clear();
+  this->m_pConfig->Hungarian.NullStringList.clear();
+  this->m_pConfig->Hungarian.WordList.clear();
+
+  return true;
+}
+
+bool Config::LoadFile(string ConfigFilePath, string &ErrorReason) {
+  Clear();
+
   bool bStatus = Path::IsExist(ConfigFilePath);
   if (bStatus) {
     std::ifstream InputFileStream(ConfigFilePath);
     std::string Content((std::istreambuf_iterator<char>(InputFileStream)),
                         (std::istreambuf_iterator<char>()));
-    bStatus = this->LoadStream(Content, errorReason);
+    bStatus = this->LoadStream(Content, ErrorReason);
   }
   return bStatus;
 }
 
-bool Config::LoadStream(string ConfigContent, string &errorReason) {
+bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
+  Clear();
+
   istringstream InputStrStream = istringstream(ConfigContent);
-  toml::ParseResult ParseRs = toml::parse(InputStrStream);
-  bool bStatus = ParseRs.valid();
+  toml::ParseResult ParseRs    = toml::parse(InputStrStream);
+  bool bStatus                 = ParseRs.valid();
 
   if (!bStatus) {
-    errorReason = ParseRs.errorReason;
+    ErrorReason = ParseRs.ErrorReason;
     return bStatus;
   }
 

@@ -55,7 +55,6 @@ struct RuleOfEnum {
 class Detection {
 private:
   RuleOfFile m_RuleOfFile;
-  RuleOfFunction m_RuleOfFunction;
   RuleOfVariable m_RuleOfVariable;
   RuleOfEnum m_RuleOfEnum;
   RuleOfStruct m_RuleOfStruct;
@@ -85,11 +84,8 @@ private:
   bool _SkipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList);
 
 public:
-  bool ApplyRuleForFile(const RuleOfFile &Rule);
-  bool ApplyRuleForFunction(const RuleOfFunction &Rule);
   bool ApplyRuleForVariable(const RuleOfVariable &Rule);
   bool ApplyRuleForEnum(const RuleOfEnum &Rule);
-  bool ApplyRuleForStruct(const RuleOfStruct &Rule);
 
   bool CheckFile(const RULETYPE Rule, const string &Name);
   bool CheckFunction(const RULETYPE Rule, const string &Name);

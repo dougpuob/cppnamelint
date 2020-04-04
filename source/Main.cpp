@@ -31,8 +31,8 @@ int RunCheckFormFile(namelint::MemoBoard &Memo);
 int RunCheckFormFile(namelint::MemoBoard &Memo) {
   int iRet = 0;
 
-  Memo.File.Source = CheckInputSrc;
-  Memo.File.Config = CheckInputConfig;
+  Memo.File.Source  = CheckInputSrc;
+  Memo.File.Config  = CheckInputConfig;
   Memo.Dir.Includes = CheckIncludes;
 
   if (!llvm::sys::fs::exists(Memo.File.Source)) {
@@ -40,16 +40,18 @@ int RunCheckFormFile(namelint::MemoBoard &Memo) {
     return 1;
   }
 
-  if (!llvm::sys::fs::exists(Memo.File.Config)) {
-    cout << "Error: Failed to find config file." << endl;
-    return 2;
-  }
-
-  string errorReason;
-  if (!Memo.Config.LoadFile(Memo.File.Config, errorReason)) {
-    cout << "Error: Failed to load config file (format wrong)." << endl;
-    cout << errorReason << endl;
-    return 3;
+  if (!Memo.File.Config.empty()) {
+    if (!llvm::sys::fs::exists(Memo.File.Config)) {
+      cout << "Error: Failed to find config file." << endl;
+      return 2;
+    }
+    string ErrorReason;
+    if (!Memo.Config.LoadFile(Memo.File.Config, ErrorReason)) {
+      cout << "Error: Failed to load config file (format wrong)." << endl;
+      cout << ErrorReason << endl;
+      return 3;
+    }
+  } else {
   }
 
   //
@@ -118,17 +120,13 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
 
   Detection Detect;
   shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
-  GeneralOptions *pOptions = &pConfig->General.Options;
+  GeneralOptions *pOptions       = &pConfig->General.Options;
   if (!pOptions->bCheckFileName) {
     DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFileName)");
   } else {
-    RuleOfFile Rule;
-    Rule.bAllowedUnderscopeChar = pOptions->bAllowedUnderscopeChar;
-    Detect.ApplyRuleForFile(Rule);
-
     Memo.Checked.nFile++;
 
-    string FileBaseName = Path::FindFileName(Memo.File.Source);
+    string FileBaseName  = Path::FindFileName(Memo.File.Source);
     GeneralRules *pRules = &pConfig->General.Rules;
     if (!Detect.CheckFile(pRules->FileName, FileBaseName)) {
       Memo.Error.nFile++;
@@ -145,7 +143,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     if (Memo.Config.GetData()->General.Options.bAllowedPrintResult) {
       PrintTraceMemo(Memo);
     }
-    if (Memo.Option.bWriteJsonResult) {
+    if (Memo.Config.GetData()->General.Options.bAllowedWriteJsonResult) {
       WriteJsonResult(Memo, OutputJson);
     }
   } else {
@@ -179,7 +177,7 @@ int main(int Argc, const char **Argv) {
     DcLib::Log::Init(LogFile.c_str());
   }
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+  APP_CONTEXT *pAppCxt                 = (APP_CONTEXT *)GetAppCxt();
   pAppCxt->MemoBoard.Option.bEnableLog = (LogFile.length() > 0);
 
   if (CheckSubcommand) {
@@ -206,28 +204,28 @@ size_t GetTotalChecked(const MemoBoard &MemoBoard) {
 }
 
 bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
-  json TotalList = json::array();
+  json TotalList            = json::array();
   JsonDoc["File"]["Source"] = MemoBoard.File.Source;
   JsonDoc["File"]["Config"] = MemoBoard.File.Config;
 
-  JsonDoc["Checked"]["Function"] = MemoBoard.Checked.nFunction;
+  JsonDoc["Checked"]["Function"]  = MemoBoard.Checked.nFunction;
   JsonDoc["Checked"]["Parameter"] = MemoBoard.Checked.nParameter;
-  JsonDoc["Checked"]["Variable"] = MemoBoard.Checked.nVariable;
+  JsonDoc["Checked"]["Variable"]  = MemoBoard.Checked.nVariable;
 
-  JsonDoc["Error"]["Function"] = MemoBoard.Error.nFunction;
+  JsonDoc["Error"]["Function"]  = MemoBoard.Error.nFunction;
   JsonDoc["Error"]["Parameter"] = MemoBoard.Error.nParameter;
-  JsonDoc["Error"]["Variable"] = MemoBoard.Error.nVariable;
+  JsonDoc["Error"]["Variable"]  = MemoBoard.Error.nVariable;
 
   json JsonErrDetail;
   json ErrorDetailList = json::array();
   for (const ErrorDetail *pErrDetail : MemoBoard.ErrorDetailList) {
-    JsonErrDetail["Line"] = pErrDetail->Pos.nLine;
+    JsonErrDetail["Line"]   = pErrDetail->Pos.nLine;
     JsonErrDetail["Column"] = pErrDetail->Pos.nColumn;
-    JsonErrDetail["Type"] = (int)pErrDetail->Type;
+    JsonErrDetail["Type"]   = (int)pErrDetail->Type;
     JsonErrDetail["TypeName"] =
         pErrDetail->TypeName + (pErrDetail->bIsPtr ? "*" : "") + (pErrDetail->bIsArray ? "[]" : "");
     JsonErrDetail["TargetName"] = pErrDetail->TargetName;
-    JsonErrDetail["Expected"] = pErrDetail->Suggestion;
+    JsonErrDetail["Expected"]   = pErrDetail->Suggestion;
     ErrorDetailList.push_back(JsonErrDetail);
   }
 
@@ -240,7 +238,7 @@ bool DataToJson(const MemoBoard &MemoBoard, json &JsonDoc) {
 
 bool PrintTraceMemo(const MemoBoard &MemoBoard) {
 
-  bool bStatus = true;
+  bool bStatus     = true;
   char szText[512] = {0};
 
   cout << " File    = " << llvm::sys::path::filename(MemoBoard.File.Source).data() << endl;

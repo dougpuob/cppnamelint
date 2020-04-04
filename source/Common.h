@@ -4,10 +4,10 @@
 #include "TraceMemo.h"
 #include <string>
 
-static const bool PREFER_UPPER_CAMEL = true;
-static const bool IS_PTR = true;
-static const bool IS_ARRAY = true;
-static const bool NOT_PTR = false;
+static const bool PREFER_UC = true; // Prefer Upper Camel
+static const bool IS_PTR    = true;
+static const bool IS_ARRAY  = true;
+static const bool NOT_PTR   = false;
 static const bool NOT_ARRAY = false;
 
 using namespace std;

@@ -31,11 +31,11 @@ TEST(GeneralOptions, Default) {
   GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
   EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->FileName);
   EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->FunctionName);
-  EXPECT_EQ(RULETYPE::RULETYPE_DEFAULT, pRule->VariableName);
+  EXPECT_EQ(RULETYPE::RULETYPE_HUNGARIAN, pRule->VariableName);
 }
 
 TEST(GeneralOptions, Chk_GeneralOptions) {
-  string content = "\
+  string TomlContent = "\
 	[General.Options] \r\n\
 		FileExtNameList  = [\"*.a\",\"*.b\",\"*.c\",\"*.d\"] \r\n\
 		CheckVariableName = false \r\n\
@@ -44,8 +44,8 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
 	";
 
   Config MyConfig;
-  string errorReason;
-  bool bStatus = MyConfig.LoadStream(content, errorReason);
+  string ErrorReason;
+  bool bStatus = MyConfig.LoadStream(TomlContent, ErrorReason);
   EXPECT_EQ(true, bStatus);
 
   GeneralOptions *pGeneral = &MyConfig.GetData()->General.Options;
@@ -62,15 +62,15 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
 }
 
 TEST(GeneralOptions, Chk_GeneralRules) {
-  string content = "\
+  string TomlContent = "\
 	[General.Rules] \r\n\
 		FileName 	 = 3 \r\n\
 		FunctionName = 3 \r\n\
 		VariableName = 4 \r\n";
 
   Config MyConfig;
-  string errorReason;
-  bool bStatus = MyConfig.LoadStream(content, errorReason);
+  string ErrorReason;
+  bool bStatus = MyConfig.LoadStream(TomlContent, ErrorReason);
   // EXPECT_EQ(true, bStatus);
 
   // GeneralRules *pRule = &MyConfig.GetData()->General.Rules;
@@ -80,14 +80,14 @@ TEST(GeneralOptions, Chk_GeneralRules) {
 }
 
 TEST(GeneralOptions, Fake_WhiteList) {
-  string content = "\
+  string TomlContent = "\
 	[General.IgnoredList] \r\n\
 		FunctionPrefix 	 = [ \"_\", \"__\" ]    \r\n\
 		VariablePrefix 	 = [ \"m_\", \"g_\" ]";
 
   Config MyConfig;
-  string errorReason;
-  bool bStatus = MyConfig.LoadStream(content, errorReason);
+  string ErrorReason;
+  bool bStatus = MyConfig.LoadStream(TomlContent, ErrorReason);
   EXPECT_EQ(true, bStatus);
 
   GeneralIgnoredList *pIgnoredList = &MyConfig.GetData()->General.IgnoredList;

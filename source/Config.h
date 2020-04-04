@@ -71,11 +71,11 @@ struct MappingPair {
   string Key;
   string Value;
   MappingPair(string &Key, string &Value) {
-    this->Key = Key;
+    this->Key   = Key;
     this->Value = Value;
   }
   MappingPair(const char *szKey, const char *szValue) {
-    this->Key = szKey;
+    this->Key   = szKey;
     this->Value = szValue;
   }
 };
@@ -99,8 +99,9 @@ private:
 
 public:
   Config();
-  bool LoadFile(string ConfigFilePath, string &errorReason);
-  bool LoadStream(string ConfigContent, string &errorReason);
+  bool Clear();
+  bool LoadFile(string ConfigFilePath, string &ErrorReason);
+  bool LoadStream(string ConfigContent, string &ErrorReason);
   bool Save(string DstPath);
   shared_ptr<ConfigData> GetData() const;
 };

@@ -11,16 +11,16 @@ typedef enum _Type {
   TypeNone = 0,
   TypeInfo = 1 << 1,
   TypeWarn = 1 << 2,
-  TypeErr = 1 << 3,
+  TypeErr  = 1 << 3,
 
   TypeAll = 0xFFFFFFFF
 } Type;
 
 typedef enum _Flag {
-  FlagNone = 0,
+  FlagNone       = 0,
   FlagLineNumber = 1 << 1,
-  FlagFileName = 1 << 2,
-  FlagDateTime = 1 << 3,
+  FlagFileName   = 1 << 2,
+  FlagDateTime   = 1 << 3,
 
   LOG_FLAG_ALL = 0xFFFFFFFF
 } Flag;
@@ -47,7 +47,7 @@ public:
 
 static std::string m_LogFileName;
 static std::size_t m_nBufSize = 0;
-static char *m_szBuf = NULL;
+static char *m_szBuf          = NULL;
 
 class Log {
 private:

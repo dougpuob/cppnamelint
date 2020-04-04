@@ -14,7 +14,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
 
   for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(), e = MyDeclGroupRef.end(); Iter != e;
        ++Iter) {
-    Decl *pDecl = *Iter;
+    Decl *pDecl              = *Iter;
     const ASTContext &ASTCxt = pDecl->getASTContext();
 
     FullSourceLoc FullLocation = ASTCxt.getFullLoc(pDecl->getBeginLoc());

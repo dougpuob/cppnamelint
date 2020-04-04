@@ -26,7 +26,7 @@ FunctionName            = 0 # 0: Default (UpperCamel)
                             # 2: lowerCamel
                             # 3: lower_snake
 
-VariableName            = 4 # 0: Default (UpperCamel)
+VariableName            = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower_snake
@@ -68,7 +68,7 @@ StructValueName         = 0 # 0: Default (UpperCamel)
 [General.IgnoredList]
 FunctionPrefix          = [ "_",
                             "__",
-                            "~" #dtor]
+                            "~"]
 
 VariablePrefix          = [ "m_" ]
 EnumTagPrefix           = [ "_", "e" ]
