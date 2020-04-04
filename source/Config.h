@@ -99,6 +99,7 @@ private:
 
 public:
   Config();
+  void ReformatCStringMap(vector<MappingPair> &CStringMap);
   bool Clear();
   bool LoadFile(string ConfigFilePath, string &ErrorReason);
   bool LoadStream(string ConfigContent, string &ErrorReason);

@@ -10,55 +10,8 @@ using namespace std;
 
 namespace namelint {
 
-struct RuleOfFile {
-  bool bAllowedUnderscopeChar;
-
-  RuleOfFile();
-  void Reset();
-};
-
-struct RuleOfFunction {
-  vector<string> IgnoreNames;
-  vector<string> IgnorePrefixs;
-  bool bAllowedUnderscopeChar;
-
-  RuleOfFunction();
-  void Reset();
-};
-
-struct RuleOfVariable {
-  vector<string> IgnorePrefixs;
-  map<string, string> WordListMap;
-  vector<MappingPair> NullStringMap;
-  map<string, string> ArrayNamingMap;
-
-  bool bAllowedUnderscopeChar;
-
-  RuleOfVariable();
-  void Reset();
-};
-
-struct RuleOfStruct {
-  vector<string> IgnorePrefixs;
-
-  RuleOfStruct();
-  void Reset();
-};
-
-struct RuleOfEnum {
-  vector<string> IgnorePrefixs;
-
-  RuleOfEnum();
-  void Reset();
-};
-
 class Detection {
 private:
-  RuleOfFile m_RuleOfFile;
-  RuleOfVariable m_RuleOfVariable;
-  RuleOfEnum m_RuleOfEnum;
-  RuleOfStruct m_RuleOfStruct;
-
 private:
   int _FindContinuedUnderscope(const string &Name);
   int _FindLower(const string &Name);
@@ -84,9 +37,6 @@ private:
   bool _SkipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList);
 
 public:
-  bool ApplyRuleForVariable(const RuleOfVariable &Rule);
-  bool ApplyRuleForEnum(const RuleOfEnum &Rule);
-
   bool CheckFile(const RULETYPE Rule, const string &Name);
   bool CheckFunction(const RULETYPE Rule, const string &Name);
   bool CheckVariable(const RULETYPE Rule, const string &Type, const string &Name,

@@ -332,26 +332,6 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   this->m_pAstCxt = (ASTContext *)pAstCxt;
   this->m_pConfig = pConfig->GetData();
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-
-  {
-    RuleOfVariable Rule;
-    Rule.bAllowedUnderscopeChar = this->m_pConfig->General.Options.bAllowedUnderscopeChar;
-
-    Rule.IgnorePrefixs  = this->m_pConfig->General.IgnoredList.VariablePrefix;
-    Rule.WordListMap    = this->m_pConfig->Hungarian.WordList;
-    Rule.ArrayNamingMap = this->m_pConfig->Hungarian.ArrayList;
-    Rule.NullStringMap  = this->m_pConfig->Hungarian.NullStringList;
-
-    this->m_Detect.ApplyRuleForVariable(Rule);
-  }
-
-  {
-    RuleOfEnum Rule;
-    Rule.IgnorePrefixs = this->m_pConfig->General.IgnoredList.EnumTagPrefix;
-    this->m_Detect.ApplyRuleForEnum(Rule);
-  }
 }
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {

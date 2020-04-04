@@ -72,6 +72,17 @@ bool Config::Clear() {
   return true;
 }
 
+void Config::ReformatCStringMap(vector<MappingPair> &CStringMap) {
+  vector<MappingPair> TempCStringMap = CStringMap;
+  CStringMap.clear();
+  for (auto Item : TempCStringMap) {
+    String::Replace(Item.Key, "*", "");
+    String::Replace(Item.Key, "[", "");
+    String::Replace(Item.Key, "]", "");
+    CStringMap.push_back(MappingPair(Item.Key, Item.Value));
+  }
+}
+
 bool Config::LoadFile(string ConfigFilePath, string &ErrorReason) {
   Clear();
 
@@ -320,6 +331,7 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
         OutStrMap.push_back(MappingPair(Str1, Str2));
       }
     }(this->m_pConfig->Hungarian.NullStringList, pHungarianNullStringList->as<toml::Table>());
+    ReformatCStringMap(this->m_pConfig->Hungarian.NullStringList);
   }
 
   // ==----------------------------------------------------------------------------------

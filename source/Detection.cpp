@@ -13,33 +13,6 @@
 //==---------------------------------------------------------------------------
 namespace namelint {
 
-RuleOfFile::RuleOfFile() { this->Reset(); }
-
-void RuleOfFile::Reset() { this->bAllowedUnderscopeChar = false; }
-
-RuleOfFunction::RuleOfFunction() { this->Reset(); }
-
-void RuleOfFunction::Reset() {
-  this->bAllowedUnderscopeChar = false;
-  this->IgnorePrefixs.clear();
-  this->IgnoreNames.clear();
-}
-
-RuleOfVariable::RuleOfVariable() { this->Reset(); }
-void RuleOfVariable::Reset() {
-  this->bAllowedUnderscopeChar = false;
-  this->IgnorePrefixs.clear();
-  this->WordListMap.clear();
-  this->NullStringMap.clear();
-  this->ArrayNamingMap.clear();
-}
-
-RuleOfEnum::RuleOfEnum() { this->Reset(); }
-void RuleOfEnum::Reset() { this->IgnorePrefixs.clear(); }
-
-RuleOfStruct::RuleOfStruct() { this->Reset(); }
-void RuleOfStruct::Reset() { this->IgnorePrefixs.clear(); }
-
 bool Detection::_RemoveHeadingUnderscore(string &Text) {
   bool bStatus = false;
 
@@ -379,27 +352,6 @@ bool Detection::_SkipIgnoreFunctions(const string &Name, const vector<string> &I
 //==---------------------------------------------------------------------------
 namespace namelint {
 
-bool Detection::ApplyRuleForVariable(const RuleOfVariable &Rule) {
-  this->m_RuleOfVariable.IgnorePrefixs          = Rule.IgnorePrefixs;
-  this->m_RuleOfVariable.WordListMap            = Rule.WordListMap;
-  this->m_RuleOfVariable.ArrayNamingMap         = Rule.ArrayNamingMap;
-  this->m_RuleOfVariable.bAllowedUnderscopeChar = Rule.bAllowedUnderscopeChar;
-
-  this->m_RuleOfVariable.NullStringMap.clear();
-  for (auto Item : Rule.NullStringMap) {
-    String::Replace(Item.Key, "*", "");
-    String::Replace(Item.Key, "[", "");
-    String::Replace(Item.Key, "]", "");
-    this->m_RuleOfVariable.NullStringMap.push_back(MappingPair(Item.Key, Item.Value));
-  }
-  return true;
-}
-
-bool Detection::ApplyRuleForEnum(const RuleOfEnum &Rule) {
-  this->m_RuleOfEnum.IgnorePrefixs = Rule.IgnorePrefixs;
-  return true;
-}
-
 bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
   bool bStatus = false;
   if (Name.length() == 0) {
@@ -483,25 +435,29 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
   bool bStatus = false;
   switch (Rule) {
   case RULETYPE_DEFAULT:
-  case RULETYPE_UPPER_CAMEL:
-    bStatus = this->_IsUpperCamelCaseString(Name, this->m_RuleOfVariable.IgnorePrefixs,
-                                            this->m_RuleOfVariable.bAllowedUnderscopeChar);
+  case RULETYPE_UPPER_CAMEL: {
+    bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
+                                            pCfgData->General.Options.bAllowedUnderscopeChar);
     break;
+  }
+  case RULETYPE_LOWER_CAMEL: {
+    bStatus = this->_IsLowerCamelCaseString(Name, IgnorePrefixs);
+    break;
+  }
+  case RULETYPE_LOWER_SNAKE: {
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, IgnorePrefixs);
+    break;
+  }
+  case RULETYPE_HUNGARIAN: {
+    const auto &WordListMap    = pCfgData->Hungarian.WordList;
+    const auto &NullStringMap  = pCfgData->Hungarian.NullStringList;
+    const auto &ArrayNamingMap = pCfgData->Hungarian.ArrayList;
 
-  case RULETYPE_LOWER_CAMEL:
-    bStatus = this->_IsLowerCamelCaseString(Name, this->m_RuleOfVariable.IgnorePrefixs);
+    bStatus =
+        this->_IsHungarianNotationString(Type, Name, bPreferUpperCamel, bIsPtr, bIsArray,
+                                         IgnorePrefixs, WordListMap, NullStringMap, ArrayNamingMap);
     break;
-
-  case RULETYPE_LOWER_SNAKE:
-    bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, this->m_RuleOfVariable.IgnorePrefixs);
-    break;
-
-  case RULETYPE_HUNGARIAN:
-    bStatus = this->_IsHungarianNotationString(
-        Type, Name, bPreferUpperCamel, bIsPtr, bIsArray, this->m_RuleOfVariable.IgnorePrefixs,
-        this->m_RuleOfVariable.WordListMap, this->m_RuleOfVariable.NullStringMap,
-        this->m_RuleOfVariable.ArrayNamingMap);
-    break;
+  }
   }
   return bStatus;
 }
@@ -523,7 +479,7 @@ bool Detection::CheckEnumVal(const RULETYPE Rule, const string &Name) {
 
   case RULETYPE_UPPER_CAMEL:
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                            this->m_RuleOfVariable.bAllowedUnderscopeChar);
+                                            pCfgData->General.Options.bAllowedUnderscopeChar);
     break;
 
   case RULETYPE_LOWER_CAMEL:
@@ -567,7 +523,7 @@ bool Detection::CheckStructVal(const RULETYPE Rule, const string &Type, const st
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL:
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                            this->m_RuleOfVariable.bAllowedUnderscopeChar);
+                                            pCfgData->General.Options.bAllowedUnderscopeChar);
     break;
 
   case RULETYPE_LOWER_CAMEL:

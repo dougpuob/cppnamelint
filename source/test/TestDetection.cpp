@@ -314,22 +314,26 @@ namespace TargetIsVariable {
 // Input Parameter
 TEST(Config_Detect_CheckVariable, InputParms_Good)
 {
-	RuleOfVariable Rule;
+    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    shared_ptr<ConfigData> pCfgData = pCfg->GetData();
+    pCfg->Clear();
+
+    auto& WordListMap = pCfgData->Hungarian.WordList;
+    auto& NullStringMap = pCfgData->Hungarian.NullStringList;
+    
+	WordListMap.insert(std::pair<string, string>("int"     , "i"));
+	WordListMap.insert(std::pair<string, string>("uint8_t" , "u8"));
+	WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
+
+	NullStringMap.push_back(MappingPair("char*"	 , "sz"));
+	NullStringMap.push_back(MappingPair("char**"	 , "psz"));
+	NullStringMap.push_back(MappingPair("wchar_t*"  , "wsz"));
+	NullStringMap.push_back(MappingPair("wchar_t**" , "pwsz"));
+    NullStringMap.push_back(MappingPair("char[]"	 , "sz"));
+    NullStringMap.push_back(MappingPair("wchar_t[]" , "wsz"));
+    pCfg->ReformatCStringMap(NullStringMap);
+
     Detection Detect;
-	Rule.WordListMap.insert(std::pair<string, string>("int"     , "i"));
-	Rule.WordListMap.insert(std::pair<string, string>("uint8_t" , "u8"));
-	Rule.WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
-
-	Rule.NullStringMap.push_back(MappingPair("char*"	 , "sz"));
-	Rule.NullStringMap.push_back(MappingPair("char**"	 , "psz"));
-	Rule.NullStringMap.push_back(MappingPair("wchar_t*"  , "wsz"));
-	Rule.NullStringMap.push_back(MappingPair("wchar_t**" , "pwsz"));
-
-    Rule.NullStringMap.push_back(MappingPair("char[]"	 , "sz"));
-    Rule.NullStringMap.push_back(MappingPair("wchar_t[]" , "wsz"));
-
-	Detect.ApplyRuleForVariable(Rule);
-	    
     // ...........................................................vvvvvvvvv <-- * character should be removed.
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"      , PREFER_UC, IS_PTR, NOT_ARRAY));
 	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "pszStr"     , PREFER_UC, IS_PTR, NOT_ARRAY));
@@ -349,90 +353,92 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uint8_t"  , "u8MyFunc"  , PREFER_UC, NOT_PTR, NOT_ARRAY));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uint16_t" , "u16MyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
 	
-	Rule.IgnorePrefixs.push_back("m_");
-	Detect.ApplyRuleForVariable(Rule);
+    auto& IgnorePrefixs = pCfgData->General.IgnoredList.VariablePrefix;
+	IgnorePrefixs.push_back("m_");
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"      , "m_iMyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
 }
 
 TEST(Config_Detect_CheckVariable, PreferUpperCamelIfMissed)
 {
-    RuleOfVariable Rule;
+    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    shared_ptr<ConfigData> pCfgData = pCfg->GetData();
+    pCfg->Clear();
+
+    auto& WordListMap = pCfgData->Hungarian.WordList;
+    auto& NullStringMap = pCfgData->Hungarian.NullStringList;
+
+    WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
+
     Detection Detect;
-
-	bool bIsPtr = true;
-	bool bNotPtr = false;
-	bool bIsArray = true;
-	bool bNotArray = false;
-    bool bPreferUpperCamel = true;
-
-    Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
-    Rule.WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
-	Detect.ApplyRuleForVariable(Rule);
-
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN,  "int",     "MyValue", bPreferUpperCamel, bNotPtr, bNotArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyValue", bPreferUpperCamel, bNotPtr, bNotArray));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN,  "int",     "MyValue", PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyValue", PREFER_UC, NOT_PTR, NOT_ARRAY));
 }
 
 TEST(Config_Detect_CheckVariable, InputParms_Bad)
 {
-	RuleOfVariable Rule;
-	Detection Detect;
+    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    shared_ptr<ConfigData> pCfgData = pCfg->GetData();
+    pCfg->Clear();
 
-	Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
-	Rule.WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
+    auto& WordListMap = pCfgData->Hungarian.WordList;
+    auto& NullStringMap = pCfgData->Hungarian.NullStringList;
 
-	bool bPrefer = true;
-	bool bIsPtr  = false;
-	bool bIsArray = false;
-	Detect.ApplyRuleForVariable(Rule);
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uint8_t"  , ""            , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""			 , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_name"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u16AnyName"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u8AnyName"   , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8_my_func"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u16_my_func" , bPrefer, bIsPtr, bIsArray));	
-	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "int" 	 , "iMyValue" 	 , bPrefer, true,   bIsArray));
+    WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
+
+	WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+	WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
+
+    Detection Detect;
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""			 , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_name"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u16AnyName"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u8AnyName"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8_my_func"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u16_my_func" , PREFER_UC, IS_PTR, IS_ARRAY));
+	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "int" 	 , "iMyValue" 	 , PREFER_UC, IS_PTR, IS_ARRAY));
 }
 
 //-------------------------------------------------------------------------
 // Multiple Cases
 TEST(Config_Detect_CheckVariable, GoodCases)
 {
-	const RULETYPE RuleType = RULETYPE_UPPER_CAMEL;
+    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    shared_ptr<ConfigData> pCfgData = pCfg->GetData();
+    pCfg->Clear();
 
-	RuleOfVariable Rule;
-	Detection Detect;
+    auto& WordListMap = pCfgData->Hungarian.WordList;
+    auto& NullStringMap = pCfgData->Hungarian.NullStringList;
 
-	Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+	WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
 
-	bool bPrefer = true;
-	bool bIsPtr = false;
-	bool bIsArray = false;
-	Detect.ApplyRuleForVariable(Rule);
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t", "MyFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t", "MyFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t", "myFunc"  , bPrefer, bIsPtr, bIsArray));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE   , "uint8_t", "my_func" , bPrefer, bIsPtr, bIsArray));
+    Detection Detect;
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t", "MyFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t", "MyFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t", "myFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE   , "uint8_t", "my_func" , PREFER_UC, IS_PTR, IS_ARRAY));
 }
 
 TEST(Config_Detect_CheckVariable, Hungarian_Bad)
 {
-	RuleOfVariable Rule;
-	Detection Detect;
+    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    shared_ptr<ConfigData> pCfgData = pCfg->GetData();
+    pCfg->Clear();
 
-	Rule.WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    auto& WordListMap = pCfgData->Hungarian.WordList;
+    auto& NullStringMap = pCfgData->Hungarian.NullStringList;
 
-	bool bPrefer = true;
-	bool bIsPtr = false;
-	bool bIsArray = false;
-	Detect.ApplyRuleForVariable(Rule);
-	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyFunc", bPrefer, bIsPtr, bIsArray));
+	WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+
+    Detection Detect;
+	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyFunc", PREFER_UC, IS_PTR, IS_ARRAY));
 }
 
 }  // namespace CheckVariable
