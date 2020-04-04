@@ -10,8 +10,8 @@ static cl::OptionCategory CppNameLintCategory("CppNameLint options");
 // Generic options
 //==-----------------------------------------------------------------------
 static cl::opt<string> LogFile("logfile", cl::desc("Print log message to the specific a log file."),
-                               cl::value_desc("LogName"), cl::Optional,
-                               cl::cat(CppNameLintCategory), cl::sub(*cl::AllSubCommands));
+                               cl::value_desc("File"), cl::Optional, cl::cat(CppNameLintCategory),
+                               cl::sub(*cl::AllSubCommands));
 
 static cl::opt<bool> VerboseMode("verbose", cl::desc("Enable verbose mode."),
                                  cl::value_desc("Verbose"), cl::Optional,
@@ -26,17 +26,16 @@ static cl::opt<string> CheckInputSrc(cl::Positional, cl::desc("<input file>"), c
                                      cl::sub(CheckSubcommand));
 
 static cl::opt<string> CheckInputConfig("config", cl::desc("Specific your config file(.toml)."),
-                                        cl::value_desc("FileName"), cl::cat(CppNameLintCategory),
+                                        cl::value_desc("File"), cl::cat(CppNameLintCategory),
                                         cl::sub(CheckSubcommand));
 
 static cl::opt<string> CheckOutputJson("jsonout", cl::desc("Generate result to a JSON file."),
-                                       cl::value_desc("FileName"), cl::cat(CppNameLintCategory),
+                                       cl::value_desc("File"), cl::cat(CppNameLintCategory),
                                        cl::sub(CheckSubcommand));
 
 static cl::list<string> CheckIncludes("include", cl::desc("Specific header folers."),
-                                      cl::value_desc("-include Dir1 -include Dir2 ..."),
-                                      cl::ZeroOrMore, cl::cat(CppNameLintCategory),
-                                      cl::sub(CheckSubcommand));
+                                      cl::value_desc("-include Dir1 ..."), cl::ZeroOrMore,
+                                      cl::cat(CppNameLintCategory), cl::sub(CheckSubcommand));
 
 //==-----------------------------------------------------------------------
 // SubCommand: test

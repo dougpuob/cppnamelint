@@ -22,21 +22,64 @@ The `cppnamelint` C/C++ naming convention checking tool which can run on Windows
 ----------
 
 ## **Usage**
+
+### Commands
+1. **Run Check command**  
+   - `cppnamelint check UpperCamel.c -config=cppnamelint.toml`
+   - `cppnamelint check UpperCamel.c -config=cppnamelint.toml -logfile logfile.log`
+   
+1. **Run Test command**  
+   `cppnamelint test -all`
+
+1. **Run Dump command**  
+   TODO.
+
+### Helps
 ```
-cppnamelint utility v0.1.2
+$ cppnamelint -help
 
-  Usage:
-    cppnamelint check <file> [--config=<file>] [--log=<file>] [--jsonout=<file>] [--includes=<dir1:dir2:...>]
-    cppnamelint test   [-a | --all] [-u | --unittest]
-    cppnamelint --help
-    cppnamelint --version
+cppnamelint utility v0.3.0
+---------------------------------------------------
+USAGE: cppnamelint.exe [subcommand] [options]
 
-  Options:
-        --config=<file>  [default: cppnamelint.toml]
-        --jsonout=<file> [default: cppnamelint.json]
-    --log=<file>     [default: cppnamelint.log]
+SUBCOMMANDS:
+
+  check - Check source with naming rules.
+  dump  - Dump default config file. (TODO)
+  test  - Run tests.
+
+  Type "cppnamelint.exe <subcommand> -help" to get more help on a specific subcommand
+
+OPTIONS:
+  -help              - Display available options (-help-hidden for more)
+  -logfile=<LogName> - Print log message to the specific a log file.
+  -verbose           - Enable verbose mode.
+  -version           - Display the version of this program
 ```
 
+```
+$ cppnamelint check -help
+
+cppnamelint utility v0.3.0
+---------------------------------------------------
+SUBCOMMAND 'check': Check source with naming rules.
+
+USAGE: cppnamelint.exe check [options] <input file>
+
+OPTIONS:
+
+CppNameLint options:
+
+  -config=<FileName>           - Specific your config file(.toml).
+  -include=<-include Dir1 ...> - Specific header folers.
+  -jsonout=<FileName>          - Generate result to a JSON file.
+  -logfile=<LogName>           - Print log message to the specific a log file.
+  -verbose                     - Enable verbose mode.
+
+Generic Options:
+
+  -help                        - Display available options (-help-hidden for more)
+```
 
 ----------
 
@@ -44,9 +87,7 @@ cppnamelint utility v0.1.2
 
 ### **Commands**
 
-1. `cppnamelint check UpperCamel.c`
-1. `cppnamelint check UpperCamel.c --config=cppnamelint.toml`
-1. `cppnamelint test -a`
+
 
 ### **Config File**
 

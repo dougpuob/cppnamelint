@@ -167,6 +167,7 @@ int RunDump() {
 
 int main(int Argc, const char **Argv) {
 
+  cout << endl;
   cout << "cppnamelint utility v0.3.0" << endl;
   cout << "---------------------------------------------------" << endl;
 
@@ -191,7 +192,6 @@ int main(int Argc, const char **Argv) {
     cl::PrintHelpMessage();
   }
 
-  cout << endl;
   return iRet;
 }
 
