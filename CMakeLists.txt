@@ -149,6 +149,11 @@ add_executable(
     source/test/TestConfig.cpp
     source/test/TestDetection.cpp
     source/test/TestRunCheck.cpp
+    source/test/TestRunCheck_UpperCamel.cpp
+    source/test/TestRunCheck_LowerCamel.cpp
+    source/test/TestRunCheck_UpperSnake.cpp
+    source/test/TestRunCheck_LowerSnake.cpp
+    source/test/TestRunCheck_Hungarian.cpp
 )
 
 

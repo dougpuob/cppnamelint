@@ -163,8 +163,8 @@ TEST(RunCheckStruct, USB_CONFIGURATION_POWER_DESCRIPTOR_2) {
     EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-TEST(RunCheckUnion, USB_20_PORT_STATUS) {
-
+TEST(RunCheckStructInUnion, USB_20_PORT_STATUS) {
+    // Those types are NOT in [Hungarian.WordList].
     const string SourceCode = "\
     typedef union _USB_20_PORT_STATUS {             \n\
     USHORT   AsUshort16;                            \n\
@@ -201,6 +201,7 @@ TEST(RunCheckUnion, USB_20_PORT_STATUS) {
     EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
     EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
     EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
+    EXPECT_EQ(true, 1 == MemoBoard.Checked.nUnion);
     EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
     EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -209,6 +210,7 @@ TEST(RunCheckUnion, USB_20_PORT_STATUS) {
     EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
     EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
     EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+    EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
     EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 

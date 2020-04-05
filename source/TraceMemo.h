@@ -91,6 +91,7 @@ public:
     size_t nVariable;
     size_t nEnum;
     size_t nStruct;
+    size_t nUnion;
     size_t nClass;
   } Checked;
 
@@ -101,6 +102,7 @@ public:
     size_t nVariable;
     size_t nEnum;
     size_t nStruct;
+    size_t nUnion;
     size_t nClass;
   } Error;
 

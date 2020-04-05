@@ -407,6 +407,24 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     }
     break;
   }
+  case TTK_Union: {
+    if (VarName.empty()) {
+      DcLib::Log::Out(INFO_ALL, "It is an anonymous union.");
+      bStatus = true;
+    } else {
+      pAppCxt->MemoBoard.Checked.nUnion++;
+
+      RULETYPE RuleType = this->m_pConfig->General.Rules.StructTagName;
+
+      bStatus = this->m_Detect.CheckStructVal(RuleType, "" /*no type*/, VarName, NOT_PTR);
+      if (!bStatus) {
+        pAppCxt->MemoBoard.Error.nUnion++;
+        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+            pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
+      }
+    }
+    break;
+  }
   case TTK_Class: {
 
     pAppCxt->MemoBoard.Checked.nClass++;
@@ -421,9 +439,6 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   }
   case TTK_Interface:
     VarName = "TTK_Interface";
-    break;
-  case TTK_Union:
-    VarName = "TTK_Union";
     break;
   case TTK_Enum:
     VarName = "TTK_Enum";
