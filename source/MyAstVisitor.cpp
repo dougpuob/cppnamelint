@@ -265,7 +265,7 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
 
   bool bResult = this->m_Detect.CheckVariable(
       this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
-      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
+      this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
@@ -321,7 +321,7 @@ bool MyASTVisitor::_CheckRuleForEnumValue(EnumConstantDecl *pDecl) {
 
   bStauts = this->m_Detect.CheckVariable(
       this->m_pConfig->General.Rules.EnumValueName, ValueType, ValueName,
-      this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
+      this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
   return bStauts;
 }
@@ -511,7 +511,7 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
     if (bStatus) {
       bResult = this->m_Detect.CheckVariable(
           this->m_pConfig->General.Rules.VariableName, VarType, VarName,
-          this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
+          this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
       pAppCxt->MemoBoard.Checked.nParameter++;
       if (!bResult) {

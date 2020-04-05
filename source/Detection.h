@@ -20,8 +20,9 @@ private:
   bool _RemoveHeadingUnderscore(string &Text);
   size_t _RemoveHeadingPtrChar(string &Text);
   bool _CaptureLowerCasePrefix(string &Name);
+  int _RemoveIgnoredPrefixs(string &Name, vector<string> IgnorePrefixs);
   bool _IsUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs,
-                               const bool AllowedUnderscopeChar = false);
+                               const AllowUnderscope AllowedUnderscope = DoNotAllow);
 
   bool _IsLowerCamelCaseString(const string &Name, vector<string> IgnorePrefixs);
   bool _IsSnakeString(const string &Name, SNAKETYPE SnakeType, vector<string> IgnorePrefixs);

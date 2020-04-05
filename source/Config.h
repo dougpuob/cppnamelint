@@ -63,7 +63,7 @@ struct General {
   GeneralIgnoredList IgnoredList;
 };
 
-struct HungarianOthers {
+struct HungarianOptions {
   bool PreferUpperCamelIfMissed;
 };
 
@@ -82,15 +82,30 @@ struct MappingPair {
 typedef std::map<std::string, std::string> HungarianMap;
 
 struct Hungarian {
-  HungarianOthers Others;
+  HungarianOptions Options;
   vector<MappingPair> NullStringList;
   HungarianMap ArrayList;
   HungarianMap WordList;
 };
 
+typedef enum _AllowUnderscope {
+  DoNotAllow = 0,
+  AllowedOneUnderscope,
+  AllowedSingleUnderscope
+} AllowUnderscope;
+
+struct CamelsOptions {
+  AllowUnderscope AllowUnderscope;
+};
+
+struct Camels {
+  CamelsOptions Options;
+};
+
 struct ConfigData {
   struct General General;
   struct Hungarian Hungarian;
+  struct Camels Camels;
 };
 
 class Config {

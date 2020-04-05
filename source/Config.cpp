@@ -38,8 +38,8 @@ Config::Config() {
   this->m_pConfig->General.IgnoredList.StructTagPrefix.assign({"_", "s"});
   this->m_pConfig->General.IgnoredList.FunctionName.assign({"main", "newASTConsumer", "TEST"});
 
-  // [Hungarian.Others]
-  this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed = true;
+  // [Hungarian.Options]
+  this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed = true;
 
   //[ Hungarian.WordList]
   this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("size_t", "n"));
@@ -64,6 +64,7 @@ bool Config::Clear() {
   this->m_pConfig->General.IgnoredList.StructTagPrefix.clear();
 
   memset(&this->m_pConfig->General.Options, 0, sizeof(this->m_pConfig->General.Options));
+  memset(&this->m_pConfig->Camels.Options, 0, sizeof(this->m_pConfig->Camels.Options));
 
   this->m_pConfig->Hungarian.ArrayList.clear();
   this->m_pConfig->Hungarian.NullStringList.clear();
@@ -293,13 +294,24 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
   }
 
   // ==----------------------------------------------------------------------------------
-  // [Hungarian.Others]
+  // [Camels.Options]
   // ==----------------------------------------------------------------------------------
-  // Hungarian.Others.PreferUpperCamelIfMissed
+  // Camels.Options.AllowUnderscope
+  const toml::Value *pCamelsOptionsAllowedOneUnderscope =
+      ParseRsValue.find("Hungarian.Options.AllowUnderscope");
+  if (pCamelsOptionsAllowedOneUnderscope && pCamelsOptionsAllowedOneUnderscope->is<int>()) {
+    this->m_pConfig->Camels.Options.AllowUnderscope =
+        (AllowUnderscope)pCamelsOptionsAllowedOneUnderscope->as<int>();
+  }
+
+  // ==----------------------------------------------------------------------------------
+  // [Hungarian.Options]
+  // ==----------------------------------------------------------------------------------
+  // Hungarian.Options.PreferUpperCamelIfMissed
   const toml::Value *pHungarianPreferUpperCamel =
-      ParseRsValue.find("Hungarian.Others.PreferUpperCamelIfMissed");
+      ParseRsValue.find("Hungarian.Options.PreferUpperCamelIfMissed");
   if (pHungarianPreferUpperCamel && pHungarianPreferUpperCamel->is<bool>()) {
-    this->m_pConfig->Hungarian.Others.PreferUpperCamelIfMissed =
+    this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed =
         pHungarianPreferUpperCamel->as<bool>();
   }
 

@@ -47,11 +47,11 @@ const string ConfigToml = "\
       \"uint32_t\"               = \"u32\"                  \n\
     ";
 
-// clang-format off
 namespace RunCheck {
-TEST(RunCheckStruct, USB_DEVICE_DESCRIPTOR) {
 
-    const string SourceCode = "\
+TEST(Struct, USB_DEVICE_DESCRIPTOR) {
+
+  const string SourceCode = "\
     typedef struct _USB_DEVICE_DESCRIPTOR { \n\
             uint8_t  u8Length;              \n\
             uint8_t  u8DescriptorType;      \n\
@@ -69,7 +69,7 @@ TEST(RunCheckStruct, USB_DEVICE_DESCRIPTOR) {
             uint8_t  u8NumConfigurations;   \n\
     } USB_DEVICE_DESCRIPTOR;";
 
-  MemoBoard& MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -111,8 +111,8 @@ const string SourceCode = "\
         uint16_t    u16TransitionTimeFromD3;              \n\
     } USB_CONFIGURATION_POWER_DESCRIPTOR                  \n\
     ";
-TEST(RunCheckStruct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
-  MemoBoard& MemoBoard = pAppCxt->MemoBoard;
+TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
+  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -137,35 +137,35 @@ TEST(RunCheckStruct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-TEST(RunCheckStruct, USB_CONFIGURATION_POWER_DESCRIPTOR_2) {
-    MemoBoard& MemoBoard = pAppCxt->MemoBoard;
-    MemoBoard.Clear();
+TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_2) {
+  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  string ErrorReason;
+  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
-    EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
-    EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+  EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nParameter);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-TEST(RunCheckStructInUnion, USB_20_PORT_STATUS) {
-    // Those types are NOT in [Hungarian.WordList].
-    const string SourceCode = "\
+TEST(Union, USB_20_PORT_STATUS) {
+  // Those types are NOT in [Hungarian.WordList].
+  const string SourceCode = "\
     typedef union _USB_20_PORT_STATUS {             \n\
     USHORT   AsUshort16;                            \n\
         struct {                                    \n\
@@ -186,36 +186,32 @@ TEST(RunCheckStructInUnion, USB_20_PORT_STATUS) {
     }  USB_20_PORT_STATUS;                          \n\
     ";
 
-    MemoBoard& MemoBoard = pAppCxt->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    MemoBoard.Config.GetData()->Hungarian.Others.PreferUpperCamelIfMissed = false;
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  MemoBoard.Config.GetData()->Hungarian.Options.PreferUpperCamelIfMissed = false;
 
-    EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
-    EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
-    EXPECT_EQ(true, 1 == MemoBoard.Checked.nUnion);
-    EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+  EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 1 == MemoBoard.Checked.nUnion);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nParameter);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
-    EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-
-
-} // namespace TargetIsGeneral
-
-// clang-format on
+} // namespace RunCheck

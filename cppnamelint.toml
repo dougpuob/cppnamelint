@@ -8,15 +8,10 @@ CheckEnum               = true
 CheckStruct             = true
 AllowedPrintResult      = true
 AllowedWriteJsonResult  = true
-AllowedUnderscopeChar   = false
+AllowedUnderscopeChar   = false # [Deprecated] Instead with Camels.Options.AllowedOneUnderscope.
 AllowedArrayAffected    = false
 
 [General.Rules]
-# UpperCamel: `MyValue`
-# LowerCamel: `myValue`
-# UpperSname: `MY_VALUE`
-# LowerCamel: `my_value`
-# Hungarian : `int iMyValue`
 FileName                = 0 # 0: Default (UpperCamel)
                             # 1: UpperCamel
                             # 3: lower_snake
@@ -77,8 +72,13 @@ StructTagPrefix         = [ "_", "s" ]
 FunctionName            = ["main", "newASTConsumer"]
 
 
-[Hungarian.Others]
+[Hungarian.Options]
 PreferUpperCamelIfMissed = true
+
+[Camels.Options]
+AllowUnderscope         = 0 # 0 = DoNotAllow (Default)
+                            # 1 = AllowedOneUnderscope,
+                            # 2 = AllowedSingleUnderscope
 
 [Hungarian.NullStringList]
 "char*"                  = "sz"

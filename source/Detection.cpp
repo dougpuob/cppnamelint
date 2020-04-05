@@ -46,6 +46,20 @@ size_t Detection::_RemoveHeadingPtrChar(string &Text) {
   return nIdx;
 }
 
+int Detection::_RemoveIgnoredPrefixs(string &Name, vector<string> IgnorePrefixs) {
+  int iRet = -1;
+  for (string Prefix : IgnorePrefixs) {
+    iRet++;
+    if (0 == Name.find(Prefix)) {
+      const size_t nPrefixLen = Prefix.length();
+
+      Name = Name.substr(nPrefixLen, Name.length() - nPrefixLen);
+      return iRet;
+    }
+  }
+  return iRet;
+}
+
 bool Detection::_CaptureLowerCasePrefix(string &Name) {
   bool bStatus = false;
 
@@ -64,58 +78,43 @@ bool Detection::_CaptureLowerCasePrefix(string &Name) {
 }
 
 bool Detection::_IsUpperCamelCaseString(const string &Name, vector<string> IgnorePrefixs,
-                                        const bool bAllowedUnderscopeChar) {
-
+                                        const AllowUnderscope AllowedUnderscope) {
   vector<string> NewIgnorePrefixs = IgnorePrefixs;
-  NewIgnorePrefixs.push_back("");
-
   auto wayToSort = [](string strA, string strB) { return strA.length() > strB.length(); };
   std::sort(NewIgnorePrefixs.begin(), NewIgnorePrefixs.end(), wayToSort);
 
-  size_t nUnderlineCount = 0;
-
-  string TempStr = Name;
-  for (string Prefix : NewIgnorePrefixs) {
-    size_t nFoundPos = TempStr.find(".");
-    if (-1 != nFoundPos) {
-      TempStr = TempStr.substr(0, nFoundPos);
-    }
-
-    if (Prefix.length() > 0) {
-      nFoundPos = TempStr.find(Prefix);
-      if (0 == nFoundPos) {
-        TempStr = TempStr.substr(Prefix.length(), TempStr.length() - Prefix.length());
-        break;
-      }
-    }
-  }
+  string NewName = Name;
+  int iFound     = _RemoveIgnoredPrefixs(NewName, NewIgnorePrefixs);
 
   bool bStatus = false;
-  if (TempStr.length() > 0 && isupper(TempStr[0])) {
-    char *szBuf = (char *)TempStr.c_str();
-    while ((*szBuf != '\0') && isupper(*szBuf)) {
-      szBuf++;
-      if (isupper(*szBuf)) {
-        bStatus = false;
-        break;
-      }
-
-      while ((*szBuf != '\0')) {
-        if (isupper(*szBuf)) {
-          break;
-        }
-
-        if (bAllowedUnderscopeChar)
-          bStatus = islower(*szBuf) || isdigit(*szBuf) || (*szBuf == '_');
-        else
-          bStatus = islower(*szBuf) || isdigit(*szBuf);
-
-        if (!bStatus) {
-          break;
-        }
-        szBuf++;
-      }
+  switch (AllowedUnderscope) {
+  case DoNotAllow: {
+    if (string::npos == NewName.find("_")) {
+      bStatus = true;
+      String::Replace(NewName, "_", "");
     }
+    break;
+  }
+  case AllowedOneUnderscope: {
+    size_t count = std::count_if(NewName.begin(), NewName.end(), [](char c) { return (c == '_'); });
+    if (count <= 1) {
+      bStatus = true;
+      String::Replace(NewName, "_", "");
+    }
+    break;
+  }
+  case AllowedSingleUnderscope: {
+    if (string::npos == NewName.find("__")) {
+      bStatus = true;
+      String::Replace(NewName, "_", "");
+    }
+  }
+  }
+
+  if (bStatus) {
+    // Find contine two upper chars.
+    regex Regex("[A-Z]{2}|^[a-z]");
+    bStatus = !regex_search(NewName, Regex);
   }
 
   return bStatus;
@@ -371,7 +370,7 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL: {
     bStatus = this->_IsUpperCamelCaseString(NewName, NullIgnorePrefixs,
-                                            pCfgData->General.Options.bAllowedUnderscopeChar);
+                                            pCfgData->Camels.Options.AllowUnderscope);
     break;
   }
   case RULETYPE_LOWER_CAMEL: {
@@ -407,7 +406,7 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL: {
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                            pCfgData->General.Options.bAllowedUnderscopeChar);
+                                            pCfgData->Camels.Options.AllowUnderscope);
     break;
   }
   case RULETYPE_LOWER_CAMEL: {
@@ -437,7 +436,7 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL: {
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                            pCfgData->General.Options.bAllowedUnderscopeChar);
+                                            pCfgData->Camels.Options.AllowUnderscope);
     break;
   }
   case RULETYPE_LOWER_CAMEL: {
@@ -479,7 +478,7 @@ bool Detection::CheckEnumVal(const RULETYPE Rule, const string &Name) {
 
   case RULETYPE_UPPER_CAMEL:
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                            pCfgData->General.Options.bAllowedUnderscopeChar);
+                                            pCfgData->Camels.Options.AllowUnderscope);
     break;
 
   case RULETYPE_LOWER_CAMEL:
@@ -509,7 +508,7 @@ bool Detection::CheckStructVal(const RULETYPE Rule, const string &Type, const st
   bool bStatus = false;
   switch (Rule) {
   case RULETYPE_HUNGARIAN: {
-    const bool bPreferUpperCamelIfMissed = pCfgData->Hungarian.Others.PreferUpperCamelIfMissed;
+    const bool bPreferUpperCamelIfMissed = pCfgData->Hungarian.Options.PreferUpperCamelIfMissed;
     const auto &WordListMap              = pCfgData->Hungarian.WordList;
     const auto &NullStringMap            = pCfgData->Hungarian.NullStringList;
     const auto &ArrayNamingMap           = pCfgData->Hungarian.ArrayList;
@@ -523,7 +522,7 @@ bool Detection::CheckStructVal(const RULETYPE Rule, const string &Type, const st
   case RULETYPE_DEFAULT:
   case RULETYPE_UPPER_CAMEL:
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
-                                            pCfgData->General.Options.bAllowedUnderscopeChar);
+                                            pCfgData->Camels.Options.AllowUnderscope);
     break;
 
   case RULETYPE_LOWER_CAMEL:

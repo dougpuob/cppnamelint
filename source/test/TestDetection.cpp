@@ -64,7 +64,7 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Good)
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "TestName.cpp"));
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "TestName.CPP"));
 
-    pCfgData->General.Options.bAllowedUnderscopeChar = true;
+    pCfgData->Camels.Options.AllowUnderscope = AllowedOneUnderscope;
 	EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "Sample_03.c"));
 }
 
@@ -159,10 +159,13 @@ TEST(Config_Detect_CheckFunction, InputParms_Good)
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_CAMEL		, "myFunc"	));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE		, "my_func"	));
 
-    pCfgData->General.Options.bAllowedUnderscopeChar = true;
+    pCfgData->Camels.Options.AllowUnderscope = AllowedOneUnderscope;
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "MyFunc_"	));
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "Mem_"	));
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "Fun_"	));
+
+    pCfgData->Camels.Options.AllowUnderscope = AllowedSingleUnderscope;
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL       , "My_Func_A"));
 }
 
 TEST(Config_Detect_CheckFunction, InputParms_Bad)
@@ -172,8 +175,8 @@ TEST(Config_Detect_CheckFunction, InputParms_Bad)
     pCfg->Clear();
 
     Detection Detect;
+    pCfgData->Camels.Options.AllowUnderscope = AllowedSingleUnderscope;
 	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My_Func_A"	));
 	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func_B"	));
     EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_DEFAULT          , ""			));
     EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, ""			));
@@ -201,14 +204,14 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
 	IgnorePrefixs.push_back("_");
 	IgnorePrefixs.push_back("__");
 	IgnorePrefixs.push_back("XXX_");
-    pCfgData->General.Options.bAllowedUnderscopeChar = false;
+    
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName"    ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "__UpperCamelFuncName"   ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "XXX_UpperCamelFuncName" ));
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "MyFunc3"				));
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "main"                   ));
 
-    pCfgData->General.Options.bAllowedUnderscopeChar = true;
+    pCfgData->Camels.Options.AllowUnderscope = AllowedOneUnderscope;
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName_"	));
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName_A"	));
 	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "main"                   ));
