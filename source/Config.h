@@ -95,7 +95,7 @@ typedef enum _AllowUnderscope {
 } AllowUnderscope;
 
 struct CamelsOptions {
-  AllowUnderscope AllowUnderscope;
+  namelint::AllowUnderscope AllowUnderscope;
 };
 
 struct Camels {

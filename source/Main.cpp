@@ -252,9 +252,9 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   }
 
   sprintf(szText,
-          " Checked = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d | "
-          "Union:%3d | "
-          "Class:%3d]",
+          " Checked = %5d  [File:%u | Func:%3u | Param:%3u | Var:%3u | Enum:%3u | Struct:%3u | "
+          "Union:%3u | "
+          "Class:%3u]",
           GetTotalChecked(MemoBoard), MemoBoard.Checked.nFile, MemoBoard.Checked.nFunction,
           MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum,
           MemoBoard.Checked.nStruct, MemoBoard.Checked.nUnion, MemoBoard.Checked.nClass);
@@ -264,9 +264,9 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   }
 
   sprintf(szText,
-          " Error   = %5d  [File:%d | Func:%3d | Param:%3d | Var:%3d | Enum:%3d | Struct:%3d | "
-          "Union:%3d | "
-          "Class:%3d]",
+          " Error   = %5d  [File:%u | Func:%3u | Param:%3u | Var:%3u | Enum:%3u | Struct:%3u | "
+          "Union:%3u | "
+          "Class:%3u]",
           GetTotalError(MemoBoard), MemoBoard.Error.nFile, MemoBoard.Error.nFunction,
           MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum,
           MemoBoard.Error.nStruct, MemoBoard.Error.nUnion, MemoBoard.Error.nClass);
@@ -288,7 +288,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Function:
-      sprintf(szText, "  <%4d, %4d> Function  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4u, %4u> Function  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -298,7 +298,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Parameter:
-      sprintf(szText, "  <%4d, %4d> Parameter : %s (%s%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4u, %4u> Parameter : %s (%s%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""));
 
@@ -309,7 +309,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Variable:
-      sprintf(szText, "  <%4d, %4d> Variable  : %s (%s%s%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4u, %4u> Variable  : %s (%s%s%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(), pErrDetail->TypeName.c_str(),
               (pErrDetail->bIsPtr ? "*" : ""), (pErrDetail->bIsArray ? "[]" : ""));
 
@@ -320,7 +320,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_Class:
-      sprintf(szText, "  <%4d, %4d> Class     : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4u, %4u> Class     : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -330,7 +330,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_EnumTag:
-      sprintf(szText, "  <%4d, %4d> Enum Tag  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
+      sprintf(szText, "  <%4u, %4u> Enum Tag  : %s", pErrDetail->Pos.nLine, pErrDetail->Pos.nColumn,
               pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
@@ -340,7 +340,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_EnumVal:
-      sprintf(szText, "  <%4d, %4d> Enum Val  : %s (%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4u, %4u> Enum Val  : %s (%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
               pErrDetail->TypeName.c_str());
 
@@ -351,7 +351,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_StructTag:
-      sprintf(szText, "  <%4d, %4d> Struct Tag: %s (%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4u, %4u> Struct Tag: %s (%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
               pErrDetail->TypeName.c_str());
 
@@ -362,7 +362,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
       break;
 
     case CheckType::CT_StructVal:
-      sprintf(szText, "  <%4d, %4d> Struct Val: %s (%s)", pErrDetail->Pos.nLine,
+      sprintf(szText, "  <%4u, %4u> Struct Val: %s (%s)", pErrDetail->Pos.nLine,
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str(),
               pErrDetail->TypeName.c_str());
 
