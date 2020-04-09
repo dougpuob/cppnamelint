@@ -113,8 +113,9 @@ def main(forced_argv):
     elif py_args.input_cmd == define_cmd_bldgpack:
         print('Dispatched to `BLDGPACK`')
         root_dir:str    = os.path.abspath(py_args.root)
+        build_dir: str  = os.path.abspath(py_args.build)
         output_dir:str  = os.path.abspath(py_args.output)
-        error_code      = run_pack(define_exec_name, root_dir, output_dir)
+        error_code      = run_pack(define_exec_name, root_dir, build_dir, output_dir)
 
     #--------------------------------------------------------------------------
     # python cppnamelint.py bldgcfg command
@@ -170,6 +171,7 @@ def make_cmd_table():
 
     bldgpack = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack cmd for packing this project")
     bldgpack.add_argument('root'    , help='project root folder path')
+    bldgpack.add_argument('build'   , help='Build directory.')
     bldgpack.add_argument('output'  , help='target released output folder path')
 
     bldgcfg = subparsers.add_parser(define_cmd_bldgcfg, help="bldgcfg cmd for doing config via Cmake")
@@ -321,7 +323,7 @@ def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_outp
     return first_error_code, full_output_string
 
 
-def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
+def run_pack(file_name:str, root_dir:str, build_dir:str, output_dir: str) -> int:
 
     root_dir   = os.path.abspath(root_dir)
     output_dir = os.path.abspath(output_dir)
@@ -341,7 +343,7 @@ def run_pack(file_name:str, root_dir:str, output_dir: str) -> int:
         return -2
 
     file_obj = File()
-    found_generated_binary = file_obj.find_newest_exe(file_name, root_dir)
+    found_generated_binary = file_obj.find_newest_exe(file_name, build_dir)
     if '' == found_generated_binary:
         return -3
 

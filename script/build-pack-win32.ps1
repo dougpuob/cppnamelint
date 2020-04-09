@@ -17,7 +17,11 @@ Write-Output ""
 Write-Output "=============================================================="
 Write-Output " Pack generated files to release folder."
 Write-Output "=============================================================="
-& python cppnamelint.py bldgpack .. release
+$proj_dir="../"
+$build_dir="../build/windows"
+$output_dir="./release"
+
+& python cppnamelint.py bldgpack $proj_dir $build_dir $output_dir
 if (0 -ne $LastExitCode) {
     Write-Output (-join('ERR : Failed to use `cppnamelint.py bldgpack` command.' , " (LastExitCode=",$LastExitCode,")"))
     Exit $LastExitCode
