@@ -263,21 +263,21 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
     return false;
   }
 
-  bool bResult = this->m_Detect.CheckVariable(
+  bStauts = this->m_Detect.CheckVariable(
       this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
       this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   pAppCxt->MemoBoard.Checked.nVariable++;
-  if (!bResult) {
+  if (!bStauts) {
     pAppCxt->MemoBoard.Error.nVariable++;
 
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
         pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
   }
 
-  return true;
+  return bStauts;
 }
 
 bool MyASTVisitor::_CheckRuleForStructValue(ValueDecl *pDecl) {

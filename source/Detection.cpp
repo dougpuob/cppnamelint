@@ -420,6 +420,10 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     bStatus = this->_IsLowerCamelCaseString(Name, IgnorePrefixs);
     break;
   }
+  case RULETYPE_UPPER_SNAKE: {
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_UPPER, IgnorePrefixs);
+    break;
+  }
   case RULETYPE_LOWER_SNAKE: {
     bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, IgnorePrefixs);
     break;
@@ -448,6 +452,10 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
   }
   case RULETYPE_LOWER_CAMEL: {
     bStatus = this->_IsLowerCamelCaseString(Name, IgnorePrefixs);
+    break;
+  }
+  case RULETYPE_UPPER_SNAKE: {
+    bStatus = this->_IsSnakeString(Name, SNAKETYPE_UPPER, IgnorePrefixs);
     break;
   }
   case RULETYPE_LOWER_SNAKE: {
