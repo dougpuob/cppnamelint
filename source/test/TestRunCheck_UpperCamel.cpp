@@ -54,7 +54,6 @@ const string ConfigToml = "\
                                   # 1: UpperCamel           \n\
                                   # 2: lowerCamel           \n\
                                   # 3: lower_snake          \n\
-                                  # 4: Hungarian            \n\
                                   # 5: UPPER_SNAKE          \n\
                                                             \n\
       StructTagName           = 1 # 0: Default (UpperCamel) \n\
@@ -71,24 +70,23 @@ const string ConfigToml = "\
                                   # 5: UPPER_SNAKE          \n\
     ";
 
-// clang-format off
 namespace RunCheckUpperCamel {
 
 TEST(Variable, Integers) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = " \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = " \n\
         int UsbLowSpeed   = 1;  \n\
         int UsbFullSpeed  = 2   \n\
         int UsbHighSpeed  = 3;  \n\
         int UsbSuperSpeed = 4;  \n\
     ";
-    
+
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
@@ -108,22 +106,21 @@ TEST(Variable, Integers) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-
 TEST(Variable, IntegerPointers) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = "     \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "     \n\
         int* UsbLowSpeed   = NULL;  \n\
         int* UsbFullSpeed  = NULL   \n\
         int* UsbHighSpeed  = NULL;  \n\
         int* UsbSuperSpeed = NULL;  \n\
     ";
-    
+
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
@@ -144,20 +141,20 @@ TEST(Variable, IntegerPointers) {
 }
 
 TEST(Variable, IntegerArraies) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = "      \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "      \n\
         int UsbLowSpeed[8]   = {0};  \n\
         int UsbFullSpeed[8]  = {0}   \n\
         int UsbHighSpeed[8]  = {0};  \n\
         int UsbSuperSpeed[8] = {0};  \n\
     ";
-    
+
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
@@ -178,14 +175,14 @@ TEST(Variable, IntegerArraies) {
 }
 
 TEST(Enum, UsbEndpointDescriptor) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = "         \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "         \n\
         typedef enum _UsbDeviceSpeed {  \n\
             UsbLowSpeed = 0,            \n\
             UsbFullSpeed,               \n\
@@ -193,8 +190,8 @@ TEST(Enum, UsbEndpointDescriptor) {
             UsbSuperSpeed               \n\
         } UsbDeviceSpeed;               \n\
     ";
-    
-    pCfgData->General.IgnoredList.EnumTagPrefix.push_back("_");
+
+  pCfgData->General.IgnoredList.EnumTagPrefix.push_back("_");
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
@@ -215,14 +212,14 @@ TEST(Enum, UsbEndpointDescriptor) {
 }
 
 TEST(Struct, UsbEndpointDescriptor) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = "                    \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "                    \n\
         typedef struct _UsbEndpointDescriptor {    \n\
             UCHAR   Length;                        \n\
             UCHAR   DescriptorType;                \n\
@@ -232,8 +229,8 @@ TEST(Struct, UsbEndpointDescriptor) {
             UCHAR   Interval;                      \n\
         } UsbEndpointDescriptor;                   \n\
     ";
-    
-    pCfgData->General.IgnoredList.StructTagPrefix.push_back("_");
+
+  pCfgData->General.IgnoredList.StructTagPrefix.push_back("_");
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -254,20 +251,19 @@ TEST(Struct, UsbEndpointDescriptor) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-
 TEST(Function, FnPtr) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = "                          \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "                          \n\
         int (*FnName1)(int, int);                        \n\
         int (*FnName2)(int A, int B);                    \n\
         ";
-    
+
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
@@ -288,14 +284,14 @@ TEST(Function, FnPtr) {
 }
 
 TEST(Function, MemCpy) {
-    MemoBoard& MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
-    MemoBoard.Clear();
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
 
-    string ErrorReason;
-    MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-    shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
-    
-    const string SourceCode = "                          \n\
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "                          \n\
         void *                                           \n\
         MemCpy (void *Dest, const void *Src, size_t Len) \n\
         {                                                \n\
@@ -306,7 +302,7 @@ TEST(Function, MemCpy) {
           return Dest;                                   \n\
         }                                                \n\
         ";
-    
+
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
@@ -326,7 +322,4 @@ TEST(Function, MemCpy) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-
-} // namespace TargetIsGeneral
-
-// clang-format on
+} // namespace RunCheckUpperCamel

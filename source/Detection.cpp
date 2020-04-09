@@ -255,6 +255,7 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
     }
 
     // Remove hungarian notion of C null string.
+    bool bMatchMissed = true;
     for (auto Iter : NullStringMap) {
       const auto IterType   = Iter.Key;
       const auto IterPrefix = Iter.Value;
@@ -263,11 +264,17 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
         if (0 == nNewStrPos) {
           const size_t nPrefixLen = IterPrefix.length();
+          bMatchMissed            = false;
           bStatus                 = true;
           NewNameStr              = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
           break;
         }
       }
+    }
+
+    // Even missed match the result should be TRUE.
+    if (!bStatus) {
+      bStatus = bMatchMissed;
     }
   } else {
     bStatus = true;
@@ -472,10 +479,6 @@ bool Detection::CheckEnumVal(const RULETYPE Rule, const string &Name) {
   bool bStatus = false;
   switch (Rule) {
   case RULETYPE_DEFAULT:
-  case RULETYPE_HUNGARIAN:
-    bStatus = false; // Don't allow.
-    break;
-
   case RULETYPE_UPPER_CAMEL:
     bStatus = this->_IsUpperCamelCaseString(Name, IgnorePrefixs,
                                             pCfgData->Camels.Options.AllowUnderscope);
@@ -491,6 +494,10 @@ bool Detection::CheckEnumVal(const RULETYPE Rule, const string &Name) {
 
   case RULETYPE_UPPER_SNAKE:
     bStatus = this->_IsSnakeString(Name, SNAKETYPE_UPPER, IgnorePrefixs);
+    break;
+
+  case RULETYPE_HUNGARIAN:
+    bStatus = false; // Don't allow.
     break;
   }
   return bStatus;

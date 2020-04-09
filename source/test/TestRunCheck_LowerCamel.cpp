@@ -54,7 +54,6 @@ const string ConfigToml = "\
                                   # 1: UpperCamel           \n\
                                   # 2: lowerCamel           \n\
                                   # 3: lower_snake          \n\
-                                  # 4: Hungarian            \n\
                                   # 5: UPPER_SNAKE          \n\
                                                             \n\
       StructTagName           = 2 # 0: Default (UpperCamel) \n\
