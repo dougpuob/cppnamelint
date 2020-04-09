@@ -1,0 +1,136 @@
+stages:
+  - Build
+  - Pack
+  - UnitTest
+  - Audit
+
+#==--------------------------------------------------------------------------==
+# Windows
+#==--------------------------------------------------------------------------==
+Build_Win:
+  stage: Build
+  tags:
+    - windows
+  before_script:
+  - git reset --hard
+  - git clean -f -d
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
+  - CMD /C "SETX NAMELINT_LLVM_LIB Z:\@Win32\3party-lib\llvm\llvm_8_0_0_win_10_msvc2017_rel_32bit"
+  - ECHO $env:CRDSWDEVTLS
+  - ECHO $env:NAMELINT_LLVM_LIB
+  script:
+    - 'Get-ChildItem env:'
+    - 'Get-ChildItem env:CRDSWDEVTLS'
+    - 'Get-ChildItem env:NAMELINT_LLVM_LIB'
+    - $BuildFlowPy=$env:CRDSWDEVTLS+'/Script/BuildFlow/BuildFlow.py'
+    - ECHO $BuildFlowPy
+    - python $BuildFlowPy build-config './' 'build/windows' 'x86' 'Release'
+    - python $BuildFlowPy build-make   './' 'build/windows' 'cppnamelint' 'x86' 'Release'
+  artifacts:
+    paths:
+    - build/windows/output
+    when: on_success
+    expire_in: 10 mins
+
+Pack_Win:
+  stage: Pack
+  tags:
+    - windows
+  script:
+    - Push-Location script
+    - ./build-pack-win32.ps1
+    - Pop-Location
+  artifacts:
+    paths:
+    - build/
+    - script/
+    when: on_success
+    expire_in: 10 mins
+
+UnitTest_Win:
+  stage: UnitTest
+  tags:
+    - windows
+  script:
+    - Push-Location script/release
+    - ./cppnamelint test -all
+    - Pop-Location
+
+
+#==--------------------------------------------------------------------------==
+# Linux
+#==--------------------------------------------------------------------------==
+#Linux:
+#  stage: Build
+#  tags:
+#    - linux
+#  script:
+#    - ls -la /devtools
+#    - $BuildFlowPy=$env:CRDSWDEVTLS+'/Script/BuildFlow/BuildFlow.py'
+#    - python $BuildFlowPy build-config './' 'build/linux'
+#    - python $BuildFlowPy build-make   './' 'build/linux' 'cppnamelint' 'x64' 'Release'
+#    - pushd script
+#    - ./build-pack-linux.sh
+#    - popd
+#    - pushd script/release
+#    - ./build-test-linux.sh
+#    - popd
+
+
+#==--------------------------------------------------------------------------==
+# macOS
+#==--------------------------------------------------------------------------==
+Build_MacOs:
+  stage: Build
+  tags:
+    - macos
+  before_script:
+    - git reset --hard
+    - git clean -f -d
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+    - echo "$CRDSWDEVTLS/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit"
+    - export NAMELINT_LLVM_LIB="$CRDSWDEVTLS/@MacOS/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit"
+    - echo "CRDSWDEVTLS=$CRDSWDEVTLS"
+    - echo "NAMELINT_LLVM_LIB=$NAMELINT_LLVM_LIB"
+    - ls -la /Volumes/DevTool
+  script:
+    - BuildFlowPy=$CRDSWDEVTLS/Script/BuildFlow/BuildFlow.py
+    - python3 $BuildFlowPy build-config './' 'build/macos' 'x64' 'Release'
+    - ls -la ./
+    - python3 $BuildFlowPy build-make   './' 'build/macos' 'cppnamelint' 'x64' 'Release'
+    - ls -la ./
+  artifacts:
+    paths:
+    - build/macos/output
+    when: on_success
+    expire_in: 10 mins
+
+Pack_MacOs:
+  stage: Pack
+  tags:
+    - macos
+  script:
+    - pushd ./script
+    - git reset --hard
+    - ./build-pack-linux.sh
+    - popd
+  artifacts:
+    paths:
+    - script/release/
+    when: on_success
+    expire_in: 10 mins
+
+UnitTest_MacOs:
+  stage: UnitTest
+  tags:
+    - macos
+  script:
+    - ls -la ./build/macos/
+    - pushd ./script/release
+    - ls -la
+    - chmod +x ./cppnamelint
+    - ls -la
+    - ./build-test-linux.sh
+    - popd
