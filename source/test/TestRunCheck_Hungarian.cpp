@@ -148,60 +148,60 @@ TEST(Variable, Mixed) {
   pCfgData->Hungarian.WordList.insert(std::pair<string, string>("int", "i"));
 
   const string SourceCode = "                                                  \n\
-        //                                                                       \n\
-        // Variables                                                             \n\
-        //                                                                       \n\
-        size_t nVarSize                                   = 0;                   \n\
-        int8_t i8VarInt8                                  = 0;                   \n\
-        int16_t i16VarInt16                               = 0;                   \n\
-        int32_t i32VarInt32                               = 0;                   \n\
-        int64_t i64VarInt64                               = 0;                   \n\
-        uint8_t u8VarUint8                                = 0;                   \n\
-        uint16_t u16VarUint16                             = 0;                   \n\
-        uint32_t u32VarUint32                             = 0;                   \n\
-        uint64_t u64VarUint64                             = 0;                   \n\
-        char cVarCahr                                     = 'C';                 \n\
-        _Bool bVarBool1                                   = false;               \n\
-        bool bVarBool2                                    = false;               \n\
-        wchar_t wcVarWideChar                             = L\"WideCharString\"; \n\
-        signed char scVarSignedChar                       = 0;                   \n\
-        unsigned char ucVarUnsignedChar                   = 0;                   \n\
-        short sVarShort                                   = 0;                   \n\
-        short int siVarShortInt                           = 0;                   \n\
-        signed short ssVarSignedShort                     = 0;                   \n\
-        signed short int ssiVarSignedShortInt             = 0;                   \n\
-        unsigned short usVarUnsignedShort                 = 0;                   \n\
-        unsigned short int usiVarUnsignedShortInt         = 0;                   \n\
-        int iVarInt                                       = 0;                   \n\
-        signed sVarSinged                                 = 0;                   \n\
-        signed int siVarSignedInt                         = 0;                   \n\
-        unsigned uVarUnsigned                             = 0;                   \n\
-        unsigned int uiVarUnsignedInt                     = 0;                   \n\
-        long lVarLong                                     = 0;                   \n\
-        long int liVarLongInt                             = 0;                   \n\
-        signed long slVarSingedLong                       = 0;                   \n\
-        signed long int sliVarSingedLongInt               = 0;                   \n\
-        unsigned long ulVarUnsingedLong                   = 0;                   \n\
-        unsigned long int uliVarUnsignedLongInt           = 0;                   \n\
-        long long llVarLongLong                           = 0;                   \n\
-        long long int lliVarLongLongInt                   = 0;                   \n\
-        signed long long sllVarSignedLongLong             = 0;                   \n\
-        signed long long int slliVarSignedLongLongInt     = 0;                   \n\
-        unsigned long long ullVarUnsignedLongLong         = 0;                   \n\
-        unsigned long long int ulliVarUnsignedLongLongInt = 0;                   \n\
-        float fVarFloat                                   = 0.0;                 \n\
-        double dVarDouble                                 = 0.0;                 \n\
-        long double ldVarLongDouble                       = 0.0;                 \n\
-                                                                                 \n\
-        ULONG ulWinVarUlong       = 0;                                           \n\
-        DWORD dwWinVarDword       = 0;                                           \n\
-        DWORD64 dw64WinVarDword64 = 0;                                           \n\
-        WORD wWinVarWord          = 0;                                           \n\
-        CHAR cWinVarChar          = 'C';                                         \n\
-        BYTE byWinVarByte         = 0;                                           \n\
-        HANDLE hWinVarHandle      = NULL;                                        \n\
-        BOOLEAN bWinVarBoolean    = FALSE;                                       \n\
-        LONGLONG llWinVarLongLong = 0;                                           \n\
+        //                                                                         \n\
+        // Variables                                                               \n\
+        //                                                                         \n\
+        size_t                  nVarSize                    = 0;                   \n\
+        int8_t                  i8VarInt8                   = 0;                   \n\
+        int16_t                 i16VarInt16                 = 0;                   \n\
+        int32_t                 i32VarInt32                 = 0;                   \n\
+        int64_t                 i64VarInt64                 = 0;                   \n\
+        uint8_t                 u8VarUint8                  = 0;                   \n\
+        uint16_t                u16VarUint16                = 0;                   \n\
+        uint32_t                u32VarUint32                = 0;                   \n\
+        uint64_t                u64VarUint64                = 0;                   \n\
+        char                    cVarCahr                    = 'C';                 \n\
+        _Bool                   bVarBool1                   = false;               \n\
+        bool                    bVarBool2                   = false;               \n\
+        wchar_t                 wcVarWideChar               = L\"WideCharString\"; \n\
+        signed char             scVarSignedChar             = 0;                   \n\
+        unsigned char           ucVarUnsignedChar           = 0;                   \n\
+        short                   sVarShort                   = 0;                   \n\
+        short int               siVarShortInt               = 0;                   \n\
+        signed short            ssVarSignedShort            = 0;                   \n\
+        signed short int        ssiVarSignedShortInt        = 0;                   \n\
+        unsigned short          usVarUnsignedShort          = 0;                   \n\
+        unsigned short int      usiVarUnsignedShortInt      = 0;                   \n\
+        int                     iVarInt                     = 0;                   \n\
+        signed                  sVarSinged                  = 0;                   \n\
+        signed int              siVarSignedInt              = 0;                   \n\
+        unsigned                uVarUnsigned                = 0;                   \n\
+        unsigned int            uiVarUnsignedInt            = 0;                   \n\
+        long                    lVarLong                    = 0;                   \n\
+        long int                liVarLongInt                = 0;                   \n\
+        signed long             slVarSingedLong             = 0;                   \n\
+        signed long int         sliVarSingedLongInt         = 0;                   \n\
+        unsigned long           ulVarUnsingedLong           = 0;                   \n\
+        unsigned long int       uliVarUnsignedLongInt       = 0;                   \n\
+        long long               llVarLongLong               = 0;                   \n\
+        long long int           lliVarLongLongInt           = 0;                   \n\
+        signed long long        sllVarSignedLongLong        = 0;                   \n\
+        signed long long int    slliVarSignedLongLongInt    = 0;                   \n\
+        unsigned long long      ullVarUnsignedLongLong      = 0;                   \n\
+        unsigned long long int  ulliVarUnsignedLongLongInt  = 0;                   \n\
+        float                   fVarFloat                   = 0.0;                 \n\
+        double                  dVarDouble                  = 0.0;                 \n\
+        long double             ldVarLongDouble             = 0.0;                 \n\
+                                                                                   \n\
+        ULONG                   ulWinVarUlong               = 0;                   \n\
+        DWORD                   dwWinVarDword               = 0;                   \n\
+        DWORD64                 dw64WinVarDword64           = 0;                   \n\
+        WORD                    wWinVarWord                 = 0;                   \n\
+        CHAR                    cWinVarChar                 = 'C';                 \n\
+        BYTE                    byWinVarByte                = 0;                   \n\
+        HANDLE                  hWinVarHandle               = NULL;                \n\
+        BOOLEAN                 bWinVarBoolean              = FALSE;               \n\
+        LONGLONG                llWinVarLongLong            = 0;                   \n\
         ";
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
