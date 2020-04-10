@@ -174,8 +174,7 @@ jobs:
         inputs:
           filePath: 'script/build-pack-linux.sh'
           workingDirectory: 'script'
-
-      - task: Bash@3
-        inputs:
-          filePath: 'build-test-linux.sh'
-          workingDirectory: 'script/release/macos'
+          
+      - script: "./build-test-linux.sh"
+        displayName: "build-test-linux.sh"
+        workingDirectory: "script/release/macos"
