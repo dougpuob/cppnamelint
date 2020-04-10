@@ -348,23 +348,23 @@ def run_pack(file_name:str, root_dir:str, build_dir:str, output_dir: str) -> int
         return -3
 
     if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+        os.makedirs(output_dir, exist_ok=True)
 
     selected_list = [
-        {'platform': 'Shared',  'dir': True ,  'src': 'source/test'                        , 'dest': './test'},
-        {'platform': 'Shared',  'dir': False,  'src': found_generated_binary               , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'cppnamelint.toml'                   , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelint.py'              , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelintlib.py'           , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint.py'          , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint-main.py'     , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib.py'       , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-file.py'  , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-exec.py'  , 'dest': '.'},
-        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-cmake.py' , 'dest': '.'},
-        {'platform': 'Windows', 'dir': False , 'src': 'script/build-test-win32.ps1'        , 'dest': '.'},
-        {'platform': 'Linux',   'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': '.'},
-        {'platform': 'Darwin',  'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': '.'},
+        {'platform': 'Shared',  'dir': True ,  'src': 'source/test'                        , 'dest': output_dir+'/test'},
+        {'platform': 'Shared',  'dir': False,  'src': found_generated_binary               , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'cppnamelint.toml'                   , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelint.py'              , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/cppnamelintlib.py'           , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint.py'          , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelint-main.py'     , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib.py'       , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-file.py'  , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-exec.py'  , 'dest': output_dir+'/.'},
+        {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-cmake.py' , 'dest': output_dir+'/.'},
+        {'platform': 'Windows', 'dir': False , 'src': 'script/build-test-win32.ps1'        , 'dest': output_dir+'/.'},
+        {'platform': 'Linux',   'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': output_dir+'/.'},
+        {'platform': 'Darwin',  'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': output_dir+'/.'},
     ]
 
     for item in selected_list:

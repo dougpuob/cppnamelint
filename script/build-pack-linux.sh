@@ -5,13 +5,15 @@ mkdir release
 
 proj_dir="../"
 build_dir="??"
-output_dir="./release"
+output_dir="??"
 
 if   [[ "$OSTYPE" == "linux-gnu" ]]; then
   build_dir=../build/linux
+  output_dir=./release/linux
   echo "INFO : Linux is detected."
 elif [[ "$OSTYPE" == "darwin"* ]]; then
   build_dir=../build/macos
+  output_dir=./release/macos
   echo "INFO : macOS is detected."
 else
   echo "ERROR: missed OS detection !!"

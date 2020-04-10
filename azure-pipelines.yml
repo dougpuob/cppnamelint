@@ -57,7 +57,7 @@ jobs:
       - task: PowerShell@2
         inputs:
           filePath: 'script/build-test-win32.ps1'
-          workingDirectory: 'script'
+          workingDirectory: 'script/release/windows'
 
 
   #==============================================================================
@@ -121,7 +121,7 @@ jobs:
 
       - script: "./build-test-linux.sh"
         displayName: "build-test-linux.sh"
-        workingDirectory: "script/release"
+        workingDirectory: "script/release/linux"
 
 
   #==============================================================================
@@ -174,11 +174,7 @@ jobs:
         inputs:
           filePath: 'script/build-pack-linux.sh'
           workingDirectory: 'script'
-
-      #- script: "ls -la -R"
-      #  displayName: "Dump folder hierarchy"
-
-      - task: Bash@3
-        inputs:
-          filePath: 'script/release/build-test-linux.sh'
-          workingDirectory: 'script/release'
+          
+      - script: "./build-test-linux.sh"
+        displayName: "build-test-linux.sh"
+        workingDirectory: "script/release/macos"

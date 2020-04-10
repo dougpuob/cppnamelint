@@ -19,7 +19,7 @@ Write-Output " Pack generated files to release folder."
 Write-Output "=============================================================="
 $proj_dir="../"
 $build_dir="../build/windows"
-$output_dir="./release"
+$output_dir="./release/windows"
 
 & python cppnamelint.py bldgpack $proj_dir $build_dir $output_dir
 if (0 -ne $LastExitCode) {
