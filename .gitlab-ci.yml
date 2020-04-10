@@ -53,7 +53,7 @@ UnitTest_Win:
   tags:
     - windows
   script:
-    - Push-Location script/release
+    - Push-Location script/release/windows
     - ./cppnamelint test -all
     - Pop-Location
 
@@ -61,22 +61,59 @@ UnitTest_Win:
 #==--------------------------------------------------------------------------==
 # Linux
 #==--------------------------------------------------------------------------==
-#Linux:
-#  stage: Build
-#  tags:
-#    - linux
-#  script:
-#    - ls -la /devtools
-#    - $BuildFlowPy=$env:CRDSWDEVTLS+'/Script/BuildFlow/BuildFlow.py'
-#    - python $BuildFlowPy build-config './' 'build/linux'
-#    - python $BuildFlowPy build-make   './' 'build/linux' 'cppnamelint' 'x64' 'Release'
-#    - pushd script
-#    - ./build-pack-linux.sh
-#    - popd
-#    - pushd script/release
-#    - ./build-test-linux.sh
-#    - popd
+Build_Linux:
+  stage: Build
+  tags:
+    - linux
+  before_script:
+    - git reset --hard
+    - git clean -f -d
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+    - export NAMELINT_LLVM_LIB="$CRDSWDEVTLS/@Linux/3party-lib/llvm/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit"
+    - echo "CRDSWDEVTLS=$CRDSWDEVTLS"
+    - echo "NAMELINT_LLVM_LIB=$NAMELINT_LLVM_LIB"
+  script:
+    - ls -la /devtool
+    - ls -la $NAMELINT_LLVM_LIB
+    - BuildFlowPy=$CRDSWDEVTLS/Script/BuildFlow/BuildFlow.py
+    - python3 $BuildFlowPy build-config './' 'build/linux' 'x64' 'Release'
+    - ls -la ./
+    - python3 $BuildFlowPy build-make   './' 'build/linux' 'cppnamelint' 'x64' 'Release'
+    - ls -la ./
+  artifacts:
+    paths:
+    - build/linux/output
+    when: on_success
+    expire_in: 10 mins
 
+Pack_Linux:
+  stage: Pack
+  tags:
+    - linux
+  script:
+    - pushd ./script
+    - git reset --hard
+    - ./build-pack-linux.sh
+    - popd
+  artifacts:
+    paths:
+    - script/release/linux/
+    when: on_success
+    expire_in: 10 mins
+
+UnitTest_Linux:
+  stage: UnitTest
+  tags:
+    - linux
+  script:
+    - ls -la ./build/linux/
+    - pushd ./script/release/linux/
+    - ls -la
+    - chmod +x ./cppnamelint
+    - ls -la
+    - ./build-test-linux.sh
+    - popd
 
 #==--------------------------------------------------------------------------==
 # macOS
@@ -91,7 +128,7 @@ Build_MacOs:
     - git submodule sync --recursive
     - git submodule update --init --recursive
     - echo "$CRDSWDEVTLS/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit"
-    - export NAMELINT_LLVM_LIB="$CRDSWDEVTLS/@MacOS/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit"
+    - export NAMELINT_LLVM_LIB="$CRDSWDEVTLS/@MacOS/3party-lib/llvm/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit"
     - echo "CRDSWDEVTLS=$CRDSWDEVTLS"
     - echo "NAMELINT_LLVM_LIB=$NAMELINT_LLVM_LIB"
     - ls -la /Volumes/DevTool
@@ -118,7 +155,7 @@ Pack_MacOs:
     - popd
   artifacts:
     paths:
-    - script/release/
+    - script/release/macos/
     when: on_success
     expire_in: 10 mins
 
@@ -128,7 +165,7 @@ UnitTest_MacOs:
     - macos
   script:
     - ls -la ./build/macos/
-    - pushd ./script/release
+    - pushd ./script/release/macos
     - ls -la
     - chmod +x ./cppnamelint
     - ls -la
