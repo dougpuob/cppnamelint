@@ -175,10 +175,7 @@ jobs:
           filePath: 'script/build-pack-linux.sh'
           workingDirectory: 'script'
 
-      #- script: "ls -la -R"
-      #  displayName: "Dump folder hierarchy"
-
       - task: Bash@3
         inputs:
-          filePath: 'script/release/build-test-linux.sh'
+          filePath: './build-test-linux.sh'
           workingDirectory: 'script/release/macos'
