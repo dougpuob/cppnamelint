@@ -25,6 +25,8 @@ typedef enum _CheckType {
   CT_Variable,
   CT_EnumTag,
   CT_EnumVal,
+  CT_UnionTag,
+  CT_UnionVal,
   CT_StructTag,
   CT_StructVal,
   CT_Class,

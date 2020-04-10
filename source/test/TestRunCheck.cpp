@@ -5,8 +5,6 @@
 #include "../Common.h"
 #include "../TraceMemo.h"
 
-int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent);
-
 using namespace namelint;
 
 APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
@@ -83,6 +81,7 @@ TEST(Struct, USB_DEVICE_DESCRIPTOR) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 15 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -91,6 +90,7 @@ TEST(Struct, USB_DEVICE_DESCRIPTOR) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -126,6 +126,7 @@ TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -134,6 +135,7 @@ TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -152,6 +154,7 @@ TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_2) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -160,6 +163,7 @@ TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_2) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -200,8 +204,8 @@ TEST(Union, USB_20_PORT_STATUS) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
-  EXPECT_EQ(true, 14 == MemoBoard.Checked.nStruct);
-  EXPECT_EQ(true, 1 == MemoBoard.Checked.nUnion);
+  EXPECT_EQ(true, 13 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 2 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);

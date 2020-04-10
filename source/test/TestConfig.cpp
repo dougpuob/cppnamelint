@@ -36,12 +36,12 @@ TEST(GeneralOptions, Default) {
 
 TEST(GeneralOptions, Chk_GeneralOptions) {
   string TomlContent = "\
-	[General.Options] \r\n\
-		FileExtNameList  = [\"*.a\",\"*.b\",\"*.c\",\"*.d\"] \r\n\
-		CheckVariableName = false \r\n\
-		CheckFunctionName = false \r\n\
-		CheckFileName	  = false \r\n\
-	";
+    [General.Options] \r\n\
+        FileExtNameList  = [\"*.a\",\"*.b\",\"*.c\",\"*.d\"] \r\n\
+        CheckVariableName = false \r\n\
+        CheckFunctionName = false \r\n\
+        CheckFileName     = false \r\n\
+    ";
 
   Config MyConfig;
   string ErrorReason;
@@ -63,10 +63,10 @@ TEST(GeneralOptions, Chk_GeneralOptions) {
 
 TEST(GeneralOptions, Chk_GeneralRules) {
   string TomlContent = "\
-	[General.Rules] \r\n\
-		FileName 	 = 3 \r\n\
-		FunctionName = 3 \r\n\
-		VariableName = 4 \r\n";
+    [General.Rules] \r\n\
+        FileName     = 3 \r\n\
+        FunctionName = 3 \r\n\
+        VariableName = 4 \r\n";
 
   Config MyConfig;
   string ErrorReason;
@@ -81,9 +81,9 @@ TEST(GeneralOptions, Chk_GeneralRules) {
 
 TEST(GeneralOptions, Fake_WhiteList) {
   string TomlContent = "\
-	[General.IgnoredList] \r\n\
-		FunctionPrefix 	 = [ \"_\", \"__\" ]    \r\n\
-		VariablePrefix 	 = [ \"m_\", \"g_\" ]";
+    [General.IgnoredList] \r\n\
+        FunctionPrefix   = [ \"_\", \"__\" ]    \r\n\
+        VariablePrefix   = [ \"m_\", \"g_\" ]";
 
   Config MyConfig;
   string ErrorReason;

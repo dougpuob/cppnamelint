@@ -4,6 +4,9 @@
 #include "TraceMemo.h"
 #include <string>
 
+int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
+                       const string &VirtFileName = "a.cc");
+
 static const bool PREFER_UC = true; // Prefer Upper Camel
 static const bool IS_PTR    = true;
 static const bool IS_ARRAY  = true;

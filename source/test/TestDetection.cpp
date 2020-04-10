@@ -31,20 +31,20 @@ namespace TargetIsFile {
 TEST(Config_Detect_CheckFile, InputParms_Good)
 {
     Detection Detect;
-    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_DEFAULT		, "TestName.cpp"));
-    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL	, "TestName.cpp"));
-    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_LOWER_CAMEL	, "testName.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_DEFAULT       , "TestName.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL   , "TestName.cpp"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_LOWER_CAMEL   , "testName.cpp"));
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_LOWER_SNAKE   , "test_name.cpp"));
 }
 
 TEST(Config_Detect_CheckFile, InputParms_Bad)
 {
     Detection Detect;
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_DEFAULT		, ""));
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL	, ""));
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_LOWER_CAMEL	, ""));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_DEFAULT      , ""));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL  , ""));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_LOWER_CAMEL  , ""));
     EXPECT_EQ(false, Detect.CheckFile(RULETYPE_LOWER_SNAKE  , ""));
-    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_HUNGARIAN	, "AnyName.cpp"));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_HUNGARIAN    , "AnyName.cpp"));
 }
 
 //-------------------------------------------------------------------------
@@ -56,8 +56,8 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Good)
     pCfg->Clear();
 
     Detection Detect;
-	EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "UtestWnd.h"));
-	EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "SerialPort.h"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "UtestWnd.h"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "SerialPort.h"));
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "TestName"));
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "TestName.h"));
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "TestName.H"));
@@ -65,7 +65,7 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Good)
     EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "TestName.CPP"));
 
     pCfgData->Camels.Options.AllowUnderscope = AllowedOneUnderscope;
-	EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "Sample_03.c"));
+    EXPECT_EQ(true, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "Sample_03.c"));
 }
 
 TEST(Config_Detect_CheckFile, UpperCamelCase_Bad)
@@ -75,7 +75,7 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Bad)
     pCfg->Clear();
 
     Detection Detect;
-	EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "UTestWnd.h"));
+    EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "UTestWnd.h"));
     EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "testName"));
     EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "testName.h"));
     EXPECT_EQ(false, Detect.CheckFile(RULETYPE_UPPER_CAMEL, "testName.cpp"));
@@ -153,16 +153,16 @@ TEST(Config_Detect_CheckFunction, InputParms_Good)
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
-    Detection Detect;	
-    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_DEFAULT           , "MyFunc"	));
-    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "MyFunc"	));
-    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_CAMEL		, "myFunc"	));
-    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE		, "my_func"	));
+    Detection Detect;   
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_DEFAULT           , "MyFunc"  ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL       , "MyFunc"  ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_CAMEL       , "myFunc"  ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE       , "my_func" ));
 
     pCfgData->Camels.Options.AllowUnderscope = AllowedOneUnderscope;
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "MyFunc_"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "Mem_"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "Fun_"	));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL       , "MyFunc_" ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL       , "Mem_"    ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL       , "Fun_"    ));
 
     pCfgData->Camels.Options.AllowUnderscope = AllowedSingleUnderscope;
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL       , "My_Func_A"));
@@ -176,13 +176,13 @@ TEST(Config_Detect_CheckFunction, InputParms_Bad)
 
     Detection Detect;
     pCfgData->Camels.Options.AllowUnderscope = AllowedSingleUnderscope;
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, "My__Func_B"	));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_DEFAULT          , ""			));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL		, ""			));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_CAMEL		, ""			));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE		, ""			));
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_HUNGARIAN        , "AnyName"		));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL      , "My__Func"    ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL      , "My__Func_B"  ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_DEFAULT          , ""            ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_UPPER_CAMEL      , ""            ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_CAMEL      , ""            ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE      , ""            ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_HUNGARIAN        , "AnyName"     ));
 }
 
 //-------------------------------------------------------------------------
@@ -193,28 +193,28 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
     
-	Detection Detect;
-    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "UpperCamelFuncName"	));
+    Detection Detect;
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "UpperCamelFuncName" ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "UpperCamelFuncName1"));
 
     auto& IgnoreName= pCfgData->General.IgnoredList.FunctionName;
     auto& IgnorePrefixs = pCfgData->General.IgnoredList.FunctionPrefix;
         
     IgnoreName.push_back("main");
-	IgnorePrefixs.push_back("_");
-	IgnorePrefixs.push_back("__");
-	IgnorePrefixs.push_back("XXX_");
+    IgnorePrefixs.push_back("_");
+    IgnorePrefixs.push_back("__");
+    IgnorePrefixs.push_back("XXX_");
     
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName"    ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "__UpperCamelFuncName"   ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "XXX_UpperCamelFuncName" ));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "MyFunc3"				));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "main"                   ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "MyFunc3"                ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "main"                   ));
 
     pCfgData->Camels.Options.AllowUnderscope = AllowedOneUnderscope;
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName_"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName_A"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "main"                   ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName_"   ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "_UpperCamelFuncName_A"  ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "main"                   ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "MyFunc3"                ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_UPPER_CAMEL, "MyFunc_3"               ));
 }
@@ -254,7 +254,7 @@ TEST(Config_Detect_CheckFunction, LowerCamelCase_Bad)
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
-	Detection Detect;
+    Detection Detect;
     EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_CAMEL, "LowerCamelFuncName"   ));
     EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_CAMEL, "_LowerCamelFuncName"  ));
 }
@@ -274,21 +274,21 @@ TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Good)
     IgnorePrefixs.push_back("_");
     IgnorePrefixs.push_back("__");
 
-	IgnorePrefixs.push_back("_");
-	IgnorePrefixs.push_back("__");
-	IgnorePrefixs.push_back("XX_");
-	IgnorePrefixs.push_back("XX__");
-	IgnorePrefixs.push_back("XXX__");
+    IgnorePrefixs.push_back("_");
+    IgnorePrefixs.push_back("__");
+    IgnorePrefixs.push_back("XX_");
+    IgnorePrefixs.push_back("XX__");
+    IgnorePrefixs.push_back("XXX__");
 
     Detection Detect;
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lower_separated_funcname"   ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lower_separated_funcname_"  ));
     EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lowerseparatedfuncname"     ));
 
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "_lower_separated_funcname"		));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "__lower_separated_funcname"		));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XX_lower_separated_funcname"	));
-	EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XXX__lower_separated_funcname"	));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "_lower_separated_funcname"      ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "__lower_separated_funcname"     ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XX_lower_separated_funcname"    ));
+    EXPECT_EQ(true, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XXX__lower_separated_funcname"  ));
 }
 
 TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Bad)
@@ -297,14 +297,14 @@ TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Bad)
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
-	Detection Detect;
-    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lowerSeparatedFuncName"		));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lower_separated__funcname_"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lower_separated_funcname__"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "_lower_separated_funcname__"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "__lower_separated_funcname"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XX_lower_separated_funcname"	));
-	EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XXX__lower_separated_funcname"	));
+    Detection Detect;
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lowerSeparatedFuncName"        ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lower_separated__funcname_"    ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "lower_separated_funcname__"    ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "_lower_separated_funcname__"   ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "__lower_separated_funcname"    ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XX_lower_separated_funcname"   ));
+    EXPECT_EQ(false, Detect.CheckFunction(RULETYPE_LOWER_SNAKE, "XXX__lower_separated_funcname" ));
 }
 }  // namespace CheckFunction
 
@@ -324,41 +324,41 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
     auto& WordListMap = pCfgData->Hungarian.WordList;
     auto& NullStringMap = pCfgData->Hungarian.NullStringList;
     
-	WordListMap.insert(std::pair<string, string>("int"     , "i"));
-	WordListMap.insert(std::pair<string, string>("uint8_t" , "u8"));
-	WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
+    WordListMap.insert(std::pair<string, string>("int"     , "i"));
+    WordListMap.insert(std::pair<string, string>("uint8_t" , "u8"));
+    WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
 
-	NullStringMap.push_back(MappingPair("char*"	 , "sz"));
-	NullStringMap.push_back(MappingPair("char**"	 , "psz"));
-	NullStringMap.push_back(MappingPair("wchar_t*"  , "wsz"));
-	NullStringMap.push_back(MappingPair("wchar_t**" , "pwsz"));
-    NullStringMap.push_back(MappingPair("char[]"	 , "sz"));
+    NullStringMap.push_back(MappingPair("char*"  , "sz"));
+    NullStringMap.push_back(MappingPair("char**"     , "psz"));
+    NullStringMap.push_back(MappingPair("wchar_t*"  , "wsz"));
+    NullStringMap.push_back(MappingPair("wchar_t**" , "pwsz"));
+    NullStringMap.push_back(MappingPair("char[]"     , "sz"));
     NullStringMap.push_back(MappingPair("wchar_t[]" , "wsz"));
     pCfg->ReformatCStringMap(NullStringMap);
 
     Detection Detect;
     // ...........................................................vvvvvvvvv <-- * character should be removed.
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"      , PREFER_UC, IS_PTR, NOT_ARRAY));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "pszStr"     , PREFER_UC, IS_PTR, NOT_ARRAY));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t" , "wszStr"     , PREFER_UC, IS_PTR, NOT_ARRAY));
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "pwszStr"    , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "char"    , "szStr"      , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "char"    , "pszStr"     , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "wchar_t" , "wszStr"     , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "wchar_t" , "pwszStr"    , PREFER_UC, IS_PTR, NOT_ARRAY));
 
     // ...........................................................vvvvvvvvv <-- [] characters should be removed.
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "char"	, "szStr"      , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "wchar_t"	, "wszStr"     , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "char"    , "szStr"      , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "wchar_t" , "wszStr"     , PREFER_UC, IS_PTR, IS_ARRAY));
 
-	EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"		 , "piMyValue" , PREFER_UC, IS_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t"  , "MyFunc"    , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t"  , "MyFunc"    , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , "myFunc"    , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uint8_t"  , "my_func"   , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"      , "iMyFunc"   , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uint8_t"  , "u8MyFunc"  , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "uint16_t" , "u16MyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
-	
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "int"      , "piMyValue" , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT       , "uint8_t"  , "MyFunc"    , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL   , "uint8_t"  , "MyFunc"    , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL   , "uint8_t"  , "myFunc"    , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE   , "uint8_t"  , "my_func"   , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "int"      , "iMyFunc"   , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "uint8_t"  , "u8MyFunc"  , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "uint16_t" , "u16MyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    
     auto& IgnorePrefixs = pCfgData->General.IgnoredList.VariablePrefix;
-	IgnorePrefixs.push_back("m_");
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN		, "int"      , "m_iMyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
+    IgnorePrefixs.push_back("m_");
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "int"      , "m_iMyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
 }
 
 TEST(Config_Detect_CheckVariable, PreferUpperCamelIfMissed)
@@ -390,23 +390,23 @@ TEST(Config_Detect_CheckVariable, InputParms_Bad)
     WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
     WordListMap.insert(std::pair<string, string>("uint16_t", "u16"));
 
-	WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
-	WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
+    WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    WordListMap.insert(std::pair<string, string>("uin16_t", "u16"));
 
     Detection Detect;
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_SNAKE	, "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t"  , ""			 , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_name"   , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8my_Name"   , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u16AnyName"  , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u8AnyName"   , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uint8_t"  , "u8_my_func"  , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "uin16_t"  , "u16_my_func" , PREFER_UC, IS_PTR, IS_ARRAY));
-	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN	, "int" 	 , "iMyValue" 	 , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_DEFAULT      , "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_UPPER_CAMEL  , "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL  , "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_SNAKE  , "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_LOWER_CAMEL  , "uint8_t"  , ""            , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uint8_t"  , "u8my_name"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uint8_t"  , "u8my_Name"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uint8_t"  , "u8my_Name"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uint8_t"  , "u16AnyName"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uin16_t"  , "u8AnyName"   , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uint8_t"  , "u8_my_func"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "uin16_t"  , "u16_my_func" , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN    , "int"      , "iMyValue"    , PREFER_UC, IS_PTR, IS_ARRAY));
 }
 
 //-------------------------------------------------------------------------
@@ -420,12 +420,12 @@ TEST(Config_Detect_CheckVariable, GoodCases)
     auto& WordListMap = pCfgData->Hungarian.WordList;
     auto& NullStringMap = pCfgData->Hungarian.NullStringList;
 
-	WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
 
     Detection Detect;
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT		, "uint8_t", "MyFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL	, "uint8_t", "MyFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
-    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL	, "uint8_t", "myFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_DEFAULT       , "uint8_t", "MyFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_UPPER_CAMEL   , "uint8_t", "MyFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_CAMEL   , "uint8_t", "myFunc"  , PREFER_UC, IS_PTR, IS_ARRAY));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_LOWER_SNAKE   , "uint8_t", "my_func" , PREFER_UC, IS_PTR, IS_ARRAY));
 }
 
@@ -438,10 +438,10 @@ TEST(Config_Detect_CheckVariable, Hungarian_Bad)
     auto& WordListMap = pCfgData->Hungarian.WordList;
     auto& NullStringMap = pCfgData->Hungarian.NullStringList;
 
-	WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
+    WordListMap.insert(std::pair<string, string>("uint8_t", "u8"));
 
     Detection Detect;
-	EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyFunc", PREFER_UC, IS_PTR, IS_ARRAY));
+    EXPECT_EQ(false, Detect.CheckVariable(RULETYPE_HUNGARIAN, "uint8_t", "MyFunc", PREFER_UC, IS_PTR, IS_ARRAY));
 }
 
 }  // namespace CheckVariable

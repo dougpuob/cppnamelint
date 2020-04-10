@@ -300,6 +300,31 @@ bool MyASTVisitor::_CheckRuleForStructValue(ValueDecl *pDecl) {
     pAppCxt->MemoBoard.Error.nStruct++;
 
     pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+        pDecl, CheckType::CT_UnionVal, bIsPtr, NOT_ARRAY, ValueType, ValueName, ""));
+  }
+  return true;
+}
+
+bool MyASTVisitor::_CheckRuleForUnionValue(ValueDecl *pDecl) {
+  bool bIsPtr = false;
+  string ValueType;
+  string ValueName;
+
+  bool bStatus = this->_GetStructVarInfo(pDecl, ValueType, ValueName, bIsPtr);
+  if (!bStatus) {
+    return false;
+  }
+
+  bool bResult = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructValueName,
+                                               ValueType, ValueName, bIsPtr);
+
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+
+  pAppCxt->MemoBoard.Checked.nUnion++;
+  if (!bResult) {
+    pAppCxt->MemoBoard.Error.nUnion++;
+
+    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
         pDecl, CheckType::CT_StructVal, bIsPtr, NOT_ARRAY, ValueType, ValueName, ""));
   }
   return true;
@@ -420,7 +445,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
       if (!bStatus) {
         pAppCxt->MemoBoard.Error.nUnion++;
         pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-            pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
+            pDecl, CheckType::CT_UnionTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
       }
     }
     break;
@@ -473,7 +498,24 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
     return true;
   }
 
-  return _CheckRuleForStructValue(pDecl);
+  bool bRet = false;
+  auto aaa  = pDecl->getParent()->getTagKind();
+  switch (pDecl->getParent()->getTagKind()) {
+  case TTK_Struct: {
+    bRet = _CheckRuleForStructValue(pDecl);
+    break;
+  case TTK_Class:
+    bRet = _CheckRuleForVariable(pDecl);
+    break;
+  case TTK_Union:
+    bRet = _CheckRuleForUnionValue(pDecl);
+    break;
+  default:
+    bRet = _CheckRuleForStructValue(pDecl);
+  }
+  }
+
+  return true;
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {

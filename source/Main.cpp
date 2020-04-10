@@ -70,7 +70,8 @@ int RunCheckFormFile(namelint::MemoBoard &Memo) {
   return iRet;
 }
 
-int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent) {
+int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
+                       const string &VirtFileName) {
   int iRet = 0;
 
   //
@@ -82,8 +83,8 @@ int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent) {
   //
   // Create clang tool then add clang tool arguments.
   //
-  ClangTool Tool(Compilations, std::vector<std::string>(1, "./a.cc"));
-  Tool.mapVirtualFile("./a.cc", SourceContent);
+  ClangTool Tool(Compilations, std::vector<std::string>(1, VirtFileName));
+  Tool.mapVirtualFile(VirtFileName, SourceContent);
 
   RunCheck(Memo, Tool);
   return iRet;

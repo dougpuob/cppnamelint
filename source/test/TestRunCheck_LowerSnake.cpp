@@ -5,8 +5,6 @@
 #include "../Common.h"
 #include "../TraceMemo.h"
 
-int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent);
-
 using namespace namelint;
 
 const string ConfigToml = "\
@@ -95,6 +93,7 @@ TEST(Variable, Integers) {
   EXPECT_EQ(true, 4 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -103,6 +102,7 @@ TEST(Variable, Integers) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -129,6 +129,7 @@ TEST(Variable, IntegerPointers) {
   EXPECT_EQ(true, 4 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -137,6 +138,7 @@ TEST(Variable, IntegerPointers) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -163,6 +165,7 @@ TEST(Variable, IntegerArraies) {
   EXPECT_EQ(true, 4 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -171,6 +174,7 @@ TEST(Variable, IntegerArraies) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -182,7 +186,7 @@ TEST(Enum, UsbEndpointDescriptor) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "       \n\
+  const string SourceCode = "             \n\
         typedef enum _usb_device_speed {  \n\
             usb_low_speed = 0,            \n\
             usb_full_speed,               \n\
@@ -200,6 +204,7 @@ TEST(Enum, UsbEndpointDescriptor) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 5 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -208,6 +213,7 @@ TEST(Enum, UsbEndpointDescriptor) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -219,8 +225,8 @@ TEST(Struct, UsbEndpointDescriptor) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "					\n\
-        typedef struct _usb_endpoint_descriptor {	\n\
+  const string SourceCode = "                       \n\
+        typedef struct _usb_endpoint_descriptor {   \n\
             uchar   length;                         \n\
             uchar   descriptor_type;                \n\
             uchar   endpoint_address;               \n\
@@ -240,6 +246,7 @@ TEST(Struct, UsbEndpointDescriptor) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 7 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -248,6 +255,7 @@ TEST(Struct, UsbEndpointDescriptor) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -259,9 +267,9 @@ TEST(Function, FnPtr) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "		\n\
-        int (*fn_name1)(int, int);		\n\
-        int (*fn_name2)(int a, int b);	\n\
+  const string SourceCode = "           \n\
+        int (*fn_name1)(int, int);      \n\
+        int (*fn_name2)(int a, int b);  \n\
         ";
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
@@ -272,6 +280,7 @@ TEST(Function, FnPtr) {
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -280,6 +289,7 @@ TEST(Function, FnPtr) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
@@ -291,16 +301,16 @@ TEST(Function, MemCpy) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "							 \n\
-        void *												 \n\
+  const string SourceCode = "                                \n\
+        void *                                               \n\
         memcpy_abc (void *dest, const void *src, size_t len) \n\
-        {													 \n\
-          char *d = dest;									 \n\
-          const char *s = src;								 \n\
-          while (len--)										 \n\
-            *d++ = *s++;									 \n\
-          return dest;										 \n\
-        }													 \n\
+        {                                                    \n\
+          char *d = dest;                                    \n\
+          const char *s = src;                               \n\
+          while (len--)                                      \n\
+            *d++ = *s++;                                     \n\
+          return dest;                                       \n\
+        }                                                    \n\
         ";
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
@@ -311,6 +321,7 @@ TEST(Function, MemCpy) {
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
@@ -319,6 +330,99 @@ TEST(Function, MemCpy) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
+}
+
+TEST(Class, DataClass) {
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
+
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "                            \n\
+        class date_class                                   \n\
+        {                                                  \n\
+        private:                                           \n\
+            int m_year;                                   \n\
+            int m_month;                                  \n\
+            int m_day;                                   \n\
+                                                           \n\
+        public:                                            \n\
+            date_class(int year, int month, int day)    \n\
+            {                                              \n\
+                set_date(year, month, day);              \n\
+            }                                              \n\
+                                                           \n\
+            ~date_class() {};                              \n\
+                                                           \n\
+            void set_date(int year, int month, int day)  \n\
+            {                                              \n\
+                m_year = year;                           \n\
+                m_month = month;                         \n\
+                m_day = day;                            \n\
+            }                                              \n\
+                                                           \n\
+            int get_year()  { return m_year;  }            \n\
+            int get_month() { return m_month; }            \n\
+            int get_day()   { return m_day;  }            \n\
+        };                                                 \n\
+        ";
+
+  pCfgData->General.IgnoredList.VariablePrefix.push_back("m_");
+
+  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+  EXPECT_EQ(true, 6 == MemoBoard.Checked.nFunction);
+  EXPECT_EQ(true, 6 == MemoBoard.Checked.nParameter);
+  EXPECT_EQ(true, 3 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
+  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
+
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
+}
+
+// TODO: Seems this function never be supported.
+TEST(MacroFunction, get_min) {
+  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard.Clear();
+
+  string ErrorReason;
+  MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
+
+  const string SourceCode = "#define GetMin(X, Y) ((X) < (Y) ? (X) : (Y))";
+
+  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
+
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFile);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Error.nUnion);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 

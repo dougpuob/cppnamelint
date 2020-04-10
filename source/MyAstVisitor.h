@@ -54,6 +54,7 @@ private:
                      bool &bIsArray, bool &bIsBuiltinType);
 
   bool _CheckRuleForVariable(ValueDecl *pDecl);
+  bool _CheckRuleForUnionValue(ValueDecl *pDecl);
   bool _CheckRuleForStructValue(ValueDecl *pDecl);
   bool _CheckRuleForEnumValue(EnumConstantDecl *pDecl);
 
