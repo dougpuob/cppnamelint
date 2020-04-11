@@ -58,8 +58,8 @@ jobs:
         inputs:
           rootFolderOrFile: 'script\release\windows'
           includeRootFolder: false
-          archiveType: '7z'
-          archiveFile: 'cppnamelint_win32.7z'
+          archiveType: 'zip'
+          archiveFile: 'cppnamelint_win32.zip'
           replaceExistingArchive: true
           verbose: true
 
@@ -76,7 +76,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: '.\cppnamelint_win32.7z'
+          assets: '.\cppnamelint_win32.zip'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
@@ -146,8 +146,8 @@ jobs:
         inputs:
           rootFolderOrFile: 'script/release/linux'
           includeRootFolder: false
-          archiveType: '7z'
-          archiveFile: 'cppnamelint_linux.7z'
+          archiveType: 'zip'
+          archiveFile: 'cppnamelint_linux.zip'
           replaceExistingArchive: true
           verbose: true
 
@@ -163,7 +163,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: './cppnamelint_linux.7z'
+          assets: './cppnamelint_linux.zip'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
@@ -225,8 +225,8 @@ jobs:
         inputs:
           rootFolderOrFile: 'script/release/macos'
           includeRootFolder: false
-          archiveType: '7z'
-          archiveFile: 'cppnamelint_macos.7z'
+          archiveType: 'zip'
+          archiveFile: 'cppnamelint_macos.zip'
           replaceExistingArchive: true
           verbose: true
           
@@ -242,7 +242,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: './cppnamelint_macos.7z'
+          assets: './cppnamelint_macos.zip'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
