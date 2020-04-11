@@ -82,12 +82,6 @@ jobs:
           filePath: 'script/build-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: 'cppnamelint_win32.7z'
-          ArtifactName: 'drop'
-          publishLocation: 'Container'
-
           
   #==============================================================================
   # Linux
@@ -154,7 +148,7 @@ jobs:
           rootFolderOrFile: 'script/release/linux'
           includeRootFolder: false
           archiveType: '7z'
-          archiveFile: 'cppnamelint_linux.7z'
+          archiveFile: 'cppnamelint_linux-ubuntu-18.04.7z'
           replaceExistingArchive: true
           verbose: true
 
@@ -165,7 +159,7 @@ jobs:
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
-          assets: 'cppnamelint_linux.7z'
+          assets: 'cppnamelint_linux-ubuntu-18.04.7z'
           assetUploadMode: 'replace'
           isDraft: true
           isPreRelease: true
@@ -176,12 +170,6 @@ jobs:
       - script: "./build-test-linux.sh"
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/linux"
-
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: 'cppnamelint_linux.7z'
-          ArtifactName: 'drop'
-          publishLocation: 'Container'
 
 
   #==============================================================================
@@ -241,7 +229,7 @@ jobs:
           rootFolderOrFile: 'script/release/macos'
           includeRootFolder: false
           archiveType: 'zip'
-          archiveFile: 'cppnamelint_macos.7z'
+          archiveFile: 'cppnamelint_macos-10.14.7z'
           replaceExistingArchive: true
           verbose: true
           
@@ -256,52 +244,9 @@ jobs:
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
-          assets: 'cppnamelint_macos.7z'
+          assets: 'cppnamelint_macos-10.14.7z'
           assetUploadMode: 'replace'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'issueBased'
-
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: 'cppnamelint_macos.7z'
-          ArtifactName: 'drop'
-          publishLocation: 'Container'
-
-
-  #==============================================================================
-  # Deploy binary files to GitHub Release
-  #==============================================================================
-  #- job: DeployToGitHubRelease
-  #
-  #  pool:
-  #    vmImage: "vs2017-win2016"
-  #
-  #  dependsOn: 
-  #  - BuildOnMacOS
-  #  - BuildOnLinux
-  #  - BuildOnWindows
-  #
-  #  steps:
-  #    - task: DownloadFileshareArtifacts@1
-  #      inputs:
-  #        filesharePath: '$(Build.ArtifactStagingDirectory)'
-  #        artifactName: 'cppnamelint_macos.7z'
-  #        downloadPath: '.'
-  #
-  #    - task: DownloadFileshareArtifacts@1
-  #      inputs:
-  #        filesharePath: '$(Build.ArtifactStagingDirectory)'
-  #        artifactName: 'cppnamelint_win32.7z'
-  #        downloadPath: '.'
-  #
-  #    - task: DownloadFileshareArtifacts@1
-  #      inputs:
-  #        filesharePath: '$(Build.ArtifactStagingDirectory)'
-  #        artifactName: 'cppnamelint_linux.7z'
-  #        downloadPath: '.'
-  #
-  #    - task: CmdLine@2
-  #      inputs:
-  #        script: 'dir /s'
