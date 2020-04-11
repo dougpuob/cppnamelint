@@ -63,7 +63,7 @@ jobs:
         inputs:
           script: |
             dir "C:\Program Files\7-Zip"
-            "C:\Program Files\7-Zip\7z.exe" a release -ocppnamelint_win32.7z
+            "C:\Program Files\7-Zip\7z.exe" a cppnamelint_win32.7z release\* -r
             dir
           workingDirectory: 'script'
           failOnStderr: true
