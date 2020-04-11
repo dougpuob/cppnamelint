@@ -59,7 +59,7 @@ jobs:
           rootFolderOrFile: 'script\release\windows'
           includeRootFolder: false
           archiveType: '7z'
-          archiveFile: 'cppnamelint_win32.7z'
+          archiveFile: 'cppnamelint-win32.7z'
           replaceExistingArchive: true
           verbose: true
 
@@ -70,7 +70,7 @@ jobs:
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
-          assets: 'cppnamelint_win32.7z'
+          assets: 'cppnamelint-win32.7z'
           assetUploadMode: 'replace'
           isDraft: true
           isPreRelease: true
@@ -148,7 +148,7 @@ jobs:
           rootFolderOrFile: 'script/release/linux'
           includeRootFolder: false
           archiveType: '7z'
-          archiveFile: 'cppnamelint_linux-ubuntu-18.04.7z'
+          archiveFile: 'cppnamelint-ubuntu-18.04.7z'
           replaceExistingArchive: true
           verbose: true
 
@@ -159,7 +159,7 @@ jobs:
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
-          assets: 'cppnamelint_linux-ubuntu-18.04.7z'
+          assets: 'cppnamelint-ubuntu-18.04.7z'
           assetUploadMode: 'replace'
           isDraft: true
           isPreRelease: true
@@ -229,7 +229,7 @@ jobs:
           rootFolderOrFile: 'script/release/macos'
           includeRootFolder: false
           archiveType: 'zip'
-          archiveFile: 'cppnamelint_macos-10.14.7z'
+          archiveFile: 'cppnamelint-macos-10.14.7z'
           replaceExistingArchive: true
           verbose: true
           
@@ -244,7 +244,7 @@ jobs:
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
-          assets: 'cppnamelint_macos-10.14.7z'
+          assets: 'cppnamelint-macos-10.14.7z'
           assetUploadMode: 'replace'
           isDraft: true
           isPreRelease: true
