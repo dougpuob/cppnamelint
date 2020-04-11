@@ -85,9 +85,9 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'cppnamelint_win32'
+          ArtifactName: 'cppnamelint_win32.7z'
           publishLocation: 'FilePath'
-          TargetPath: './cppnamelint_win32.7z'
+          TargetPath: 'cppnamelint'
 
           
   #==============================================================================
@@ -180,9 +180,9 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'cppnamelint_linux'
+          ArtifactName: 'cppnamelint_linux.7z'
           publishLocation: 'FilePath'
-          TargetPath: './cppnamelint_linux.7z'
+          TargetPath: 'cppnamelint'
 
 
   #==============================================================================
@@ -267,9 +267,9 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'cppnamelint_macos'
+          ArtifactName: 'cppnamelint_macos.7z'
           publishLocation: 'FilePath'
-          TargetPath: './cppnamelint_macos.7z'
+          TargetPath: 'cppnamelint'
 
 
   - job: DeployGitHubRelease
@@ -285,21 +285,21 @@ jobs:
     steps:
       - task: DownloadFileshareArtifacts@1
         inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)'
+          filesharePath: '$(Build.ArtifactStagingDirectory)/cppnamelint'
           artifactName: 'cppnamelint_macos.7z'
-          downloadPath: '$(System.ArtifactsDirectory)'
+          downloadPath: '.'
 
       - task: DownloadFileshareArtifacts@1
         inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)'
+          filesharePath: '$(Build.ArtifactStagingDirectory)/cppnamelint'
           artifactName: 'cppnamelint_win32.7z'
-          downloadPath: '$(System.ArtifactsDirectory)'
+          downloadPath: '.'
 
       - task: DownloadFileshareArtifacts@1
         inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)'
+          filesharePath: '$(Build.ArtifactStagingDirectory)/cppnamelint'
           artifactName: 'cppnamelint_linux.7z'
-          downloadPath: '$(System.ArtifactsDirectory)'
+          downloadPath: '.'
 
       - task: CmdLine@2
         inputs:
