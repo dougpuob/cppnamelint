@@ -63,6 +63,20 @@ jobs:
           replaceExistingArchive: true
           verbose: true
 
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'edit'
+          target: '$(Build.SourceVersion)'
+          tag: 'v0.3*'
+          assets: 'cppnamelint_win32.7z'
+          assetUploadMode: 'replace'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'issueBased'
+
       - task: PowerShell@2
         inputs:
           filePath: 'script/build-test-win32.ps1'
@@ -144,6 +158,21 @@ jobs:
           replaceExistingArchive: true
           verbose: true
 
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'edit'
+          target: '$(Build.SourceVersion)'
+          tag: 'v0.3*'
+          assets: 'cppnamelint_linux.7z'
+          assetUploadMode: 'replace'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'issueBased'
+
+
       - script: "./build-test-linux.sh"
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/linux"
@@ -220,6 +249,20 @@ jobs:
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/macos"
 
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'edit'
+          target: '$(Build.SourceVersion)'
+          tag: 'v0.3*'
+          assets: 'cppnamelint_macos.7z'
+          assetUploadMode: 'replace'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'issueBased'
+
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_macos.7z'
@@ -230,49 +273,35 @@ jobs:
   #==============================================================================
   # Deploy binary files to GitHub Release
   #==============================================================================
-  - job: DeployToGitHubRelease
-
-    pool:
-      vmImage: "vs2017-win2016"
-
-    dependsOn: 
-    - BuildOnMacOS
-    - BuildOnLinux
-    - BuildOnWindows
-
-    steps:
-      - task: DownloadFileshareArtifacts@1
-        inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'cppnamelint_macos.7z'
-          downloadPath: '.'
-
-      - task: DownloadFileshareArtifacts@1
-        inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'cppnamelint_win32.7z'
-          downloadPath: '.'
-
-      - task: DownloadFileshareArtifacts@1
-        inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)'
-          artifactName: 'cppnamelint_linux.7z'
-          downloadPath: '.'
-
-      - task: CmdLine@2
-        inputs:
-          script: 'dir /s'
-
-      - task: GitHubRelease@1
-        inputs:
-          gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
-          action: 'edit'
-          target: '$(Build.SourceVersion)'
-          tagSource: 'userSpecifiedTag'
-          tag: 'v0.3*'
-          assets: './drop/cppnamelint_*.7z'
-          isDraft: true
-          isPreRelease: true
-          changeLogCompareToRelease: 'lastFullRelease'
-          changeLogType: 'issueBased'
+  #- job: DeployToGitHubRelease
+  #
+  #  pool:
+  #    vmImage: "vs2017-win2016"
+  #
+  #  dependsOn: 
+  #  - BuildOnMacOS
+  #  - BuildOnLinux
+  #  - BuildOnWindows
+  #
+  #  steps:
+  #    - task: DownloadFileshareArtifacts@1
+  #      inputs:
+  #        filesharePath: '$(Build.ArtifactStagingDirectory)'
+  #        artifactName: 'cppnamelint_macos.7z'
+  #        downloadPath: '.'
+  #
+  #    - task: DownloadFileshareArtifacts@1
+  #      inputs:
+  #        filesharePath: '$(Build.ArtifactStagingDirectory)'
+  #        artifactName: 'cppnamelint_win32.7z'
+  #        downloadPath: '.'
+  #
+  #    - task: DownloadFileshareArtifacts@1
+  #      inputs:
+  #        filesharePath: '$(Build.ArtifactStagingDirectory)'
+  #        artifactName: 'cppnamelint_linux.7z'
+  #        downloadPath: '.'
+  #
+  #    - task: CmdLine@2
+  #      inputs:
+  #        script: 'dir /s'
