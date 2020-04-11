@@ -84,7 +84,7 @@ jobs:
 
       - task: PublishBuildArtifacts@1
         inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          PathtoPublish: 'cppnamelint_win32.7z'
           ArtifactName: 'cppnamelint_win32.7z'
           publishLocation: 'Container'
 
@@ -178,7 +178,7 @@ jobs:
 
       - task: PublishBuildArtifacts@1
         inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          PathtoPublish: 'cppnamelint_linux.7z'
           ArtifactName: 'cppnamelint_linux.7z'
           publishLocation: 'Container'
 
@@ -264,7 +264,7 @@ jobs:
 
       - task: PublishBuildArtifacts@1
         inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          PathtoPublish: 'cppnamelint_macos.7z'
           ArtifactName: 'cppnamelint_macos.7z'
           publishLocation: 'Container'
 
