@@ -271,7 +271,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: './cppnamelint_*.7z'
+          assets: './drop/cppnamelint_*.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
