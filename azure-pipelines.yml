@@ -66,13 +66,15 @@ jobs:
           action: 'create'
           target: '$(Build.SourceVersion)'
           tagSource: 'gitTag'
-          title: 'Release Test'
+          tagPattern: 'v0.*'
+          title: 'Auto deploy by Azure'
           assets: 'script/release/windows/*'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'commitBased'
 
+          
   #==============================================================================
   # Linux
   #==============================================================================
