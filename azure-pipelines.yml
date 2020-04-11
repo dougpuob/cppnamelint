@@ -58,8 +58,8 @@ jobs:
         inputs:
           rootFolderOrFile: 'script\release\windows'
           includeRootFolder: false
-          archiveType: 'zip'
-          archiveFile: 'cppnamelint_win32.zip'
+          archiveType: '7z'
+          archiveFile: 'cppnamelint_win32.7z'
           replaceExistingArchive: true
           verbose: true
 
@@ -76,11 +76,18 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: '.\cppnamelint_win32.zip'
+          assets: '.\cppnamelint_win32.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'issueBased'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'cppnamelint_win32'
+          publishLocation: 'FilePath'
+          TargetPath: './cppnamelint_win32.7z'
 
           
   #==============================================================================
@@ -146,8 +153,8 @@ jobs:
         inputs:
           rootFolderOrFile: 'script/release/linux'
           includeRootFolder: false
-          archiveType: 'zip'
-          archiveFile: 'cppnamelint_linux.zip'
+          archiveType: '7z'
+          archiveFile: 'cppnamelint_linux.7z'
           replaceExistingArchive: true
           verbose: true
 
@@ -163,11 +170,18 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: './cppnamelint_linux.zip'
+          assets: './cppnamelint_linux.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'issueBased'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'cppnamelint_linux'
+          publishLocation: 'FilePath'
+          TargetPath: './cppnamelint_linux.7z'
 
 
   #==============================================================================
@@ -226,7 +240,7 @@ jobs:
           rootFolderOrFile: 'script/release/macos'
           includeRootFolder: false
           archiveType: 'zip'
-          archiveFile: 'cppnamelint_macos.zip'
+          archiveFile: 'cppnamelint_macos.7z'
           replaceExistingArchive: true
           verbose: true
           
@@ -242,8 +256,45 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: './cppnamelint_macos.zip'
+          assets: './cppnamelint_macos.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'issueBased'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'cppnamelint_macos'
+          publishLocation: 'FilePath'
+          TargetPath: './cppnamelint_macos.7z'
+
+
+  - job: DeployGitHubRelease
+    dependsOn: 
+    - macOS
+    - Linux
+    - Windows
+  
+    steps:
+      - task: DownloadFileshareArtifacts@1
+        inputs:
+          filesharePath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'cppnamelint_macos.7z'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: DownloadFileshareArtifacts@1
+        inputs:
+          filesharePath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'cppnamelint_win32.7z'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: DownloadFileshareArtifacts@1
+        inputs:
+          filesharePath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'cppnamelint_linux.7z'
+          downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: CmdLine@2
+        inputs:
+          script: 'dir /s'
