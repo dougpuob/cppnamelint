@@ -64,13 +64,9 @@ jobs:
           rootFolderOrFile: 'script\release'
           includeRootFolder: true
           archiveType: '7z'
-          archiveFile: 'cppnamelint_win32.zip'
+          archiveFile: 'cppnamelint_win32.7z'
           replaceExistingArchive: true
           verbose: true
-
-      - task: CmdLine@2
-        inputs:
-          script: 'dir /s'
 
       - task: GitHubRelease@1
         inputs:
