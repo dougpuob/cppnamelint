@@ -86,8 +86,7 @@ jobs:
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'cppnamelint_win32.7z'
-          publishLocation: 'FilePath'
-          TargetPath: 'cppnamelint'
+          publishLocation: 'Container'
 
           
   #==============================================================================
@@ -181,8 +180,7 @@ jobs:
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'cppnamelint_linux.7z'
-          publishLocation: 'FilePath'
-          TargetPath: 'cppnamelint'
+          publishLocation: 'Container'
 
 
   #==============================================================================
@@ -268,10 +266,12 @@ jobs:
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'cppnamelint_macos.7z'
-          publishLocation: 'FilePath'
-          TargetPath: 'cppnamelint'
+          publishLocation: 'Container'
 
 
+  #==============================================================================
+  # Deploy binary files to GitHub Release
+  #==============================================================================
   - job: DeployGitHubRelease
 
     pool:
@@ -285,19 +285,19 @@ jobs:
     steps:
       - task: DownloadFileshareArtifacts@1
         inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)/cppnamelint'
+          filesharePath: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'cppnamelint_macos.7z'
           downloadPath: '.'
 
       - task: DownloadFileshareArtifacts@1
         inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)/cppnamelint'
+          filesharePath: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'cppnamelint_win32.7z'
           downloadPath: '.'
 
       - task: DownloadFileshareArtifacts@1
         inputs:
-          filesharePath: '$(Build.ArtifactStagingDirectory)/cppnamelint'
+          filesharePath: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'cppnamelint_linux.7z'
           downloadPath: '.'
 
