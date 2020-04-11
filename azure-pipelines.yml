@@ -144,7 +144,7 @@ jobs:
 
       - task: ArchiveFiles@2
         inputs:
-          rootFolderOrFile: 'script\release\linux'
+          rootFolderOrFile: 'script/release/linux'
           includeRootFolder: false
           archiveType: '7z'
           archiveFile: 'cppnamelint_linux.7z'
@@ -163,7 +163,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: '.\cppnamelint_linux.7z'
+          assets: './cppnamelint_linux.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
@@ -223,7 +223,7 @@ jobs:
 
       - task: ArchiveFiles@2
         inputs:
-          rootFolderOrFile: 'script\release\macos'
+          rootFolderOrFile: 'script/release/macos'
           includeRootFolder: false
           archiveType: '7z'
           archiveFile: 'cppnamelint_macos.7z'
@@ -242,7 +242,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          assets: '.\cppnamelint_macos.7z'
+          assets: './cppnamelint_macos.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
