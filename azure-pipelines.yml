@@ -68,20 +68,6 @@ jobs:
           filePath: 'script/build-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
-      - task: GitHubRelease@1
-        inputs:
-          gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
-          action: 'edit'
-          target: '$(Build.SourceVersion)'
-          tagSource: 'userSpecifiedTag'
-          tag: 'v0.3*'
-          assets: '.\cppnamelint_win32.7z'
-          isDraft: true
-          isPreRelease: true
-          changeLogCompareToRelease: 'lastFullRelease'
-          changeLogType: 'issueBased'
-
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_win32.7z'
@@ -162,20 +148,6 @@ jobs:
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/linux"
 
-      - task: GitHubRelease@1
-        inputs:
-          gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
-          action: 'edit'
-          target: '$(Build.SourceVersion)'
-          tagSource: 'userSpecifiedTag'
-          tag: 'v0.3*'
-          assets: './cppnamelint_linux.7z'
-          isDraft: true
-          isPreRelease: true
-          changeLogCompareToRelease: 'lastFullRelease'
-          changeLogType: 'issueBased'
-
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_linux.7z'
@@ -248,20 +220,6 @@ jobs:
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/macos"
 
-      - task: GitHubRelease@1
-        inputs:
-          gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
-          action: 'edit'
-          target: '$(Build.SourceVersion)'
-          tagSource: 'userSpecifiedTag'
-          tag: 'v0.3*'
-          assets: './cppnamelint_macos.7z'
-          isDraft: true
-          isPreRelease: true
-          changeLogCompareToRelease: 'lastFullRelease'
-          changeLogType: 'issueBased'
-
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_macos.7z'
@@ -304,3 +262,17 @@ jobs:
       - task: CmdLine@2
         inputs:
           script: 'dir /s'
+
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'edit'
+          target: '$(Build.SourceVersion)'
+          tagSource: 'userSpecifiedTag'
+          tag: 'v0.3*'
+          assets: './cppnamelint_*.7z'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'issueBased'
