@@ -59,14 +59,14 @@ jobs:
           filePath: 'script/build-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
-      - task: CmdLine@2
+      - task: ArchiveFiles@2
         inputs:
-          script: |
-            dir "C:\Program Files\7-Zip"
-            "C:\Program Files\7-Zip\7z.exe" a cppnamelint_win32.7z release\* -r
-            dir
-          workingDirectory: 'script'
-          failOnStderr: true
+          rootFolderOrFile: 'script\release'
+          includeRootFolder: true
+          archiveType: '7z'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          replaceExistingArchive: true
+          verbose: true
 
       - task: GitHubRelease@1
         inputs:
