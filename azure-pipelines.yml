@@ -104,6 +104,7 @@ jobs:
         value: gcc
       - name: CXX
         value: g++
+
     pool:
       vmImage: "ubuntu-18.04"
 
@@ -198,6 +199,7 @@ jobs:
         value: clang
       - name: CXX
         value: clang++
+
     pool:
       vmImage: "macOS-10.14"
 
@@ -271,11 +273,15 @@ jobs:
 
 
   - job: DeployGitHubRelease
+
+    pool:
+      vmImage: "vs2017-win2016"
+
     dependsOn: 
     - macOS
     - Linux
     - Windows
-  
+
     steps:
       - task: DownloadFileshareArtifacts@1
         inputs:
