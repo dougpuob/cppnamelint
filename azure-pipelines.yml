@@ -67,8 +67,7 @@ jobs:
           target: '$(Build.SourceVersion)'
           tagSource: 'userSpecifiedTag'
           tag: 'v0.3*'
-          title: 'Auto deploy by Azure'
-          assets: 'script/release/windows/*'
+          assets: 'script/release/cppnamelint_win32.7z'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
