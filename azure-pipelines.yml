@@ -8,7 +8,7 @@ jobs:
   #==============================================================================
   # Windows
   #==============================================================================
-  - job: Windows
+  - job: BuildOnWindows
 
     variables:
       - name: NAMELINT_LLVM_LIB
@@ -92,7 +92,7 @@ jobs:
   #==============================================================================
   # Linux
   #==============================================================================
-  - job: Linux
+  - job: BuildOnLinux
 
     variables:
       - name: NAMELINT_LLVM_LIB
@@ -186,7 +186,7 @@ jobs:
   #==============================================================================
   # macOS ("macOS-10.14")
   #==============================================================================
-  - job: macOS
+  - job: BuildOnMacOS
 
     variables:
       - name: NAMELINT_LLVM_LIB
@@ -272,15 +272,15 @@ jobs:
   #==============================================================================
   # Deploy binary files to GitHub Release
   #==============================================================================
-  - job: DeployGitHubRelease
+  - job: DeployToGitHubRelease
 
     pool:
       vmImage: "vs2017-win2016"
 
     dependsOn: 
-    - macOS
-    - Linux
-    - Windows
+    - BuildOnMacOS
+    - BuildOnLinux
+    - BuildOnWindows
 
     steps:
       - task: DownloadFileshareArtifacts@1
