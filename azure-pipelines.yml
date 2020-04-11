@@ -59,6 +59,12 @@ jobs:
           filePath: 'script/build-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
+      - task: CmdLine@2
+        inputs:
+          script: '"C:\Program Files\7zip\7z" a release -ocppnamelint_win32.7z'
+          workingDirectory: 'script'
+          failOnStderr: true
+
       - task: GitHubRelease@1
         inputs:
           gitHubConnection: 'github.com_dougpuob'
