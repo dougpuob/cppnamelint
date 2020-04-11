@@ -71,7 +71,7 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_win32.7z'
-          ArtifactName: ''
+          ArtifactName: 'drop'
           publishLocation: 'Container'
 
           
@@ -151,7 +151,7 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_linux.7z'
-          ArtifactName: ''
+          ArtifactName: 'drop'
           publishLocation: 'Container'
 
 
@@ -223,7 +223,7 @@ jobs:
       - task: PublishBuildArtifacts@1
         inputs:
           PathtoPublish: 'cppnamelint_macos.7z'
-          ArtifactName: ''
+          ArtifactName: 'drop'
           publishLocation: 'Container'
 
 
