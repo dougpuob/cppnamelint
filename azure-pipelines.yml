@@ -65,14 +65,15 @@ jobs:
           repositoryName: 'dougpuob/cpp-namelint'
           action: 'create'
           target: '$(Build.SourceVersion)'
-          tagSource: 'gitTag'
-          tagPattern: 'v0.*'
+          tagSource: 'userSpecifiedTag'
+          tag: 'v0.3*'
           title: 'Auto deploy by Azure'
           assets: 'script/release/windows/*'
           isDraft: true
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'commitBased'
+
 
           
   #==============================================================================
