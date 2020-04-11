@@ -59,6 +59,19 @@ jobs:
           filePath: 'script/build-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'create'
+          target: '$(Build.SourceVersion)'
+          tagSource: 'gitTag'
+          title: 'Release Test'
+          assets: 'script/release/windows/*'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'commitBased'
 
   #==============================================================================
   # Linux
