@@ -62,7 +62,8 @@ jobs:
       - task: CmdLine@2
         inputs:
           script: |
-            "C:\Program Files\7zip\7z" a release -ocppnamelint_win32.7z
+            dir "C:\Program Files\7-Zip"
+            "C:\Program Files\7-Zip\7z.exe" a release -ocppnamelint_win32.7z
             dir
           workingDirectory: 'script'
           failOnStderr: true
