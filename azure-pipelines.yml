@@ -142,9 +142,32 @@ jobs:
       #- script: "ls -la -R"
       #  displayName: "Dump folder hierarchy"
 
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: 'script\release\linux'
+          includeRootFolder: false
+          archiveType: '7z'
+          archiveFile: 'cppnamelint_linux.7z'
+          replaceExistingArchive: true
+          verbose: true
+
       - script: "./build-test-linux.sh"
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/linux"
+
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'create'
+          target: '$(Build.SourceVersion)'
+          tagSource: 'userSpecifiedTag'
+          tag: 'v0.3*'
+          assets: '.\cppnamelint_linux.7z'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'issueBased'
 
 
   #==============================================================================
@@ -197,7 +220,30 @@ jobs:
         inputs:
           filePath: 'script/build-pack-linux.sh'
           workingDirectory: 'script'
+
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: 'script\release\macos'
+          includeRootFolder: false
+          archiveType: '7z'
+          archiveFile: 'cppnamelint_macos.7z'
+          replaceExistingArchive: true
+          verbose: true
           
       - script: "./build-test-linux.sh"
         displayName: "build-test-linux.sh"
         workingDirectory: "script/release/macos"
+
+      - task: GitHubRelease@1
+        inputs:
+          gitHubConnection: 'github.com_dougpuob'
+          repositoryName: 'dougpuob/cpp-namelint'
+          action: 'create'
+          target: '$(Build.SourceVersion)'
+          tagSource: 'userSpecifiedTag'
+          tag: 'v0.3*'
+          assets: '.\cppnamelint_macos.7z'
+          isDraft: true
+          isPreRelease: true
+          changeLogCompareToRelease: 'lastFullRelease'
+          changeLogType: 'issueBased'
