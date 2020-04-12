@@ -27,10 +27,6 @@ if (0 -ne $LastExitCode) {
     Exit $LastExitCode
 }
 
-dir "C:\Program Files (x86)"
-dir "C:\Program Files"
-7z a release -ocppnamelint_win32.7z
-
 
 #==----------------------------------------------------------------------------
 # Successful
