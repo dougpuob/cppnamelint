@@ -36,6 +36,7 @@ struct GeneralOptions {
   bool bAllowedWriteJsonResult;
   bool bAllowedUnderscopeChar;
   bool bAllowedArrayAffected;
+  bool bBypassInvalidDecl;
 };
 
 struct GeneralRules {

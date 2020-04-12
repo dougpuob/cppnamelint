@@ -6,10 +6,31 @@ CheckVariableName       = true
 CheckFunctionName       = true
 CheckEnum               = true
 CheckStruct             = true
-AllowedPrintResult      = true
+
+
 AllowedWriteJsonResult  = true
-AllowedUnderscopeChar   = false # [Deprecated] Instead with Camels.Options.AllowedOneUnderscope.
 AllowedArrayAffected    = false
+
+
+# [Deprecated] 
+# Allow underscope character in naming.
+# 1. Instead with Camels.Options.AllowedOneUnderscope.
+# 2. Instead with Hungarian.Options.AllowedOneUnderscope.
+AllowedUnderscopeChar   = false # Default: false
+
+
+# Check results can be printed to screen. You can disable it use JSON output
+# instead.
+AllowedPrintResult      = true  # Default: true
+
+
+# Missed header will cause Decl may be treated as wrong. 
+# Ways to avoid it:
+#  1. Indicate header directory via `-include` option.
+#  2. Set this option to `false`.
+BypassInvalidDecl       = false # Default: false
+                                
+
 
 [General.Rules]
 FileName                = 0 # 0: Default (UpperCamel)
@@ -72,13 +93,21 @@ StructTagPrefix         = [ "_", "s" ]
 FunctionName            = ["main", "newASTConsumer"]
 
 
-[Hungarian.Options]
-PreferUpperCamelIfMissed = true
-
 [Camels.Options]
+# Allow underscope character in naming.
 AllowUnderscope         = 0 # 0 = DoNotAllow (Default)
                             # 1 = AllowedOneUnderscope,
                             # 2 = AllowedSingleUnderscope
+
+[Hungarian.Options]
+PreferUpperCamelIfMissed = true
+
+# [TODO]
+# Allow underscope character in naming.
+AllowUnderscope         = 0 # 0 = DoNotAllow (Default)
+                            # 1 = AllowedOneUnderscope,
+                            # 2 = AllowedSingleUnderscope
+
 
 [Hungarian.NullStringList]
 "char*"                  = "sz"
