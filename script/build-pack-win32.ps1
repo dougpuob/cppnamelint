@@ -6,7 +6,7 @@ Write-Output "=============================================================="
 Write-Output " Remove previous generated files"
 Write-Output "=============================================================="
 if (Test-Path release) {
-    Remove-Item -Path release/* -Force -Recurse
+    Remove-Item -Path release/windows/* -Force -Recurse
 }
 
 

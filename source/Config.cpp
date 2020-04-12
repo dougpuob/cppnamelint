@@ -361,6 +361,39 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
     }(this->m_pConfig->Hungarian.WordList, pHungarianWordList->as<toml::Table>());
   }
 
+  // ==----------------------------------------------------------------------------------
+  // [Debug.Log]
+  // ==----------------------------------------------------------------------------------
+  // Debug.Log.Main
+  const toml::Value *pDebugLogMain = ParseRsValue.find("Debug.Log.Main");
+  if (pDebugLogMain && pDebugLogMain->is<bool>()) {
+    this->m_pConfig->Debug.Log.bMain = pDebugLogMain->as<bool>();
+  }
+
+  // Debug.Log.DumpDecl
+  const toml::Value *pDebugLoDumpDecl = ParseRsValue.find("Debug.Log.DumpDecl");
+  if (pDebugLoDumpDecl && pDebugLoDumpDecl->is<bool>()) {
+    this->m_pConfig->Debug.Log.bDumpDecl = pDebugLoDumpDecl->as<bool>();
+  }
+
+  // Debug.Log.AstVisitor
+  const toml::Value *pDebugLogAstVisitor = ParseRsValue.find("Debug.Log.AstVisitor");
+  if (pDebugLogAstVisitor && pDebugLogAstVisitor->is<bool>()) {
+    this->m_pConfig->Debug.Log.bMain = pDebugLogAstVisitor->as<bool>();
+  }
+
+  // Debug.Log.Detection
+  const toml::Value *pDebugLogDetection = ParseRsValue.find("Debug.Log.Detection");
+  if (pDebugLogDetection && pDebugLogDetection->is<bool>()) {
+    this->m_pConfig->Debug.Log.bDetection = pDebugLogDetection->as<bool>();
+  }
+
+  // Debug.Log.Config
+  const toml::Value *pDebugLogConfig = ParseRsValue.find("Debug.Log.Config");
+  if (pDebugLogConfig && pDebugLogConfig->is<bool>()) {
+    this->m_pConfig->Debug.Log.bConfig = pDebugLogConfig->as<bool>();
+  }
+
   return bStatus;
 }
 

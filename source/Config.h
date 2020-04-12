@@ -102,10 +102,21 @@ struct Camels {
   CamelsOptions Options;
 };
 
+struct Debug {
+  struct {
+    bool bMain;
+    bool bDumpDecl;
+    bool bAstVisitor;
+    bool bDetection;
+    bool bConfig;
+  } Log;
+};
+
 struct ConfigData {
   struct General General;
   struct Hungarian Hungarian;
   struct Camels Camels;
+  struct Debug Debug;
 };
 
 class Config {

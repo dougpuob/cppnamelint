@@ -10,6 +10,10 @@
 
 namespace DcLib {
 
+static std::string m_LogFileName;
+static std::size_t m_nBufSize = 0;
+static char *m_szBuf          = NULL;
+
 std::string Log::Format(const char *szFmt, va_list vaList) {
   if (!DcLib::m_szBuf) {
     DcLib::m_nBufSize = 256;

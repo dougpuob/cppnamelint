@@ -28,30 +28,14 @@ bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath);
 int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool);
 int RunCheckFormFile(namelint::MemoBoard &Memo);
 
+LOG_DECISION_DEFAULT(false);
+
 int RunCheckFormFile(namelint::MemoBoard &Memo) {
   int iRet = 0;
 
-  Memo.File.Source  = CheckInputSrc;
-  Memo.File.Config  = CheckInputConfig;
-  Memo.Dir.Includes = CheckIncludes;
-
   if (!llvm::sys::fs::exists(Memo.File.Source)) {
-    cout << "Error: Failed to find input source file." << endl;
+    cout << "ERROR: Failed to find input source file." << endl;
     return 1;
-  }
-
-  if (!Memo.File.Config.empty()) {
-    if (!llvm::sys::fs::exists(Memo.File.Config)) {
-      cout << "Error: Failed to find config file." << endl;
-      return 2;
-    }
-    string ErrorReason;
-    if (!Memo.Config.LoadFile(Memo.File.Config, ErrorReason)) {
-      cout << "Error: Failed to load config file (format wrong)." << endl;
-      cout << ErrorReason << endl;
-      return 3;
-    }
-  } else {
   }
 
   //
@@ -108,6 +92,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
 
   for (auto inc : Memo.Dir.Includes) {
     auto arg = "--I" + inc;
+    DcLib::Log::Out(INFO_ALL, "--I=%s", inc);
     Tool.appendArgumentsAdjuster(
         getInsertArgumentAdjuster(arg.c_str(), ArgumentInsertPosition::BEGIN));
   }
@@ -116,6 +101,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   Tool.appendArgumentsAdjuster(
       getInsertArgumentAdjuster("--language=c++",
                                 ArgumentInsertPosition::BEGIN)); // Make it parses header file.
+  DcLib::Log::Out(INFO_ALL, "--language=c++");
 
   Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
 
@@ -176,10 +162,34 @@ int main(int Argc, const char **Argv) {
   int iRet = 0;
   if (LogFile.length() > 0) {
     DcLib::Log::Init(LogFile.c_str());
+    printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
   }
 
-  APP_CONTEXT *pAppCxt                 = (APP_CONTEXT *)GetAppCxt();
-  pAppCxt->MemoBoard.Option.bEnableLog = (LogFile.length() > 0);
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+
+  pAppCxt->MemoBoard.File.Config  = CheckInputConfig;
+  pAppCxt->MemoBoard.File.Source  = CheckInputSrc;
+  pAppCxt->MemoBoard.Dir.Includes = CheckIncludes;
+
+  if (!CheckInputConfig.empty()) {
+    if (!llvm::sys::fs::exists(CheckInputConfig)) {
+      cout << "ERROR: Failed to find config file." << endl;
+      return 2;
+    }
+    string ErrorReason;
+    if (!pAppCxt->MemoBoard.Config.LoadFile(CheckInputConfig, ErrorReason)) {
+      cout << "ERROR: Failed to load config file (format wrong)." << endl;
+      cout << ErrorReason << endl;
+      return 3;
+    }
+  } else {
+    // TODO: Load default setting if not input config file.
+  }
+
+  LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bMain);
+
+  DcLib::Log::Out(INFO_ALL, "CheckSubcommand = %d", CheckSubcommand);
+  DcLib::Log::Out(INFO_ALL, "TestSubcommand  = %d", TestSubcommand);
 
   if (CheckSubcommand) {
     iRet = RunCheckFormFile(pAppCxt->MemoBoard);
@@ -191,6 +201,7 @@ int main(int Argc, const char **Argv) {
     cl::PrintHelpMessage();
   }
 
+  DcLib::Log::Out(INFO_ALL, "Program is going to close. (iRet=%d)", iRet);
   return iRet;
 }
 
@@ -247,9 +258,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   for (size_t nIdx = 0; nIdx < MemoBoard.Dir.Includes.size(); nIdx++) {
     sprintf(szText, " Inc[%2lu] = %s", nIdx + 1, MemoBoard.Dir.Includes[nIdx].c_str());
     printf("%s\n", szText);
-    if (MemoBoard.Option.bEnableLog) {
-      DcLib::Log::Out(INFO_ALL, szText);
-    }
+    DcLib::Log::Out(INFO_ALL, szText);
   }
 
   sprintf(szText,
@@ -260,9 +269,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
           MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum,
           MemoBoard.Checked.nStruct, MemoBoard.Checked.nUnion, MemoBoard.Checked.nClass);
   printf("%s\n", szText);
-  if (MemoBoard.Option.bEnableLog) {
-    DcLib::Log::Out(INFO_ALL, szText);
-  }
+  DcLib::Log::Out(INFO_ALL, szText);
 
   sprintf(szText,
           " Error   = %5lu  [File:%u | Func:%3u | Param:%3u | Var:%3u | Enum:%3u | Struct:%3u | "
@@ -272,14 +279,10 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
           MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum,
           MemoBoard.Error.nStruct, MemoBoard.Error.nUnion, MemoBoard.Error.nClass);
   printf("%s\n", szText);
-  if (MemoBoard.Option.bEnableLog) {
-    DcLib::Log::Out(INFO_ALL, szText);
-  }
+  DcLib::Log::Out(INFO_ALL, szText);
 
   printf("------------------------------------------------------------\n");
-  if (MemoBoard.Option.bEnableLog) {
-    DcLib::Log::Out(INFO_ALL, "------------------------------------------------------------");
-  }
+  DcLib::Log::Out(INFO_ALL, "------------------------------------------------------------");
 
   for (const ErrorDetail *pErrDetail : MemoBoard.ErrorDetailList) {
     switch (pErrDetail->Type) {
@@ -293,9 +296,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_Parameter:
@@ -304,9 +305,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_Variable:
@@ -315,9 +314,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               (pErrDetail->bIsPtr ? "*" : ""), (pErrDetail->bIsArray ? "[]" : ""));
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_Class:
@@ -325,9 +322,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_EnumTag:
@@ -335,9 +330,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_EnumVal:
@@ -346,9 +339,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_StructTag:
@@ -357,9 +348,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     case CheckType::CT_StructVal:
@@ -368,9 +357,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
-      if (MemoBoard.Option.bEnableLog) {
-        DcLib::Log::Out(INFO_ALL, szText);
-      }
+      DcLib::Log::Out(INFO_ALL, szText);
       break;
 
     default:
