@@ -151,6 +151,7 @@ TEST(Variable, Mixed) {
         //                                                                         \n\
         // Variables                                                               \n\
         //                                                                         \n\
+        wchar_t*                wszWideString               = NULL;                \n\
         size_t                  nVarSize                    = 0;                   \n\
         int8_t                  i8VarInt8                   = 0;                   \n\
         int16_t                 i16VarInt16                 = 0;                   \n\
@@ -209,7 +210,7 @@ TEST(Variable, Mixed) {
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
-  EXPECT_EQ(true, 50 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 51 == MemoBoard.Checked.nVariable);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);

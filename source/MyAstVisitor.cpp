@@ -146,12 +146,19 @@ bool MyASTVisitor::_GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &
   this->m_DumpDecl.PrintDecl(pDecl);
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
-  SourceLocation MyLoc      = pDecl->getLocation();
-  string MyVarType          = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
-                                 this->m_pSrcMgr->getCharacterData(MyLoc) -
-                                     this->m_pSrcMgr->getCharacterData(MyBeginLoc));
+  SourceLocation MyCurrLoc  = pDecl->getLocation();
 
-  VarType = MyVarType;
+  const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
+  const char *szCurr  = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
+
+  intptr_t iPtrDiff      = szCurr - szBegin;
+  const intptr_t iPtrLen = szCurr - szBegin;
+  if (iPtrLen <= 0) {
+    DcLib::Log::Out(INFO_ALL, "iPtrLen value should not be negative.");
+    return false;
+  }
+
+  VarType = std::string(szBegin, iPtrDiff);
   VarName = pDecl->getName().data();
 
   QualType MyQualType = pDecl->getType();
@@ -184,11 +191,21 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
   // auto VarType = pDecl->getType().getAsString();
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
-  SourceLocation MyLoc      = pDecl->getLocation();
-  string MyValueType        = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
-                                   this->m_pSrcMgr->getCharacterData(MyLoc) -
-                                       this->m_pSrcMgr->getCharacterData(MyBeginLoc));
-  size_t nPos               = MyValueType.find(",");
+  SourceLocation MyCurrLoc  = pDecl->getLocation();
+
+  const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
+  const char *szCurr  = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
+
+  intptr_t iPtrDiff      = szCurr - szBegin;
+  const intptr_t iPtrLen = szCurr - szBegin;
+  if (iPtrLen < 0) { // Enum possible equals to ZERO.
+    DcLib::Log::Out(INFO_ALL, "iPtrLen value should not be negative.");
+    return false;
+  }
+
+  string MyValueType = std::string(szBegin, iPtrDiff);
+
+  size_t nPos = MyValueType.find(",");
 
   if (std::string::npos != nPos) {
     nPos        = MyValueType.find(" ");
@@ -253,7 +270,15 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
   bool bStauts = this->_GetValueInfo(pDecl, ValueType, ValueName, bIsPtr, bIsArray, bIsBuiltinType);
 
   if (!bStauts) {
-    return false;
+    return true;
+  }
+
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid ValueDecl. (%s)", ValueName.c_str());
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
   }
 
   bStauts = this->m_Detect.CheckVariable(

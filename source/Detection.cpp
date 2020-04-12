@@ -246,16 +246,14 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
   // Remove pointer chars.
   // Remove hungarian prefix chars.
   //
-  bool bStatus = false;
+  bool bStatus          = true;
+  bool bCNullStrMatched = false;
   if (bIsPtr || bIsArray) {
+
     // Remove `p` chars.
     size_t nLowerPCount = this->_RemoveHeadingPtrChar(NewNameStr);
-    if (nLowerPCount > 0) {
-      bStatus = true;
-    }
 
     // Remove hungarian notion of C null string.
-    bool bMatchMissed = true;
     for (auto Iter : NullStringMap) {
       const auto IterType   = Iter.Key;
       const auto IterPrefix = Iter.Value;
@@ -263,25 +261,18 @@ bool Detection::_IsHungarianNotationString(const string &TypeStr, const string &
       if (IterTypeNoStar == NewTypeStr) {
         const size_t nNewStrPos = NewNameStr.find(IterPrefix);
         if (0 == nNewStrPos) {
-          const size_t nPrefixLen = IterPrefix.length();
-          bMatchMissed            = false;
-          bStatus                 = true;
-          NewNameStr              = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
+          const size_t nPrefixLen = IterPrefix.length();		  
+
+          bCNullStrMatched = true;
+          NewNameStr       = NewNameStr.substr(nPrefixLen, NewNameStr.length() - nPrefixLen);
           break;
         }
       }
     }
-
-    // Even missed match the result should be TRUE.
-    if (!bStatus) {
-      bStatus = bMatchMissed;
-    }
-  } else {
-    bStatus = true;
   }
 
-  // Match Hungarian notation.
-  if (bStatus) {
+  // Match Hungarian notation. (except C Null string)
+  if (bStatus && !bCNullStrMatched) {
     for (map<string, string>::const_iterator Iter = TypeNamingMap.begin();
          Iter != TypeNamingMap.end(); Iter++) {
 
