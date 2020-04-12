@@ -8,10 +8,7 @@ using namespace namelint;
 LOG_DECISION_DEFAULT(false);
 
 bool MyASTVisitor::_IsMainFile(Decl *pDecl) {
-  if (this->m_pAstCxt->getSourceManager().isInMainFile(pDecl->getLocation())) {
-    return true;
-  }
-  return false;
+  return this->m_pSrcMgr->isInMainFile(pDecl->getLocation());
 }
 
 void MyASTVisitor::_KeepFileName(string &FilePath) {
@@ -109,13 +106,15 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
   this->m_DumpDecl.PrintDecl(pDecl);
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
-  SourceLocation MyLoc      = pDecl->getLocation();
-  string MyVarType          = std::string(this->m_pSrcMgr->getCharacterData(MyBeginLoc),
-                                 this->m_pSrcMgr->getCharacterData(MyLoc) -
-                                     this->m_pSrcMgr->getCharacterData(MyBeginLoc));
+  SourceLocation MyCurrLoc  = pDecl->getLocation();
+  const char *szBegin       = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
+  const char *szCurr        = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
+  const intptr_t iPtrLen    = szCurr - szBegin;
+  if (iPtrLen <= 0) {
+    return false;
+  }
 
-  VarType = MyVarType;
-
+  VarType             = std::string(szBegin, iPtrLen);
   QualType MyQualType = pDecl->getType();
 
   VarName = pDecl->getName().data();
@@ -367,18 +366,29 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     return true;
   }
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-
   string FuncName;
-  bool bResult  = false;
-  bool bIsPtr   = false;
-  bool bIsArray = false;
-  bool bStatus  = this->_GetFunctionInfo(pDecl, FuncName);
+  bool bResult = this->_GetFunctionInfo(pDecl, FuncName);
+  if (!bResult) {
+    return true;
+  }
 
-  if (bStatus) {
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  pAppCxt->MemoBoard.Checked.nFunction++;
+
+  // This FunctionDecl may just an external function.
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid FunctionDecl. (%s)", FuncName.c_str());
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
+  }
+
+  if (bResult) {
+    bool bIsPtr   = false;
+    bool bIsArray = false;
     bResult = this->m_Detect.CheckFunction(this->m_pConfig->General.Rules.FunctionName, FuncName);
 
-    pAppCxt->MemoBoard.Checked.nFunction++;
     if (!bResult) {
       pAppCxt->MemoBoard.Error.nFunction++;
 
@@ -387,7 +397,7 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     }
   }
 
-  return bStatus;
+  return true;
 }
 
 bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { return true; }

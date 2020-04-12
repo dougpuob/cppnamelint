@@ -182,6 +182,12 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
     this->m_pConfig->General.Options.bAllowedArrayAffected = pAllowArrayAffected->as<bool>();
   }
 
+  // General.Options.BypassInvalidDecl
+  const toml::Value *pBypassInvalidDecl = ParseRsValue.find(" General.Options.BypassInvalidDecl");
+  if (pBypassInvalidDecl && pBypassInvalidDecl->is<bool>()) {
+    this->m_pConfig->General.Options.bBypassInvalidDecl = pBypassInvalidDecl->as<bool>();
+  }
+
   // ==----------------------------------------------------------------------------------
   // [General.Rules]
   // ==----------------------------------------------------------------------------------
