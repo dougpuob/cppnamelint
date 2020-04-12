@@ -92,7 +92,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
 
   for (auto inc : Memo.Dir.Includes) {
     auto arg = "--I" + inc;
-    DcLib::Log::Out(INFO_ALL, "--I=%s", inc);
+    DcLib::Log::Out(INFO_ALL, "--I=%s", inc.c_str());
     Tool.appendArgumentsAdjuster(
         getInsertArgumentAdjuster(arg.c_str(), ArgumentInsertPosition::BEGIN));
   }
@@ -188,8 +188,8 @@ int main(int Argc, const char **Argv) {
 
   LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bMain);
 
-  DcLib::Log::Out(INFO_ALL, "CheckSubcommand = %d", CheckSubcommand);
-  DcLib::Log::Out(INFO_ALL, "TestSubcommand  = %d", TestSubcommand);
+  DcLib::Log::Out(INFO_ALL, "CheckSubcommand = %d", (bool)CheckSubcommand);
+  DcLib::Log::Out(INFO_ALL, "TestSubcommand  = %d", (bool)TestSubcommand);
 
   if (CheckSubcommand) {
     iRet = RunCheckFormFile(pAppCxt->MemoBoard);
