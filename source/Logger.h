@@ -27,8 +27,8 @@ typedef enum _Flag {
 
 class FlagInfo {
 public:
-  FlagInfo(std::string FileName, std::string FuncName, size_t LineNumber, bool bPrintDateTime,
-           bool bPrintFileName, bool bPrintLineNumber)
+  FlagInfo(bool bDecisionAnchor, std::string FileName, std::string FuncName, size_t LineNumber,
+           bool bPrintDateTime, bool bPrintFileName, bool bPrintLineNumber)
       : FileName{FileName}, FuncName{FuncName}, LineNumber{LineNumber},
         bPrintDateTime{bPrintDateTime}, bPrintFileName{bPrintFileName}, bPrintLineNumber{
                                                                             bPrintLineNumber} {}
@@ -42,12 +42,12 @@ public:
   bool bPrintLineNumber;
 };
 
-#define INFO_ALL DcLib::FlagInfo(__FILE__, __func__, __LINE__, true, true, true)
-#define INFO_NOTIME DcLib::FlagInfo(__FILE__, __func__, __LINE__, false, true, true)
-
-static std::string m_LogFileName;
-static std::size_t m_nBufSize = 0;
-static char *m_szBuf          = NULL;
+#define INFO_ALL                                                                                   \
+  DcLib::FlagInfo(__LoggerDecisonAnchor__, __FILE__, __func__, __LINE__, true, true, true)
+#define INFO_NOTIME                                                                                \
+  DcLib::FlagInfo(__LoggerDecisonAnchor__, __FILE__, __func__, __LINE__, false, true, true)
+#define LOG_DECISION_DEFAULT(TO_ENABLE) static bool __LoggerDecisonAnchor__ = (bool)TO_ENABLE;
+#define LOG_DECISION_CHANGE(TO_ENABLE) __LoggerDecisonAnchor__ = (bool)TO_ENABLE;
 
 class Log {
 private:

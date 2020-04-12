@@ -5,6 +5,8 @@
 
 using namespace namelint;
 
+LOG_DECISION_DEFAULT(false);
+
 bool MyASTVisitor::_IsMainFile(Decl *pDecl) {
   if (this->m_pAstCxt->getSourceManager().isInMainFile(pDecl->getLocation())) {
     return true;
@@ -89,9 +91,7 @@ bool MyASTVisitor::_GetFunctionInfo(FunctionDecl *pDecl, string &Name) {
     return false;
   }
 
-  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   Name = pDecl->getDeclName().getAsString();
   return true;
@@ -106,9 +106,7 @@ bool MyASTVisitor::_GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Va
     return false;
   }
 
-  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
   SourceLocation MyLoc      = pDecl->getLocation();
@@ -146,9 +144,7 @@ bool MyASTVisitor::_GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &
     return false;
   }
 
-  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
   SourceLocation MyLoc      = pDecl->getLocation();
@@ -178,9 +174,7 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
     return false;
   }
 
-  if (GetAppCxt()->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   // TODO:
   // This will get var type, but need to overcome some situation:
@@ -406,9 +400,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
-  if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   bool bStatus   = false;
   string VarName = pDecl->getName();
@@ -542,9 +534,7 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
-  if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   bool bStatus = this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr, bAnonymous);
   if (!bAnonymous) // if this variable doesn't have name, it doesn't need to be
@@ -572,9 +562,8 @@ bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
-  if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
+
   return true;
 }
 
@@ -582,9 +571,8 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
-  if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
+
   pAppCxt->MemoBoard.Checked.nEnum++;
 
   string EnumValName = pDecl->getName();
@@ -607,9 +595,7 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
   APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
-  if (pAppCxt->MemoBoard.Option.bEnableLog) {
-    this->m_DumpDecl.PrintDecl(pDecl);
-  }
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   pAppCxt->MemoBoard.pLastEnumDecl = pDecl;
   pAppCxt->MemoBoard.Checked.nEnum++;

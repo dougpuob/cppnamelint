@@ -1,12 +1,18 @@
 ﻿#include <memory>
 #include <string>
 
+#include "Common.h"
 #include "DumpDecl.h"
 #include <clang/AST/Decl.h>
 
 using namespace DcLib;
 
-DumpDecl::DumpDecl() {}
+LOG_DECISION_DEFAULT(false);
+
+DumpDecl::DumpDecl() {
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+  LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bDumpDecl);
+}
 
 bool DumpDecl::PrintDecl(Decl *pDecl) {
   if (!pDecl) {

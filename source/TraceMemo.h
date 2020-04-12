@@ -73,10 +73,6 @@ public:
 
 class MemoBoard {
 public:
-  struct _Option {
-    bool bEnableLog;
-  } Option;
-
   struct _File {
     string Source;
     string Config;
@@ -113,7 +109,6 @@ public:
   clang::EnumDecl *pLastEnumDecl;
 
   void Clear() {
-    memset(&this->Option, 0, sizeof(this->Option));
     memset(&this->Checked, 0, sizeof(this->Checked));
     memset(&this->Error, 0, sizeof(this->Error));
     this->Dir.Includes.clear();
