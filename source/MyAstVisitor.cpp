@@ -425,9 +425,13 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   return true;
 }
 
-bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) { return true; }
+bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) {
+  //
+  return true;
+}
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
+
   if (!this->_IsMainFile(pDecl)) {
     return false;
   }
@@ -439,6 +443,14 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   bool bStatus   = false;
   string VarName = pDecl->getName();
+
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid RecordDecl. (%s)", VarName.c_str());
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
+  }
 
   switch (pDecl->getTagKind()) {
   case TTK_Struct: {
@@ -636,12 +648,14 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   pAppCxt->MemoBoard.Checked.nEnum++;
 
   string EnumTagName = pDecl->getName();
-  bool bStatus =
-      this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
-  if (!bStatus) {
-    pAppCxt->MemoBoard.Error.nEnum++;
-    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
-        pDecl, CheckType::CT_EnumTag, NOT_PTR, NOT_ARRAY, "", EnumTagName, ""));
+  if (!EnumTagName.empty()) {
+    bool bStatus =
+        this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
+    if (!bStatus) {
+      pAppCxt->MemoBoard.Error.nEnum++;
+      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->_CreateErrorDetail(
+          pDecl, CheckType::CT_EnumTag, NOT_PTR, NOT_ARRAY, "", EnumTagName, ""));
+    }
   }
 
   return true;
