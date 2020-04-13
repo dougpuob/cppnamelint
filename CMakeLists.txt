@@ -155,6 +155,7 @@ add_executable(
     source/test/TestRunCheck_LowerSnake.cpp
     source/test/TestRunCheck_Hungarian.cpp
     source/test/TestRunCheck_InvalidDecl.cpp
+    source/test/TestRunCheck_DoubleEntry.cpp
 )
 
 

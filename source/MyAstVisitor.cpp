@@ -180,8 +180,6 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
     return false;
   }
 
-  this->m_DumpDecl.PrintDecl(pDecl);
-
   // TODO:
   // This will get var type, but need to overcome some situation:
   // 1. Type "unsigned long long int" will get "unsigned long long"
@@ -433,7 +431,7 @@ bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) {
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   if (!this->_IsMainFile(pDecl)) {
-    return false;
+    return true;
   }
 
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
