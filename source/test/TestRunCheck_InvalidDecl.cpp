@@ -142,7 +142,7 @@ TEST(MFC, IMPLEMENT_SERIAL) {
 
   const string SourceCode = "\
                                                                        \n\
-    class ToolbarLabel : public CBCGPToolbarButton                     \n\
+    class ToolbarLabel                                                 \n\
       {                                                                \n\
           DECLARE_SERIAL(ToolbarLabel)                                 \n\
                                                                        \n\
@@ -152,10 +152,10 @@ TEST(MFC, IMPLEMENT_SERIAL) {
           virtual void OnDraw(CDC* pDc,                                \n\
               const CRect& Rect,                                       \n\
               CBCGPToolBarImages* pImages,                             \n\
-              BOOL bHorz = TRUE,                                       \n\
-              BOOL bCustomizeMode = FALSE,                             \n\
-              BOOL bHighlight = FALSE,                                 \n\
-              BOOL bDrawBorder = TRUE,                                 \n\
+              BOOL bHorz                = TRUE,                        \n\
+              BOOL bCustomizeMode       = FALSE,                       \n\
+              BOOL bHighlight           = FALSE,                       \n\
+              BOOL bDrawBorder          = TRUE,                        \n\
               BOOL bGrayDisabledButtons = TRUE);                       \n\
       };                                                               \n\
                                                                        \n\
@@ -181,13 +181,17 @@ TEST(MFC, IMPLEMENT_SERIAL) {
   string ErrorReason;
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
+  // TODO: Remove this line for debugging only.
+  pAppCxt->MemoBoard.Config.GetData()->General.Options.bAllowedPrintResult = true;
+
   //.........................................................................vvvv <-- Test TARGET
   pAppCxt->MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 8 == MemoBoard.Checked.nParameter);
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
-  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
                                                    //     `bBypassInvalidDecl` is `FALSE`
 
@@ -197,9 +201,9 @@ TEST(MFC, IMPLEMENT_SERIAL) {
   EXPECT_EQ(true, 4 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 16 == MemoBoard.Checked.nParameter);
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
-  EXPECT_EQ(true, 2 == MemoBoard.Checked.nClass);
-  EXPECT_EQ(false, 0 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
-                                                    //     `bBypassInvalidDecl` is `TRUE`
+  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
+  EXPECT_EQ(true, 1 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
+                                                   //     `bBypassInvalidDecl` is `TRUE`
 }
 
 } // namespace RunCheckInvalidDecl
