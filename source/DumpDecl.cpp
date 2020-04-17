@@ -14,6 +14,8 @@ DumpDecl::DumpDecl() {
   LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bDumpDecl);
 }
 
+void DumpDecl::SetSourceManager(const SourceManager *pSm) { this->m_pSm = (SourceManager *)pSm; }
+
 bool DumpDecl::PrintDecl(Decl *pDecl) {
   if (!pDecl) {
     return false;
@@ -22,6 +24,12 @@ bool DumpDecl::PrintDecl(Decl *pDecl) {
 
     DcLib::Log::Out(INFO_ALL, "");
     DcLib::Log::Out(INFO_ALL, "V==start line====================================================================V");
+
+    
+    if (isa<Decl>(pDecl))
+    {
+        _PrintDecl(dyn_cast<Decl> (pDecl));
+    }
 
     if (isa<EnumConstantDecl>(pDecl))
     {
@@ -236,5 +244,62 @@ void DumpDecl::_PrintEnumConstantDecl(EnumConstantDecl *pDecl) {
 void DumpDecl::_PrintEnumDecl(EnumDecl *pDecl) {
   // clang-format of
   DcLib::Log::Out(INFO_ALL, "EnumDecl");
+  // clang-format on
+}
+
+void DumpDecl::_PrintDecl(Decl *pDecl) {
+  // SourceLocation MyBeginLoc = pDecl->getBeginLoc();
+  // SourceLocation MyCurrLoc = pDecl->getLocation();
+  // SourceLocation MyEndLoc = pDecl->getEndLoc();
+
+  // const char *szBegin = this->m_pSm->getCharacterData(MyBeginLoc);
+  // const char *szCurr = this->m_pSm->getCharacterData(MyCurrLoc);
+  // const char *szEnd = this->m_pSm->getCharacterData(MyEndLoc);
+  // pDecl->
+  //// clang-format of
+  // DcLib::Log::Out(INFO_ALL, "Decl.getBeginLoc().printToString              = %s",
+  // pDecl->getBeginLoc().printToString(*this->m_pSm).c_str()); DcLib::Log::Out(INFO_ALL, " = %s",
+  // szBegin); DcLib::Log::Out(INFO_ALL, "Decl.getLocation().printToString              = %s",
+  // pDecl->getLocation().printToString(*this->m_pSm).c_str()); DcLib::Log::Out(INFO_ALL, " = %s",
+  // szCurr); DcLib::Log::Out(INFO_ALL, "Decl.getEndLoc().printToString                = %s",
+  // pDecl->getEndLoc().printToString(*this->m_pSm).c_str()); DcLib::Log::Out(INFO_ALL, " = %s",
+  // szEnd);
+  //// clang-format on
+  DcLib::Log::Out(INFO_ALL, "Decl");
+}
+
+void DumpDecl::_PrintSrcLocStr(Decl *pDecl) {
+  SourceLocation MyBeginLoc = pDecl->getBeginLoc();
+  SourceLocation MyCurrLoc  = pDecl->getLocation();
+  SourceLocation MyEndLoc   = pDecl->getEndLoc();
+
+  const char *szBegin = this->m_pSm->getCharacterData(MyBeginLoc);
+  const char *szCurr  = this->m_pSm->getCharacterData(MyCurrLoc);
+  const char *szEnd   = this->m_pSm->getCharacterData(MyEndLoc);
+
+  // clang-format of
+  DcLib::Log::Out(INFO_ALL, "Decl.getBeginLoc().printToString              = %s",
+                  pDecl->getBeginLoc().printToString(*this->m_pSm).c_str());
+  DcLib::Log::Out(INFO_ALL, "Decl.getLocation().printToString              = %s",
+                  pDecl->getLocation().printToString(*this->m_pSm).c_str());
+  DcLib::Log::Out(INFO_ALL, "Decl.getEndLoc().printToString                = %s",
+                  pDecl->getEndLoc().printToString(*this->m_pSm).c_str());
+
+  if ((szCurr - szBegin) > 0) {
+    string Begin2Curr(szBegin, szCurr - szBegin);
+    DcLib::Log::Out(INFO_ALL, "Begin2Curr                                    = %s",
+                    Begin2Curr.c_str());
+  }
+
+  if ((szEnd - szBegin) > 0) {
+    string Begin2End(szBegin, szEnd - szBegin);
+    DcLib::Log::Out(INFO_ALL, "Begin2End                                     = %s",
+                    Begin2End.c_str());
+  }
+  if (szCurr - szEnd) {
+    string Curr2End(szCurr, szCurr - szEnd);
+    DcLib::Log::Out(INFO_ALL, "Curr2End                                      = %s",
+                    Curr2End.c_str());
+  }
   // clang-format on
 }

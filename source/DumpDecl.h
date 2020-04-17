@@ -21,9 +21,11 @@ using namespace clang::tooling;
 
 class DumpDecl {
 private:
+  SourceManager *m_pSm;
+
 public:
   DumpDecl();
-
+  void SetSourceManager(const SourceManager *pSm);
   bool PrintDecl(Decl *pDecl);
 
 private:
@@ -37,6 +39,8 @@ private:
   void _PrintTypedefDecl(TypedefDecl *pDecl);
   void _PrintEnumConstantDecl(EnumConstantDecl *pDecl);
   void _PrintEnumDecl(EnumDecl *pDecl);
+  void _PrintDecl(Decl *pDecl);
+  void _PrintSrcLocStr(Decl *pDecl);
 };
 
 #endif // __LEARN_IT_H__

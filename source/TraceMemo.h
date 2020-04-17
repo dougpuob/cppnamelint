@@ -19,6 +19,7 @@ public:
 
 typedef enum _CheckType {
   CT_None = 0,
+  CT_InvalidDecl,
   CT_File,
   CT_Function,
   CT_Parameter,
@@ -82,6 +83,10 @@ public:
     vector<string> Includes;
   } Dir;
 
+  struct _Assert {
+    size_t nInvalidDecl;
+  } Assert;
+
   struct _Checked {
     size_t nFile;
     size_t nFunction;
@@ -111,6 +116,8 @@ public:
   void Clear() {
     memset(&this->Checked, 0, sizeof(this->Checked));
     memset(&this->Error, 0, sizeof(this->Error));
+    memset(&this->Assert, 0, sizeof(this->Assert));
+
     this->Dir.Includes.clear();
     this->ErrorDetailList.clear();
     this->pLastEnumDecl = NULL;

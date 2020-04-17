@@ -136,38 +136,4 @@ const string ConfigToml = "\
     \"LONGLONG\"               = \"ll\"                     \n\
     ";
 
-namespace RunCheckDoubleEntry {
-
-TEST(Enum, SCANF_STYLE) {
-
-  const string SourceCode = "\
-        #pragma once                                                \n\
-                                                                    \n\
-        #include \"../Resource.h\"  // main symbols                \n\
-        #include \"../TestView.h\"                                 \n\
-                                                                    \n\
-        #define SETTING_INI_NAME   _T(\"Setting.ini\")              \n\
-        #define FT2_SITE_MAP_INI   _T(\"C:\\FT2SiteMapping.ini\")   \n\
-        #define FT2_SITE_TABLE_INI _T(\"SiteTable.ini\")            \n\
-                                                                    \n\
-        typedef enum _SCANF_STYLE                                   \n\
-        {                                                           \n\
-            DEC = 0,                                                \n\
-            HEX,                                                    \n\
-        } SCANF_STYLE;                                              \n\
-        ";
-
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
-  MemoBoard.Clear();
-
-  string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-
-  pAppCxt->MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
-  EXPECT_EQ(true, 3 == MemoBoard.Checked.nEnum);
-  EXPECT_EQ(true, 3 == MemoBoard.Error.nEnum);
-}
-
-} // namespace RunCheckDoubleEntry
+namespace RunCheckDoubleEntry {} // namespace RunCheckDoubleEntry

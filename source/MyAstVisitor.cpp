@@ -187,12 +187,19 @@ bool MyASTVisitor::_GetValueInfo(ValueDecl *pDecl, string &ValueType, string &Va
   // 3. Multi-array issue,we need to process string like "[8][]" "[][][]"
   //...
   // auto VarType = pDecl->getType().getAsString();
+  SourceRange srcRange      = pDecl->getSourceRange();
+  SourceLocation RangeBegin = srcRange.getBegin();
+  SourceLocation RangEnd    = srcRange.getEnd();
+  const char *szRangeBegin  = this->m_pSrcMgr->getCharacterData(RangeBegin);
+  const char *szRangeCurr   = this->m_pSrcMgr->getCharacterData(RangEnd);
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
   SourceLocation MyCurrLoc  = pDecl->getLocation();
+  SourceLocation MyEndLoc   = pDecl->getEndLoc();
 
   const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
   const char *szCurr  = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
+  const char *szEnd   = this->m_pSrcMgr->getCharacterData(MyEndLoc);
 
   intptr_t iPtrDiff      = szCurr - szBegin;
   const intptr_t iPtrLen = szCurr - szBegin;
@@ -271,19 +278,11 @@ bool MyASTVisitor::_CheckRuleForVariable(ValueDecl *pDecl) {
     return true;
   }
 
-  if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid ValueDecl. (%s)", ValueName.c_str());
-
-    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      return true;
-    }
-  }
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   bStauts = this->m_Detect.CheckVariable(
       this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
       this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
-
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
   pAppCxt->MemoBoard.Checked.nVariable++;
   if (!bStauts) {
@@ -369,6 +368,7 @@ bool MyASTVisitor::_CheckRuleForEnumValue(EnumConstantDecl *pDecl) {
 
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
                            const Config *pConfig) {
+  this->m_DumpDecl.SetSourceManager(pSM);
   this->m_pSrcMgr = pSM;
   this->m_pAstCxt = (ASTContext *)pAstCxt;
   this->m_pConfig = pConfig->GetData();
@@ -377,7 +377,6 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-  // std::cout << "VisitCXXRecordDecl " << D->getNameAsString() << std::endl;
   return true;
 }
 
@@ -401,6 +400,8 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   // This FunctionDecl may just an external function.
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid FunctionDecl. (%s)", FuncName.c_str());
+
+    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -435,8 +436,8 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   }
 
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
 
+  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
   this->m_DumpDecl.PrintDecl(pDecl);
 
   bool bStatus   = false;
@@ -444,6 +445,8 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid RecordDecl. (%s)", VarName.c_str());
+
+    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -520,11 +523,23 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
     return true;
   }
 
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid VarDecl. (%s)", pDecl->getName());
+
+    APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
+  }
+
   if (isa<ParmVarDecl>(pDecl)) {
     return true;
   }
 
-  return _CheckRuleForVariable(pDecl);
+  bool bRet = _CheckRuleForVariable(pDecl);
+  return true;
 }
 
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
@@ -533,6 +548,17 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
     DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckVariableName)");
     return true;
+  }
+
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid FieldDecl. (%s)", pDecl->getName());
+
+    APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
   }
 
   bool bRet = false;
@@ -581,6 +607,16 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
 
   this->m_DumpDecl.PrintDecl(pDecl);
 
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid ParmVarDecl. (%s)", pDecl->getName());
+
+    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
+  }
+
   bool bStatus = this->_GetParmsInfo(pDecl, VarType, VarName, bIsPtr, bAnonymous);
   if (!bAnonymous) // if this variable doesn't have name, it doesn't need to be
                    // checked.
@@ -622,6 +658,16 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
 
   string EnumValName = pDecl->getName();
 
+  if (pDecl->isInvalidDecl()) {
+    DcLib::Log::Out(INFO_ALL, "Found an invalid EnumConstantDecl. (%s)", EnumValName.c_str());
+
+    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+
+    if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+      return true;
+    }
+  }
+
   bool bStatus = _CheckRuleForEnumValue(pDecl);
   if (!bStatus) {
     string EnumTagName = "???1";
@@ -647,6 +693,17 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
 
   string EnumTagName = pDecl->getName();
   if (!EnumTagName.empty()) {
+
+    if (pDecl->isInvalidDecl()) {
+      DcLib::Log::Out(INFO_ALL, "Found an invalid EnumDecl. (%s)", EnumTagName.c_str());
+
+      pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+
+      if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+        return true;
+      }
+    }
+
     bool bStatus =
         this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
     if (!bStatus) {
@@ -656,5 +713,39 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
     }
   }
 
+  return true;
+}
+
+bool MyASTVisitor::VisitTagTypeLoc(TagTypeLoc TL) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
+
+  // TagDecl* pDecl = TL.getDecl();
+
+  // SourceLocation MyBeginLoc = pDecl->getBeginLoc();
+  // SourceLocation MyCurrLoc = pDecl->getLocation();
+  // SourceLocation MyEndLoc = pDecl->getEndLoc();
+
+  // const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
+  // const char *szCurr = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
+  // const char *szEnd = this->m_pSrcMgr->getCharacterData(MyEndLoc);
+  return true;
+}
+
+bool MyASTVisitor::VisitArrayTypeLoc(ArrayTypeLoc TL) {
+  DcLib::Log::Out(INFO_ALL, "%s", __func__);
+  // SourceLocation MyBeginLoc = TL.getBeginLoc();
+  // SourceLocation MyEndLoc = TL.getEndLoc();
+  //
+  // const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
+  // const char *szEnd = this->m_pSrcMgr->getCharacterData(MyEndLoc);
+  return true;
+}
+
+bool MyASTVisitor::VisitFunctionTypeLoc(FunctionTypeLoc TL, bool SkipResultType) {
+  SourceLocation MyBeginLoc = TL.getBeginLoc();
+  SourceLocation MyEndLoc   = TL.getEndLoc();
+
+  const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
+  const char *szEnd   = this->m_pSrcMgr->getCharacterData(MyEndLoc);
   return true;
 }

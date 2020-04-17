@@ -33,5 +33,5 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
 }
 
 void MyASTConsumer::HandleTranslationUnit(ASTContext &Ctx) {
-  // assert(false);
+  // Do nothing.
 }

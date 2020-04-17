@@ -225,7 +225,7 @@ TEST(Struct, UsbEndpointDescriptor) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "                    \n\
+  const string SourceCode = "                      \n\
         typedef struct _UsbEndpointDescriptor {    \n\
             UCHAR   Length;                        \n\
             UCHAR   DescriptorType;                \n\
@@ -342,33 +342,33 @@ TEST(Class, DataClass) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "                            \n\
-        class DateClass                                    \n\
-        {                                                  \n\
-        private:                                           \n\
-            int m_Year;                                   \n\
-            int m_Month;                                  \n\
-            int m_Dday;                                   \n\
-                                                           \n\
-        public:                                            \n\
-            DateClass(int Year, int Month, int Day)     \n\
-            {                                              \n\
-                SetDate(Year, Month, Day);              \n\
-            }                                              \n\
-                                                           \n\
-            ~DateClass() {};                               \n\
-                                                           \n\
-            void SetDate(int Year, int Month, int Day)  \n\
-            {                                              \n\
-                m_Year = Year;                           \n\
-                m_Month = Month;                         \n\
-                m_Dday = Day;                            \n\
-            }                                              \n\
-                                                           \n\
-            int GetYear()  { return m_Year;  }            \n\
-            int GetMonth() { return m_Month; }            \n\
-            int GetDay()   { return m_Dday;  }            \n\
-        };                                                 \n\
+  const string SourceCode = "                               \n\
+        class DateClass                                     \n\
+        {                                                   \n\
+        private:                                            \n\
+            int m_Year;                                     \n\
+            int m_Month;                                    \n\
+            int m_Dday;                                     \n\
+                                                            \n\
+        public:                                             \n\
+            DateClass(int Year, int Month, int Day)         \n\
+            {                                               \n\
+                SetDate(Year, Month, Day);                  \n\
+            }                                               \n\
+                                                            \n\
+            ~DateClass() {};                                \n\
+                                                            \n\
+            void SetDate(int Year, int Month, int Day)      \n\
+            {                                               \n\
+                m_Year = Year;                              \n\
+                m_Month = Month;                            \n\
+                m_Dday = Day;                               \n\
+            }                                               \n\
+                                                            \n\
+            int GetYear()  { return m_Year;  }              \n\
+            int GetMonth() { return m_Month; }              \n\
+            int GetDay()   { return m_Dday;  }              \n\
+        };                                                  \n\
         ";
 
   pCfgData->General.IgnoredList.VariablePrefix.push_back("m_");

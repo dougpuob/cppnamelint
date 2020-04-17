@@ -342,33 +342,33 @@ TEST(Class, DataClass) {
   MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   shared_ptr<ConfigData> pCfgData = MemoBoard.Config.GetData();
 
-  const string SourceCode = "                            \n\
-        class date_class                                   \n\
-        {                                                  \n\
-        private:                                           \n\
-            int m_year;                                   \n\
-            int m_month;                                  \n\
-            int m_day;                                   \n\
-                                                           \n\
-        public:                                            \n\
-            date_class(int year, int month, int day)    \n\
-            {                                              \n\
-                set_date(year, month, day);              \n\
-            }                                              \n\
-                                                           \n\
-            ~date_class() {};                              \n\
-                                                           \n\
-            void set_date(int year, int month, int day)  \n\
-            {                                              \n\
-                m_year = year;                           \n\
-                m_month = month;                         \n\
-                m_day = day;                            \n\
-            }                                              \n\
-                                                           \n\
-            int get_year()  { return m_year;  }            \n\
-            int get_month() { return m_month; }            \n\
-            int get_day()   { return m_day;  }            \n\
-        };                                                 \n\
+  const string SourceCode = "                               \n\
+        class date_class                                    \n\
+        {                                                   \n\
+        private:                                            \n\
+            int m_year;                                     \n\
+            int m_month;                                    \n\
+            int m_day;                                      \n\
+                                                            \n\
+        public:                                             \n\
+            date_class(int year, int month, int day)        \n\
+            {                                               \n\
+                set_date(year, month, day);                 \n\
+            }                                               \n\
+                                                            \n\
+            ~date_class() {};                               \n\
+                                                            \n\
+            void set_date(int year, int month, int day)     \n\
+            {                                               \n\
+                m_year = year;                              \n\
+                m_month = month;                            \n\
+                m_day = day;                                \n\
+            }                                               \n\
+                                                            \n\
+            int get_year()  { return m_year;  }             \n\
+            int get_month() { return m_month; }             \n\
+            int get_day()   { return m_day;  }              \n\
+        };                                                  \n\
         ";
 
   pCfgData->General.IgnoredList.VariablePrefix.push_back("m_");

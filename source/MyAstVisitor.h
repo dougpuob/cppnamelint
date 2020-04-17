@@ -75,6 +75,9 @@ public:
   bool VisitTypedefDecl(TypedefDecl *pDecl);
   bool VisitEnumConstantDecl(EnumConstantDecl *pDecl);
   bool VisitEnumDecl(EnumDecl *pDecl);
+  bool VisitTagTypeLoc(TagTypeLoc TL);
+  bool VisitArrayTypeLoc(ArrayTypeLoc TL);
+  bool VisitFunctionTypeLoc(FunctionTypeLoc TL, bool SkipResultType = false);
   ;
   ;
 };

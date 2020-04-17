@@ -97,6 +97,10 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
         getInsertArgumentAdjuster(arg.c_str(), ArgumentInsertPosition::BEGIN));
   }
   // Tool.appendArgumentsAdjuster(
+  //    getInsertArgumentAdjuster("-E",
+  //        ArgumentInsertPosition::BEGIN));
+
+  // Tool.appendArgumentsAdjuster(
   //    getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
   Tool.appendArgumentsAdjuster(
       getInsertArgumentAdjuster("--language=c++",

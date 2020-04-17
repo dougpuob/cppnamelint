@@ -4,6 +4,7 @@
 #include "TraceMemo.h"
 #include <string>
 
+bool PrintTraceMemo(const namelint::MemoBoard &MemoBoard);
 int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
                        const string &VirtFileName = "a.cc");
 
