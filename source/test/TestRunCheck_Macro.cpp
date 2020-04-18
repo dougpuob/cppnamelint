@@ -580,9 +580,13 @@ TEST(Struct, CONST_DEF) {
   pCfgData->General.Options.bBypassInvalidDecl = true;
   pCfgData->General.Rules.StructTagName        = RULETYPE_UPPER_SNAKE;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
   EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nStruct);
-  EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
+
+  EXPECT_EQ(true, 2 == MemoBoard.GetTotalError());
+  EXPECT_EQ(true, 2 == MemoBoard.Error.nStruct);
+
   EXPECT_EQ(true, 6 == MemoBoard.Assert.nInvalidDecl);
   EXPECT_EQ(true, 6 == MemoBoard.Assert.nErrorOccurred);
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
