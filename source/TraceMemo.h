@@ -84,7 +84,9 @@ public:
   } Dir;
 
   struct _Assert {
-    size_t nInvalidDecl;
+    size_t nInvalidDecl;   // Decl::IsInvalidDecl()
+    size_t nErrorOccurred; // DiagnosticsEngine::hasErrorOccurred()
+    size_t nNumWarnings;   // DiagnosticsEngine::getNumWarnings()
   } Assert;
 
   struct _Checked {
@@ -124,6 +126,27 @@ public:
     this->Config.Clear();
   }
   MemoBoard() { Clear(); }
+
+  size_t GetTotalAssert() {
+    const size_t nAssert =
+        this->Assert.nInvalidDecl + this->Assert.nErrorOccurred + this->Assert.nNumWarnings;
+    return nAssert;
+  }
+
+  size_t GetTotalError() {
+    const size_t nError = this->Error.nFile + this->Error.nFunction + this->Error.nParameter +
+                          this->Error.nVariable + this->Error.nEnum + this->Error.nStruct +
+                          this->Error.nUnion + this->Error.nClass;
+    return nError;
+  }
+
+  size_t GetTotalChecked() {
+    const size_t nChecked = this->Checked.nFile + this->Checked.nFunction +
+                            this->Checked.nParameter + this->Checked.nVariable +
+                            this->Checked.nEnum + this->Checked.nStruct + this->Checked.nUnion +
+                            this->Checked.nClass;
+    return nChecked;
+  }
 };
 
 } // namespace namelint

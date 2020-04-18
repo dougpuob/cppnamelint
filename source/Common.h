@@ -4,8 +4,11 @@
 #include "TraceMemo.h"
 #include <string>
 
-bool PrintTraceMemo(const namelint::MemoBoard &MemoBoard);
-int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
+using namespace std;
+using namespace namelint;
+
+bool PrintTraceMemo(const MemoBoard &MemoBoard);
+int RunCheckFormStream(MemoBoard &Memo, const string &SourceContent,
                        const string &VirtFileName = "a.cc");
 
 static const bool PREFER_UC = true; // Prefer Upper Camel
@@ -14,11 +17,9 @@ static const bool IS_ARRAY  = true;
 static const bool NOT_PTR   = false;
 static const bool NOT_ARRAY = false;
 
-using namespace std;
-
 typedef struct _APP_CONTEXT {
   void *pTomlConfig;
-  namelint::MemoBoard MemoBoard;
+  MemoBoard MemoBoard;
   string FileName;
 } APP_CONTEXT;
 

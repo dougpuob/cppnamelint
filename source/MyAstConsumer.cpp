@@ -9,13 +9,21 @@
 using namespace std;
 
 bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
+
   string FileName;
-  const APP_CONTEXT *pAppCxt = GetAppCxt();
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
   for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(), e = MyDeclGroupRef.end(); Iter != e;
        ++Iter) {
     Decl *pDecl              = *Iter;
     const ASTContext &ASTCxt = pDecl->getASTContext();
+
+    const DiagnosticsEngine &diagEngine = ASTCxt.getDiagnostics();
+    if (diagEngine.hasErrorOccurred()) {
+      pAppCxt->MemoBoard.Assert.nErrorOccurred++;
+    }
+
+    pAppCxt->MemoBoard.Assert.nNumWarnings += diagEngine.getNumWarnings();
 
     FullSourceLoc FullLocation = ASTCxt.getFullLoc(pDecl->getBeginLoc());
     if (FullLocation.isValid()) {
@@ -33,5 +41,16 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
 }
 
 void MyASTConsumer::HandleTranslationUnit(ASTContext &Ctx) {
+  bool bRet                           = false;
+  const DiagnosticsEngine &diagEngine = Ctx.getDiagnostics();
+
+  bool bError     = diagEngine.hasErrorOccurred();
+  int iNumWarning = diagEngine.getNumWarnings();
+  for (auto DiagIDMappingPair : diagEngine.getDiagnosticMappings()) {
+    diag::kind DiagID = DiagIDMappingPair.first;
+    bRet              = false;
+  }
+
+  bRet = false;
   // Do nothing.
 }
