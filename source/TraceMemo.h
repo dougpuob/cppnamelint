@@ -84,7 +84,7 @@ public:
   } Dir;
 
   struct _Assert {
-    size_t nInvalidDecl;   // Decl::IsInvalidDecl()
+    size_t nInvalidDecl;   // Decl::isInvalidDecl()
     size_t nErrorOccurred; // DiagnosticsEngine::hasErrorOccurred()
     size_t nNumWarnings;   // DiagnosticsEngine::getNumWarnings()
   } Assert;

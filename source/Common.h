@@ -19,7 +19,7 @@ static const bool NOT_ARRAY = false;
 
 typedef struct _APP_CONTEXT {
   void *pTomlConfig;
-  MemoBoard MemoBoard;
+  namelint::MemoBoard MemoBoard;
   string FileName;
 } APP_CONTEXT;
 
