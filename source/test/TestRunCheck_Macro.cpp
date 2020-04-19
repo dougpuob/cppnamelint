@@ -347,10 +347,9 @@ TEST(PredefinedMacro, TwoVariables) {
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 2 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nInvalidDecl);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nErrorOccurred);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
+  EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
 }
 
 TEST(Define, pragma_one_with_include) {
@@ -426,11 +425,14 @@ TEST(Enum, define_with_enum) {
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
+  EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nEnum);
+
+  EXPECT_EQ(true, 3 == MemoBoard.GetTotalError());
   EXPECT_EQ(true, 3 == MemoBoard.Error.nEnum);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nInvalidDecl);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nErrorOccurred);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
+
+  EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
 }
 
 TEST(Enum, NumbSystem) {
@@ -453,11 +455,13 @@ TEST(Enum, NumbSystem) {
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
+  EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nEnum);
+
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nInvalidDecl);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nErrorOccurred);
-  EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
+
+  EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
 }
 
 TEST(Enum, pragma_once_ONLY) {
@@ -501,8 +505,13 @@ TEST(Enum, pragma_one_above_enum) {
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
   EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
+  EXPECT_EQ(true, 3 == MemoBoard.Checked.nEnum);
+
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
+
+  EXPECT_EQ(true, 1 == MemoBoard.GetTotalAssert());
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nInvalidDecl);
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nErrorOccurred);
   EXPECT_EQ(true, 1 == MemoBoard.Assert.nNumWarnings); // Got 1 warning, but I don't know why !
@@ -511,9 +520,9 @@ TEST(Enum, pragma_one_above_enum) {
 TEST(Struct, TCHAR) {
 
   const string SourceCode = "\
-        static TCHAR szHost[MAX_SITE_NUM][10] = {         \n\
-                _T(\"Sdhost1\")  //                       \n\
-        };                                                \n\
+        static TCHAR szHost[MAX_SITE_NUM][10] = {   \n\
+                _T(\"Sdhost1\")  //                 \n\
+        };                                          \n\
         ";
 
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
@@ -528,8 +537,12 @@ TEST(Struct, TCHAR) {
   pCfgData->Hungarian.NullStringList.push_back(MappingPair("TCHAR[]", "sz"));
   pAppCxt->MemoBoard.Config.ReformatCStringMap(pCfgData->Hungarian.NullStringList);
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
   EXPECT_EQ(true, 1 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
+
+  EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
+
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
   EXPECT_EQ(true, 1 == MemoBoard.Assert.nInvalidDecl);
   EXPECT_EQ(true, 1 == MemoBoard.Assert.nErrorOccurred);
@@ -541,9 +554,13 @@ TEST(Struct, TCHAR) {
   pAppCxt->MemoBoard.Config.ReformatCStringMap(pCfgData->Hungarian.NullStringList);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
   EXPECT_EQ(true, 1 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
+
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
+
+  EXPECT_EQ(true, 4 == MemoBoard.GetTotalAssert());
   EXPECT_EQ(true, 2 == MemoBoard.Assert.nInvalidDecl);
   EXPECT_EQ(true, 2 == MemoBoard.Assert.nErrorOccurred);
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
@@ -568,9 +585,14 @@ TEST(Struct, CONST_DEF) {
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   pCfgData->General.Rules.StructTagName = RULETYPE_UPPER_SNAKE;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+
   EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nStruct);
+
+  EXPECT_EQ(true, 2 == MemoBoard.GetTotalError());
   EXPECT_EQ(true, 2 == MemoBoard.Error.nStruct);
+
+  EXPECT_EQ(true, 6 == MemoBoard.GetTotalAssert());
   EXPECT_EQ(true, 3 == MemoBoard.Assert.nInvalidDecl);
   EXPECT_EQ(true, 3 == MemoBoard.Assert.nErrorOccurred);
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
@@ -587,6 +609,7 @@ TEST(Struct, CONST_DEF) {
   EXPECT_EQ(true, 2 == MemoBoard.GetTotalError());
   EXPECT_EQ(true, 2 == MemoBoard.Error.nStruct);
 
+  EXPECT_EQ(true, 12 == MemoBoard.GetTotalAssert());
   EXPECT_EQ(true, 6 == MemoBoard.Assert.nInvalidDecl);
   EXPECT_EQ(true, 6 == MemoBoard.Assert.nErrorOccurred);
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
