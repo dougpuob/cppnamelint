@@ -39,8 +39,9 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          script: tree -f c:\
-
+          targetType: 'inline'
+          script: 'tree -f .\'
+          
       - task: PowerShell@2
         inputs:
           filePath: 'script/build-bin-win32.ps1'
