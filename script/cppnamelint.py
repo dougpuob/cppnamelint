@@ -29,7 +29,7 @@ define_build_dir: str  = '../build'
 define_sample_dir: str = '../source/test/sample'
 define_cmake_name: str = 'cmake'
 define_cmakelists: str = 'CMakeLists.txt'
-define_cmake_msvc:str  = 'Visual Studio 15 2017'
+define_cmake_msvc:str  = 'Visual Studio 16 2019'
 
 
 def main(forced_argv):

@@ -71,10 +71,12 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
     time_t now = time(0);
     tm *ltm    = localtime(&now);
 
-    FileStream << "[" << Log::Fixed(1900 + ltm->tm_year, 4) << Log::Fixed(ltm->tm_mon, 2)
-               << Log::Fixed(ltm->tm_mday, 2);
-    FileStream << "'" + Log::Fixed(ltm->tm_hour, 2) << Log::Fixed(ltm->tm_min, 2)
-               << Log::Fixed(ltm->tm_sec, 2) << "]";
+    FileStream << "[";
+    // FileStream << Log::Fixed(1900 + ltm->tm_year, 4) << Log::Fixed(ltm->tm_mon, 2)
+    //           << Log::Fixed(ltm->tm_mday, 2);
+    FileStream << Log::Fixed(ltm->tm_hour, 2) << Log::Fixed(ltm->tm_min, 2)
+               << Log::Fixed(ltm->tm_sec, 2);
+    FileStream << "]";
   }
 
   //
