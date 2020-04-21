@@ -39,8 +39,7 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          script: tree -f
-          workingDirectory: 'script'
+          script: tree -f c:\
 
       - task: PowerShell@2
         inputs:
