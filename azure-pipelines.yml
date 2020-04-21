@@ -12,12 +12,12 @@ jobs:
 
     variables:
       - name: NAMELINT_LLVM_LIB
-        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
+        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2019_rel_64bit
       - name: BUILD_TYPE
         value: Release
 
     pool:
-      vmImage: "vs2017-win2016"
+      vmImage: "windows-2019"
 
     steps:
       - script: "set"
