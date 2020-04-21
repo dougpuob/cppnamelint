@@ -39,6 +39,11 @@ jobs:
 
       - task: PowerShell@2
         inputs:
+          script: tree -f
+          workingDirectory: 'script'
+
+      - task: PowerShell@2
+        inputs:
           filePath: 'script/build-bin-win32.ps1'
           workingDirectory: 'script'
 
