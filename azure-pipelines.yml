@@ -40,7 +40,12 @@ jobs:
       - task: PowerShell@2
         inputs:
           targetType: 'inline'
-          script: 'tree /f'
+          script: 'pwd'
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'tree /a'
           
       - task: PowerShell@2
         inputs:
