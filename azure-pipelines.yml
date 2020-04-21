@@ -12,7 +12,7 @@ jobs:
 
     variables:
       - name: NAMELINT_LLVM_LIB
-        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2019_rel_64bit
+        value: $(System.DefaultWorkingDirectory)
       - name: BUILD_TYPE
         value: Release
 
