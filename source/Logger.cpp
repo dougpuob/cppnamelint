@@ -26,7 +26,7 @@ std::string Log::Format(const char *szFmt, va_list vaList) {
     free(DcLib::m_szBuf);
     DcLib::m_szBuf = NULL;
 
-    DcLib::m_nBufSize = iRetSize * 2;
+    DcLib::m_nBufSize = (size_t)iRetSize * 2;
     DcLib::m_szBuf    = (char *)malloc(DcLib::m_nBufSize);
   }
 
