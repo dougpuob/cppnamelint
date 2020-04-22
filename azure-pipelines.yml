@@ -12,12 +12,12 @@ jobs:
 
     variables:
       - name: NAMELINT_LLVM_LIB
-        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_msvc2017_rel_32bit
+        value: $(System.DefaultWorkingDirectory)\llvm_8_0_0_msvc2019_rel_64bit
       - name: BUILD_TYPE
         value: Release
 
     pool:
-      vmImage: "vs2017-win2016"
+      vmImage: "windows-2019"
 
     steps:
       - script: "set"
@@ -29,14 +29,14 @@ jobs:
 
       - task: UniversalPackages@0
         inputs:
-          command: "download"
-          downloadDirectory: "$(System.DefaultWorkingDirectory)"
-          feedsToUse: "internal"
-          vstsFeed: "78202891-aba0-41ab-952b-2152c4a57470/5d6a84a9-b3ee-4af2-88a9-0e7ceb36156d"
-          vstsFeedPackage: "0a8bf302-6f44-4fd6-ab0f-cec0e21d1c99"
-          vstsPackageVersion: "0.0.1"
-          verbosity: "Trace"
-
+          command: 'download'
+          downloadDirectory: '$(System.DefaultWorkingDirectory)'
+          feedsToUse: 'internal'
+          vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/6c9732cf-3246-4264-adef-0269b29710c6'
+          vstsFeedPackage: '37f4150c-328c-49cb-ba1d-a44eaea25fad'
+          vstsPackageVersion: '0.0.1'
+          verbosity: 'Trace'
+          
       - task: PowerShell@2
         inputs:
           filePath: 'script/build-bin-win32.ps1'
@@ -45,9 +45,9 @@ jobs:
       - task: MSBuild@1
         inputs:
           solution: "build/windows/cppnamelint.sln"
-          msbuildVersion: "15.0"
+          msbuildVersion: "16.0"
           configuration: "Release"
-          msbuildArchitecture: "x86" #x86, x64
+          msbuildArchitecture: "x64" #x86, x64
           
       - task: PowerShell@2
         inputs:

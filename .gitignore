@@ -54,6 +54,7 @@ Release
 build
 debug
 release
+build*
 .vscode
 .idea
 *.pyc
