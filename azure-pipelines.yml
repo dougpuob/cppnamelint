@@ -55,7 +55,7 @@ jobs:
       - task: MSBuild@1
         inputs:
           solution: "build/windows/cppnamelint.sln"
-          msbuildVersion: "15.0"
+          msbuildVersion: "16.0"
           configuration: "Release"
           msbuildArchitecture: "x64" #x86, x64
           
