@@ -32,20 +32,20 @@ jobs:
           command: 'download'
           downloadDirectory: '$(System.DefaultWorkingDirectory)'
           feedsToUse: 'internal'
-          vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/688423ed-1bc6-41cc-87aa-0938d537e60a'
-          vstsFeedPackage: 'e88fcc0d-0d86-47a0-a895-9e77f98c1c0c'
+          vstsFeed: '78202891-aba0-41ab-952b-2152c4a57470/6c9732cf-3246-4264-adef-0269b29710c6'
+          vstsFeedPackage: '37f4150c-328c-49cb-ba1d-a44eaea25fad'
           vstsPackageVersion: '0.0.1'
           verbosity: 'Trace'
 
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'pwd'
+      #- task: PowerShell@2
+      #  inputs:
+      #    targetType: 'inline'
+      #    script: 'pwd'
 
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'tree /a'
+      #- task: PowerShell@2
+      #  inputs:
+      #    targetType: 'inline'
+      #    script: 'tree /a'
           
       - task: PowerShell@2
         inputs:
