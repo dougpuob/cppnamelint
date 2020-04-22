@@ -5,7 +5,7 @@
 
 | Windows | Linux | macOS |
 |---------|-------|-------|
-|![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=Windows) |![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=Linux)   | ![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=macOS)
+|![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=BuildOnWindows) |![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=BuildOnLinux)   | ![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=BuildOnMacOS)
 
 
 The `cppnamelint` C/C++ naming convention checking tool which can run on Windows/Linux/MacOS for name of files, functions, variable, and parameters. This project is based on LLVM's LibTooling as a compiler frontend to retrieve AST from C/C++ source files, then check your naming rules like UpperCamel, LowerCamel, SnakeCase, and Hungarain.
