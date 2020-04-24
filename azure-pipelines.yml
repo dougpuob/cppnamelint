@@ -59,7 +59,7 @@ jobs:
           rootFolderOrFile: 'script\release\windows'
           includeRootFolder: false
           archiveType: '7z'
-          archiveFile: 'cppnamelint-win32.7z'
+          archiveFile: 'cppnamelint-windows.7z'
           replaceExistingArchive: true
           verbose: true
 
@@ -70,7 +70,7 @@ jobs:
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
-          assets: 'cppnamelint-win32.7z'
+          assets: 'cppnamelint-windows.7z'
           assetUploadMode: 'replace'
           isDraft: true
           isPreRelease: true
