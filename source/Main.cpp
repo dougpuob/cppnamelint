@@ -163,12 +163,7 @@ int main(int Argc, const char **Argv) {
   cl::HideUnrelatedOptions(CppNameLintCategory);
   cl::ParseCommandLineOptions(Argc, Argv);
 
-  int iRet = 0;
-  if (LogFile.length() > 0) {
-    DcLib::Log::Init(LogFile.c_str());
-    printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
-  }
-
+  int iRet             = 0;
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
   pAppCxt->MemoBoard.File.Config  = CheckInputConfig;
@@ -190,6 +185,14 @@ int main(int Argc, const char **Argv) {
     // TODO: Load default setting if not input config file.
   }
 
+  if (LogFile.length() > 0) {
+    int iPos = pAppCxt->MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
+    DcLib::Log::Init(LogFile.c_str(), iPos);
+    printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
+
+    DcLib::Log::Out(INFO_ALL, "INFO : ContentStartsPosition = %d.", iPos);
+    DcLib::Log::Out(INFO_ALL, "INFO : Log message will print to the file (%s).", LogFile.c_str());
+  }
   LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bMain);
 
   DcLib::Log::Out(INFO_ALL, "CheckSubcommand = %d", (bool)CheckSubcommand);

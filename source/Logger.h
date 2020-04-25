@@ -55,7 +55,7 @@ private:
 
 public:
   static std::string Fixed(size_t nValue, size_t nZeroCnt);
-  static bool Init(const char *szFileName);
+  static bool Init(const char *szFileName, const size_t nContentStartsPos);
   static size_t Out(const FlagInfo &FlagInfo, const char *szFmt, ...);
   static std::string Format(const char *fmt, va_list vaList);
 };

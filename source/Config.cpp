@@ -53,6 +53,9 @@ Config::Config() {
   this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("long long", "ll"));
   this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("float", "f"));
   this->m_pConfig->Hungarian.WordList.insert(std::pair<string, string>("double", "d"));
+
+  // [Debug.Log]
+  this->m_pConfig->Debug.Log.iContentStartsPosition = 55;
 }
 
 shared_ptr<ConfigData> Config::GetData() const { return this->m_pConfig; }
@@ -370,6 +373,12 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
   // ==----------------------------------------------------------------------------------
   // [Debug.Log]
   // ==----------------------------------------------------------------------------------
+  // Debug.Log.ContentStartsPosition
+  const toml::Value *pContentStartsPosition = ParseRsValue.find("Debug.Log.ContentStartsPosition");
+  if (pContentStartsPosition && pContentStartsPosition->is<int>()) {
+    this->m_pConfig->Debug.Log.iContentStartsPosition = pContentStartsPosition->as<int>();
+  }
+
   // Debug.Log.Main
   const toml::Value *pDebugLogMain = ParseRsValue.find("Debug.Log.Main");
   if (pDebugLogMain && pDebugLogMain->is<bool>()) {

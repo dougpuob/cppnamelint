@@ -105,6 +105,7 @@ struct Camels {
 
 struct Debug {
   struct {
+    int iContentStartsPosition;
     bool bMain;
     bool bDumpDecl;
     bool bAstVisitor;

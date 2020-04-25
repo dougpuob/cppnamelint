@@ -11,8 +11,9 @@
 namespace DcLib {
 
 static std::string m_LogFileName;
-static std::size_t m_nBufSize = 0;
-static char *m_szBuf          = NULL;
+static std::size_t m_nContentStartsPos = 55;
+static std::size_t m_nBufSize          = 0;
+static char *m_szBuf                   = NULL;
 
 std::string Log::Format(const char *szFmt, va_list vaList) {
   if (!DcLib::m_szBuf) {
@@ -38,8 +39,9 @@ std::string Log::Format(const char *szFmt, va_list vaList) {
   return retStr;
 }
 
-bool Log::Init(const char *szFileName) {
+bool Log::Init(const char *szFileName, const size_t nContentStartsPos) {
   DcLib::m_LogFileName.assign(szFileName);
+  DcLib::m_nContentStartsPos = nContentStartsPos;
   return true;
 }
 
@@ -64,6 +66,9 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
     FileStream.open(DcLib::m_LogFileName, std::ios::app);
   }
 
+  char szBuf[512] = {0};
+  string PaddingInfo;
+
   //
   // Date&Time
   //
@@ -71,34 +76,36 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
     time_t now = time(0);
     tm *ltm    = localtime(&now);
 
-    FileStream << "[";
-    // FileStream << Log::Fixed(1900 + ltm->tm_year, 4) << Log::Fixed(ltm->tm_mon, 2)
-    //           << Log::Fixed(ltm->tm_mday, 2);
-    FileStream << Log::Fixed(ltm->tm_hour, 2) << Log::Fixed(ltm->tm_min, 2)
-               << Log::Fixed(ltm->tm_sec, 2);
-    FileStream << "]";
+    PaddingInfo = "[" + Log::Fixed(ltm->tm_hour, 2) + Log::Fixed(ltm->tm_min, 2) +
+                  Log::Fixed(ltm->tm_sec, 2) + "]";
   }
 
   //
   // Function Info
   //
-  FileStream << "[";
+  PaddingInfo.append("[");
   if (FlagInfo.bPrintFileName) {
-    FileStream << Path::FindFileName(FlagInfo.FileName) << "!" << FlagInfo.FuncName;
+    PaddingInfo.append(Path::FindFileName(FlagInfo.FileName) + string("!") + FlagInfo.FuncName);
   }
   if (FlagInfo.bPrintLineNumber) {
-    FileStream << "@" << FlagInfo.LineNumber;
+    PaddingInfo.append(string("@") + std::to_string(FlagInfo.LineNumber));
   }
-  FileStream << "]\t";
+  PaddingInfo.append("] ");
 
   //
   // Text Message
   //
   va_list vl;
   va_start(vl, szFmt);
-  std::string retStr = Log::Format(szFmt, vl);
+  std::string Content = Log::Format(szFmt, vl);
   va_end(vl);
-  FileStream << " " << retStr << std::endl;
+
+  int iDiff = DcLib::m_nContentStartsPos - PaddingInfo.length();
+  if (iDiff > 0) {
+    PaddingInfo.append(iDiff, ' ');
+  }
+
+  FileStream << PaddingInfo << Content << std::endl;
 
   return 0;
 }
