@@ -187,10 +187,10 @@ void DumpDecl::_PrintFunctionDecl(FunctionDecl *pDecl) {
 void DumpDecl::_PrintParmVarDecl(ParmVarDecl *pDecl) {
   // clang-format off
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl");
-  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.isObjCMethodParameter()          = %d", pDecl->isObjCMethodParameter());
-  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasDefaultArg()                  = %d", pDecl->hasDefaultArg());
-  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasUnparsedDefaultArg()          = %d", pDecl->hasUnparsedDefaultArg());
-  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasInheritedDefaultArg()         = %d", pDecl->hasInheritedDefaultArg());
+  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.isObjCMethodParameter()           = %d", pDecl->isObjCMethodParameter());
+  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasDefaultArg()                   = %d", pDecl->hasDefaultArg());
+  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasUnparsedDefaultArg()           = %d", pDecl->hasUnparsedDefaultArg());
+  DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasInheritedDefaultArg()          = %d", pDecl->hasInheritedDefaultArg());
   // clang-format on
 }
 

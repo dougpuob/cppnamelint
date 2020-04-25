@@ -230,6 +230,7 @@ LPARAM                   = "l"
 # PUINT64                = "u64"  # PINT64 pu64Value = NULL;
 
 [Debug.Log]
+ContentStartsPosition    = 55
 Main                     = true
 DumpDecl                 = true
 AstVisitor               = true
