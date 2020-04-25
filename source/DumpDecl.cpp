@@ -9,6 +9,8 @@ using namespace DcLib;
 
 LOG_DECISION_DEFAULT(false);
 
+// clang-format off
+
 DumpDecl::DumpDecl() {
   APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
   LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bDumpDecl);
@@ -20,79 +22,63 @@ bool DumpDecl::PrintDecl(Decl *pDecl) {
   if (!pDecl) {
     return false;
   }
-  // clang-format off
 
-    DcLib::Log::Out(INFO_ALL, "");
-    DcLib::Log::Out(INFO_ALL, "V==start line====================================================================V");
+  DcLib::Log::Out(INFO_ALL, "");
+  DcLib::Log::Out(INFO_ALL, "V==start line====================================================================V");
 
-    
-    if (isa<Decl>(pDecl))
-    {
-        _PrintDecl(dyn_cast<Decl> (pDecl));
-    }
+  if (isa<Decl>(pDecl)) {
+    _PrintDecl(dyn_cast<Decl> (pDecl));
+  }
 
-    if (isa<EnumConstantDecl>(pDecl))
-    {
-        _PrintEnumConstantDecl(dyn_cast<EnumConstantDecl> (pDecl));
-    }
+  if (isa<EnumConstantDecl>(pDecl)) {
+    _PrintEnumConstantDecl(dyn_cast<EnumConstantDecl> (pDecl));
+  }
 
-    if (isa<EnumDecl>(pDecl))
-    {
-        _PrintEnumDecl(dyn_cast<EnumDecl> (pDecl));
-    }
+  if (isa<EnumDecl>(pDecl)) {
+    _PrintEnumDecl(dyn_cast<EnumDecl> (pDecl));
+  }
 
-	if (isa<RecordDecl>(pDecl))
-	{
-		_PrintRecordDecl(dyn_cast<RecordDecl> (pDecl));
-	}
+  if (isa<RecordDecl>(pDecl)) {
+    _PrintRecordDecl(dyn_cast<RecordDecl> (pDecl));
+  }
 
-	if (isa<ValueDecl>(pDecl))
-	{
-		_PrintValueDecl(dyn_cast<ValueDecl> (pDecl));
-	}
+  if (isa<ValueDecl>(pDecl)) {
+    _PrintValueDecl(dyn_cast<ValueDecl> (pDecl));
+  }
 
-	if (isa<FieldDecl>(pDecl))
-	{
-		_PrintFieldDecl(dyn_cast<FieldDecl> (pDecl));
-	}
+  if (isa<FieldDecl>(pDecl)) {
+    _PrintFieldDecl(dyn_cast<FieldDecl> (pDecl));
+  }
 
-	if (isa<VarDecl>(pDecl))
-	{
-		_PrintVarDecl(dyn_cast<VarDecl> (pDecl));
-	}
+  if (isa<VarDecl>(pDecl)) {
+    _PrintVarDecl(dyn_cast<VarDecl> (pDecl));
+  }
 
-	if (isa<FunctionDecl>(pDecl))
-	{
-		_PrintFunctionDecl(dyn_cast<FunctionDecl> (pDecl));
-	}
+  if (isa<FunctionDecl>(pDecl)) {
+    _PrintFunctionDecl(dyn_cast<FunctionDecl> (pDecl));
+  }
 
-	if (isa<ParmVarDecl>(pDecl))
-	{
-		_PrintParmVarDecl(dyn_cast<ParmVarDecl> (pDecl));
-	}
+  if (isa<ParmVarDecl>(pDecl)) {
+    _PrintParmVarDecl(dyn_cast<ParmVarDecl> (pDecl));
+  }
 
-    if (isa<TypedefDecl>(pDecl))
-    {
-        _PrintTypedefDecl(dyn_cast<TypedefDecl> (pDecl));
-    }
+  if (isa<TypedefDecl>(pDecl)) {
+    _PrintTypedefDecl(dyn_cast<TypedefDecl> (pDecl));
+  }
 
-    DcLib::Log::Out(INFO_ALL, "----------------------------------------------------------------------------------");
-    // Keep this as the last.
-    if (isa<NamedDecl>(pDecl))
-    {
-        _PrintNamedDecl(dyn_cast<NamedDecl> (pDecl));
-    }
+  DcLib::Log::Out(INFO_ALL, "----------------------------------------------------------------------------------");
+  // Keep this as the last.
+  if (isa<NamedDecl>(pDecl)) {
+    _PrintNamedDecl(dyn_cast<NamedDecl> (pDecl));
+  }
 
-	DcLib::Log::Out(INFO_ALL, "^==end line=======================================================================^");
-  // clang-format on
-
+  DcLib::Log::Out(INFO_ALL, "^==end line=======================================================================^");
   return true;
 }
 
 void DumpDecl::_PrintNamedDecl(NamedDecl *pDecl) {
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "NamedDecl");
-  
+
   //DcLib::Log::Out(INFO_ALL, "Decl.getName()                                = %s", pDecl->getName().str().c_str());
   DcLib::Log::Out(INFO_ALL, "Decl.getNameAsString()                        = %s", pDecl->getNameAsString().c_str());
   DcLib::Log::Out(INFO_ALL, "Decl.getDeclName()                            = %s", pDecl->getDeclName().getAsString().c_str());
@@ -130,26 +116,20 @@ void DumpDecl::_PrintNamedDecl(NamedDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "Decl.isUnavailable()                          = %d", pDecl->isUnavailable());
   DcLib::Log::Out(INFO_ALL, "Decl.isUsed()                                 = %d", pDecl->isUsed());
   DcLib::Log::Out(INFO_ALL, "Decl.isWeakImported()                         = %d", pDecl->isWeakImported());
-  // clang-format on
 }
 
 void DumpDecl::_PrintValueDecl(ValueDecl *pDecl) {
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "ValueDecl");
   DcLib::Log::Out(INFO_ALL, "ValueDecl.isWeak()                            = %d", pDecl->isWeak());
-  // clang-format on
 }
 
 void DumpDecl::_PrintFieldDecl(FieldDecl *pDecl) {
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "FieldDecl");
   DcLib::Log::Out(INFO_ALL, "FieldDecl.isBitField()                        = %d", pDecl->isBitField());
   DcLib::Log::Out(INFO_ALL, "FieldDecl.isAnonymousStructOrUnion()          = %d", pDecl->isAnonymousStructOrUnion());
-  // clang-format on
 }
 
 void DumpDecl::_PrintVarDecl(VarDecl *pDecl) {
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "VarDecl");
   DcLib::Log::Out(INFO_ALL, "VarDecl.isExternC()                           = %d", pDecl->isExternC());
   DcLib::Log::Out(INFO_ALL, "VarDecl.isInExternCContext()                  = %d", pDecl->isInExternCContext());
@@ -160,11 +140,9 @@ void DumpDecl::_PrintVarDecl(VarDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "VarDecl.isStaticDataMember()                  = %d", pDecl->isStaticDataMember());
   DcLib::Log::Out(INFO_ALL, "VarDecl.isFileVarDecl()                       = %d", pDecl->isFileVarDecl());
   DcLib::Log::Out(INFO_ALL, "VarDecl.hasInit()                             = %d", pDecl->hasInit());
-  // clang-format on
 }
 
 void DumpDecl::_PrintFunctionDecl(FunctionDecl *pDecl) {
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "FunctionDecl");
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.getNameInfo()                    = %s", pDecl->getNameInfo().getAsString().c_str());
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.isDefined()                      = %d", pDecl->isDefined());
@@ -181,21 +159,17 @@ void DumpDecl::_PrintFunctionDecl(FunctionDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.isInExternCXXContext()           = %d", pDecl->isInExternCXXContext());
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.isGlobal()                       = %d", pDecl->isGlobal());
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.isInlined()                      = %d", pDecl->isInlined());
-  // clang-format on
 }
 
 void DumpDecl::_PrintParmVarDecl(ParmVarDecl *pDecl) {
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl");
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.isObjCMethodParameter()           = %d", pDecl->isObjCMethodParameter());
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasDefaultArg()                   = %d", pDecl->hasDefaultArg());
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasUnparsedDefaultArg()           = %d", pDecl->hasUnparsedDefaultArg());
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasInheritedDefaultArg()          = %d", pDecl->hasInheritedDefaultArg());
-  // clang-format on
 }
 
 void DumpDecl::_PrintRecordDecl(RecordDecl *pDecl) {
-
   char *szTagKind = NULL;
   switch (pDecl->getTagKind()) {
   case TTK_Struct:
@@ -215,7 +189,6 @@ void DumpDecl::_PrintRecordDecl(RecordDecl *pDecl) {
     break;
   }
 
-  // clang-format off
   DcLib::Log::Out(INFO_ALL, "RecordDecl");
   DcLib::Log::Out(INFO_ALL, "RecordDecl.getTagKind() [switch-case]         = %s", szTagKind);
   DcLib::Log::Out(INFO_ALL, "RecordDecl.hasFlexibleArrayMember()           = %d", pDecl->hasFlexibleArrayMember());
@@ -223,28 +196,21 @@ void DumpDecl::_PrintRecordDecl(RecordDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "RecordDecl.hasObjectMember()                  = %d", pDecl->hasObjectMember());
   DcLib::Log::Out(INFO_ALL, "RecordDecl.hasVolatileMember()                = %d", pDecl->hasVolatileMember());
   DcLib::Log::Out(INFO_ALL, "RecordDecl.isLambda()                         = %d", pDecl->isLambda());
-  // clang-format on
 }
 
 void DumpDecl::_PrintTypedefDecl(TypedefDecl *pDecl) {
-  // clang-format of
   DcLib::Log::Out(INFO_ALL, "TypedefDecl");
   // TypedefDecl
   // static bool classof(const Decl *D) { return classofKind(D->getKind()); }
   // static bool classofKind(Kind K) { return K == Typedef; }
-  // clang-format on
 }
 
 void DumpDecl::_PrintEnumConstantDecl(EnumConstantDecl *pDecl) {
-  // clang-format of
   DcLib::Log::Out(INFO_ALL, "EnumConstantDecl");
-  // clang-format on
 }
 
 void DumpDecl::_PrintEnumDecl(EnumDecl *pDecl) {
-  // clang-format of
   DcLib::Log::Out(INFO_ALL, "EnumDecl");
-  // clang-format on
 }
 
 void DumpDecl::_PrintDecl(Decl *pDecl) {
@@ -256,7 +222,6 @@ void DumpDecl::_PrintDecl(Decl *pDecl) {
   // const char *szCurr = this->m_pSm->getCharacterData(MyCurrLoc);
   // const char *szEnd = this->m_pSm->getCharacterData(MyEndLoc);
   // pDecl->
-  //// clang-format of
   // DcLib::Log::Out(INFO_ALL, "Decl.getBeginLoc().printToString              = %s",
   // pDecl->getBeginLoc().printToString(*this->m_pSm).c_str()); DcLib::Log::Out(INFO_ALL, " = %s",
   // szBegin); DcLib::Log::Out(INFO_ALL, "Decl.getLocation().printToString              = %s",
@@ -264,7 +229,6 @@ void DumpDecl::_PrintDecl(Decl *pDecl) {
   // szCurr); DcLib::Log::Out(INFO_ALL, "Decl.getEndLoc().printToString                = %s",
   // pDecl->getEndLoc().printToString(*this->m_pSm).c_str()); DcLib::Log::Out(INFO_ALL, " = %s",
   // szEnd);
-  //// clang-format on
   DcLib::Log::Out(INFO_ALL, "Decl");
 }
 
@@ -277,7 +241,6 @@ void DumpDecl::_PrintSrcLocStr(Decl *pDecl) {
   const char *szCurr  = this->m_pSm->getCharacterData(MyCurrLoc);
   const char *szEnd   = this->m_pSm->getCharacterData(MyEndLoc);
 
-  // clang-format of
   DcLib::Log::Out(INFO_ALL, "Decl.getBeginLoc().printToString              = %s",
                   pDecl->getBeginLoc().printToString(*this->m_pSm).c_str());
   DcLib::Log::Out(INFO_ALL, "Decl.getLocation().printToString              = %s",
@@ -301,5 +264,5 @@ void DumpDecl::_PrintSrcLocStr(Decl *pDecl) {
     DcLib::Log::Out(INFO_ALL, "Curr2End                                      = %s",
                     Curr2End.c_str());
   }
-  // clang-format on
 }
+// clang-format on

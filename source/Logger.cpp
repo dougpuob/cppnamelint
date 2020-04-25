@@ -90,7 +90,6 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   if (FlagInfo.bPrintLineNumber) {
     PaddingInfo.append(string("@") + std::to_string(FlagInfo.LineNumber));
   }
-  
 
   //
   // Text Message
@@ -102,7 +101,7 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
 
   int iDiff = DcLib::m_nContentStartsPos - PaddingInfo.length();
   if (iDiff > 0) {
-    PaddingInfo.append(iDiff - 2/*] */, ' ');
+    PaddingInfo.append(iDiff - 2 /*] */, ' ');
   }
 
   FileStream << PaddingInfo << "] " << Content << std::endl;
