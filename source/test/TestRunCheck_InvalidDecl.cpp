@@ -194,7 +194,7 @@ TEST(MFC, IMPLEMENT_SERIAL) {
 
   //.........................................................................vvvv <-- Test TARGET
   pAppCxt->MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = false;
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 4 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 8 == MemoBoard.Checked.nParameter);
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);

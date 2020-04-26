@@ -424,7 +424,7 @@ TEST(Enum, define_with_enum) {
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 3 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nEnum);
@@ -584,7 +584,7 @@ TEST(Struct, CONST_DEF) {
   string ErrorReason;
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   pCfgData->General.Rules.StructTagName = RULETYPE_UPPER_SNAKE;
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 2 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nStruct);
@@ -601,7 +601,7 @@ TEST(Struct, CONST_DEF) {
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
   pCfgData->General.Options.bBypassInvalidDecl = true;
   pCfgData->General.Rules.StructTagName        = RULETYPE_UPPER_SNAKE;
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 2 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 3 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 3 == MemoBoard.Checked.nStruct);

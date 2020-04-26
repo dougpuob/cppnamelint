@@ -44,7 +44,7 @@ bool MyASTVisitor::getPos(Decl *pDecl, string &FileName, size_t &nLineNumb, size
   return bStatus;
 }
 
-bool MyASTVisitor::removeKeyword(string &TyeName) {
+bool MyASTVisitor::removeKeywords(string &TyeName) {
   bool bStatus = true;
 
   String::Replace(TyeName, "extern", "");
@@ -98,7 +98,7 @@ bool MyASTVisitor::getParmsInfo(ParmVarDecl *pDecl, string &VarType, string &Var
   bIsPtr  = MyQualType->isPointerType();
 
   if (VarType.length() > 0) {
-    this->removeKeyword(VarType);
+    this->removeKeywords(VarType);
   }
 
   String::Trim(VarType);
@@ -195,7 +195,7 @@ bool MyASTVisitor::getValueInfo(ValueDecl *pDecl, string &ValueType, string &Val
   }
 
   if (MyValueType.length() > 0) {
-    this->removeKeyword(MyValueType);
+    this->removeKeywords(MyValueType);
   }
 
   QualType MyQualType = pDecl->getType();

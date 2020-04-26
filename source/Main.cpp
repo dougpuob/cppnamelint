@@ -74,26 +74,26 @@ int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
   return iRet;
 }
 
-int RunCheckFormStream(namelint::MemoBoard &Memo, const vector<string> &SourceContentList,
-                       const string &VirtFileName) {
-  int iRet = 0;
-
-  //
-  // Load source code file then create compilatation database.
-  //
-  std::string ErrorMessage;
-  FixedCompilationDatabase Compilations("./", std::vector<std::string>());
-
-  //
-  // Create clang tool then add clang tool arguments.
-  //
-  ClangTool Tool(Compilations, SourceContentList);
-  Tool.mapVirtualFile("aa.cpp", SourceContentList[0]);
-  Tool.mapVirtualFile("aa.h", SourceContentList[1]);
-
-  iRet = RunCheck(Memo, Tool);
-  return iRet;
-}
+// int RunCheckFormStream(namelint::MemoBoard &Memo, const vector<string> &SourceContentList,
+//                       const string &VirtFileName) {
+//  int iRet = 0;
+//
+//  //
+//  // Load source code file then create compilatation database.
+//  //
+//  std::string ErrorMessage;
+//  FixedCompilationDatabase Compilations("./", std::vector<std::string>());
+//
+//  //
+//  // Create clang tool then add clang tool arguments.
+//  //
+//  ClangTool Tool(Compilations, SourceContentList);
+//  Tool.mapVirtualFile("aa.cpp", SourceContentList[0]);
+//  Tool.mapVirtualFile("aa.h", SourceContentList[1]);
+//
+//  iRet = RunCheck(Memo, Tool);
+//  return iRet;
+//}
 
 int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   int iRet = 0;

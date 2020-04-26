@@ -31,7 +31,7 @@ private:
   bool isMainFile(Decl *pDecl);
   bool getPos(Decl *pDecl, string &FileName, size_t &nLineNumb, size_t &nColNumb);
 
-  bool removeKeyword(string &TyeName);
+  bool removeKeywords(string &TyeName);
 
   ErrorDetail *createErrorDetail(const string &FileName, const string &Suggestion);
 
