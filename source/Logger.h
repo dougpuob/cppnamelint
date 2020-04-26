@@ -46,6 +46,8 @@ public:
   DcLib::FlagInfo(__LoggerDecisonAnchor__, __FILE__, __func__, __LINE__, true, true, true)
 #define INFO_NOTIME                                                                                \
   DcLib::FlagInfo(__LoggerDecisonAnchor__, __FILE__, __func__, __LINE__, false, true, true)
+#define INFO_NONE                                                                                  \
+  DcLib::FlagInfo(__LoggerDecisonAnchor__, __FILE__, __func__, __LINE__, false, false, false)
 #define LOG_DECISION_DEFAULT(TO_ENABLE) static bool __LoggerDecisonAnchor__ = (bool)TO_ENABLE;
 #define LOG_DECISION_CHANGE(TO_ENABLE) __LoggerDecisonAnchor__ = (bool)TO_ENABLE;
 

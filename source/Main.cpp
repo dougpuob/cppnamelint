@@ -91,13 +91,12 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
 
   for (auto inc : Memo.Dir.Includes) {
-    llvm::SmallString<128> IncDirPath(inc);    
+    llvm::SmallString<128> IncDirPath(inc);
     llvm::sys::fs::make_absolute(IncDirPath);
 
-    vector<string> inc_dir = { string("-I"), IncDirPath.str() };
+    vector<string> inc_dir = {string("-I"), IncDirPath.str()};
     DcLib::Log::Out(INFO_ALL, "-I %s", IncDirPath.c_str());
-    Tool.appendArgumentsAdjuster(
-        getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::BEGIN));
+    Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::BEGIN));
   }
   // Tool.appendArgumentsAdjuster(
   //    getInsertArgumentAdjuster("-E",
@@ -192,7 +191,22 @@ int main(int Argc, const char **Argv) {
     int iPos = pAppCxt->MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
     DcLib::Log::Init(LogFile.c_str(), iPos);
     printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
+    printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
 
+    DcLib::Log::Out(INFO_NONE, "");
+    DcLib::Log::Out(INFO_NONE, "");
+    DcLib::Log::Out(INFO_NONE,
+                    "=============================================================================="
+                    "=========================================================================");
+    DcLib::Log::Out(INFO_NONE,
+                    "0         0         0         0         0         0         0         0       "
+                    "  0        0          1         1         1         1         1         1");
+    DcLib::Log::Out(INFO_NONE,
+                    "012345678911234567892123456789312345678941234567895123456789612345678971234567"
+                    "8981234567899123456789012345678911234567892123456789312345678941234567895");
+    DcLib::Log::Out(INFO_NONE,
+                    "=============================================================================="
+                    "=========================================================================");
     DcLib::Log::Out(INFO_ALL, "INFO : ContentStartsPosition = %d.", iPos);
     DcLib::Log::Out(INFO_ALL, "INFO : Log message will print to the file (%s).", LogFile.c_str());
   }

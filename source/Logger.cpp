@@ -81,6 +81,14 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   }
 
   //
+  // Text Message
+  //
+  va_list vl;
+  va_start(vl, szFmt);
+  std::string Content = Log::Format(szFmt, vl);
+  va_end(vl);
+
+  //
   // Function Info
   //
   PaddingInfo.append("[");
@@ -91,20 +99,17 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
     PaddingInfo.append(string("@") + std::to_string(FlagInfo.LineNumber));
   }
 
-  //
-  // Text Message
-  //
-  va_list vl;
-  va_start(vl, szFmt);
-  std::string Content = Log::Format(szFmt, vl);
-  va_end(vl);
-
   int iDiff = DcLib::m_nContentStartsPos - PaddingInfo.length();
   if (iDiff > 0) {
     PaddingInfo.append(iDiff - 2 /*] */, ' ');
   }
+  PaddingInfo.append("] ");
 
-  FileStream << PaddingInfo << "] " << Content << std::endl;
+  if (FlagInfo.bPrintDateTime == FlagInfo.bPrintFileName == FlagInfo.bPrintLineNumber == false) {
+    FileStream << Content << std::endl;
+  } else {
+    FileStream << PaddingInfo << Content << std::endl;
+  }
 
   return 0;
 }
