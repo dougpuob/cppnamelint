@@ -15,6 +15,9 @@ class TestCppNameLint_Sample(unittest.TestCase):
     def setUp(self) -> None:
         file_obj = File()
         exe_name = file_obj.find_newest_exe(cppnamelint.define_exec_name, os.path.abspath('.'))
+        if 0 == len(exe_name):
+            exe_name = file_obj.find_newest_exe(cppnamelint.define_exec_name, os.path.abspath('..'))
+
         self.cppnamelint_exe_path = exe_name
         self.assertEqual(True, os.path.exists(self.cppnamelint_exe_path))
 

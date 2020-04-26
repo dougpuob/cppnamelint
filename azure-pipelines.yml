@@ -79,7 +79,7 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          filePath: 'script/build-test-win32.ps1'
+          filePath: 'script/run-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
           
@@ -167,8 +167,8 @@ jobs:
           changeLogType: 'issueBased'
 
 
-      - script: "./build-test-linux.sh"
-        displayName: "build-test-linux.sh"
+      - script: "./run-test-linux.sh"
+        displayName: "run-test-linux.sh"
         workingDirectory: "script/release/linux"
 
 
@@ -233,8 +233,8 @@ jobs:
           replaceExistingArchive: true
           verbose: true
           
-      - script: "./build-test-linux.sh"
-        displayName: "build-test-linux.sh"
+      - script: "./run-test-linux.sh"
+        displayName: "run-test-linux.sh"
         workingDirectory: "script/release/macos"
 
       - task: GitHubRelease@1

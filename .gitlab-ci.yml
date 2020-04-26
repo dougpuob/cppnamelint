@@ -112,7 +112,7 @@ UnitTest_Linux:
     - ls -la
     - chmod +x ./cppnamelint
     - ls -la
-    - ./build-test-linux.sh
+    - ./run-test-linux.sh
     - popd
 
 #==--------------------------------------------------------------------------==
@@ -169,5 +169,5 @@ UnitTest_MacOs:
     - ls -la
     - chmod +x ./cppnamelint
     - ls -la
-    - ./build-test-linux.sh
+    - ./run-test-linux.sh
     - popd
