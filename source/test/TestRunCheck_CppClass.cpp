@@ -162,7 +162,7 @@ TEST(ooo, 1) {
   string ErrorReason;
   pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+  EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
   // EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
   // EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
   // EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
