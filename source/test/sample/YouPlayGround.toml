@@ -1,7 +1,7 @@
 [General.Options]
 Version                 = 0.3
 FileExtNameList         = ["*.c","*.h","*.cpp"]
-CheckFileName           = false
+CheckFileName           = true
 CheckVariableName       = true
 CheckFunctionName       = true
 CheckEnum               = true

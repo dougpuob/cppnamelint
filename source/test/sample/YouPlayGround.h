@@ -1,22 +1,10 @@
-PlayGround::PlayGround() {
-  // You can write your test code here.
-}
+class PlayGround {
+public:
+  PlayGround();
+  ~PlayGround();
+  bool IsVal1(int);
+  bool IsVal2(int InputC);
 
-PlayGround::~PlayGround() {
-  // You can write your test code here.
-}
-
-bool PlayGround::IsVal1(int) {
-  // You can write your test code here.
-  return true;
-}
-
-bool PlayGround::IsVal2(int InputC) {
-  // You can write your test code here.
-  return true;
-}
-
-bool PlayGround::IsVal3(int) {
-  // You can write your test code here.
-  return true;
-}
+private:
+  bool IsVal3(int);
+};

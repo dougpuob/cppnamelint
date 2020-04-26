@@ -364,6 +364,7 @@ def run_pack(file_name:str, root_dir:str, build_dir:str, output_dir: str) -> int
         {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-exec.py'  , 'dest': output_dir+'/.'},
         {'platform': 'Shared',  'dir': False,  'src': 'script/testcppnamelintlib-cmake.py' , 'dest': output_dir+'/.'},
         {'platform': 'Windows', 'dir': False , 'src': 'script/build-test-win32.ps1'        , 'dest': output_dir+'/.'},
+        {'platform': 'Windows', 'dir': False , 'src': 'script/run-playground.ps1'          , 'dest': output_dir+'/.'},
         {'platform': 'Linux',   'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': output_dir+'/.'},
         {'platform': 'Darwin',  'dir': False , 'src': 'script/build-test-linux.sh'         , 'dest': output_dir+'/.'},
     ]

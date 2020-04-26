@@ -195,11 +195,45 @@ int main(int Argc, const char **Argv) {
   }
   LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bMain);
 
-  DcLib::Log::Out(INFO_ALL, "CheckSubcommand = %d", (bool)CheckSubcommand);
-  DcLib::Log::Out(INFO_ALL, "TestSubcommand  = %d", (bool)TestSubcommand);
+  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+
+  DcLib::Log::Out(INFO_ALL, "CheckSubcommand     = %d", (bool)CheckSubcommand);
+  DcLib::Log::Out(INFO_ALL, "TestSubcommand      = %d", (bool)TestSubcommand);
 
   if (CheckSubcommand) {
+
+    DcLib::Log::Out(INFO_ALL, "bCheckFileName      = %d", pCfgData->General.Options.bCheckFileName);
+    DcLib::Log::Out(INFO_ALL, "bCheckFunctionName  = %d",
+                    pCfgData->General.Options.bCheckFunctionName);
+    DcLib::Log::Out(INFO_ALL, "bCheckEnum          = %d", pCfgData->General.Options.bCheckEnum);
+    DcLib::Log::Out(INFO_ALL, "bCheckStruct        = %d", pCfgData->General.Options.bCheckStruct);
+    DcLib::Log::Out(INFO_ALL, "bCheckVariableName  = %d",
+                    pCfgData->General.Options.bCheckVariableName);
+
     iRet = RunCheckFormFile(pAppCxt->MemoBoard);
+
+    DcLib::Log::Out(INFO_ALL, "Assert.nErrorOccurred = %d",
+                    pAppCxt->MemoBoard.Assert.nErrorOccurred);
+    DcLib::Log::Out(INFO_ALL, "Assert.nInvalidDecl   = %d", pAppCxt->MemoBoard.Assert.nInvalidDecl);
+    DcLib::Log::Out(INFO_ALL, "Assert.nNumWarnings   = %d", pAppCxt->MemoBoard.Assert.nNumWarnings);
+
+    DcLib::Log::Out(INFO_ALL, "Checked.nClass        = %d", pAppCxt->MemoBoard.Checked.nClass);
+    DcLib::Log::Out(INFO_ALL, "Checked.nEnum         = %d", pAppCxt->MemoBoard.Checked.nEnum);
+    DcLib::Log::Out(INFO_ALL, "Checked.nFile         = %d", pAppCxt->MemoBoard.Checked.nFile);
+    DcLib::Log::Out(INFO_ALL, "Checked.nFunction     = %d", pAppCxt->MemoBoard.Checked.nFunction);
+    DcLib::Log::Out(INFO_ALL, "Checked.nParameter    = %d", pAppCxt->MemoBoard.Checked.nParameter);
+    DcLib::Log::Out(INFO_ALL, "Checked.nStruct       = %d", pAppCxt->MemoBoard.Checked.nStruct);
+    DcLib::Log::Out(INFO_ALL, "Checked.nUnion        = %d", pAppCxt->MemoBoard.Checked.nUnion);
+    DcLib::Log::Out(INFO_ALL, "Checked.nVariable     = %d", pAppCxt->MemoBoard.Checked.nVariable);
+
+    DcLib::Log::Out(INFO_ALL, "Error.nClass          = %d", pAppCxt->MemoBoard.Error.nClass);
+    DcLib::Log::Out(INFO_ALL, "Error.nEnum           = %d", pAppCxt->MemoBoard.Error.nEnum);
+    DcLib::Log::Out(INFO_ALL, "Error.nFile           = %d", pAppCxt->MemoBoard.Error.nFile);
+    DcLib::Log::Out(INFO_ALL, "Error.nFunction       = %d", pAppCxt->MemoBoard.Error.nFunction);
+    DcLib::Log::Out(INFO_ALL, "Error.nParameter      = %d", pAppCxt->MemoBoard.Error.nParameter);
+    DcLib::Log::Out(INFO_ALL, "Error.nStruct         = %d", pAppCxt->MemoBoard.Error.nStruct);
+    DcLib::Log::Out(INFO_ALL, "Error.nUnion          = %d", pAppCxt->MemoBoard.Error.nUnion);
+    DcLib::Log::Out(INFO_ALL, "Error.nVariable       = %d", pAppCxt->MemoBoard.Error.nVariable);
   } else if (TestSubcommand) {
     testing::InitGoogleTest(&Argc, (char **)Argv);
     iRet = RUN_ALL_TESTS();
