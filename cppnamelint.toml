@@ -5,9 +5,10 @@ CheckFileName           = false
 CheckVariableName       = true
 CheckFunctionName       = true
 CheckEnum               = true
-CheckStruct             = true
-
-
+CheckStruct             = true    # TODO
+CheckClass              = true    # TODO
+CheckParameter          = true    # TODO
+CheckUnion              = true    # TODO
 AllowedWriteJsonResult  = true
 AllowedArrayAffected    = false
 

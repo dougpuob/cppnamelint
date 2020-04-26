@@ -4,10 +4,10 @@
 #include <iostream>
 #include <vector>
 
+#include "AstConsumer.h"
 #include "Config.h"
 #include "Detection.h"
 #include "DumpDecl.h"
-#include "MyAstConsumer.h"
 #include "TraceMemo.h"
 
 using namespace std;
@@ -28,35 +28,33 @@ private:
   Detection m_Detect;
   shared_ptr<ConfigData> m_pConfig;
 
-  bool _IsMainFile(Decl *pDecl);
-  bool _PrintPosition(Decl *pDecl);
-  void _KeepFileName(string &Path);
-  bool _GetPosition(Decl *pDecl, string &FileName, size_t &nLineNumb, size_t &nColNumb);
+  bool isMainFile(Decl *pDecl);
+  bool getPos(Decl *pDecl, string &FileName, size_t &nLineNumb, size_t &nColNumb);
 
-  bool _ClassifyTypeName(string &TyeName);
+  bool removeKeyword(string &TyeName);
 
-  ErrorDetail *_CreateErrorDetail(const string &FileName, const string &Suggestion);
+  ErrorDetail *createErrorDetail(const string &FileName, const string &Suggestion);
 
-  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
-                                  const bool &bIsArray, const string &TargetName,
-                                  const string &Expected);
+  ErrorDetail *createErrorDetail(Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
+                                 const bool &bIsArray, const string &TargetName,
+                                 const string &Expected);
 
-  ErrorDetail *_CreateErrorDetail(Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
-                                  const bool &bIsArray, const string &TypeName,
-                                  const string &TargetName, const string &Suggestion);
+  ErrorDetail *createErrorDetail(Decl *pDecl, const CheckType &CheckType, const bool &bIsPtr,
+                                 const bool &bIsArray, const string &TypeName,
+                                 const string &TargetName, const string &Suggestion);
 
-  bool _GetFunctionInfo(FunctionDecl *pDecl, string &FuncName);
+  bool getFunctionInfo(FunctionDecl *pDecl, string &FuncName);
 
-  bool _GetParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr,
-                     bool &bAnonymous);
-  bool _GetStructVarInfo(ValueDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr);
-  bool _GetValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName, bool &bIsPtr,
-                     bool &bIsArray, bool &bIsBuiltinType);
+  bool getParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr,
+                    bool &bAnonymous);
+  bool getStructVarInfo(ValueDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr);
+  bool getValueInfo(ValueDecl *pDecl, string &ValueType, string &ValueName, bool &bIsPtr,
+                    bool &bIsArray, bool &bIsBuiltinType);
 
-  bool _CheckRuleForVariable(ValueDecl *pDecl);
-  bool _CheckRuleForUnionValue(ValueDecl *pDecl);
-  bool _CheckRuleForStructValue(ValueDecl *pDecl);
-  bool _CheckRuleForEnumValue(EnumConstantDecl *pDecl);
+  bool checkRuleForVariable(ValueDecl *pDecl);
+  bool checkRuleForUnionValue(ValueDecl *pDecl);
+  bool checkRuleForStructValue(ValueDecl *pDecl);
+  bool checkRuleForEnumValue(EnumConstantDecl *pDecl);
 
 public:
   MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt, const Config *pConfig);

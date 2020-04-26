@@ -10,7 +10,8 @@ using namespace namelint;
 bool PrintTraceMemo(const MemoBoard &MemoBoard);
 int RunCheckFormStream(MemoBoard &Memo, const string &SourceContent,
                        const string &VirtFileName = "a.cc");
-
+int RunCheckFormStream(MemoBoard &Memo, const vector<string> &SourceContentList,
+                       const string &VirtFileName = "a.cc");
 static const bool PREFER_UC = true; // Prefer Upper Camel
 static const bool IS_PTR    = true;
 static const bool IS_ARRAY  = true;

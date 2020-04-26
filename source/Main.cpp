@@ -8,13 +8,13 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
+#include "AstConsumer.h"
+#include "AstVisitor.h"
 #include "CommandLine.h"
 #include "Common.h"
 #include "Config.h"
 #include "Detection.h"
-#include "MyAstConsumer.h"
-#include "MyAstVisitor.h"
-#include "MyFactory.h"
+#include "Factory.h"
 
 #include "clang/Tooling/CompilationDatabase.h"
 
@@ -70,7 +70,28 @@ int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
   ClangTool Tool(Compilations, std::vector<std::string>(1, VirtFileName));
   Tool.mapVirtualFile(VirtFileName, SourceContent);
 
-  RunCheck(Memo, Tool);
+  iRet = RunCheck(Memo, Tool);
+  return iRet;
+}
+
+int RunCheckFormStream(namelint::MemoBoard &Memo, const vector<string> &SourceContentList,
+                       const string &VirtFileName) {
+  int iRet = 0;
+
+  //
+  // Load source code file then create compilatation database.
+  //
+  std::string ErrorMessage;
+  FixedCompilationDatabase Compilations("./", std::vector<std::string>());
+
+  //
+  // Create clang tool then add clang tool arguments.
+  //
+  ClangTool Tool(Compilations, SourceContentList);
+  Tool.mapVirtualFile("aa.cpp", SourceContentList[0]);
+  Tool.mapVirtualFile("aa.h", SourceContentList[1]);
+
+  iRet = RunCheck(Memo, Tool);
   return iRet;
 }
 

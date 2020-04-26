@@ -140,12 +140,13 @@ add_executable(
     source/Logger.cpp
     source/DumpDecl.h
     source/DumpDecl.cpp
-    source/MyFactory.h
-    source/MyFactory.cpp
-    source/MyAstVisitor.h
-    source/MyAstVisitor.cpp
-    source/MyAstConsumer.h
-    source/MyAstConsumer.cpp
+    source/Factory.h
+    source/Factory.cpp
+    source/AstVisitor.h
+    source/AstVisitor.cpp
+    source/AstVisitorPriv.cpp
+    source/AstConsumer.h
+    source/AstConsumer.cpp
     source/test/TestConfig.cpp
     source/test/TestDetection.cpp
     source/test/TestRunCheck.cpp
@@ -156,6 +157,9 @@ add_executable(
     source/test/TestRunCheck_Hungarian.cpp
     source/test/TestRunCheck_InvalidDecl.cpp
     source/test/TestRunCheck_Macro.cpp
+    source/test/TestRunCheck_CppClass.cpp
+    source/test/TestRunCheck_CppEnum.cpp
+    source/test/TestRunCheck_CppStruct.cpp
 )
 
 

@@ -2,7 +2,7 @@
 
 #include "clang/AST/ASTConsumer.h"
 
-#include "MyFactory.h"
+#include "Factory.h"
 
 using namespace std;
 

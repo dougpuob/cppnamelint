@@ -1,7 +1,7 @@
 #ifndef __NAMELINT_MY_FACTORY__H__
 #define __NAMELINT_MY_FACTORY__H__
 
-#include "MyAstConsumer.h"
+#include "AstConsumer.h"
 #include <memory>
 
 class MyFactory {
