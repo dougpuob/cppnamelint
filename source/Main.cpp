@@ -91,10 +91,13 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
 
   for (auto inc : Memo.Dir.Includes) {
-    auto arg = "--I" + inc;
-    DcLib::Log::Out(INFO_ALL, "--I=%s", inc.c_str());
+    llvm::SmallString<128> IncDirPath(inc);    
+    llvm::sys::fs::make_absolute(IncDirPath);
+
+    vector<string> inc_dir = { string("-I"), IncDirPath.str() };
+    DcLib::Log::Out(INFO_ALL, "-I %s", IncDirPath.c_str());
     Tool.appendArgumentsAdjuster(
-        getInsertArgumentAdjuster(arg.c_str(), ArgumentInsertPosition::BEGIN));
+        getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::BEGIN));
   }
   // Tool.appendArgumentsAdjuster(
   //    getInsertArgumentAdjuster("-E",
