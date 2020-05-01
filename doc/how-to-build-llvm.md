@@ -39,20 +39,26 @@ $ cd build/debug
 ################################################################################
 # Release                                                                      #
 ################################################################################
-# 32-bit
+# 32-bit (VS2017)
 $ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 15 2017" -Thost=x64 ..\llvm
 
-# 64-bit
+# 64-bit (VS2017)
 $ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 15 2017" -A x64 -Thost=x64 ..\llvm
+
+# 64-bit (VS2019)
+$ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A x64 -Thost=x64 ..\llvm
 
 ################################################################################
 # Debug                                                                        #
 ################################################################################
-# 32-bit
+# 32-bit (VS2017)
 $ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017" -Thost=x64 ..\llvm
 
-# 64-bit
+# 64-bit (VS2017)
 $ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017" -A x64 -Thost=x64 ..\llvm
+
+# 64-bit (VS2019)
+$ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 16 2019" -A x64 -Thost=x64 ..\llvm
 ```
 
 ### 3. Build for Linux
