@@ -159,9 +159,8 @@ def make_cmd_table():
 
     cmd_test = subparsers.add_parser(define_cmd_test, help="test cmd")
     cmdtest_grp = cmd_test.add_mutually_exclusive_group(required=False)
-    cmdtest_grp.add_argument('-all' , action="store_true"   , help="run all tests")
-    cmdtest_grp.add_argument('-ut'  , action="store_true"   , help="run unit test only")
-
+    cmdtest_grp.add_argument('-testlog' , action="store_true"   , help="Write unit test result to a file")
+    cmdtest_grp.add_argument('-filter'  , action="store_true"   , help="Run the specific test cases")
     chk_env = subparsers.add_parser(define_cmd_chkenv, help="chkenv cmd for checking build environment")
 
     bldgtest = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest cmd for building this project")
@@ -221,11 +220,11 @@ def convert_py_args_to_exe_args(py_args) -> str:
     # cppnamelint test
     elif py_args.input_cmd == define_cmd_test:
 
-        if py_args.all:
-            specific_cmd_args = specific_cmd_args + ' -all'
+        if py_args.testlog:
+            specific_cmd_args = specific_cmd_args + ' -testlog'
 
-        if py_args.ut:
-            specific_cmd_args = specific_cmd_args + ' -ut'
+        if py_args.filter:
+            specific_cmd_args = specific_cmd_args + ' -filter=' + py_args.filter
 
         final_cmd_str = define_cmd_test + specific_cmd_args + common_args
 

@@ -43,7 +43,7 @@ if (Test-Path("cppnamelint.exe")) {
     if ($pushed) {
         Pop-Location
     }
-    $proc3 = Start-Process -Wait -PassThru -NoNewWindow ./cppnamelint.exe -ArgumentList test , -all
+    $proc3 = Start-Process -Wait -PassThru -NoNewWindow ./cppnamelint.exe -ArgumentList test , --testlog=testlog.log
 
     if (($proc1.ExitCode + $proc2.ExitCode + $proc3.ExitCode) -gt 0) {
         Write-Output ('       $proc1.ExitCode = '+$proc1.ExitCode.ToString())

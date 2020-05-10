@@ -8,5 +8,5 @@ python3 testcppnamelintlib-file.py   -v
 if [ -f ./cppnamelint ]; then
     python3 testcppnamelint-main.py  -v
     python3 cppnamelint.py bldgtest
-    cppnamelint test -all
+    cppnamelint test -testlog=testlog.log
 fi

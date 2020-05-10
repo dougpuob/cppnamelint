@@ -42,12 +42,13 @@ static cl::list<string> CheckIncludes("include", cl::desc("Specific header foler
 //==-----------------------------------------------------------------------
 static cl::SubCommand TestSubcommand("test", "Run tests.");
 
-static cl::opt<bool> AllTest("all", cl::desc("Run all tests."), cl::cat(CppNameLintCategory),
-                             cl::sub(TestSubcommand));
+static cl::opt<string> TestOutputJson("testlog", cl::desc("Save JSON test result to a file."),
+                                      cl::value_desc("File"), cl::cat(CppNameLintCategory),
+                                      cl::sub(TestSubcommand));
 
-static cl::opt<string> UnitTest("ut", cl::desc("Run unit tests or a specifc case."),
-                                cl::value_desc("unit test case name"), cl::cat(CppNameLintCategory),
-                                cl::sub(TestSubcommand));
+static cl::opt<string> TestNameFilter("filter", cl::desc("Specific test case name."),
+                                      cl::value_desc("Name"), cl::cat(CppNameLintCategory),
+                                      cl::sub(TestSubcommand));
 
 //==-----------------------------------------------------------------------
 // SubCommand: DumpCfg

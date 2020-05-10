@@ -167,8 +167,28 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   return iRet;
 }
 
-int RunTest() {
-  int iRet = 0;
+int RunTest(const string &LogFileName = "", const string &FilterStr = "") {
+
+  vector<string> Args;
+  Args.push_back("This");
+
+  if (LogFileName.length() > 0) {
+    Args.push_back("--gtest_output=json:" + LogFileName);
+  }
+
+  if (FilterStr.length() > 0) {
+    Args.push_back("--gtest_filter=" + FilterStr);
+  }
+
+  vector<char *> CharArgs;
+  for (size_t nIdx = 0; nIdx < Args.size(); nIdx++) {
+    CharArgs.push_back(Args[nIdx].data());
+  }
+
+  int iArgc  = Args.size();
+  char **psz = CharArgs.data();
+  testing::InitGoogleTest(&iArgc, (char **)psz);
+  int iRet = RUN_ALL_TESTS();
   return iRet;
 }
 
@@ -289,8 +309,7 @@ int main(int Argc, const char **Argv) {
     LogCheckResult();
 
   } else if (TestSubcommand) {
-    testing::InitGoogleTest(&Argc, (char **)Argv);
-    iRet = RUN_ALL_TESTS();
+    iRet = RunTest(TestOutputJson, TestNameFilter);
   } else {
     iRet = -1; /* Error (Command miss matched.) */
     cl::PrintHelpMessage();
