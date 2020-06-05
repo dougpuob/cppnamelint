@@ -31,10 +31,9 @@ int RunCheckFormFile(namelint::MemoBoard &Memo);
 LOG_DECISION_DEFAULT(false);
 
 int RunCheckFormFile(namelint::MemoBoard &Memo) {
-  int iRet = 0;
 
   if (!llvm::sys::fs::exists(Memo.File.Source)) {
-    cout << "ERROR: Failed to find input source file." << endl;
+    cout << "Error: Failed to find input source file." << endl;
     return 1;
   }
 
@@ -43,6 +42,11 @@ int RunCheckFormFile(namelint::MemoBoard &Memo) {
   //
   std::string ErrorMessage;
   auto Compilations = FixedCompilationDatabase::loadFromFile(Memo.File.Source, ErrorMessage);
+  if (nullptr == Compilations) {
+    printf("Error: Failed to load and convert to compliation database.\n");
+    printf("       (%s) \n", ErrorMessage.c_str());
+    return 2;
+  }
 
   //
   // Create clang tool then add clang tool arguments.
@@ -50,14 +54,16 @@ int RunCheckFormFile(namelint::MemoBoard &Memo) {
   vector<string> SingleFileInList = {Memo.File.Source};
   ClangTool Tool(*Compilations, SingleFileInList);
 
-  RunCheck(Memo, Tool);
+  //
+  // Execute `check` command.
+  //
+  int iRet = RunCheck(Memo, Tool);
+
   return iRet;
 }
 
 int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
                        const string &VirtFileName) {
-  int iRet = 0;
-
   //
   // Load source code file then create compilatation database.
   //
@@ -70,30 +76,12 @@ int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
   ClangTool Tool(Compilations, std::vector<std::string>(1, VirtFileName));
   Tool.mapVirtualFile(VirtFileName, SourceContent);
 
-  iRet = RunCheck(Memo, Tool);
+  //
+  // Execute `check` command.
+  int iRet = RunCheck(Memo, Tool);
+
   return iRet;
 }
-
-// int RunCheckFormStream(namelint::MemoBoard &Memo, const vector<string> &SourceContentList,
-//                       const string &VirtFileName) {
-//  int iRet = 0;
-//
-//  //
-//  // Load source code file then create compilatation database.
-//  //
-//  std::string ErrorMessage;
-//  FixedCompilationDatabase Compilations("./", std::vector<std::string>());
-//
-//  //
-//  // Create clang tool then add clang tool arguments.
-//  //
-//  ClangTool Tool(Compilations, SourceContentList);
-//  Tool.mapVirtualFile("aa.cpp", SourceContentList[0]);
-//  Tool.mapVirtualFile("aa.h", SourceContentList[1]);
-//
-//  iRet = RunCheck(Memo, Tool);
-//  return iRet;
-//}
 
 int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   int iRet = 0;
@@ -111,6 +99,9 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
   DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
 
+  //
+  // Feed header directories from input commands to ClangTools'.
+  //
   for (auto inc : Memo.Dir.Includes) {
     llvm::SmallString<128> IncDirPath(inc);
     llvm::sys::fs::make_absolute(IncDirPath);
@@ -119,20 +110,34 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     DcLib::Log::Out(INFO_ALL, "-I %s", IncDirPath.c_str());
     Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::BEGIN));
   }
-  // Tool.appendArgumentsAdjuster(
-  //    getInsertArgumentAdjuster("-E",
-  //        ArgumentInsertPosition::BEGIN));
 
-  // Tool.appendArgumentsAdjuster(
-  //    getInsertArgumentAdjuster("-v", ArgumentInsertPosition::BEGIN));
-  Tool.appendArgumentsAdjuster(
-      getInsertArgumentAdjuster("--language=c++",
-                                ArgumentInsertPosition::BEGIN)); // Make it parses header file.
+  //
+  // Add `-E` option (Only run the preprocessor) to ClantTool.
+  //
+  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-E", // Run the preprocessor
+                                                         ArgumentInsertPosition::BEGIN));
+
+  //
+  // Add `verbose` option to ClantTool.
+  //
+  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-v", // Verbose
+                                                         ArgumentInsertPosition::BEGIN));
+
+  //
+  // Make it parses header file.
+  //
+  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--language=c++", // C++
+                                                         ArgumentInsertPosition::BEGIN));
   DcLib::Log::Out(INFO_ALL, "--language=c++");
 
+  //
+  // Bypass DiagnosticConsumer to disable diagnostic feature.
+  //
   Tool.setDiagnosticConsumer(new IgnoringDiagConsumer());
 
-  Detection Detect;
+  //
+  // Check file name if config option is ENABLED.
+  //
   shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
   GeneralOptions *pOptions       = &pConfig->General.Options;
   if (!pOptions->bCheckFileName) {
@@ -140,7 +145,9 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   } else {
     Memo.Checked.nFile++;
 
-    string FileBaseName  = Path::FindFileName(Memo.File.Source);
+    string FileBaseName = Path::FindFileName(Memo.File.Source);
+
+    Detection Detect;
     GeneralRules *pRules = &pConfig->General.Rules;
     if (!Detect.CheckFile(pRules->FileName, FileBaseName)) {
       Memo.Error.nFile++;
@@ -148,10 +155,13 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     }
   }
 
+  //
+  // Check input source file except file name which are possiblely did above.
+  //
   MyFactory MyFactory;
   std::unique_ptr<FrontendActionFactory> Factory = newFrontendActionFactory(&MyFactory);
 
-  // Go
+  // Go with ClangTool
   if (0 == Tool.run(Factory.get())) {
     iRet = GetTotalError(Memo);
     if (Memo.Config.GetData()->General.Options.bAllowedPrintResult) {
@@ -279,12 +289,12 @@ int main(int Argc, const char **Argv) {
 
   if (!CheckInputConfig.empty()) {
     if (!llvm::sys::fs::exists(CheckInputConfig)) {
-      cout << "ERROR: Failed to find config file." << endl;
+      cout << "Error: Failed to find config file." << endl;
       return 2;
     }
     string ErrorReason;
     if (!pAppCxt->MemoBoard.Config.LoadFile(CheckInputConfig, ErrorReason)) {
-      cout << "ERROR: Failed to load config file (format wrong)." << endl;
+      cout << "Error: Failed to load config file (format wrong)." << endl;
       cout << ErrorReason << endl;
       return 3;
     }
@@ -310,6 +320,7 @@ int main(int Argc, const char **Argv) {
 
   } else if (TestSubcommand) {
     iRet = RunTest(TestOutputJson, TestNameFilter);
+
   } else {
     iRet = -1; /* Error (Command miss matched.) */
     cl::PrintHelpMessage();
