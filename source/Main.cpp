@@ -86,18 +86,12 @@ int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
 int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   int iRet = 0;
 
-  string OutputJson = CheckOutputJson;
-
-  if (OutputJson.length() == 0) {
-    OutputJson = "cppnamelint.json";
-  }
-
   //
   // Check input parameters.
   //
   DcLib::Log::Out(INFO_ALL, "Source File = %s", Memo.File.Source.c_str());
   DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
-  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", OutputJson.c_str());
+  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", CheckOutputJson.c_str());
 
   //
   // Feed header directories from input commands to ClangTools'.
@@ -114,14 +108,16 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   // Add `-E` option (Only run the preprocessor) to ClantTool.
   //
-  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-E", // Run the preprocessor
-                                                         ArgumentInsertPosition::BEGIN));
+  // Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-E", // Run the preprocessor
+  //                                                       ArgumentInsertPosition::BEGIN));
 
   //
   // Add `verbose` option to ClantTool.
   //
-  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-v", // Verbose
-                                                         ArgumentInsertPosition::BEGIN));
+  if (VerboseMode) {
+    Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-v", // Verbose
+                                                           ArgumentInsertPosition::BEGIN));
+  }
 
   //
   // Make it parses header file.
@@ -167,7 +163,12 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     if (Memo.Config.GetData()->General.Options.bAllowedPrintResult) {
       PrintTraceMemo(Memo);
     }
-    if (Memo.Config.GetData()->General.Options.bAllowedWriteJsonResult) {
+    if ((CheckOutputJson.length() > 0) ||
+        Memo.Config.GetData()->General.Options.bAllowedWriteJsonResult) {
+      string OutputJson = CheckOutputJson;
+      if (OutputJson.length() == 0) {
+        OutputJson = "cppnamelint.json";
+      }
       WriteJsonResult(Memo, OutputJson);
     }
   } else {
@@ -199,11 +200,6 @@ int RunTest(const string &LogFileName = "", const string &FilterStr = "") {
   char **psz = CharArgs.data();
   testing::InitGoogleTest(&iArgc, (char **)psz);
   int iRet = RUN_ALL_TESTS();
-  return iRet;
-}
-
-int RunDump() {
-  int iRet = 0;
   return iRet;
 }
 
@@ -274,17 +270,24 @@ void LogCheckResult() {
 int main(int Argc, const char **Argv) {
 
   cout << endl;
-  cout << "cppnamelint utility v0.3.0" << endl;
+  cout << "cppnamelint utility v0.3.1" << endl;
   cout << "---------------------------------------------------" << endl;
 
+  //
+  // Initialize LLVM's CommandLine library.
+  //
   cl::HideUnrelatedOptions(CppNameLintCategory);
   cl::ParseCommandLineOptions(Argc, Argv);
 
-  int iRet             = 0;
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+  //
+  // Assign input arguments to variables of AppCxt.
+  //
+  APP_CONTEXT *pAppCxt        = (APP_CONTEXT *)GetAppCxt();
+  SmallString<512> AbsSrcPath = CheckInputSrc;
+  llvm::sys::fs::make_absolute(AbsSrcPath);
 
   pAppCxt->MemoBoard.File.Config  = CheckInputConfig;
-  pAppCxt->MemoBoard.File.Source  = CheckInputSrc;
+  pAppCxt->MemoBoard.File.Source  = AbsSrcPath.str();
   pAppCxt->MemoBoard.Dir.Includes = CheckIncludes;
 
   if (!CheckInputConfig.empty()) {
@@ -313,6 +316,7 @@ int main(int Argc, const char **Argv) {
 
   LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bMain);
 
+  int iRet = 0;
   if (CheckSubcommand) {
     LogConfig();
     iRet = RunCheckFormFile(pAppCxt->MemoBoard);

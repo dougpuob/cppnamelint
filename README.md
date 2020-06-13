@@ -1,178 +1,154 @@
 # **CppNameLint**
-
-![](https://img.shields.io/azure-devops/build/CPPNAMELINT/78202891-aba0-41ab-952b-2152c4a57470/3?style=plastic)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/43b938056017438d886670b354e52485)](https://app.codacy.com/manual/dougpuob/cpp-namelint?utm_source=github.com&utm_medium=referral&utm_content=dougpuob/cpp-namelint&utm_campaign=Badge_Grade_Dashboard)
+![My name is "Upper camel"](https://i.imgur.com/39uvmxf.png) My name is **Upper Camel**. (My partner drew this mascot for the project)
 
 | Windows | Linux | macOS |
 |---------|-------|-------|
 |![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=BuildOnWindows) |![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=BuildOnLinux)   | ![](https://dev.azure.com/CppNameLint/cpp-namelint/_apis/build/status/cpp-namelint?branchName=master&jobName=BuildOnMacOS)
 
 
-The `cppnamelint` C/C++ naming convention checking tool which can run on Windows/Linux/MacOS for name of files, functions, variable, and parameters. This project is based on LLVM's LibTooling as a compiler frontend to retrieve AST from C/C++ source files, then check your naming rules like UpperCamel, LowerCamel, SnakeCase, and Hungarain.
+The project is a naming convention checking tool executing on Windows/Linux/MacOS. It is based on LLVM's LibTooling as a compiler frontend to retrieve AST of C/C++ source files, then check your naming convention.
 
-1. File target for C/C++ source code.
-1. Cross platform on Windows/Linux/macOS.
-1. String target for files, functions, variables, and parameters.
-1. Config file format with TOML.
-1. Naming rule with UpperCamel, LowerCamel, SnakeCase, and Hungarain.
+1. Check for C and C++ programming languages.
+1. Check naming of file, functions, variables, and parameters.
+1. Execute on Windows/Linux/macOS.
+1. Load config file format with TOML.
+1. Output results to console or save an a JSON file.
+1. Support rules with UpperCamelCase, lowerCamelCase, UPPER_SNAKE_CASE, lower_snake_case, and szHungarainNotion..
+
+⭐ If you like this project or this project gives you some help, please also give me a **STAR** on GitHub, let me know I am not alone.
 
 
-`#LLVM` `#Clang` `#LibTooling` `#Compiler` `#Naming` `#NamingConvention` `#Toml` `#CppNameLint`
+————————————————————————————————————————————
 
-----------
+## **🔳 Quick Start**
+1. **As an user:** 
+   - Use it, please goto the `release` page to download the artifacts files by Azure DevOps.
+       https://github.com/dougpuob/cpp-namelint/releases
+   - Know more, please start from **Usage**.
 
-## **Usage**
+1. **As a developer** 
+   - Build this project, https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-cppnamelint.md
+   - Build LLVM,  https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-llvm.md
+   - example-llvm-clangtool, https://github.com/dougpuob/example-llvm-clangtool
+
+————————————————————————————————————————————
+
+## **🔳 Usage**
 
 ### Commands
 1. **Run Check command**  
-   - `cppnamelint check UpperCamel.c -config=cppnamelint.toml`
-   - `cppnamelint check UpperCamel.c -config=cppnamelint.toml -logfile logfile.log`
+   - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`
+   - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`
+   - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`
+   
+   ![](https://i.imgur.com/2i1HpWZ.png)
    
 1. **Run Test command**  
-   `cppnamelint test -all`
+   - `cppnamelint test`
 
-1. **Run Dump command**  
-   TODO.
 
 ### Helps
-```
-$ cppnamelint -help
 
-cppnamelint utility v0.3.0
----------------------------------------------------
-USAGE: cppnamelint.exe [subcommand] [options]
+- `cppnamelint -help`
+  ![](https://i.imgur.com/X6bE6L8.png)
+   
+- `cppnamelint check -help`
+  ![](https://i.imgur.com/xtuDptW.png)
 
-SUBCOMMANDS:
 
-  check - Check source with naming rules.
-  dump  - Dump default config file. (TODO)
-  test  - Run tests.
+————————————————————————————————————————————
 
-  Type "cppnamelint.exe <subcommand> -help" to get more help on a specific subcommand
 
-OPTIONS:
-  -help              - Display available options (-help-hidden for more)
-  -logfile=<LogName> - Print log message to the specific a log file.
-  -verbose           - Enable verbose mode.
-  -version           - Display the version of this program
-```
+## **🔳 Tests**
 
-```
-$ cppnamelint check -help
+### **Unit Test**
+![Unit Test](https://i.imgur.com/ug3YKuT.png)
 
-cppnamelint utility v0.3.0
----------------------------------------------------
-SUBCOMMAND 'check': Check source with naming rules.
 
-USAGE: cppnamelint.exe check [options] <input file>
+————————————————————————————————————————————
 
-OPTIONS:
 
-CppNameLint options:
-
-  -config=<FileName>           - Specific your config file(.toml).
-  -include=<-include Dir1 ...> - Specific header folers.
-  -jsonout=<FileName>          - Generate result to a JSON file.
-  -logfile=<LogName>           - Print log message to the specific a log file.
-  -verbose                     - Enable verbose mode.
-
-Generic Options:
-
-  -help                        - Display available options (-help-hidden for more)
-```
-
-----------
-
+## **Screenshots**
 ### **Passed case**
 
 ```shell
-D:\cppnamelint_v0.1.2>cppnamelint.exe check Test\Sample\UpperCamel_1.c --config=Test\Sample\UpperCamel_1.toml
-cppnamelint utility v0.1.2
+C:\>cppnamelint.exe check YouPlayGround.cpp -config cppnamelint.toml
+cppnamelint utility v0.3.1
 ---------------------------------------------------
- File    = Test\Sample\UpperCamel_1.c
- Config  = Test\Sample\UpperCamel_1.toml
- Checked =    17  [Func:  8 | Param:  4 | Var:  5]
- Error   =     0  [Func:  0 | Param:  0 | Var:  0]
----------------------------------------------------
-
-ERRORLEVEL=0
+ File    = YouPlayGround.cpp
+ Config  = cppnamelint.toml
+ Checked =     6  [File:0 | Func:  5 | Param:  1 | Var:  0 | Enum:  0 | Struct:  0 | Union:  0 | Class:  0]
+ Error   =     0  [File:0 | Func:  0 | Param:  0 | Var:  0 | Enum:  0 | Struct:  0 | Union:  0 | Class:  0]
+------------------------------------------------------------
 ```
   
-![Passed Case](https://i.imgur.com/JmULdqR.png)
+![Passed Case](https://i.imgur.com/CBP64B6.png)
 
 ### **Failed case**
 
 ```shell
-D:\cppnamelint_v0.1.2>cppnamelint.exe check Test\Sample\UpperCamel_1.c --config=Test\Sample\UpperCamel_1.toml
-cppnamelint utility v0.1.2
+C:\>cppnamelint.exe check YouPlayGround.cpp -config cppnamelint.toml
+cppnamelint utility v0.3.1
 ---------------------------------------------------
- File    = Test\Sample\UpperCamel_1.c
- Config  = Test\Sample\UpperCamel_1.toml
- Checked =    17  [Func:  8 | Param:  4 | Var:  5]
- Error   =     2  [Func:  0 | Param:  2 | Var:  0]
----------------------------------------------------
-  <5, 13> Parameter:    iValue (int)
-  <5, 13> Variable :    iValue (int)
-
-ERRORLEVEL=1
+ File    = YouPlayGround.cpp
+ Config  = cppnamelint.toml
+ Checked =     6  [File:0 | Func:  5 | Param:  1 | Var:  0 | Enum:  0 | Struct:  0 | Union:  0 | Class:  0]
+ Error   =     1  [File:0 | Func:  0 | Param:  1 | Var:  0 | Enum:  0 | Struct:  0 | Union:  0 | Class:  0]
+------------------------------------------------------------
+  <  16,   25> Parameter : inputValue (int)
+------------------------------------------------------------
 ```
   
-![Failed Case](https://i.imgur.com/YLWolw0.png)
+![Failed Case](https://i.imgur.com/N78C0kI.png)
 
 
-----------
-
-## **Tests**
-
-### **Unit Test**
-
-`cppnamelint test -a`
-`cppnamelint test --all`
-
-![Unit Test](https://i.imgur.com/a09h4Yg.png)
-
-
-### **Sample Test**
-
-`Test/TestWin32.cmd`
-`Test/TestLinux.cmd`
-![namelint.log](https://i.imgur.com/rEnoOs4.png)
-
-
-----------
-
-## **Download Pre-built**
-
-- [**Pre-built**](https://github.com/dougpuob/cpp-namelint/releases)
-
-
-----------
-
-
-```
-{
-  "SourceFile" : "Common.cpp",
-  "ConfigFile" : "Config.toml",
-  "CheckedNumber" : {
-    "Function" : 10,
-    "Argument" : 10,
-    "Variable" : 10
-  },
-  "ErrorNumber" : {
-    "Total" : 100,
-    "Function" : 10,
-    "Argument" : 10,
-    "Variable" : 10
-  },
-  "Details" : [
-    {"Line" : 10, "Column": 10, "Type" : "Function", "Text" : "IsStatus", "Expected" : ""}
-    ]
-}
+### **Others**
+- Check command with `-verbose` option.
+   ![](https://i.imgur.com/jRY40sn.png)
+   
+- JSON result (Good case)
+  ![](https://i.imgur.com/Kp9onEg.png)
+  
+- JSON result (Bad case)
+  ![](https://i.imgur.com/ar3wook.png)
+``` json
+      [{
+        "Checked": {
+            "Function": 5,
+            "Parameter": 1,
+            "Variable": 0
+        },
+        "Error": {
+            "Function": 0,
+            "Parameter": 1,
+            "Variable": 0
+        },
+        "ErrorDetailList": [
+            {
+                "Column": 25,
+                "Expected": "",
+                "Line": 16,
+                "TargetName": "inputValue",
+                "Type": 4,
+                "TypeName": "int"
+            }
+        ],
+        "File": {
+            "Config": "cppnamelint.toml",
+            "Source": "C:\\petzone\\cpp-namelint\\sample\\YouPlayGround.cpp"
+        }
+    }]
 ```
 
+————————————————————————————————————————————
 
-----------
+## **🔳 Author**
+
+Douglas Chen <dougpuob@gmail.com>
 
 
-## License
+————————————————————————————————————————————
+
+
+## **🔳 License**
 MIT

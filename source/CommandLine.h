@@ -49,8 +49,3 @@ static cl::opt<string> TestOutputJson("testlog", cl::desc("Save JSON test result
 static cl::opt<string> TestNameFilter("filter", cl::desc("Specific test case name."),
                                       cl::value_desc("Name"), cl::cat(CppNameLintCategory),
                                       cl::sub(TestSubcommand));
-
-//==-----------------------------------------------------------------------
-// SubCommand: DumpCfg
-//==-----------------------------------------------------------------------
-static cl::SubCommand DumpConfigSubcommand("dump", "Dump default config file. (TODO)");
