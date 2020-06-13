@@ -1,4 +1,4 @@
-# **CppNameLint**
+# CppNameLint
 ![My name is "Upper camel"](https://i.imgur.com/39uvmxf.png) My name is **Upper Camel**. (My partner drew this mascot for the project)
 
 | Windows | Linux | macOS |
@@ -19,8 +19,7 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 
 
 ————————————————————————————————————————————
-
-## **🔳 Quick Start**
+## Quick Start
 1. **As an user:** 
    - Use it, please goto the `release` page to download the artifacts files by Azure DevOps.
        https://github.com/dougpuob/cpp-namelint/releases
@@ -33,7 +32,7 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 
 ————————————————————————————————————————————
 
-## **🔳 Usage**
+## Usage
 
 ### Commands
 1. **Run Check command**  
@@ -59,17 +58,17 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 ————————————————————————————————————————————
 
 
-## **🔳 Tests**
+## Tests
 
-### **Unit Test**
+### Unit Test
 ![Unit Test](https://i.imgur.com/ug3YKuT.png)
 
 
 ————————————————————————————————————————————
 
 
-## **Screenshots**
-### **Passed case**
+## Screenshots
+### Passed case
 
 ```shell
 C:\>cppnamelint.exe check YouPlayGround.cpp -config cppnamelint.toml
@@ -84,7 +83,7 @@ cppnamelint utility v0.3.1
   
 ![Passed Case](https://i.imgur.com/CBP64B6.png)
 
-### **Failed case**
+### Failed case
 
 ```shell
 C:\>cppnamelint.exe check YouPlayGround.cpp -config cppnamelint.toml
@@ -102,7 +101,7 @@ cppnamelint utility v0.3.1
 ![Failed Case](https://i.imgur.com/N78C0kI.png)
 
 
-### **Others**
+### Others
 - Check command with `-verbose` option.
    ![](https://i.imgur.com/jRY40sn.png)
    
@@ -142,7 +141,7 @@ cppnamelint utility v0.3.1
 
 ————————————————————————————————————————————
 
-## **🔳 Author**
+## Author
 
 Douglas Chen <dougpuob@gmail.com>
 
@@ -150,5 +149,5 @@ Douglas Chen <dougpuob@gmail.com>
 ————————————————————————————————————————————
 
 
-## **🔳 License**
+## License
 MIT
