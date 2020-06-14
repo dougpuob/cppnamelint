@@ -30,13 +30,10 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 1. **You are a developer** 
    - How to build this project:
      - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-cppnamelint.md
-
    - How to build LLVM:
      - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-llvm.md   
-
    - Simple example to use ClangTool.
      - https://github.com/dougpuob/example-hello-clangtool
-
    - Prebuilt LLVM artifacts packages, which I use with Azure DevOps.
      - https://bit.ly/3htcnBs (GoogleDrive)   
 
@@ -48,14 +45,11 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 1. **Run Check command**  
    - Check source file with a specfic config file.  
      - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`  
-
    - Check source file with a specfic config file, and save check result as a JSON file to the specific path.  
      - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`  
-
    - Check source file with a specfic config file, and save log to the specific path.  
      - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -logfile logout.log`  
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`  
-   
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`     
    ![](https://i.imgur.com/2i1HpWZ.png)
    
 1. **Run Test command**  
