@@ -34,6 +34,9 @@ If you like this project or this project gives you some help, please also give m
      - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-llvm.md   
    - Simple example to use ClangTool.
      - https://github.com/dougpuob/example-hello-clangtool
+   - Prebuilt LLVM artifacts packages, which I use with Azure DevOps.
+     - https://bit.ly/3htcnBs (GoogleDrive)   
+       ![](https://i.imgur.com/L9fnVu6.png)
 
 ————————————————————————————————————————————
 
