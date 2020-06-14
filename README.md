@@ -65,17 +65,18 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 
 ### Helps
 
-- Show usage help to subcommands.
-  ``` pwsh
-  $ cppnamelint -help
-  ```
-    ![](https://i.imgur.com/X6bE6L8.png)
+``` pwsh
+# Show usage help to subcommands.
+$ cppnamelint -help
+```
+![](https://i.imgur.com/X6bE6L8.png)
    
-- Show usage help to `check` subcommand.
-  ``` pwsh
-  $ cppnamelint check -help
-  ```
-    ![](https://i.imgur.com/xtuDptW.png)
+
+``` pwsh
+# Show usage help to `check` subcommand.
+$ cppnamelint check -help
+```
+![](https://i.imgur.com/xtuDptW.png)
 
 
 ————————————————————————————————————————————
