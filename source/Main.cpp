@@ -270,7 +270,7 @@ void LogCheckResult() {
 int main(int Argc, const char **Argv) {
 
   cout << endl;
-  cout << "cppnamelint utility v0.3.1" << endl;
+  cout << "cppnamelint utility v0.3.3" << endl;
   cout << "---------------------------------------------------" << endl;
 
   //
@@ -283,7 +283,8 @@ int main(int Argc, const char **Argv) {
   // Assign input arguments to variables of AppCxt.
   //
   APP_CONTEXT *pAppCxt        = (APP_CONTEXT *)GetAppCxt();
-  SmallString<512> AbsSrcPath = CheckInputSrc;
+  StringRef InputPath  = CheckInputSrc;
+  SmallString<1024> AbsSrcPath(InputPath);
   llvm::sys::fs::make_absolute(AbsSrcPath);
 
   pAppCxt->MemoBoard.File.Config  = CheckInputConfig;
