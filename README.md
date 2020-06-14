@@ -1,5 +1,5 @@
 # CppNameLint
-![My name is "Upper camel"](https://i.imgur.com/39uvmxf.png) My name is **Upper Camel**. (My partner drew this mascot for the project)
+![My name is "Upper camel"](https://i.imgur.com/Aeigvpj.png) My name is **Upper Camel**. (My partner drew this mascot for the project)
 
 | Windows | Linux | macOS |
 |---------|-------|-------|
@@ -13,9 +13,11 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 1. Execute on Windows/Linux/macOS.
 1. Load config file format with TOML.
 1. Output results to console or save an a JSON file.
-1. Support rules with UpperCamelCase, lowerCamelCase, UPPER_SNAKE_CASE, lower_snake_case, and szHungarainNotion..
+1. Support rules with `UpperCamelCase`, `lowerCamelCase`, `UPPER_SNAKE_CASE`, `lower_snake_case`, and `szHungarainNotion`.
+1. Integrat with [Azure DevOps(CI/CD)](https://dev.azure.com/CppNameLint/cpp-namelint/_build?definitionId=3).
 
-⭐ If you like this project or this project gives you some help, please also give me a **STAR** on GitHub, let me know I am not alone.
+⭐
+If you like this project or this project gives you some help, please also give me a **STAR** on GitHub, let me know I am not alone.
 
 
 ————————————————————————————————————————————
@@ -26,9 +28,12 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
    - Know more, please start from **Usage**.
 
 1. **As a developer** 
-   - Build this project, https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-cppnamelint.md
-   - Build LLVM,  https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-llvm.md
-   - example-llvm-clangtool, https://github.com/dougpuob/example-llvm-clangtool
+   - How to build this project:
+     - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-cppnamelint.md
+   - How to build LLVM:
+     - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-llvm.md   
+   - Simple example to use ClangTool.
+     - https://github.com/dougpuob/example-hello-clangtool
 
 ————————————————————————————————————————————
 
@@ -36,22 +41,29 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 
 ### Commands
 1. **Run Check command**  
-   - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`
-   - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`
-   - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`
+   - Check source file with a specfic config file.
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`
+   - Check source file with a specfic config file, and save check result as a JSON file to the specific path.
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`
+   - Check source file with a specfic config file, and save log to the specific path.
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -logfile logout.log`
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`
    
    ![](https://i.imgur.com/2i1HpWZ.png)
    
 1. **Run Test command**  
-   - `cppnamelint test`
+   - Run Unit Test (Google Test)
+     - `cppnamelint test`
 
 
 ### Helps
 
-- `cppnamelint -help`
+- Show usage help to subcommands.
+  - `cppnamelint -help`
   ![](https://i.imgur.com/X6bE6L8.png)
    
-- `cppnamelint check -help`
+- Show usage help to `check` subcommand.
+  - `cppnamelint check -help`
   ![](https://i.imgur.com/xtuDptW.png)
 
 
@@ -141,13 +153,12 @@ cppnamelint utility v0.3.1
 
 ————————————————————————————————————————————
 
-## Author
-
-Douglas Chen <dougpuob@gmail.com>
+## License
+MIT
 
 
 ————————————————————————————————————————————
 
+## Author
+Douglas Chen <dougpuob@gmail.com>
 
-## License
-MIT
