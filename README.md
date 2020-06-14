@@ -16,41 +16,45 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 1. Support rules with `UpperCamelCase`, `lowerCamelCase`, `UPPER_SNAKE_CASE`, `lower_snake_case`, and `szHungarainNotion`.
 1. Integrat with [Azure DevOps(CI/CD)](https://dev.azure.com/CppNameLint/cpp-namelint/_build?definitionId=3).
 
-⭐
-If you like this project or this project gives you some help, please also give me a **STAR** on GitHub, let me know I am not alone.
+⭐If you like this project or this project gives you some help, please also give me a **STAR** on GitHub, let me know I am not alone.
 
 
 ————————————————————————————————————————————
-## Quick Start
-1. **As an user:** 
-   - Use it, please goto the `release` page to download the artifacts files by Azure DevOps.
+## ● Quick Start
+1. **You are an user:** 
+   - Use it directly, please goto the `release` page to download the artifacts files by Azure DevOps.
        https://github.com/dougpuob/cpp-namelint/releases
+
    - Know more, please start from **Usage**.
 
-1. **As a developer** 
+1. **You are a developer** 
    - How to build this project:
      - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-cppnamelint.md
+
    - How to build LLVM:
      - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-llvm.md   
+
    - Simple example to use ClangTool.
      - https://github.com/dougpuob/example-hello-clangtool
+
    - Prebuilt LLVM artifacts packages, which I use with Azure DevOps.
      - https://bit.ly/3htcnBs (GoogleDrive)   
-       ![](https://i.imgur.com/L9fnVu6.png)
 
 ————————————————————————————————————————————
 
-## Usage
+## ● Usage
 
 ### Commands
 1. **Run Check command**  
-   - Check source file with a specfic config file.
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`
-   - Check source file with a specfic config file, and save check result as a JSON file to the specific path.
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`
-   - Check source file with a specfic config file, and save log to the specific path.
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -logfile logout.log`
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`
+   - Check source file with a specfic config file.  
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`  
+
+   - Check source file with a specfic config file, and save check result as a JSON file to the specific path.  
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`  
+
+   - Check source file with a specfic config file, and save log to the specific path.  
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -logfile logout.log`  
+     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`  
    
    ![](https://i.imgur.com/2i1HpWZ.png)
    
@@ -73,7 +77,7 @@ If you like this project or this project gives you some help, please also give m
 ————————————————————————————————————————————
 
 
-## Tests
+## ● Tests
 
 ### Unit Test
 ![Unit Test](https://i.imgur.com/ug3YKuT.png)
@@ -82,7 +86,7 @@ If you like this project or this project gives you some help, please also give m
 ————————————————————————————————————————————
 
 
-## Screenshots
+## ● Screenshots
 ### Passed case
 
 ```shell
@@ -156,12 +160,12 @@ cppnamelint utility v0.3.1
 
 ————————————————————————————————————————————
 
-## License
+## ● License
 MIT
 
 
 ————————————————————————————————————————————
 
-## Author
+## ● Author
 Douglas Chen <dougpuob@gmail.com>
 
