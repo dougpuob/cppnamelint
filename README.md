@@ -43,29 +43,39 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 
 ### Commands
 1. **Run Check command**  
-   - Check source file with a specfic config file.  
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml`  
-   - Check source file with a specfic config file, and save check result as a JSON file to the specific path.  
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json`  
-   - Check source file with a specfic config file, and save log to the specific path.  
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -logfile logout.log`  
-     - `cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log`     
-   ![](https://i.imgur.com/2i1HpWZ.png)
+   ``` pwsh
+   # Check source file with a specfic config file.  
+   $ cppnamelint check YouPlayGround.cpp -config cppnamelint.toml
    
+   # Check source file with a specfic config file, and save check result as a JSON file to the specific path.  
+   $ cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json
+   
+   # Check source file with a specfic config file, and save log to the specific path.  
+   $ cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -logfile logout.log
+   $ cppnamelint check YouPlayGround.cpp -config cppnamelint.toml -jsonout result.json -logfile logout.log
+   ```
+   
+   ![](https://i.imgur.com/2i1HpWZ.png)
+      
 1. **Run Test command**  
-   - Run Unit Test (Google Test)
-     - `cppnamelint test`
-
+   ``` pwsh
+   # Run Unit Test (Google Test)
+   $ cppnamelint test
+   ```
 
 ### Helps
 
 - Show usage help to subcommands.
-  - `cppnamelint -help`
-  ![](https://i.imgur.com/X6bE6L8.png)
+  ``` pwsh
+  $ cppnamelint -help
+  ```
+    ![](https://i.imgur.com/X6bE6L8.png)
    
 - Show usage help to `check` subcommand.
-  - `cppnamelint check -help`
-  ![](https://i.imgur.com/xtuDptW.png)
+  ``` pwsh
+  $ cppnamelint check -help
+  ```
+    ![](https://i.imgur.com/xtuDptW.png)
 
 
 ————————————————————————————————————————————
@@ -83,7 +93,7 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 ## ● Screenshots
 ### Passed case
 
-```shell
+``` pwsh
 C:\>cppnamelint.exe check YouPlayGround.cpp -config cppnamelint.toml
 cppnamelint utility v0.3.1
 ---------------------------------------------------
