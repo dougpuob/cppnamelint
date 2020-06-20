@@ -1,3 +1,4 @@
+// Standard libraries
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -5,9 +6,11 @@
 #include <string>
 #include <vector>
 
+// Submodule projects
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
+// This project
 #include "AstConsumer.h"
 #include "AstVisitor.h"
 #include "CommandLine.h"
@@ -16,6 +19,7 @@
 #include "Detection.h"
 #include "Factory.h"
 
+// LLVM
 #include "clang/Tooling/CompilationDatabase.h"
 
 using namespace nlohmann;
@@ -282,7 +286,7 @@ int main(int Argc, const char **Argv) {
   //
   // Assign input arguments to variables of AppCxt.
   //
-  APP_CONTEXT *pAppCxt        = (APP_CONTEXT *)GetAppCxt();
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
   StringRef InputPath  = CheckInputSrc;
   SmallString<1024> AbsSrcPath(InputPath);
   llvm::sys::fs::make_absolute(AbsSrcPath);

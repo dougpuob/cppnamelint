@@ -8,49 +8,37 @@
 
 using namespace std;
 
-bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef MyDeclGroupRef) {
-
+bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DeclGrpRef) {
   string FileName;
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
 
-  for (DeclGroupRef::iterator Iter = MyDeclGroupRef.begin(), e = MyDeclGroupRef.end(); Iter != e;
-       ++Iter) {
-    Decl *pDecl              = *Iter;
-    const ASTContext &ASTCxt = pDecl->getASTContext();
+  APP_CONTEXT *pAppCxt  = (APP_CONTEXT *)GetAppCxt();
+  const Config *pConfig = &pAppCxt->MemoBoard.Config;
 
-    const DiagnosticsEngine &diagEngine = ASTCxt.getDiagnostics();
-    if (diagEngine.hasErrorOccurred()) {
-      pAppCxt->MemoBoard.Assert.nErrorOccurred++;
-    }
+  DeclGroupRef::iterator Iter = DeclGrpRef.begin();
+  DeclGroupRef::iterator End  = DeclGrpRef.end();
 
-    pAppCxt->MemoBoard.Assert.nNumWarnings += diagEngine.getNumWarnings();
+  for (; Iter != End; ++Iter) {
+    Decl *pDecl = *Iter;
 
+    const ASTContext &ASTCxt   = pDecl->getASTContext();
     FullSourceLoc FullLocation = ASTCxt.getFullLoc(pDecl->getBeginLoc());
     if (FullLocation.isValid()) {
       FileName = FullLocation.getFileLoc().getFileEntry()->getName();
     }
 
-    if (ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation())) {
+    const bool bIsInMainFile = ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation());
+    if (bIsInMainFile) {
+      const DiagnosticsEngine &diagEngine = ASTCxt.getDiagnostics();
+      if (diagEngine.hasErrorOccurred()) {
+        pAppCxt->MemoBoard.Assert.nErrorOccurred++;
+      }
+      pAppCxt->MemoBoard.Assert.nNumWarnings += diagEngine.getNumWarnings();
+
       const SourceManager &SrcMgr = ASTCxt.getSourceManager();
-      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, &(GetAppCxt()->MemoBoard.Config));
+      MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, pConfig);
       myVisitor.TraverseDecl(*Iter);
     }
   }
 
   return true;
-}
-
-void MyASTConsumer::HandleTranslationUnit(ASTContext &Ctx) {
-  bool bRet                           = false;
-  const DiagnosticsEngine &diagEngine = Ctx.getDiagnostics();
-
-  bool bError     = diagEngine.hasErrorOccurred();
-  int iNumWarning = diagEngine.getNumWarnings();
-  for (auto DiagIDMappingPair : diagEngine.getDiagnosticMappings()) {
-    diag::kind DiagID = DiagIDMappingPair.first;
-    bRet              = false;
-  }
-
-  bRet = false;
-  // Do nothing.
 }

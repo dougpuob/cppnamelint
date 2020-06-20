@@ -16,6 +16,7 @@ from cppnamelintlib import Lint
 from cppnamelintlib import BuildType
 
 define_cmd_check:str    = 'check'
+define_cmd_checkdir:str = 'checkdir'
 define_cmd_test:str     = 'test'
 define_cmd_format:str   = 'format'
 define_cmd_chkenv:str   = 'chkenv'
@@ -55,6 +56,14 @@ def main(forced_argv):
         print('Dispatched to `CHECK`')
         args_list :[] = convert_py_args_to_exe_args(py_args)
         error_code, output_texts = run_util(exec_file_path, args_list)
+        print(output_texts)
+
+    #--------------------------------------------------------------------------
+    # python cppnamelint.py checkdir command
+    elif py_args.input_cmd == define_cmd_checkdir:
+        print('Dispatched to `CHECKDIR`')
+        found_checkdir_files: [] = find_checkdir_files(py_args.srcdir, py_args.cfg, ['.c', '.cpp', '.h'])
+        error_code, output_texts = run_util_checkdir_files(define_exec_name, py_args, found_checkdir_files, True)
         print(output_texts)
 
     #--------------------------------------------------------------------------
@@ -147,34 +156,40 @@ def make_cmd_table():
 
     subparsers = parser.add_subparsers(dest='input_cmd')
 
-    cmd_check = subparsers.add_parser(define_cmd_check, help="check cmd")
+    cmd_check = subparsers.add_parser(define_cmd_check, help="check command")
     cmd_check.add_argument('src'    , help='Input source code file')
     cmd_check.add_argument('-cfg'   , required=False        , help="Config file path")
     cmd_check.add_argument('-json'  , required=False        , help="Json result output file path")
     cmd_check.add_argument('-inc'   , action='append'       , help='None or more include directory. (-inc Dir1 -inc Dir2 ...)', required=False)
 
-    cmd_fmt = subparsers.add_parser(define_cmd_format, help="format cmd")
+    cmd_check = subparsers.add_parser(define_cmd_checkdir, help="checkdir command")
+    cmd_check.add_argument('srcdir' , help='Input source code file dir')
+    cmd_check.add_argument('-cfg'   , required=False        , help="Config file path")
+    cmd_check.add_argument('-json'  , required=False        , help="Json result output file path")
+    cmd_check.add_argument('-inc'   , action='append'       , help='None or more include directory. (-inc Dir1 -inc Dir2 ...)', required=False)
+
+    cmd_fmt = subparsers.add_parser(define_cmd_format, help="format command")
     cmd_fmt.add_argument('projdir'   , help='Project root directory(location of .clangformat).')
     cmd_fmt.add_argument('srcdir'    , help='Input source directory.')
 
-    cmd_test = subparsers.add_parser(define_cmd_test, help="test cmd")
+    cmd_test = subparsers.add_parser(define_cmd_test, help="test command")
     cmdtest_grp = cmd_test.add_mutually_exclusive_group(required=False)
     cmdtest_grp.add_argument('-testlog' , action="store_true"   , help="Write unit test result to a file")
     cmdtest_grp.add_argument('-filter'  , action="store_true"   , help="Run the specific test cases")
-    chk_env = subparsers.add_parser(define_cmd_chkenv, help="chkenv cmd for checking build environment")
+    chk_env = subparsers.add_parser(define_cmd_chkenv, help="chkenv command for checking build environment")
 
-    bldgtest = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest cmd for building this project")
+    bldgtest = subparsers.add_parser(define_cmd_bldgtest, help="bldgtest command for building this project")
     bldgtest_grp = bldgtest.add_mutually_exclusive_group(required=False)
     bldgtest_grp.add_argument('-all', action="store_true"   , help="run all tests")
     bldgtest_grp.add_argument('-ut' , action="store_true"   , help="run unit test only")
     bldgtest_grp.add_argument('-it' , action="store_true"   , help="run integrated test only")
 
-    bldgpack = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack cmd for packing this project")
+    bldgpack = subparsers.add_parser(define_cmd_bldgpack, help="bldgpack command for packing this project")
     bldgpack.add_argument('root'    , help='project root folder path')
     bldgpack.add_argument('build'   , help='Build directory.')
     bldgpack.add_argument('output'  , help='target released output folder path')
 
-    bldgcfg = subparsers.add_parser(define_cmd_bldgcfg, help="bldgcfg cmd for doing config via Cmake")
+    bldgcfg = subparsers.add_parser(define_cmd_bldgcfg, help="bldgcfg command for doing config via Cmake")
     bldgcfg.add_argument('root'     , help='project root folder path')
     bldgcfg.add_argument('output'   , help='target build folder')
     bldgcfg.add_argument('type'     , help='build type(release|debug)')
@@ -200,8 +215,9 @@ def convert_py_args_to_exe_args(py_args) -> str:
 
     final_cmd_str: str = ''
     specific_cmd_args: str = ''
-    if py_args.input_cmd == define_cmd_check:
 
+    # cppnamelint check
+    if py_args.input_cmd == define_cmd_check:
         if py_args.src:
             specific_cmd_args = py_args.input_cmd + ' ' + py_args.src
 
@@ -231,16 +247,7 @@ def convert_py_args_to_exe_args(py_args) -> str:
     # cppnamelint bldgtest
     elif py_args.input_cmd == define_cmd_bldgtest:
 
-        if py_args.all:
-            specific_cmd_args = specific_cmd_args + ' -all'
-
-        if py_args.ut:
-            specific_cmd_args = specific_cmd_args + ' -ut'
-
-        if py_args.it:
-            specific_cmd_args = specific_cmd_args + ' -it'
-
-        final_cmd_str = define_cmd_bldgtest + specific_cmd_args + common_args
+        final_cmd_str = define_cmd_bldgtest + common_args
 
     # cppnamelint bldgpack
     elif py_args.input_cmd == define_cmd_bldgpack:
@@ -250,6 +257,30 @@ def convert_py_args_to_exe_args(py_args) -> str:
     final_origin  = final_cmd_str.strip()
     final_cmd_str = final_origin.split(' ')
     return final_cmd_str
+
+def find_checkdir_files(start_dir: str, cfgfile: str, extlist: []) -> []:
+    paired_list = []
+
+    include_src_files: [] = ['.c', '.cpp', '.h']
+    include_cfg_files: [] = ['.toml']
+
+    file_obj = File()
+    found_src_files = file_obj.find_files(start_dir, '*', extlist)
+
+    cfgfile = os.path.abspath(cfgfile)
+    for src in found_src_files:
+        src_dir_name  = os.path.dirname(src)
+        src_file_name = os.path.basename(src)
+        src_ext_name  = ''
+        for ext in include_src_files:
+            if src_file_name.endswith(ext):
+                src_ext_name = ext
+                break
+        if '' != src_ext_name:
+            paired_list.append({'src': src,
+                                'cfg': cfgfile})
+
+    return paired_list
 
 
 def find_sample_files(start_dir: str) -> []:
@@ -293,6 +324,33 @@ def run_util(exec_name:str, arg_list:[], working_dir:str='') -> [int, str]:
 
     output_text = ''.join(output_text_list)
     return ret_code, output_text
+
+
+def run_util_checkdir_files(exec_file_path, py_args, paired_samples:[], print_output:bool) -> int:
+    first_error_code = 0
+    full_output_string = ''
+
+    for paired in paired_samples:
+
+        args_list: [] = ['check', paired['src'], '-config='+paired['cfg']]
+        if py_args.json:
+            args_list.append('-jsonfile=' + py_args.json)
+
+        if py_args.inc:
+            for file in py_args.inc:
+                args_list.append('-include=' + file)
+
+        print(args_list)
+        error_code, output_string = run_util(exec_file_path, args_list)
+
+        if first_error_code == 0 and error_code != 0:
+            first_error_code = error_code
+
+        if print_output:
+            full_output_string = output_string
+            print(output_string)
+
+    return first_error_code, full_output_string
 
 
 def run_util_sample_files(exec_file_path, py_args, paired_samples:[], print_output:bool) -> int:
