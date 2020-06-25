@@ -3,8 +3,8 @@
 #include "Common.h"
 #include "Config.h"
 
-#include "AstConsumer.h"
-#include "AstVisitor.h"
+#include "MyAstConsumer.h"
+#include "MyAstVisitor.h"
 
 using namespace std;
 

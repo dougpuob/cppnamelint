@@ -11,13 +11,13 @@
 #include <nlohmann/json.hpp>
 
 // This project
-#include "AstConsumer.h"
-#include "AstVisitor.h"
-#include "CommandLine.h"
 #include "Common.h"
 #include "Config.h"
 #include "Detection.h"
-#include "Factory.h"
+#include "MyAstConsumer.h"
+#include "MyAstVisitor.h"
+#include "MyCommandLine.h"
+#include "MyFactory.h"
 
 // LLVM
 #include "clang/Tooling/CompilationDatabase.h"
@@ -55,8 +55,7 @@ int RunCheckFormFile(namelint::MemoBoard &Memo) {
   //
   // Create clang tool then add clang tool arguments.
   //
-  vector<string> SingleFileInList = {Memo.File.Source};
-  ClangTool Tool(*Compilations, SingleFileInList);
+  ClangTool Tool(*Compilations, {Memo.File.Source});
 
   //
   // Execute `check` command.

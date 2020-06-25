@@ -130,7 +130,6 @@ add_executable(
     cppnamelint
     submodule/tinytoml.git/include/toml/toml.h
     source/TraceMemo.h
-    source/CommandLine.h
     source/Main.cpp
     source/Detection.h
     source/Detection.cpp
@@ -142,13 +141,14 @@ add_executable(
     source/Logger.cpp
     source/DumpDecl.h
     source/DumpDecl.cpp
-    source/Factory.h
-    source/Factory.cpp
-    source/AstVisitor.h
-    source/AstVisitor.cpp
-    source/AstVisitorPriv.cpp
-    source/AstConsumer.h
-    source/AstConsumer.cpp
+    source/MyCommandLine.h
+    source/MyFactory.h
+    source/MyFactory.cpp
+    source/MyAstVisitor.h
+    source/MyAstVisitor.cpp
+    source/MyAstVisitorPriv.cpp
+    source/MyAstConsumer.h
+    source/MyAstConsumer.cpp
     source/test/TestConfig.cpp
     source/test/TestDetection.cpp
     source/test/TestRunCheck.cpp

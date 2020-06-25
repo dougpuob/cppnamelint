@@ -1,7 +1,7 @@
 #include <iomanip>
 
-#include "AstVisitor.h"
 #include "Common.h"
+#include "MyAstVisitor.h"
 
 using namespace namelint;
 
