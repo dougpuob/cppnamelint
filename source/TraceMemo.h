@@ -77,6 +77,9 @@ public:
   struct _File {
     string Source;
     string Config;
+    string OutputJson;
+    string LogFile;
+    bool bVerboseMode;
   } File;
 
   struct _Dir {

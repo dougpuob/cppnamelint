@@ -31,6 +31,10 @@ int RunTest(const string &LogFileName, const string &FilterStr);
 bool PrintTraceMemo(const MemoBoard &MemoBoard);
 bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath);
 
+void LogConfig();
+void LogHead();
+void LogCheckResult();
+
 typedef struct _APP_CONTEXT {
   void *pTomlConfig;
   namelint::MemoBoard MemoBoard;

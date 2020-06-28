@@ -12,7 +12,6 @@
 #include "Detection.h"
 #include "MyAstConsumer.h"
 #include "MyAstVisitor.h"
-#include "MyCommandLine.h"
 #include "MyFactory.h"
 #include "TraceMemo.h"
 
@@ -76,7 +75,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   DcLib::Log::Out(INFO_ALL, "Source File = %s", Memo.File.Source.c_str());
   DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
-  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", CheckOutputJson.c_str());
+  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", Memo.File.OutputJson.c_str());
 
   //
   // Feed header directories from input commands to ClangTools'.
@@ -99,7 +98,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   // Add `verbose` option to ClantTool.
   //
-  if (VerboseMode) {
+  if (Memo.File.bVerboseMode) {
     Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-v", // Verbose
                                                            ArgumentInsertPosition::BEGIN));
   }
@@ -147,9 +146,9 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     if (Memo.Config.GetData()->General.Options.bAllowedPrintResult) {
       PrintTraceMemo(Memo);
     }
-    if ((CheckOutputJson.length() > 0) ||
+    if ((Memo.File.OutputJson.length() > 0) ||
         Memo.Config.GetData()->General.Options.bAllowedWriteJsonResult) {
-      string OutputJson = CheckOutputJson;
+      string OutputJson = Memo.File.OutputJson;
       if (OutputJson.length() == 0) {
         OutputJson = "cppnamelint.json";
       }
@@ -412,4 +411,66 @@ bool WriteJsonResult(const MemoBoard &MemoBoard, const string &FilePath) {
     return true;
   }
   return false;
+}
+
+void LogHead() {
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+  int iPos             = pAppCxt->MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
+
+  DcLib::Log::Out(INFO_NONE, "");
+  DcLib::Log::Out(INFO_NONE, "");
+  DcLib::Log::Out(INFO_NONE,
+                  "=============================================================================="
+                  "=========================================================================");
+  DcLib::Log::Out(INFO_NONE,
+                  "0         0         0         0         0         0         0         0       "
+                  "  0        0          1         1         1         1         1         1");
+  DcLib::Log::Out(INFO_NONE,
+                  "012345678911234567892123456789312345678941234567895123456789612345678971234567"
+                  "8981234567899123456789012345678911234567892123456789312345678941234567895");
+  DcLib::Log::Out(INFO_NONE,
+                  "=============================================================================="
+                  "=========================================================================");
+  DcLib::Log::Out(INFO_ALL, "INFO : ContentStartsPosition = %d.", iPos);
+  DcLib::Log::Out(INFO_ALL, "INFO : Log message will print to the file (%s).",
+                  pAppCxt->MemoBoard.File.LogFile.c_str());
+}
+
+void LogConfig() {
+  APP_CONTEXT *pAppCxt            = (APP_CONTEXT *)GetAppCxt();
+  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+
+  DcLib::Log::Out(INFO_ALL, "bCheckFileName      = %d", pCfgData->General.Options.bCheckFileName);
+  DcLib::Log::Out(INFO_ALL, "bCheckFunctionName  = %d",
+                  pCfgData->General.Options.bCheckFunctionName);
+  DcLib::Log::Out(INFO_ALL, "bCheckEnum          = %d", pCfgData->General.Options.bCheckEnum);
+  DcLib::Log::Out(INFO_ALL, "bCheckStruct        = %d", pCfgData->General.Options.bCheckStruct);
+  DcLib::Log::Out(INFO_ALL, "bCheckVariableName  = %d",
+                  pCfgData->General.Options.bCheckVariableName);
+}
+
+void LogCheckResult() {
+  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+
+  DcLib::Log::Out(INFO_ALL, "Assert.nErrorOccurred = %d", pAppCxt->MemoBoard.Assert.nErrorOccurred);
+  DcLib::Log::Out(INFO_ALL, "Assert.nInvalidDecl   = %d", pAppCxt->MemoBoard.Assert.nInvalidDecl);
+  DcLib::Log::Out(INFO_ALL, "Assert.nNumWarnings   = %d", pAppCxt->MemoBoard.Assert.nNumWarnings);
+
+  DcLib::Log::Out(INFO_ALL, "Checked.nClass        = %d", pAppCxt->MemoBoard.Checked.nClass);
+  DcLib::Log::Out(INFO_ALL, "Checked.nEnum         = %d", pAppCxt->MemoBoard.Checked.nEnum);
+  DcLib::Log::Out(INFO_ALL, "Checked.nFile         = %d", pAppCxt->MemoBoard.Checked.nFile);
+  DcLib::Log::Out(INFO_ALL, "Checked.nFunction     = %d", pAppCxt->MemoBoard.Checked.nFunction);
+  DcLib::Log::Out(INFO_ALL, "Checked.nParameter    = %d", pAppCxt->MemoBoard.Checked.nParameter);
+  DcLib::Log::Out(INFO_ALL, "Checked.nStruct       = %d", pAppCxt->MemoBoard.Checked.nStruct);
+  DcLib::Log::Out(INFO_ALL, "Checked.nUnion        = %d", pAppCxt->MemoBoard.Checked.nUnion);
+  DcLib::Log::Out(INFO_ALL, "Checked.nVariable     = %d", pAppCxt->MemoBoard.Checked.nVariable);
+
+  DcLib::Log::Out(INFO_ALL, "Error.nClass          = %d", pAppCxt->MemoBoard.Error.nClass);
+  DcLib::Log::Out(INFO_ALL, "Error.nEnum           = %d", pAppCxt->MemoBoard.Error.nEnum);
+  DcLib::Log::Out(INFO_ALL, "Error.nFile           = %d", pAppCxt->MemoBoard.Error.nFile);
+  DcLib::Log::Out(INFO_ALL, "Error.nFunction       = %d", pAppCxt->MemoBoard.Error.nFunction);
+  DcLib::Log::Out(INFO_ALL, "Error.nParameter      = %d", pAppCxt->MemoBoard.Error.nParameter);
+  DcLib::Log::Out(INFO_ALL, "Error.nStruct         = %d", pAppCxt->MemoBoard.Error.nStruct);
+  DcLib::Log::Out(INFO_ALL, "Error.nUnion          = %d", pAppCxt->MemoBoard.Error.nUnion);
+  DcLib::Log::Out(INFO_ALL, "Error.nVariable       = %d", pAppCxt->MemoBoard.Error.nVariable);
 }
