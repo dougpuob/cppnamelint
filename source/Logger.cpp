@@ -93,7 +93,8 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   //
   PaddingInfo.append("[");
   if (FlagInfo.bPrintFileName) {
-    PaddingInfo.append(Path::FindFileName(FlagInfo.FileName) + string("!") + FlagInfo.FuncName);
+    string FileName = llvm::sys::path::filename(FlagInfo.FileName);
+    PaddingInfo.append(FileName + string("!") + FlagInfo.FuncName);
   }
   if (FlagInfo.bPrintLineNumber) {
     PaddingInfo.append(string("@") + std::to_string(FlagInfo.LineNumber));

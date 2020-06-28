@@ -27,13 +27,6 @@ bool MyASTVisitor::getPos(Decl *pDecl, string &FileName, size_t &nLineNumb, size
     if ((FileName != GetAppCxt()->FileName) || ("" == GetAppCxt()->FileName)) {
       APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
       pAppCxt->FileName    = FileName;
-
-      string Path1;
-      Path::NormPath(FileName.c_str(), Path1);
-
-      String::Replace(Path1, "\\\\", "\\");
-      String::Replace(Path1, "\"", "");
-      FileName = Path1;
     }
 
     nLineNumb = FullLocation.getSpellingLineNumber();

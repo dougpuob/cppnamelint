@@ -45,7 +45,7 @@ const string ConfigToml = "\
       \"uint32_t\"               = \"u32\"                  \n\
     ";
 
-namespace RunCheck {
+namespace RunChk {
 
 TEST(Struct, USB_DEVICE_DESCRIPTOR) {
 
@@ -218,4 +218,4 @@ TEST(Union, USB_20_PORT_STATUS) {
   EXPECT_EQ(true, 0 == MemoBoard.Error.nClass);
 }
 
-} // namespace RunCheck
+} // namespace RunChk

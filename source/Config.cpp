@@ -90,7 +90,7 @@ void Config::ReformatCStringMap(vector<MappingPair> &CStringMap) {
 bool Config::LoadFile(string ConfigFilePath, string &ErrorReason) {
   Clear();
 
-  bool bStatus = Path::IsExist(ConfigFilePath);
+  bool bStatus = llvm::sys::fs::exists(ConfigFilePath);
   if (bStatus) {
     std::ifstream InputFileStream(ConfigFilePath);
     std::string Content((std::istreambuf_iterator<char>(InputFileStream)),
