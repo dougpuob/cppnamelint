@@ -39,17 +39,17 @@ int main(int Argc, const char **Argv) {
   //
   // Assign input arguments to variables of AppCxt.
   //
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  StringRef InputPath  = CheckInputSrc;
+  AppCxt &AppCxt      = AppCxt::getInstance();
+  StringRef InputPath = CheckInputSrc;
   SmallString<1024> AbsSrcPath(InputPath);
   llvm::sys::fs::make_absolute(AbsSrcPath);
 
-  pAppCxt->MemoBoard.File.Config       = CheckInputConfig;
-  pAppCxt->MemoBoard.File.Source       = AbsSrcPath.str();
-  pAppCxt->MemoBoard.File.OutputJson   = CheckOutputJson;
-  pAppCxt->MemoBoard.File.LogFile      = LogFile;
-  pAppCxt->MemoBoard.File.bVerboseMode = VerboseMode;
-  pAppCxt->MemoBoard.Dir.Includes      = CheckIncludes;
+  AppCxt.MemoBoard.File.Config       = CheckInputConfig;
+  AppCxt.MemoBoard.File.Source       = AbsSrcPath.str();
+  AppCxt.MemoBoard.File.OutputJson   = CheckOutputJson;
+  AppCxt.MemoBoard.File.LogFile      = LogFile;
+  AppCxt.MemoBoard.File.bVerboseMode = VerboseMode;
+  AppCxt.MemoBoard.Dir.Includes      = CheckIncludes;
 
   if (!CheckInputConfig.empty()) {
     if (!llvm::sys::fs::exists(CheckInputConfig)) {
@@ -57,7 +57,7 @@ int main(int Argc, const char **Argv) {
       return 2;
     }
     string ErrorReason;
-    if (!pAppCxt->MemoBoard.Config.LoadFile(CheckInputConfig, ErrorReason)) {
+    if (!AppCxt.MemoBoard.Config.LoadFile(CheckInputConfig, ErrorReason)) {
       cout << "Error: Failed to load config file (format wrong)." << endl;
       cout << ErrorReason << endl;
       return 3;
@@ -71,16 +71,16 @@ int main(int Argc, const char **Argv) {
     printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
     LogHead();
 
-    int iPos = pAppCxt->MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
+    int iPos = AppCxt.MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
     DcLib::Log::Init(LogFile.c_str(), iPos);
   }
 
-  LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bMain);
+  LOG_DECISION_CHANGE(AppCxt.MemoBoard.Config.GetData()->Debug.Log.bMain);
 
   int iRet = 0;
   if (CheckSubcommand) {
     LogConfig();
-    iRet = RunCheckFormFile(pAppCxt->MemoBoard);
+    iRet = RunCheckFormFile(AppCxt.MemoBoard);
     LogCheckResult();
 
   } else if (TestSubcommand) {

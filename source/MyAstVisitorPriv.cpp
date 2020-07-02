@@ -24,9 +24,9 @@ bool MyASTVisitor::getPos(Decl *pDecl, string &FileName, size_t &nLineNumb, size
   if (FullLocation.isValid()) {
     FileName = FullLocation.getFileLoc().getFileEntry()->getName();
 
-    if ((FileName != GetAppCxt()->FileName) || ("" == GetAppCxt()->FileName)) {
-      APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-      pAppCxt->FileName    = FileName;
+    if ((FileName != AppCxt::getInstance().FileName) || ("" == AppCxt::getInstance().FileName)) {
+      AppCxt &AppCxt  = AppCxt::getInstance();
+      AppCxt.FileName = FileName;
     }
 
     nLineNumb = FullLocation.getSpellingLineNumber();
@@ -248,17 +248,17 @@ bool MyASTVisitor::checkRuleForVariable(ValueDecl *pDecl) {
     return true;
   }
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
   bStauts = this->m_Detect.CheckVariable(
       this->m_pConfig->General.Rules.VariableName, ValueType, ValueName,
       this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
-  pAppCxt->MemoBoard.Checked.nVariable++;
+  AppCxt.MemoBoard.Checked.nVariable++;
   if (!bStauts) {
-    pAppCxt->MemoBoard.Error.nVariable++;
+    AppCxt.MemoBoard.Error.nVariable++;
 
-    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+    AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
         pDecl, CheckType::CT_Variable, bIsPtr, bIsArray, ValueType, ValueName, ""));
   }
 
@@ -278,13 +278,13 @@ bool MyASTVisitor::checkRuleForStructValue(ValueDecl *pDecl) {
   bool bResult = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructValueName,
                                                ValueType, ValueName, bIsPtr);
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
-  pAppCxt->MemoBoard.Checked.nStruct++;
+  AppCxt.MemoBoard.Checked.nStruct++;
   if (!bResult) {
-    pAppCxt->MemoBoard.Error.nStruct++;
+    AppCxt.MemoBoard.Error.nStruct++;
 
-    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+    AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
         pDecl, CheckType::CT_UnionVal, bIsPtr, NOT_ARRAY, ValueType, ValueName, ""));
   }
   return true;
@@ -303,13 +303,13 @@ bool MyASTVisitor::checkRuleForUnionValue(ValueDecl *pDecl) {
   bool bResult = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructValueName,
                                                ValueType, ValueName, bIsPtr);
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
-  pAppCxt->MemoBoard.Checked.nUnion++;
+  AppCxt.MemoBoard.Checked.nUnion++;
   if (!bResult) {
-    pAppCxt->MemoBoard.Error.nUnion++;
+    AppCxt.MemoBoard.Error.nUnion++;
 
-    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+    AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
         pDecl, CheckType::CT_StructVal, bIsPtr, NOT_ARRAY, ValueType, ValueName, ""));
   }
   return true;

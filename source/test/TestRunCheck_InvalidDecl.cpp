@@ -174,15 +174,15 @@ TEST(MFC, IMPLEMENT_SERIAL) {
       }                                                                \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   //.........................................................................vvvv <-- Test TARGET
-  pAppCxt->MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
+  AppCxt.MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
@@ -193,7 +193,7 @@ TEST(MFC, IMPLEMENT_SERIAL) {
                                                    //     `bBypassInvalidDecl` is `FALSE`
 
   //.........................................................................vvvv <-- Test TARGET
-  pAppCxt->MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = false;
+  AppCxt.MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = false;
   EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 4 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 8 == MemoBoard.Checked.nParameter);

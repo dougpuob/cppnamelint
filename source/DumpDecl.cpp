@@ -12,8 +12,8 @@ LOG_DECISION_DEFAULT(false);
 // clang-format off
 
 DumpDecl::DumpDecl() {
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  LOG_DECISION_CHANGE(pAppCxt->MemoBoard.Config.GetData()->Debug.Log.bDumpDecl);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  LOG_DECISION_CHANGE(AppCxt.MemoBoard.Config.GetData()->Debug.Log.bDumpDecl);
 }
 
 void DumpDecl::SetSourceManager(const SourceManager *pSm) { this->m_pSm = (SourceManager *)pSm; }

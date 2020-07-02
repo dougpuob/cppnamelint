@@ -155,12 +155,12 @@ TEST(ooo, 1) {
     PlayGround::PlayGround() {}   \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
   // EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
@@ -183,12 +183,12 @@ TEST(ooo, 1) {
 //    };                            \n\
 //    ";
 //
-//  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-//  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+//  APP_CONTEXT &AppCxt = APP_CONTEXT::getInstance();
+//  MemoBoard &MemoBoard = AppCxt.MemoBoard;
 //  MemoBoard.Clear();
 //
 //  string ErrorReason;
-//  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+//  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 //
 //  vector<string> SrcList = {SourceCode, HeaderCode};
 //

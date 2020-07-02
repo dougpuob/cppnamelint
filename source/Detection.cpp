@@ -355,7 +355,7 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
     return false;
   }
 
-  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
 
   string NewName   = Name;
   size_t nFoundPos = NewName.find_last_of(".");
@@ -388,7 +388,7 @@ bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
     return false;
   }
 
-  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
   vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.FunctionPrefix;
   vector<string> &IgnoreNames     = pCfgData->General.IgnoredList.FunctionName;
 
@@ -430,7 +430,7 @@ bool Detection::CheckVariable(const RULETYPE Rule, const string &Type, const str
     return false;
   }
 
-  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
   vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.VariablePrefix;
 
   bool bStatus = false;
@@ -472,7 +472,7 @@ bool Detection::CheckEnumVal(const RULETYPE Rule, const string &Name) {
     return false;
   }
 
-  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
   vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.EnumTagPrefix;
 
   bool bStatus = false;
@@ -508,7 +508,7 @@ bool Detection::CheckStructVal(const RULETYPE Rule, const string &Type, const st
     return false;
   }
 
-  shared_ptr<ConfigData> pCfgData = GetAppCxt()->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
   vector<string> &IgnorePrefixs   = pCfgData->General.IgnoredList.StructTagPrefix;
 
   bool bStatus = false;

@@ -54,7 +54,7 @@ UnitTest_Win:
     - windows
   script:
     - Push-Location script/release/windows
-    - ./cppnamelint test -all
+    - ./cppnamelint test
     - Pop-Location
 
 

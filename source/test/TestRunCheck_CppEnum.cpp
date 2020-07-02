@@ -149,12 +149,12 @@ TEST(ooo, OOO) {
     #define MAX_VALUE (10) \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());

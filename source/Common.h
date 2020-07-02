@@ -35,16 +35,23 @@ void LogConfig();
 void LogHead();
 void LogCheckResult();
 
-typedef struct _APP_CONTEXT {
+class AppCxt {
+public:
+  static AppCxt &getInstance() {
+    static AppCxt instance;
+    return instance;
+  }
+  AppCxt(AppCxt const &) = delete;
+  void operator=(AppCxt const &) = delete;
+
+private:
+  AppCxt(){};
+
+public:
   void *pTomlConfig;
   namelint::MemoBoard MemoBoard;
   string FileName;
-} APP_CONTEXT;
-
-static APP_CONTEXT *GetAppCxt() {
-  static APP_CONTEXT m_AppCxt;
-  return &m_AppCxt;
-}
+};
 
 namespace String {
 void Replace(string &Source, const string &Patn, const string &New);

@@ -7,7 +7,7 @@
 
 using namespace namelint;
 
-APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
+AppCxt &AppCxt = AppCxt::getInstance();
 
 const string ConfigToml = "\
     [General.Options]                                       \n\
@@ -67,11 +67,11 @@ TEST(Struct, USB_DEVICE_DESCRIPTOR) {
             uint8_t  u8NumConfigurations;   \n\
     } USB_DEVICE_DESCRIPTOR;";
 
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -112,11 +112,11 @@ const string SourceCode = "\
     } USB_CONFIGURATION_POWER_DESCRIPTOR                  \n\
     ";
 TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -140,11 +140,11 @@ TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_1) {
 }
 
 TEST(Struct, USB_CONFIGURATION_POWER_DESCRIPTOR_2) {
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -190,7 +190,7 @@ TEST(Union, USB_20_PORT_STATUS) {
     }  USB_20_PORT_STATUS;                          \n\
     ";
 
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;

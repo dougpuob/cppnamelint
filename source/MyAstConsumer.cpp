@@ -11,8 +11,8 @@ using namespace std;
 bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DeclGrpRef) {
   string FileName;
 
-  APP_CONTEXT *pAppCxt  = (APP_CONTEXT *)GetAppCxt();
-  const Config *pConfig = &pAppCxt->MemoBoard.Config;
+  AppCxt &AppCxt        = AppCxt::getInstance();
+  const Config *pConfig = &AppCxt.MemoBoard.Config;
 
   DeclGroupRef::iterator Iter = DeclGrpRef.begin();
   DeclGroupRef::iterator End  = DeclGrpRef.end();
@@ -30,9 +30,9 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DeclGrpRef) {
     if (bIsInMainFile) {
       const DiagnosticsEngine &diagEngine = ASTCxt.getDiagnostics();
       if (diagEngine.hasErrorOccurred()) {
-        pAppCxt->MemoBoard.Assert.nErrorOccurred++;
+        AppCxt.MemoBoard.Assert.nErrorOccurred++;
       }
-      pAppCxt->MemoBoard.Assert.nNumWarnings += diagEngine.getNumWarnings();
+      AppCxt.MemoBoard.Assert.nNumWarnings += diagEngine.getNumWarnings();
 
       const SourceManager &SrcMgr = ASTCxt.getSourceManager();
       MyASTVisitor myVisitor(&SrcMgr, &ASTCxt, pConfig);

@@ -18,7 +18,7 @@ void SetUp() {
         ";
 
   string ErrorReason;
-  ((APP_CONTEXT *)GetAppCxt())->MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+  AppCxt::getInstance().MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 }
 
 // clang-format off
@@ -51,7 +51,7 @@ TEST(Config_Detect_CheckFile, InputParms_Bad)
 // UpperCamelCase
 TEST(Config_Detect_CheckFile, UpperCamelCase_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -70,7 +70,7 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Good)
 
 TEST(Config_Detect_CheckFile, UpperCamelCase_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -85,7 +85,7 @@ TEST(Config_Detect_CheckFile, UpperCamelCase_Bad)
 // LowerCamelCase
 TEST(Config_Detect_CheckFile, LowerCamelCase_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -99,7 +99,7 @@ TEST(Config_Detect_CheckFile, LowerCamelCase_Good)
 
 TEST(Config_Detect_CheckFile, LowerCamelCase_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -113,7 +113,7 @@ TEST(Config_Detect_CheckFile, LowerCamelCase_Bad)
 // LowerSeperate
 TEST(Config_Detect_CheckFile, LowerSeperated_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -128,7 +128,7 @@ TEST(Config_Detect_CheckFile, LowerSeperated_Good)
 
 TEST(Config_Detect_CheckFile, LowerSeperated_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -149,7 +149,7 @@ namespace TargetIsFunction {
  // Input Parameter
 TEST(Config_Detect_CheckFunction, InputParms_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -170,7 +170,7 @@ TEST(Config_Detect_CheckFunction, InputParms_Good)
 
 TEST(Config_Detect_CheckFunction, InputParms_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -189,7 +189,7 @@ TEST(Config_Detect_CheckFunction, InputParms_Bad)
 // UpperCamelCase
 TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
     
@@ -221,7 +221,7 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Good)
 
 TEST(Config_Detect_CheckFunction, UpperCamelCase_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -237,7 +237,7 @@ TEST(Config_Detect_CheckFunction, UpperCamelCase_Bad)
 // LowerCamelCase
 TEST(Config_Detect_CheckFunction, LowerCamelCase_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -250,7 +250,7 @@ TEST(Config_Detect_CheckFunction, LowerCamelCase_Good)
 
 TEST(Config_Detect_CheckFunction, LowerCamelCase_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -263,7 +263,7 @@ TEST(Config_Detect_CheckFunction, LowerCamelCase_Bad)
 // LowerSeperated
 TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -293,7 +293,7 @@ TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Good)
 
 TEST(Config_Detect_CheckFunction, LowerSeperatedCase_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -317,7 +317,7 @@ namespace TargetIsVariable {
 // Input Parameter
 TEST(Config_Detect_CheckVariable, InputParms_Good)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -363,7 +363,7 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
 
 TEST(Config_Detect_CheckVariable, PreferUpperCamelIfMissed)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -380,7 +380,7 @@ TEST(Config_Detect_CheckVariable, PreferUpperCamelIfMissed)
 
 TEST(Config_Detect_CheckVariable, InputParms_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -413,7 +413,7 @@ TEST(Config_Detect_CheckVariable, InputParms_Bad)
 // Multiple Cases
 TEST(Config_Detect_CheckVariable, GoodCases)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -431,7 +431,7 @@ TEST(Config_Detect_CheckVariable, GoodCases)
 
 TEST(Config_Detect_CheckVariable, Hungarian_Bad)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -453,7 +453,7 @@ TEST(Config_Detect_CheckVariable, Hungarian_Bad)
 namespace TargetIsEnum {
 TEST(Config_Detect_CheckEnum, UpperCamel)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -473,7 +473,7 @@ TEST(Config_Detect_CheckEnum, UpperCamel)
 
 TEST(Config_Detect_CheckEnum, LowerCamel)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -494,7 +494,7 @@ TEST(Config_Detect_CheckEnum, LowerCamel)
 
 TEST(Config_Detect_CheckEnum, LowerSnake)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -514,7 +514,7 @@ TEST(Config_Detect_CheckEnum, LowerSnake)
 
 TEST(Config_Detect_CheckEnum, UpperSnake)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -539,7 +539,7 @@ TEST(Config_Detect_CheckEnum, UpperSnake)
 namespace TargetIsStruct {
 TEST(Config_Detect_CheckStruct, UpperCamel)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -559,7 +559,7 @@ TEST(Config_Detect_CheckStruct, UpperCamel)
 
 TEST(Config_Detect_CheckStruct, LowerCamel)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -579,7 +579,7 @@ TEST(Config_Detect_CheckStruct, LowerCamel)
 
 TEST(Config_Detect_CheckStruct, LowerSnake)
 {        
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 
@@ -599,7 +599,7 @@ TEST(Config_Detect_CheckStruct, LowerSnake)
 
 TEST(Config_Detect_CheckStruct, UpperSnake)
 {
-    Config* pCfg = (Config*)&GetAppCxt()->MemoBoard.Config;
+    Config* pCfg = &AppCxt::getInstance().MemoBoard.Config;
     shared_ptr<ConfigData> pCfgData = pCfg->GetData();
     pCfg->Clear();
 

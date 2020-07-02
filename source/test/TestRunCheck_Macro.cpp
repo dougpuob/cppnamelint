@@ -17,12 +17,12 @@ TEST(PredefinedMacro, MAX_VALUE_ONLY) {
     #define MAX_VALUE (10) \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
@@ -37,12 +37,12 @@ TEST(PredefinedMacro, MAX_VALUE_is_assigned_to_int_value) {
     int iVal = MAX_VALUE;  \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 1 == MemoBoard.GetTotalChecked());
@@ -59,12 +59,12 @@ TEST(PredefinedMacro, MAX_VALUE_wrong_before_assignment) {
     int iVal2 = MAX_VALUE;  \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 1 == MemoBoard.GetTotalChecked());
@@ -83,12 +83,12 @@ TEST(PredefinedMacro, MAX_VALUE_at_bottom_line_unref) {
     #define MAX_VALUE (10);         \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
@@ -104,12 +104,12 @@ TEST(PredefinedMacro, MAX_VALUE_at_first_line_unref) {
     const char* szFile1 = __FILE__;     \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
@@ -125,12 +125,12 @@ TEST(PredefinedMacro, MAX_VALUE_at_first_line_ref) {
     const char* szFile1 = __FILE__;     \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
@@ -149,12 +149,12 @@ TEST(PredefinedMacro, MAX_VALUE_in_func) {
         }                                   \n\
     ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nFunction);
@@ -167,12 +167,12 @@ TEST(PredefinedMacro, AAAAAAA) {
 
   const string SourceCode = "const char* szFile = \"AAAAAAA\";";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
@@ -185,12 +185,12 @@ TEST(PredefinedMacro, ___FILE___) {
 
   const string SourceCode = "const char* szFile = __FILE__;";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
@@ -206,12 +206,12 @@ TEST(PredefinedMacro, TwoVariables) {
         const char* szFile2 = \"AAAAAAA\";      \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
@@ -228,14 +228,14 @@ TEST(Define, pragma_one_with_include) {
         #include \"../TestView.h\"  \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
@@ -252,14 +252,14 @@ TEST(Define, _T) {
         #define FT2_SITE_TABLE_INI _T(\"SiteTable.ini\")            \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
@@ -282,14 +282,14 @@ TEST(Enum, define_with_enum) {
         } SCANF_STYLE;                                              \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 3 == RunCheckFormStream(MemoBoard, SourceCode));
@@ -312,14 +312,14 @@ TEST(Enum, NumbSystem) {
         } NumbSystem;   \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   pCfgData->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
@@ -338,14 +338,14 @@ TEST(Enum, pragma_once_ONLY) {
                 #pragma once \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
@@ -363,14 +363,14 @@ TEST(Enum, pragma_one_above_enum) {
         };                   \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -393,17 +393,17 @@ TEST(Struct, TCHAR) {
         };                                          \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
   pCfgData->General.Options.bBypassInvalidDecl = false;
   pCfgData->Hungarian.NullStringList.push_back(MappingPair("TCHAR[]", "sz"));
-  pAppCxt->MemoBoard.Config.ReformatCStringMap(pCfgData->Hungarian.NullStringList);
+  AppCxt.MemoBoard.Config.ReformatCStringMap(pCfgData->Hungarian.NullStringList);
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
   EXPECT_EQ(true, 1 == MemoBoard.GetTotalChecked());
@@ -416,10 +416,10 @@ TEST(Struct, TCHAR) {
   EXPECT_EQ(true, 1 == MemoBoard.Assert.nErrorOccurred);
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
 
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
   pCfgData->General.Options.bBypassInvalidDecl = true;
   pCfgData->Hungarian.NullStringList.push_back(MappingPair("TCHAR[]", "sz"));
-  pAppCxt->MemoBoard.Config.ReformatCStringMap(pCfgData->Hungarian.NullStringList);
+  AppCxt.MemoBoard.Config.ReformatCStringMap(pCfgData->Hungarian.NullStringList);
 
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -443,14 +443,14 @@ TEST(Struct, CONST_DEF) {
         } CONST_DEF, *PCONST_DEF;   \n\
         ";
 
-  APP_CONTEXT *pAppCxt = (APP_CONTEXT *)GetAppCxt();
-  MemoBoard &MemoBoard = pAppCxt->MemoBoard;
+  AppCxt &AppCxt       = AppCxt::getInstance();
+  MemoBoard &MemoBoard = AppCxt.MemoBoard;
   MemoBoard.Clear();
 
-  shared_ptr<ConfigData> pCfgData = pAppCxt->MemoBoard.Config.GetData();
+  shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
   string ErrorReason;
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
   pCfgData->General.Rules.StructTagName = RULETYPE_UPPER_SNAKE;
   EXPECT_EQ(true, 2 == RunCheckFormStream(MemoBoard, SourceCode));
 
@@ -466,7 +466,7 @@ TEST(Struct, CONST_DEF) {
   EXPECT_EQ(true, 0 == MemoBoard.Assert.nNumWarnings);
 
   // This macro, `MAX_STR`, invalided decles so checking will passed by config option.
-  pAppCxt->MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
+  AppCxt.MemoBoard.Config.LoadStream(ConfigTomlHungarian, ErrorReason);
   pCfgData->General.Options.bBypassInvalidDecl = true;
   pCfgData->General.Rules.StructTagName        = RULETYPE_UPPER_SNAKE;
   EXPECT_EQ(true, 2 == RunCheckFormStream(MemoBoard, SourceCode));

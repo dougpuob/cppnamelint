@@ -35,14 +35,14 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     return true;
   }
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-  pAppCxt->MemoBoard.Checked.nFunction++;
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.Checked.nFunction++;
 
   // This FunctionDecl may just an external function.
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid FunctionDecl. (%s)", FuncName.c_str());
 
-    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+    AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -55,9 +55,9 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     bResult = this->m_Detect.CheckFunction(this->m_pConfig->General.Rules.FunctionName, FuncName);
 
     if (!bResult) {
-      pAppCxt->MemoBoard.Error.nFunction++;
+      AppCxt.MemoBoard.Error.nFunction++;
 
-      pAppCxt->MemoBoard.ErrorDetailList.push_back(
+      AppCxt.MemoBoard.ErrorDetailList.push_back(
           this->createErrorDetail(pDecl, CheckType::CT_Function, bIsPtr, bIsArray, FuncName, ""));
     }
   }
@@ -78,7 +78,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
 
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
 
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
   this->m_DumpDecl.PrintDecl(pDecl);
 
   bool bStatus   = false;
@@ -87,7 +87,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid RecordDecl. (%s)", VarName.c_str());
 
-    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+    AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -100,14 +100,14 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
       DcLib::Log::Out(INFO_ALL, "It is an anonymous structure.");
       bStatus = true;
     } else {
-      pAppCxt->MemoBoard.Checked.nStruct++;
+      AppCxt.MemoBoard.Checked.nStruct++;
 
       RULETYPE RuleType = this->m_pConfig->General.Rules.StructTagName;
 
       bStatus = this->m_Detect.CheckStructVal(RuleType, "" /*no type*/, VarName, NOT_PTR);
       if (!bStatus) {
-        pAppCxt->MemoBoard.Error.nStruct++;
-        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+        AppCxt.MemoBoard.Error.nStruct++;
+        AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
             pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
       }
     }
@@ -118,14 +118,14 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
       DcLib::Log::Out(INFO_ALL, "It is an anonymous union.");
       bStatus = true;
     } else {
-      pAppCxt->MemoBoard.Checked.nUnion++;
+      AppCxt.MemoBoard.Checked.nUnion++;
 
       RULETYPE RuleType = this->m_pConfig->General.Rules.StructTagName;
 
       bStatus = this->m_Detect.CheckStructVal(RuleType, "" /*no type*/, VarName, NOT_PTR);
       if (!bStatus) {
-        pAppCxt->MemoBoard.Error.nUnion++;
-        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+        AppCxt.MemoBoard.Error.nUnion++;
+        AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
             pDecl, CheckType::CT_UnionTag, NOT_PTR, NOT_ARRAY, "", VarName, ""));
       }
     }
@@ -133,12 +133,12 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   }
   case TTK_Class: {
 
-    pAppCxt->MemoBoard.Checked.nClass++;
+    AppCxt.MemoBoard.Checked.nClass++;
 
     bool bStatus = this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.ClassName, VarName);
     if (!bStatus) {
-      pAppCxt->MemoBoard.Error.nClass++;
-      pAppCxt->MemoBoard.ErrorDetailList.push_back(
+      AppCxt.MemoBoard.Error.nClass++;
+      AppCxt.MemoBoard.ErrorDetailList.push_back(
           this->createErrorDetail(pDecl, CheckType::CT_Class, NOT_PTR, NOT_ARRAY, "", VarName, ""));
     }
     break;
@@ -167,8 +167,8 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid VarDecl. (%s)", pDecl->getName());
 
-    APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+    AppCxt &AppCxt = AppCxt::getInstance();
+    AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -194,8 +194,8 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid FieldDecl. (%s)", pDecl->getName());
 
-    APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
-    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+    AppCxt &AppCxt = AppCxt::getInstance();
+    AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -244,14 +244,14 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   bool bResult    = false;
 
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
   this->m_DumpDecl.PrintDecl(pDecl);
 
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid ParmVarDecl. (%s)", pDecl->getName());
 
-    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+    AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -267,11 +267,11 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
           this->m_pConfig->General.Rules.VariableName, VarType, VarName,
           this->m_pConfig->Hungarian.Options.PreferUpperCamelIfMissed, bIsPtr, bIsArray);
 
-      pAppCxt->MemoBoard.Checked.nParameter++;
+      AppCxt.MemoBoard.Checked.nParameter++;
       if (!bResult) {
-        pAppCxt->MemoBoard.Error.nParameter++;
+        AppCxt.MemoBoard.Error.nParameter++;
 
-        pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+        AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
             pDecl, CheckType::CT_Parameter, bIsPtr, bIsArray, VarType, VarName, ""));
       }
     }
@@ -282,7 +282,7 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
 
 bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
   this->m_DumpDecl.PrintDecl(pDecl);
 
@@ -291,18 +291,18 @@ bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
 
 bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
   this->m_DumpDecl.PrintDecl(pDecl);
 
-  pAppCxt->MemoBoard.Checked.nEnum++;
+  AppCxt.MemoBoard.Checked.nEnum++;
 
   string EnumValName = pDecl->getName();
 
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid EnumConstantDecl. (%s)", EnumValName.c_str());
 
-    pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+    AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
       return true;
@@ -312,11 +312,11 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   bool bStatus = checkRuleForEnumValue(pDecl);
   if (!bStatus) {
     string EnumTagName = "???1";
-    if (pAppCxt->MemoBoard.pLastEnumDecl) {
-      EnumTagName = pAppCxt->MemoBoard.pLastEnumDecl->getName();
+    if (AppCxt.MemoBoard.pLastEnumDecl) {
+      EnumTagName = AppCxt.MemoBoard.pLastEnumDecl->getName();
     }
-    pAppCxt->MemoBoard.Error.nEnum++;
-    pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+    AppCxt.MemoBoard.Error.nEnum++;
+    AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
         pDecl, CheckType::CT_EnumVal, NOT_PTR, NOT_ARRAY, EnumTagName, EnumValName, "???2"));
   }
 
@@ -325,12 +325,12 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
 
 bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   DcLib::Log::Out(INFO_ALL, "%s", __func__);
-  APP_CONTEXT *pAppCxt = ((APP_CONTEXT *)GetAppCxt());
+  AppCxt &AppCxt = AppCxt::getInstance();
 
   this->m_DumpDecl.PrintDecl(pDecl);
 
-  pAppCxt->MemoBoard.pLastEnumDecl = pDecl;
-  pAppCxt->MemoBoard.Checked.nEnum++;
+  AppCxt.MemoBoard.pLastEnumDecl = pDecl;
+  AppCxt.MemoBoard.Checked.nEnum++;
 
   string EnumTagName = pDecl->getName();
   if (!EnumTagName.empty()) {
@@ -338,7 +338,7 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
     if (pDecl->isInvalidDecl()) {
       DcLib::Log::Out(INFO_ALL, "Found an invalid EnumDecl. (%s)", EnumTagName.c_str());
 
-      pAppCxt->MemoBoard.Assert.nInvalidDecl++;
+      AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
       if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
         return true;
@@ -348,8 +348,8 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
     bool bStatus =
         this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.EnumTagName, EnumTagName);
     if (!bStatus) {
-      pAppCxt->MemoBoard.Error.nEnum++;
-      pAppCxt->MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+      AppCxt.MemoBoard.Error.nEnum++;
+      AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
           pDecl, CheckType::CT_EnumTag, NOT_PTR, NOT_ARRAY, "", EnumTagName, ""));
     }
   }

@@ -72,7 +72,7 @@ const string ConfigToml = "\
 namespace RunCheckUpperSnake {
 
 TEST(Variable, Integers) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -108,7 +108,7 @@ TEST(Variable, Integers) {
 }
 
 TEST(Variable, IntegerPointers) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -144,7 +144,7 @@ TEST(Variable, IntegerPointers) {
 }
 
 TEST(Variable, IntegerArraies) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -180,7 +180,7 @@ TEST(Variable, IntegerArraies) {
 }
 
 TEST(Enum, UsbEndpointDescriptor) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -219,7 +219,7 @@ TEST(Enum, UsbEndpointDescriptor) {
 }
 
 TEST(Struct, UsbEndpointDescriptor) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -261,7 +261,7 @@ TEST(Struct, UsbEndpointDescriptor) {
 }
 
 TEST(Function, FnPtr) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -295,7 +295,7 @@ TEST(Function, FnPtr) {
 }
 
 TEST(Function, MemCpy) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -336,7 +336,7 @@ TEST(Function, MemCpy) {
 }
 
 TEST(Class, DataClass) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
@@ -397,7 +397,7 @@ TEST(Class, DataClass) {
 
 // TODO: Seems this function never be supported.
 TEST(MacroFunction, GetMin) {
-  MemoBoard &MemoBoard = ((APP_CONTEXT *)GetAppCxt())->MemoBoard;
+  MemoBoard &MemoBoard = AppCxt::getInstance().MemoBoard;
   MemoBoard.Clear();
 
   string ErrorReason;
