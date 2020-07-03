@@ -84,7 +84,9 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     llvm::SmallString<128> IncDirPath(inc);
     llvm::sys::fs::make_absolute(IncDirPath);
 
-    vector<string> inc_dir = {string("-I"), IncDirPath.str()};
+    vector<string> inc_dir;
+    inc_dir.push_back("-I");
+    inc_dir.push_back(IncDirPath.c_str());
     DcLib::Log::Out(INFO_ALL, "-I %s", IncDirPath.c_str());
     Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::BEGIN));
   }
@@ -124,7 +126,8 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFileName)");
   } else {
     Memo.Checked.nFile++;
-    string FileBaseName = llvm::sys::path::filename(Memo.File.Source);
+    llvm::StringRef SrcPath(Memo.File.Source.c_str());
+    string FileBaseName = llvm::sys::path::filename(SrcPath).str();
 
     Detection Detect;
     GeneralRules *pRules = &pConfig->General.Rules;

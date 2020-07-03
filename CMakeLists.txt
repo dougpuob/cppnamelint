@@ -197,9 +197,6 @@ target_link_libraries(
     clangAST
     clangLex
     clangBasic
-    #------------------------#
-    # Build for Linux        #
-    #------------------------#
     clangAnalysis
     clangARCMigrate
     clangAST
@@ -230,41 +227,13 @@ target_link_libraries(
     clangToolingCore
     clangToolingInclusions
     clangToolingRefactor
-    #libclang
-    LLVMAArch64AsmParser
-    LLVMAArch64AsmPrinter
-    LLVMAArch64CodeGen
-    LLVMAArch64Desc
-    LLVMAArch64Disassembler
-    LLVMAArch64Info
-    LLVMAArch64Utils
     LLVMAggressiveInstCombine
-    LLVMAMDGPUAsmParser
-    LLVMAMDGPUAsmPrinter
-    LLVMAMDGPUCodeGen
-    LLVMAMDGPUDesc
-    LLVMAMDGPUDisassembler
-    LLVMAMDGPUInfo
-    LLVMAMDGPUUtils
     LLVMAnalysis
-    LLVMARMAsmParser
-    LLVMARMAsmPrinter
-    LLVMARMCodeGen
-    LLVMARMDesc
-    LLVMARMDisassembler
-    LLVMARMInfo
-    LLVMARMUtils
     LLVMAsmParser
     LLVMAsmPrinter
     LLVMBinaryFormat
     LLVMBitReader
     LLVMBitWriter
-    LLVMBPFAsmParser
-    LLVMBPFAsmPrinter
-    LLVMBPFCodeGen
-    LLVMBPFDesc
-    LLVMBPFDisassembler
-    LLVMBPFInfo
     LLVMCodeGen
     LLVMCore
     LLVMCoroutines
@@ -278,22 +247,11 @@ target_link_libraries(
     LLVMExecutionEngine
     LLVMFuzzMutate
     LLVMGlobalISel
-    LLVMHexagonAsmParser
-    LLVMHexagonCodeGen
-    LLVMHexagonDesc
-    LLVMHexagonDisassembler
-    LLVMHexagonInfo
     LLVMInstCombine
     LLVMInstrumentation
     LLVMInterpreter
     LLVMipo
     LLVMIRReader
-    LLVMLanaiAsmParser
-    LLVMLanaiAsmPrinter
-    LLVMLanaiCodeGen
-    LLVMLanaiDesc
-    LLVMLanaiDisassembler
-    LLVMLanaiInfo
     LLVMLibDriver
     LLVMLineEditor
     LLVMLinker
@@ -302,51 +260,18 @@ target_link_libraries(
     LLVMMCDisassembler
     LLVMMCJIT
     LLVMMCParser
-    LLVMMipsAsmParser
-    LLVMMipsAsmPrinter
-    LLVMMipsCodeGen
-    LLVMMipsDesc
-    LLVMMipsDisassembler
-    LLVMMipsInfo
-    LLVMMIRParser
-    LLVMMSP430AsmPrinter
-    LLVMMSP430CodeGen
-    LLVMMSP430Desc
-    LLVMMSP430Info
-    LLVMNVPTXAsmPrinter
-    LLVMNVPTXCodeGen
-    LLVMNVPTXDesc
-    LLVMNVPTXInfo
     LLVMObjCARCOpts
     LLVMObject
     LLVMObjectYAML
     LLVMOption
     LLVMOrcJIT
     LLVMPasses
-    LLVMPowerPCAsmParser
-    LLVMPowerPCAsmPrinter
-    LLVMPowerPCCodeGen
-    LLVMPowerPCDesc
-    LLVMPowerPCDisassembler
-    LLVMPowerPCInfo
     LLVMProfileData
     LLVMRuntimeDyld
     LLVMScalarOpts
     LLVMSelectionDAG
-    LLVMSparcAsmParser
-    LLVMSparcAsmPrinter
-    LLVMSparcCodeGen
-    LLVMSparcDesc
-    LLVMSparcDisassembler
-    LLVMSparcInfo
     LLVMSupport
     LLVMSymbolize
-    LLVMSystemZAsmParser
-    LLVMSystemZAsmPrinter
-    LLVMSystemZCodeGen
-    LLVMSystemZDesc
-    LLVMSystemZDisassembler
-    LLVMSystemZInfo
     LLVMTableGen
     LLVMTarget
     LLVMTestingSupport
@@ -359,12 +284,6 @@ target_link_libraries(
     LLVMX86Desc
     LLVMX86Disassembler
     LLVMX86Info
-    LLVMX86Utils
-    LLVMXCoreAsmPrinter
-    LLVMXCoreCodeGen
-    LLVMXCoreDesc
-    LLVMXCoreDisassembler
-    LLVMXCoreInfo
     LLVMXRay
     LTO
     clangParse

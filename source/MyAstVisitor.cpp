@@ -82,7 +82,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   this->m_DumpDecl.PrintDecl(pDecl);
 
   bool bStatus   = false;
-  string VarName = pDecl->getName();
+  string VarName = pDecl->getNameAsString();
 
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid RecordDecl. (%s)", VarName.c_str());
@@ -297,7 +297,7 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
 
   AppCxt.MemoBoard.Checked.nEnum++;
 
-  string EnumValName = pDecl->getName();
+  string EnumValName = pDecl->getNameAsString();
 
   if (pDecl->isInvalidDecl()) {
     DcLib::Log::Out(INFO_ALL, "Found an invalid EnumConstantDecl. (%s)", EnumValName.c_str());
@@ -332,7 +332,7 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   AppCxt.MemoBoard.pLastEnumDecl = pDecl;
   AppCxt.MemoBoard.Checked.nEnum++;
 
-  string EnumTagName = pDecl->getName();
+  string EnumTagName = pDecl->getNameAsString();
   if (!EnumTagName.empty()) {
 
     if (pDecl->isInvalidDecl()) {

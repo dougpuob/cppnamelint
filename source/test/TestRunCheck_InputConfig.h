@@ -1,6 +1,6 @@
 #include <string>
 
-const std::string ConfigTomlHungarian = "\
+const std::string ConfigTomlHungarian = "\n\
     [General.Options]                                       \n\
       Version                 = 0.3                         \n\
       CheckFileName           = false                       \n\
@@ -131,5 +131,5 @@ const std::string ConfigTomlHungarian = "\
     \"BYTE\"                   = \"by\"                     \n\
     \"HANDLE\"                 = \"h\"                      \n\
     \"BOOLEAN\"                = \"b\"                      \n\
-    \"LONGLONG\"               = \"ll\"                     \n\
-    ";
+    \"LONGLONG\"               = \"ll\"                     \n";
+    

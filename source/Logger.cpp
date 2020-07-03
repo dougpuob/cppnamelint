@@ -93,7 +93,7 @@ size_t Log::Out(const FlagInfo &FlagInfo, const char *szFmt, ...) {
   //
   PaddingInfo.append("[");
   if (FlagInfo.bPrintFileName) {
-    string FileName = llvm::sys::path::filename(FlagInfo.FileName);
+    string FileName = llvm::sys::path::filename(FlagInfo.FileName).str();
     PaddingInfo.append(FileName + string("!") + FlagInfo.FuncName);
   }
   if (FlagInfo.bPrintLineNumber) {
