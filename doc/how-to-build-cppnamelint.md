@@ -24,9 +24,9 @@ Attention! before continue, this project is based on LLVM's libtooling library, 
 `$ git clone https://github.com/dougpuob/cpp-namelint.git cpp-namelint.git`
 
 2. **Set environment variable**  
-   - **Windows** : $ SET NAMELINT_LLVM_LIB    "C:\llvm-project.git"
-   - **Linux**   : $ export NAMELINT_LLVM_LIB "~/llvm-project.git"
-   - **macOS**   : $ export NAMELINT_LLVM_LIB "~/llvm-project.git"
+   - **Windows** : $ SET LLVM_DIR_CPPNAMELINT    "C:\llvm-project.git"
+   - **Linux**   : $ export LLVM_DIR_CPPNAMELINT "~/llvm-project.git"
+   - **macOS**   : $ export LLVM_DIR_CPPNAMELINT "~/llvm-project.git"
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 ## Build this project

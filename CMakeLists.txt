@@ -46,7 +46,7 @@ endif()
 
 
 ###############################################################################
-set(NAMELINT_LLVM_LIB_PATH $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/lib)
+set(LLVM_DIR_CPPNAMELINT_PATH $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/lib)
 if(WIN32)
     set(EXTERNAL_LIB Version)
 elseif(UNIX AND NOT APPLE)
@@ -58,18 +58,18 @@ endif()
 
 ###############################################################################
 include_directories(
-    $ENV{NAMELINT_LLVM_LIB}/llvm/include
-    $ENV{NAMELINT_LLVM_LIB}/clang/include
-    $ENV{NAMELINT_LLVM_LIB}/build/include
-    $ENV{NAMELINT_LLVM_LIB}/build/tools/clang/include
-    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include
-    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include
-    $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/llvm/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/clang/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/build/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/build/tools/clang/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/clang/include
+    $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/llvm/include
     submodule/googletest.git/googletest/include
     submodule/json.git/include
 )
 
-link_directories(${NAMELINT_LLVM_LIB_PATH})
+link_directories(${LLVM_DIR_CPPNAMELINT_PATH})
 
 
 ###############################################################################
@@ -91,14 +91,14 @@ else()
 endif()
 
 message("BUILD_TYPE                 : ${BUILD_TYPE}")
-message("NAMELINT_LLVM_LIB          : $ENV{NAMELINT_LLVM_LIB}")
-message("NAMELINT_LLVM_LIB_PATH     : ${NAMELINT_LLVM_LIB_PATH}" )
-#message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
-message("INC_PATH_1                 : $ENV{NAMELINT_LLVM_LIB}/llvm/include" )
-message("INC_PATH_2                 : $ENV{NAMELINT_LLVM_LIB}/clang/include" )
-message("INC_PATH_3                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/include" )
-message("INC_PATH_4                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/clang/include" )
-message("INC_PATH_5                 : $ENV{NAMELINT_LLVM_LIB}/build/${BUILD_TYPE}/tools/llvm/include" )
+message("LLVM_DIR_CPPNAMELINT       : $ENV{LLVM_DIR_CPPNAMELINT}")
+message("LLVM_DIR_CPPNAMELINT_PATH  : ${LLVM_DIR_CPPNAMELINT_PATH}" )
+#message("CMAKE_CXX_FLAGS           : ${CMAKE_CXX_FLAGS}" )
+message("INC_PATH_1                 : $ENV{LLVM_DIR_CPPNAMELINT}/llvm/include" )
+message("INC_PATH_2                 : $ENV{LLVM_DIR_CPPNAMELINT}/clang/include" )
+message("INC_PATH_3                 : $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/include" )
+message("INC_PATH_4                 : $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/clang/include" )
+message("INC_PATH_5                 : $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/llvm/include" )
 
 
 ###############################################################################

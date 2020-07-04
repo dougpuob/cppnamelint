@@ -11,7 +11,7 @@ jobs:
   - job: BuildOnWindows
 
     variables:
-      - name: NAMELINT_LLVM_LIB
+      - name: LLVM_DIR_CPPNAMELINT
         value: $(System.DefaultWorkingDirectory)\llvm_8_0_0_msvc2019_rel_64bit
       - name: BUILD_TYPE
         value: Release
@@ -89,7 +89,7 @@ jobs:
   - job: BuildOnLinux
 
     variables:
-      - name: NAMELINT_LLVM_LIB
+      - name: LLVM_DIR_CPPNAMELINT
         value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit
       - name: BUILD_TYPE
         value: Release
@@ -178,7 +178,7 @@ jobs:
   - job: BuildOnMacOS
 
     variables:
-      - name: NAMELINT_LLVM_LIB
+      - name: LLVM_DIR_CPPNAMELINT
         value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
       - name: BUILD_TYPE
         value: Release
