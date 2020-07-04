@@ -77,57 +77,51 @@ bool DumpDecl::PrintDecl(Decl *pDecl) {
 }
 
 void DumpDecl::_PrintNamedDecl(NamedDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "NamedDecl");
-
-  //DcLib::Log::Out(INFO_ALL, "Decl.getName()                                = %s", pDecl->getName().str().c_str());
-  DcLib::Log::Out(INFO_ALL, "Decl.getNameAsString()                        = %s", pDecl->getNameAsString().c_str());
-  DcLib::Log::Out(INFO_ALL, "Decl.getDeclName()                            = %s", pDecl->getDeclName().getAsString().c_str());
-  DcLib::Log::Out(INFO_ALL, "Decl.getDeclKindName()                        = %s", pDecl->getDeclKindName());
-  DcLib::Log::Out(INFO_ALL, "Decl.getQualifiedNameAsString()               = %s", pDecl->getQualifiedNameAsString().c_str());
-  DcLib::Log::Out(INFO_ALL, "Decl.isCanonicalDecl()                        = %d", pDecl->isCanonicalDecl());
-  DcLib::Log::Out(INFO_ALL, "Decl.isCXXClassMember()                       = %d", pDecl->isCXXClassMember());
-  DcLib::Log::Out(INFO_ALL, "Decl.isCXXInstanceMember()                    = %d", pDecl->isCXXInstanceMember());
-  DcLib::Log::Out(INFO_ALL, "Decl.isDefinedOutsideFunctionOrMethod()       = %d", pDecl->isDefinedOutsideFunctionOrMethod());
-  DcLib::Log::Out(INFO_ALL, "Decl.isDeprecated()                           = %d", pDecl->isDeprecated());
-  DcLib::Log::Out(INFO_ALL, "Decl.isExternallyDeclarable()                 = %d", pDecl->isExternallyDeclarable());
-  DcLib::Log::Out(INFO_ALL, "Decl.isExternallyVisible()                    = %d", pDecl->isExternallyVisible());
-  DcLib::Log::Out(INFO_ALL, "Decl.isFirstDecl()                            = %d", pDecl->isFirstDecl());
-  DcLib::Log::Out(INFO_ALL, "Decl.isFromASTFile()                          = %d", pDecl->isFromASTFile());
-  DcLib::Log::Out(INFO_ALL, "Decl.isFunctionOrFunctionTemplate()           = %d", pDecl->isFunctionOrFunctionTemplate());
-  DcLib::Log::Out(INFO_ALL, "Decl.isImplicit()                             = %d", pDecl->isImplicit());
-  DcLib::Log::Out(INFO_ALL, "Decl.isInAnonymousNamespace()                 = %d", pDecl->isInAnonymousNamespace());
-  DcLib::Log::Out(INFO_ALL, "Decl.isInStdNamespace()                       = %d", pDecl->isInStdNamespace());
-  DcLib::Log::Out(INFO_ALL, "Decl.isInvalidDecl()                          = %d", pDecl->isInvalidDecl());
-  DcLib::Log::Out(INFO_ALL, "Decl.isLinkageValid()                         = %d", pDecl->isLinkageValid());
-  DcLib::Log::Out(INFO_ALL, "Decl.isLocalExternDecl()                      = %d", pDecl->isLocalExternDecl());
-  DcLib::Log::Out(INFO_ALL, "Decl.isModulePrivate()                        = %d", pDecl->isModulePrivate());
-  DcLib::Log::Out(INFO_ALL, "Decl.isOutOfLine()                            = %d", pDecl->isOutOfLine());
-  DcLib::Log::Out(INFO_ALL, "Decl.isParameterPack()                        = %d", pDecl->isParameterPack());
-  DcLib::Log::Out(INFO_ALL, "Decl.isReferenced()                           = %d", pDecl->isReferenced());
-  DcLib::Log::Out(INFO_ALL, "Decl.isTemplated()                            = %d", pDecl->isTemplated());
-  DcLib::Log::Out(INFO_ALL, "Decl.isTemplateDecl()                         = %d", pDecl->isTemplateDecl());
-  DcLib::Log::Out(INFO_ALL, "Decl.isTemplateParameter()                    = %d", pDecl->isTemplateParameter());
-  DcLib::Log::Out(INFO_ALL, "Decl.isTemplateParameterPack()                = %d", pDecl->isTemplateParameterPack());
-  DcLib::Log::Out(INFO_ALL, "Decl.isThisDeclarationReferenced()            = %d", pDecl->isThisDeclarationReferenced());
-  DcLib::Log::Out(INFO_ALL, "Decl.isTopLevelDeclInObjCContainer()          = %d", pDecl->isTopLevelDeclInObjCContainer());
-  DcLib::Log::Out(INFO_ALL, "Decl.isUnavailable()                          = %d", pDecl->isUnavailable());
-  DcLib::Log::Out(INFO_ALL, "Decl.isUsed()                                 = %d", pDecl->isUsed());
-  DcLib::Log::Out(INFO_ALL, "Decl.isWeakImported()                         = %d", pDecl->isWeakImported());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.getNameAsString()                   = %s", pDecl->getNameAsString().c_str());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.getDeclName()                       = %s", pDecl->getDeclName().getAsString().c_str());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.getDeclKindName()                   = %s", pDecl->getDeclKindName());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.getQualifiedNameAsString()          = %s", pDecl->getQualifiedNameAsString().c_str());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isCanonicalDecl()                   = %d", pDecl->isCanonicalDecl());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isCXXClassMember()                  = %d", pDecl->isCXXClassMember());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isCXXInstanceMember()               = %d", pDecl->isCXXInstanceMember());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isDefinedOutsideFunctionOrMethod()  = %d", pDecl->isDefinedOutsideFunctionOrMethod());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isDeprecated()                      = %d", pDecl->isDeprecated());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isExternallyDeclarable()            = %d", pDecl->isExternallyDeclarable());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isExternallyVisible()               = %d", pDecl->isExternallyVisible());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isFirstDecl()                       = %d", pDecl->isFirstDecl());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isFromASTFile()                     = %d", pDecl->isFromASTFile());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isFunctionOrFunctionTemplate()      = %d", pDecl->isFunctionOrFunctionTemplate());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isImplicit()                        = %d", pDecl->isImplicit());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isInAnonymousNamespace()            = %d", pDecl->isInAnonymousNamespace());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isInStdNamespace()                  = %d", pDecl->isInStdNamespace());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isInvalidDecl()                     = %d", pDecl->isInvalidDecl());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isLinkageValid()                    = %d", pDecl->isLinkageValid());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isLocalExternDecl()                 = %d", pDecl->isLocalExternDecl());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isModulePrivate()                   = %d", pDecl->isModulePrivate());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isOutOfLine()                       = %d", pDecl->isOutOfLine());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isParameterPack()                   = %d", pDecl->isParameterPack());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isReferenced()                      = %d", pDecl->isReferenced());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isTemplated()                       = %d", pDecl->isTemplated());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isTemplateDecl()                    = %d", pDecl->isTemplateDecl());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isTemplateParameter()               = %d", pDecl->isTemplateParameter());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isTemplateParameterPack()           = %d", pDecl->isTemplateParameterPack());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isThisDeclarationReferenced()       = %d", pDecl->isThisDeclarationReferenced());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isTopLevelDeclInObjCContainer()     = %d", pDecl->isTopLevelDeclInObjCContainer());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isUnavailable()                     = %d", pDecl->isUnavailable());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isUsed()                            = %d", pDecl->isUsed());
+  DcLib::Log::Out(INFO_ALL, "NamedDecl.isWeakImported()                    = %d", pDecl->isWeakImported());
 }
 
 void DumpDecl::_PrintValueDecl(ValueDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "ValueDecl");
   DcLib::Log::Out(INFO_ALL, "ValueDecl.isWeak()                            = %d", pDecl->isWeak());
 }
 
 void DumpDecl::_PrintFieldDecl(FieldDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "FieldDecl");
   DcLib::Log::Out(INFO_ALL, "FieldDecl.isBitField()                        = %d", pDecl->isBitField());
   DcLib::Log::Out(INFO_ALL, "FieldDecl.isAnonymousStructOrUnion()          = %d", pDecl->isAnonymousStructOrUnion());
 }
 
 void DumpDecl::_PrintVarDecl(VarDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "VarDecl");
   DcLib::Log::Out(INFO_ALL, "VarDecl.isExternC()                           = %d", pDecl->isExternC());
   DcLib::Log::Out(INFO_ALL, "VarDecl.isInExternCContext()                  = %d", pDecl->isInExternCContext());
   DcLib::Log::Out(INFO_ALL, "VarDecl.isInExternCXXContext()                = %d", pDecl->isInExternCXXContext());
@@ -140,7 +134,6 @@ void DumpDecl::_PrintVarDecl(VarDecl *pDecl) {
 }
 
 void DumpDecl::_PrintFunctionDecl(FunctionDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "FunctionDecl");
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.getNameInfo()                    = %s", pDecl->getNameInfo().getAsString().c_str());
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.isDefined()                      = %d", pDecl->isDefined());
   DcLib::Log::Out(INFO_ALL, "FunctionDecl.isThisDeclarationADefinition()   = %d", pDecl->isThisDeclarationADefinition());
@@ -159,7 +152,6 @@ void DumpDecl::_PrintFunctionDecl(FunctionDecl *pDecl) {
 }
 
 void DumpDecl::_PrintParmVarDecl(ParmVarDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "ParmVarDecl");
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.isObjCMethodParameter()           = %d", pDecl->isObjCMethodParameter());
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasDefaultArg()                   = %d", pDecl->hasDefaultArg());
   DcLib::Log::Out(INFO_ALL, "ParmVarDecl.hasUnparsedDefaultArg()           = %d", pDecl->hasUnparsedDefaultArg());
@@ -186,7 +178,6 @@ void DumpDecl::_PrintRecordDecl(RecordDecl *pDecl) {
     break;
   }
 
-  DcLib::Log::Out(INFO_ALL, "RecordDecl");
   DcLib::Log::Out(INFO_ALL, "RecordDecl.getTagKind() [switch-case]         = %s", szTagKind);
   DcLib::Log::Out(INFO_ALL, "RecordDecl.hasFlexibleArrayMember()           = %d", pDecl->hasFlexibleArrayMember());
   DcLib::Log::Out(INFO_ALL, "RecordDecl.isAnonymousStructOrUnion()         = %d", pDecl->isAnonymousStructOrUnion());
