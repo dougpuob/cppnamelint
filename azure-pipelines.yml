@@ -66,7 +66,7 @@ jobs:
       - task: GitHubRelease@1
         inputs:
           gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
+          repositoryName: 'dougpuob/cppnamelint'
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
@@ -155,7 +155,7 @@ jobs:
       - task: GitHubRelease@1
         inputs:
           gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
+          repositoryName: 'dougpuob/cppnamelint'
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
@@ -240,7 +240,7 @@ jobs:
       - task: GitHubRelease@1
         inputs:
           gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cpp-namelint'
+          repositoryName: 'dougpuob/cppnamelint'
           action: 'edit'
           target: '$(Build.SourceVersion)'
           tag: 'v0.3*'
