@@ -132,4 +132,3 @@ const std::string ConfigTomlHungarian = "\n\
     \"HANDLE\"                 = \"h\"                      \n\
     \"BOOLEAN\"                = \"b\"                      \n\
     \"LONGLONG\"               = \"ll\"                     \n";
-    

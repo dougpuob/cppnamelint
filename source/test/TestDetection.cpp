@@ -355,7 +355,12 @@ TEST(Config_Detect_CheckVariable, InputParms_Good)
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "int"      , "iMyFunc"   , PREFER_UC, NOT_PTR, NOT_ARRAY));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "uint8_t"  , "u8MyFunc"  , PREFER_UC, NOT_PTR, NOT_ARRAY));
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "uint16_t" , "u16MyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));
-    
+
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     ,      "vector<string>" , "pVect" , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "std::vector<string>" , "pVect" , PREFER_UC, IS_PTR, NOT_ARRAY));
+    EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "GeneralRules"        , "pRule" , PREFER_UC, IS_PTR, NOT_ARRAY));
+
+
     auto& IgnorePrefixs = pCfgData->General.IgnoredList.VariablePrefix;
     IgnorePrefixs.push_back("m_");
     EXPECT_EQ(true, Detect.CheckVariable(RULETYPE_HUNGARIAN     , "int"      , "m_iMyFunc" , PREFER_UC, NOT_PTR, NOT_ARRAY));

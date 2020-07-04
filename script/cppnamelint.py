@@ -260,10 +260,7 @@ def convert_py_args_to_exe_args(py_args) -> str:
 
 def find_checkdir_files(start_dir: str, cfgfile: str, extlist: []) -> []:
     paired_list = []
-
-    include_src_files: [] = ['.c', '.cpp', '.h']
-    include_cfg_files: [] = ['.toml']
-
+    
     file_obj = File()
     found_src_files = file_obj.find_files(start_dir, '*', extlist)
 
@@ -272,7 +269,7 @@ def find_checkdir_files(start_dir: str, cfgfile: str, extlist: []) -> []:
         src_dir_name  = os.path.dirname(src)
         src_file_name = os.path.basename(src)
         src_ext_name  = ''
-        for ext in include_src_files:
+        for ext in extlist:
             if src_file_name.endswith(ext):
                 src_ext_name = ext
                 break
@@ -329,6 +326,15 @@ def run_util(exec_name:str, arg_list:[], working_dir:str='') -> [int, str]:
 def run_util_checkdir_files(exec_file_path, py_args, paired_samples:[], print_output:bool) -> int:
     first_error_code = 0
     full_output_string = ''
+    
+    
+    print('The following files will be checked ...')
+    print('------------------------------------------------------------')
+    idx = 1
+    for paired in paired_samples:
+        print(str(idx) + '\t: ' + paired['src'])    
+        idx = idx + 1
+    print('------------------------------------------------------------\n\n')
 
     for paired in paired_samples:
 

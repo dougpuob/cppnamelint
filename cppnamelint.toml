@@ -43,7 +43,7 @@ FunctionName            = 0 # 0: Default (UpperCamel)
                             # 2: lowerCamel
                             # 3: lower_snake
 
-VariableName            = 0 # 0: Default (UpperCamel)
+VariableName            = 4 # 0: Default (Hungarian)
                             # 1: UpperCamel
                             # 2: lowerCamel
                             # 3: lower_snake
@@ -91,7 +91,10 @@ VariablePrefix          = [ "m_" ]
 EnumTagPrefix           = [ "_", "e" ]
 StructTagPrefix         = [ "_", "s" ]
 
-FunctionName            = ["main", "newASTConsumer"]
+FunctionName            = ["main",           # Entry for loader of executable binary file.
+                           "newASTConsumer", # 
+                           "TEST"            # Function of Google Test 
+                           ]
 
 
 [Camels.Options]

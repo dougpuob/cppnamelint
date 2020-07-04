@@ -197,49 +197,81 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
   // General.Rules.FileName
   const toml::Value *pRuleFileName = ParseRsValue.find("General.Rules.FileName");
   if (pRuleFileName && pRuleFileName->is<int>()) {
-    this->m_pConfig->General.Rules.FileName = (RULETYPE)pRuleFileName->as<int>();
+    this->m_pConfig->General.Rules.FileName = RULETYPE_UPPER_CAMEL;
+    int iRet                                = pRuleFileName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.FileName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.FunctionName
   const toml::Value *pRuleFunctionName = ParseRsValue.find("General.Rules.FunctionName");
   if (pRuleFunctionName && pRuleFunctionName->is<int>()) {
-    this->m_pConfig->General.Rules.FunctionName = (RULETYPE)pRuleFunctionName->as<int>();
+    this->m_pConfig->General.Rules.FunctionName = RULETYPE_UPPER_CAMEL;
+    int iRet                                    = pRuleFunctionName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.FunctionName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.VariableName
   const toml::Value *pRuleVariableName = ParseRsValue.find("General.Rules.VariableName");
   if (pRuleVariableName && pRuleVariableName->is<int>()) {
-    this->m_pConfig->General.Rules.VariableName = (RULETYPE)pRuleVariableName->as<int>();
+    this->m_pConfig->General.Rules.VariableName = RULETYPE_HUNGARIAN;
+    int iRet                                    = pRuleVariableName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.VariableName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.ClassName
   const toml::Value *pRuleClassName = ParseRsValue.find("General.Rules.ClassName");
   if (pRuleClassName && pRuleClassName->is<int>()) {
-    this->m_pConfig->General.Rules.ClassName = (RULETYPE)pRuleClassName->as<int>();
+    this->m_pConfig->General.Rules.ClassName = RULETYPE_UPPER_CAMEL;
+    int iRet                                 = pRuleClassName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.ClassName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.EnumTagName
   const toml::Value *pRuleEnumTagName = ParseRsValue.find("General.Rules.EnumTagName");
   if (pRuleEnumTagName && pRuleEnumTagName->is<int>()) {
-    this->m_pConfig->General.Rules.EnumTagName = (RULETYPE)pRuleEnumTagName->as<int>();
+    this->m_pConfig->General.Rules.EnumTagName = RULETYPE_UPPER_CAMEL;
+    int iRet                                   = pRuleEnumTagName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.EnumTagName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.EnumValueName
   const toml::Value *pRuleEnumValueName = ParseRsValue.find("General.Rules.EnumValueName");
   if (pRuleEnumValueName && pRuleEnumValueName->is<int>()) {
-    this->m_pConfig->General.Rules.EnumValueName = (RULETYPE)pRuleEnumValueName->as<int>();
+    this->m_pConfig->General.Rules.EnumValueName = RULETYPE_UPPER_CAMEL;
+    int iRet                                     = pRuleEnumValueName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.EnumValueName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.StructTagName
   const toml::Value *pRuleStructTagName = ParseRsValue.find("General.Rules.StructTagName");
   if (pRuleStructTagName && pRuleStructTagName->is<int>()) {
-    this->m_pConfig->General.Rules.StructTagName = (RULETYPE)pRuleStructTagName->as<int>();
+    this->m_pConfig->General.Rules.StructTagName = RULETYPE_UPPER_CAMEL;
+    int iRet                                     = pRuleStructTagName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.StructTagName = (RULETYPE)iRet;
+    }
   }
 
   // General.Rules.StructValueName
   const toml::Value *pRuleStructValueName = ParseRsValue.find("General.Rules.StructValueName");
   if (pRuleStructValueName && pRuleStructValueName->is<int>()) {
-    this->m_pConfig->General.Rules.StructValueName = (RULETYPE)pRuleStructValueName->as<int>();
+    this->m_pConfig->General.Rules.StructValueName = RULETYPE_UPPER_CAMEL;
+    int iRet                                       = pRuleStructValueName->as<int>();
+    if ((RULETYPE)iRet != RULETYPE_DEFAULT) {
+      this->m_pConfig->General.Rules.StructValueName = (RULETYPE)iRet;
+    }
   }
 
   // ==----------------------------------------------------------------------------------

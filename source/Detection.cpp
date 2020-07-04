@@ -316,12 +316,12 @@ bool Detection::_RemoveNamespacesAndElements(string &Text) {
   std::smatch Match;
   std::string Result;
 
-  // Remove elements
-  std::regex Regex("<[a-zA-Z0-9\\*\\:]*>");
-  if (std::regex_search(Text, Match, Regex) && Match.size() >= 1) {
-    bStatus = true;
-    String::Replace(Text, Match[0], "");
-  }
+  //// Remove elements
+  // std::regex Regex("<[a-zA-Z0-9\\*\\:]*>");
+  // if (std::regex_search(Text, Match, Regex) && Match.size() >= 1) {
+  //  bStatus = true;
+  //  String::Replace(Text, Match[0], "");
+  //}
 
   // Remove namespaces
   std::size_t nFound = Text.find_last_of("::");

@@ -28,6 +28,7 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
    - Know more, please start from **Usage**.
 
 1. **You are a developer** 
+   - This project is based on `llvmorg-8.0.0`.
    - How to build this project:
      - https://github.com/dougpuob/cpp-namelint/blob/master/doc/how-to-build-cppnamelint.md
    - How to build LLVM:
