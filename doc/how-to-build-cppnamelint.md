@@ -37,7 +37,7 @@ Attention! before continue, this project is based on LLVM's libtooling library, 
 
 ### Linux
    1. `$ cd cpp-namelint.git/script`  
-   1. `$ build-pack-linux.sh`
+   1. `$ build-bin-linux.sh` 
    1. `$ cd cpp-namelint.git/build/linux`
    1. `$ make`
 
