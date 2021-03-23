@@ -94,8 +94,8 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   // Add `-E` option (Only run the preprocessor) to ClantTool.
   //
-  // Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-E", // Run the preprocessor
-  //                                                       ArgumentInsertPosition::BEGIN));
+  Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-E", // Run the preprocessor
+                                                         ArgumentInsertPosition::BEGIN));
 
   //
   // Add `verbose` option to ClantTool.
@@ -111,6 +111,9 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--language=c++", // C++
                                                          ArgumentInsertPosition::BEGIN));
   DcLib::Log::Out(INFO_ALL, "--language=c++");
+
+    Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-cc1",
+                                                         ArgumentInsertPosition::BEGIN));
 
   //
   // Bypass DiagnosticConsumer to disable diagnostic feature.
@@ -136,7 +139,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
       Memo.ErrorDetailList.push_back(new ErrorDetail(FileBaseName, ""));
     }
   }
-
+ 
   //
   // Check input source file except file name which are possiblely did above.
   //

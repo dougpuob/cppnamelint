@@ -6,6 +6,28 @@ set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
+#set(LLVM_CMAKE_PATH "/home/dougpuob/petzone/llvm-lib-8.0.1-debug/lib/cmake/llvm/LLVMConfig.cmake")
+
+#set (LLVM_INSTALL_DIR "/home/dougpuob/petzone/llvm/llvm-prebuilt-install/llvmorg-8.0.0-gcc-debug")
+set (LLVM_INSTALL_DIR "/home/dougpuob/petzone/llvm/llvm-prebuilt-install/llvmorg-12.0.0-gcc-debug")
+
+set (SEARCH_PATH
+    ${LLVM_INSTALL_DIR}
+    ${LLVM_INSTALL_DIR}/lib/cmake
+    ${LLVM_INSTALL_DIR}/lib/cmake/llvm
+    ${LLVM_INSTALL_DIR}/lib/cmake/clang
+    ${LLVM_INSTALL_DIR}/share/clang/cmake/
+    ${LLVM_INSTALL_DIR}/share/llvm/cmake/
+)
+
+find_package(LLVM REQUIRED CONFIG PATHS ${SEARCH_PATH} NO_DEFAULT_PATH)
+message(STATUS "Found LLVM  : ${LLVM_INCLUDE_DIRS} ${LLVM_PACKAGE_VERSION}")
+
+find_package(Clang REQUIRED CONFIG PATHS ${SEARCH_PATH} NO_DEFAULT_PATH)
+
+add_definitions(${LLVM_DEFINITIONS})
+include_directories(${LLVM_INCLUDE_DIRS})
+llvm_map_components_to_libnames(LLVM_LIBS core clang native support)
 
 ###############################################################################
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -36,7 +58,7 @@ elseif(UNIX AND NOT APPLE)
     set(CC   "/usr/bin/gcc")
     set(CXX  "/usr/bin/g++")
     string(TOLOWER ${BUILD_TYPE} BUILD_TYPE)
-    set(CMAKE_CXX_FLAGS "-frtti -g")
+    set(CMAKE_CXX_FLAGS "-fno-rtti -g")
 elseif(APPLE)
     set(CC   "/usr/bin/clang")
     set(CXX  "/usr/bin/clang++")
@@ -46,7 +68,10 @@ endif()
 
 
 ###############################################################################
-set(LLVM_DIR_CPPNAMELINT_PATH $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/lib)
+if (LLVM_DIR_CPPNAMELINT)
+    set(LLVM_DIR_CPPNAMELINT_PATH $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/lib)
+endif()
+
 if(WIN32)
     set(EXTERNAL_LIB Version)
 elseif(UNIX AND NOT APPLE)
@@ -57,20 +82,31 @@ endif()
 
 
 ###############################################################################
-include_directories(
-    $ENV{LLVM_DIR_CPPNAMELINT}/llvm/include
-    $ENV{LLVM_DIR_CPPNAMELINT}/clang/include
-    $ENV{LLVM_DIR_CPPNAMELINT}/build/include
-    $ENV{LLVM_DIR_CPPNAMELINT}/build/tools/clang/include
-    $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/include
-    $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/clang/include
-    $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/llvm/include
-    submodule/googletest.git/googletest/include
-    submodule/json.git/include
-)
-
-link_directories(${LLVM_DIR_CPPNAMELINT_PATH})
-
+if (LLVM_DIR_CPPNAMELINT)
+    include_directories(
+        $ENV{LLVM_DIR_CPPNAMELINT}/llvm/include
+        $ENV{LLVM_DIR_CPPNAMELINT}/clang/include
+        $ENV{LLVM_DIR_CPPNAMELINT}/build/include
+        $ENV{LLVM_DIR_CPPNAMELINT}/build/tools/clang/include
+        $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/include
+        $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/clang/include
+        $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/tools/llvm/include
+        submodule/googletest.git/googletest/include
+        submodule/json.git/include
+    )
+else()
+    include_directories(
+        ${LLVM_INCLUDE_DIRS}
+        submodule/json.git/include
+        submodule/googletest.git/googletest/include
+    )
+    add_definitions(
+        ${LLVM_DEFINITIONS}
+    )
+    # Find the libraries that correspond to the LLVM components
+    # that we wish to use
+    llvm_map_components_to_libnames(llvm_libs support core irreader)
+endif()
 
 ###############################################################################
 message("CMAKE_CURRENT_SOURCE_DIR   : ${CMAKE_CURRENT_SOURCE_DIR}"  )
@@ -79,6 +115,8 @@ message("CMAKE_SYSTEM               : ${CMAKE_SYSTEM}"              )
 message("CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}"         )
 message("CMAKE_SYSTEM_VERSION       : ${CMAKE_SYSTEM_VERSION}"      )
 message("CMAKE_SYSTEM_PROCESSOR     : ${CMAKE_SYSTEM_PROCESSOR}"    )
+message("LLVM_DIR                   : ${LLVM_DIR}"                  )
+message("LLVM_CMAKE_PATH            : ${LLVM_CMAKE_PATH}"           )
 
 if(WIN32)
     message("Platform                   : WIN32" )
@@ -93,7 +131,7 @@ endif()
 message("BUILD_TYPE                 : ${BUILD_TYPE}")
 message("LLVM_DIR_CPPNAMELINT       : $ENV{LLVM_DIR_CPPNAMELINT}")
 message("LLVM_DIR_CPPNAMELINT_PATH  : ${LLVM_DIR_CPPNAMELINT_PATH}" )
-#message("CMAKE_CXX_FLAGS           : ${CMAKE_CXX_FLAGS}" )
+message("CMAKE_CXX_FLAGS            : ${CMAKE_CXX_FLAGS}" )
 message("INC_PATH_1                 : $ENV{LLVM_DIR_CPPNAMELINT}/llvm/include" )
 message("INC_PATH_2                 : $ENV{LLVM_DIR_CPPNAMELINT}/clang/include" )
 message("INC_PATH_3                 : $ENV{LLVM_DIR_CPPNAMELINT}/build/${BUILD_TYPE}/include" )
@@ -164,6 +202,11 @@ add_executable(
     source/test/TestRunCheck_CppStruct.cpp
 )
 
+set (SELECTED_CLANG_LIBS
+    clangTooling
+    clangBasic
+    clangASTMatchers
+    )
 
 ###############################################################################
 target_link_libraries(
@@ -176,129 +219,7 @@ target_link_libraries(
     #------------------------#
     # LLVM's libraries       #
     #------------------------#
-    LLVMBinaryFormat
-    LLVMBitReader
-    LLVMCore
-    LLVMDemangle
-    LLVMMC
-    LLVMProfileData
-    LLVMOption
-    LLVMMCParser
-    LLVMSupport
-    LLVMCore
-    clangTooling
-    clangAnalysis
-    clangSerialization
-    clangParse
-    clangDriver
-    clangSema
-    clangEdit
-    clangFrontend
-    clangAST
-    clangLex
-    clangBasic
-    clangAnalysis
-    clangARCMigrate
-    clangAST
-    clangASTMatchers
-    clangBasic
-    clangCodeGen
-    clangCrossTU
-    clangDriver
-    clangDynamicASTMatchers
-    clangEdit
-    clangFormat
-    clangFrontend
-    clangFrontendTool
-    clangHandleCXX
-    clangHandleLLVM
-    clangIndex
-    clangLex
-    clangParse
-    clangRewrite
-    clangRewriteFrontend
-    clangSema
-    clangSerialization
-    clangStaticAnalyzerCheckers
-    clangStaticAnalyzerCore
-    clangStaticAnalyzerFrontend
-    clangTooling
-    clangToolingASTDiff
-    clangToolingCore
-    clangToolingInclusions
-    clangToolingRefactor
-    LLVMAggressiveInstCombine
-    LLVMAnalysis
-    LLVMAsmParser
-    LLVMAsmPrinter
-    LLVMBinaryFormat
-    LLVMBitReader
-    LLVMBitWriter
-    LLVMCodeGen
-    LLVMCore
-    LLVMCoroutines
-    LLVMCoverage
-    LLVMDebugInfoCodeView
-    LLVMDebugInfoDWARF
-    LLVMDebugInfoMSF
-    LLVMDebugInfoPDB
-    LLVMDemangle
-    LLVMDlltoolDriver
-    LLVMExecutionEngine
-    LLVMFuzzMutate
-    LLVMGlobalISel
-    LLVMInstCombine
-    LLVMInstrumentation
-    LLVMInterpreter
-    LLVMipo
-    LLVMIRReader
-    LLVMLibDriver
-    LLVMLineEditor
-    LLVMLinker
-    LLVMLTO
-    LLVMMC
-    LLVMMCDisassembler
-    LLVMMCJIT
-    LLVMMCParser
-    LLVMObjCARCOpts
-    LLVMObject
-    LLVMObjectYAML
-    LLVMOption
-    LLVMOrcJIT
-    LLVMPasses
-    LLVMProfileData
-    LLVMRuntimeDyld
-    LLVMScalarOpts
-    LLVMSelectionDAG
-    LLVMSupport
-    LLVMSymbolize
-    LLVMTableGen
-    LLVMTarget
-    LLVMTestingSupport
-    LLVMTransformUtils
-    LLVMVectorize
-    LLVMWindowsManifest
-    LLVMX86AsmParser
-    LLVMX86AsmPrinter
-    LLVMX86CodeGen
-    LLVMX86Desc
-    LLVMX86Disassembler
-    LLVMX86Info
-    LLVMXRay
-    LTO
-    clangParse
-    clangSerialization
-    clangDriver
-    clangIndex
-    clangSema
-    clangAnalysis
-    clangAST
-    clangFrontend
-    clangEdit
-    clangLex
-    clangBasic
-    LLVMSupport
-    LLVMCore
-    LLVMMC
+    ${LLVM_AVAILABLE_LIBS}
+    ${SELECTED_CLANG_LIBS}
     ${EXTERNAL_LIB}
 )

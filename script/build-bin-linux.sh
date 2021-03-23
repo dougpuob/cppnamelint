@@ -17,7 +17,7 @@ echo Generate makefile via cmake
 echo "============================================================"
 ROOT_DIR=..
 BUILD_DIR=../build/linux
-BUILD_TYPE=Release
+BUILD_TYPE=Debug
 mkdir -p ${BUILD_DIR}
 
 
