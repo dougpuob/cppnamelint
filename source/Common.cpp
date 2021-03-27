@@ -88,7 +88,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     inc_dir.push_back("-I");
     inc_dir.push_back(IncDirPath.c_str());
     DcLib::Log::Out(INFO_ALL, "-I %s", IncDirPath.c_str());
-    Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::BEGIN));
+    Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::END));
   }
 
   //
@@ -102,14 +102,14 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   if (Memo.File.bVerboseMode) {
     Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("-v", // Verbose
-                                                           ArgumentInsertPosition::BEGIN));
+                                                           ArgumentInsertPosition::END));
   }
 
   //
   // Make it parses header file.
   //
   Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--language=c++", // C++
-                                                         ArgumentInsertPosition::BEGIN));
+                                                         ArgumentInsertPosition::END));
   DcLib::Log::Out(INFO_ALL, "--language=c++");
 
   //
