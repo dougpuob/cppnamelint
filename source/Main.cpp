@@ -27,7 +27,7 @@ LOG_DECISION_DEFAULT(false);
 int main(int Argc, const char **Argv) {
 
   cout << endl;
-  cout << "cppnamelint utility v0.3.3" << endl;
+  cout << "cppnamelint utility v0.3.4" << endl;
   cout << "---------------------------------------------------" << endl;
 
   //
