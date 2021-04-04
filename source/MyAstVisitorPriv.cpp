@@ -22,7 +22,7 @@ bool MyASTVisitor::getPos(Decl *pDecl, string &FileName, size_t &nLineNumb, size
 
   FullSourceLoc FullLocation = this->m_pAstCxt->getFullLoc(pDecl->getBeginLoc());
   if (FullLocation.isValid()) {
-    FileName = FullLocation.getFileLoc().getFileEntry()->getName();
+    FileName = FullLocation.getFileLoc().getFileEntry()->getName().str();
 
     if ((FileName != AppCxt::getInstance().FileName) || ("" == AppCxt::getInstance().FileName)) {
       AppCxt &AppCxt  = AppCxt::getInstance();

@@ -6,11 +6,12 @@
 
 1. git
 2. cmake
-3. python3
-4. Compilers
-    - Windows: Visual Studio 2017 Community
-    - Linux : gcc-8
-    - MacOS : llvm-8
+3. ninja
+4. python3
+5. Compilers
+    - Windows: Visual Studio 2019 Community
+    - Linux : gcc
+    - MacOS : clang
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 
@@ -22,61 +23,45 @@
 ``` sh
 $ git clone [https://github.com/llvm/llvm-project.git](https://github.com/llvm/llvm-project.git) llvm-project.git
 $ cd llvm-project.git
-$ git checkout llvmorg-8.0.0
-
-# Do the following with Release build
-$ mkdir -p build/release
-$ cd build/release
-
-# Do the following with Debug build
-$ mkdir -p build/debug
-$ cd build/debug
+$ git checkout llvmorg-11.1.0
+$ mkdir -p build
 ```
 
 ### 2. Build for Windows
 
-``` sh
-################################################################################
-# Release                                                                      #
-################################################################################
-# 32-bit (VS2017)
-$ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 15 2017" -Thost=x64 ..\llvm
+``` powershell
+# Config
+cmake -G "Visual Studio 16 2019" -A X64                         `
+      -DLLVM_ENABLE_ABI_BREAKING_CHECKS=OFF                     `
+      -DLLVM_TARGETS_TO_BUILD="X86"                             `
+      -DLLVM_ENABLE_PROJECTS="clang;llvm;clang-tools-extra"     `
+      -DCMAKE_BUILD_TYPE=Release                                `
+      -DCMAKE_INSTALL_PREFIX="C:\petzone\llvm\llvm-prebuilt\llvmorg-11.1.0-msbuild-vs2019-x64-rel"    `
+      ../llvm
 
-# 64-bit (VS2017)
-$ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 15 2017" -A x64 -Thost=x64 ..\llvm
+# Make
+cmake --build . --config Release
 
-# 64-bit (VS2019)
-$ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A x64 -Thost=x64 ..\llvm
-
-################################################################################
-# Debug                                                                        #
-################################################################################
-# 32-bit (VS2017)
-$ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017" -Thost=x64 ..\llvm
-
-# 64-bit (VS2017)
-$ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 15 2017" -A x64 -Thost=x64 ..\llvm
-
-# 64-bit (VS2019)
-$ cmake -DLLVM_ENABLE_ABI_BREAKING_CHECKS=0 -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE=Debug -G "Visual Studio 16 2019" -A x64 -Thost=x64 ..\llvm
+# Install
+cmake -P cmake_install.cmake
 ```
 
-### 3. Build for Linux
+### 3. Build for Linux & macOS
 ``` sh
-################################################################################
-# Release                                                                      #
-################################################################################
-# **64-bit**
-$ cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS=clang -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_TERMINFO=OFF -G "Unix Makefiles" ../../llvm
-```
+# Config
+cmake -G "Ninja"                              \
+      -DLLVM_ENABLE_ABI_BREAKING_CHECKS=OFF   \
+      -DLLVM_TARGETS_TO_BUILD="X86"           \
+      -DLLVM_ENABLE_PROJECTS="clang;llvm"     \
+      -DCMAKE_BUILD_TYPE=Release              \
+      -DCMAKE_INSTALL_PREFIX="~\llvm\llvm-prebuilt\llvmorg-11.1.0-ninja-gcc-x64-rel"    \
+      ../llvm
 
-### 4. Build for macOS
-``` sh
-################################################################################
-# Release                                                                      #
-################################################################################
-# 64-bit
-$ cmake -DLLVM_ENABLE_PROJECTS=clang -DCMAKE_BUILD_TYPE:STRING=Release -DLLVM_ENABLE_RTTI=1 -G "Unix Makefiles" ../../llvm
+# Make
+cmake --build . --config Release
+
+# Install
+cmake -P cmake_install.cmake
 ```
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖

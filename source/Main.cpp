@@ -45,7 +45,7 @@ int main(int Argc, const char **Argv) {
   llvm::sys::fs::make_absolute(AbsSrcPath);
 
   AppCxt.MemoBoard.File.Config       = CheckInputConfig;
-  AppCxt.MemoBoard.File.Source       = AbsSrcPath.str();
+  AppCxt.MemoBoard.File.Source       = AbsSrcPath.str().str();
   AppCxt.MemoBoard.File.OutputJson   = CheckOutputJson;
   AppCxt.MemoBoard.File.LogFile      = LogFile;
   AppCxt.MemoBoard.File.bVerboseMode = VerboseMode;
