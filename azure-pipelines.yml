@@ -10,11 +10,6 @@ jobs:
   #==============================================================================
   - job: BuildOnWindows
 
-    variables:
-      - name: LLVM_INSTALL_DIR
-        value: $(System.DefaultWorkingDirectory)\llvmorg-11.1.0-msbuild-vs2019-x64-rel
-      - name: BUILD_TYPE
-        value: Release
 
     pool:
       vmImage: "windows-2019"
@@ -30,37 +25,26 @@ jobs:
       - task: UniversalPackages@0
         inputs:
           command: 'download'
-          downloadDirectory: '$(System.DefaultWorkingDirectory)'
+          downloadDirectory: '$(System.DefaultWorkingDirectory)\llvmorg-11.1.0-prebuilt-library'
           feedsToUse: 'internal'
           vstsFeed: 'fda65372-3b82-4cc7-9460-941932f2b9e1/cc48bf99-5156-4bd9-bcae-9f312d30c074'
           vstsFeedPackage: '04bd13f9-2b8a-49da-a498-d272add210f2'
           vstsPackageVersion: '0.0.1'
           verbosity: 'Trace'
-      - task: CMake@1
-        inputs:
-          workingDirectory: 'build/windows'
-          cmakeArgs: 'cmake ../.. -DLLVM_INSTALL_DIR=$(System.DefaultWorkingDirectory)\llvmorg-11.1.0-msbuild-vs2019-x64-rel'
 
       - task: CMake@1
         inputs:
-          workingDirectory: 'build/windows'
-          cmakeArgs: 'cmake --build . --config Release'
+          workingDirectory: 'build\windows'
+          cmakeArgs: '..\.. -DLLVM_INSTALL_DIR=$(System.DefaultWorkingDirectory)\llvmorg-11.1.0-prebuilt-library'
 
-      # - task: PowerShell@2
-      #   inputs:
-      #     filePath: 'script/build-bin-win32.ps1'
-      #     workingDirectory: 'script'
+      - task: CMake@1
+        inputs:
+          workingDirectory: 'build\windows'
+          cmakeArgs: '--build . --config Release'
 
-      # - task: MSBuild@1
-      #   inputs:
-      #     solution: "build/windows/cppnamelint.sln"
-      #     msbuildVersion: "16.0"
-      #     configuration: "Release"
-      #     msbuildArchitecture: "x64" #x86, x64
-          
       - task: PowerShell@2
         inputs:
-          filePath: 'script/build-pack-win32.ps1'
+          filePath: 'script\build-pack-win32.ps1'
           workingDirectory: 'script'
 
       - task: ArchiveFiles@2
@@ -72,9 +56,14 @@ jobs:
           replaceExistingArchive: true
           verbose: true
 
+      - task: PowerShell@2
+        inputs:
+          filePath: 'script/run-test-win32.ps1'
+          workingDirectory: 'script/release/windows'
+
       - task: GitHubRelease@1
         inputs:
-          gitHubConnection: 'github.com_dougpuob'
+          gitHubConnection: 'azure-devops-cppnamelint'
           repositoryName: 'dougpuob/cppnamelint'
           action: 'edit'
           target: '$(Build.SourceVersion)'
@@ -86,22 +75,12 @@ jobs:
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'issueBased'
 
-      - task: PowerShell@2
-        inputs:
-          filePath: 'script/run-test-win32.ps1'
-          workingDirectory: 'script/release/windows'
-
-          
   #==============================================================================
   # Linux
   #==============================================================================
   - job: BuildOnLinux
 
     variables:
-      - name: LLVM_DIR_CPPNAMELINT
-        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_ubuntu_18_04_gcc_7_4_rel_64bit
-      - name: BUILD_TYPE
-        value: Release
       - name: CC
         value: gcc
       - name: CXX
@@ -123,24 +102,35 @@ jobs:
 
       - task: UniversalPackages@0
         inputs:
-          command: "download"
-          downloadDirectory: "$(System.DefaultWorkingDirectory)"
-          feedsToUse: "internal"
-          vstsFeed: "78202891-aba0-41ab-952b-2152c4a57470/1d266e96-42a9-4468-83b0-69b039e87cb3"
-          vstsFeedPackage: "e8febc2a-50f8-4b36-832d-87feb38f96f0"
-          vstsPackageVersion: "0.0.2"
-          verbosity: "Trace"
+          command: 'download'
+          downloadDirectory: '$(System.DefaultWorkingDirectory)/llvmorg-11.1.0-prebuilt-library'
+          feedsToUse: 'internal'
+          vstsFeed: 'fda65372-3b82-4cc7-9460-941932f2b9e1/0e415509-a02b-46c9-9a2e-53aaa5cce17e'
+          vstsFeedPackage: '15a1cdaa-9842-4471-805d-6d3fec90be8f'
+          vstsPackageVersion: '0.0.1'
+          verbosity: 'Trace'
+      
       - script: "ls -la"
+
+      - task: CMake@1
+        inputs:
+          workingDirectory: 'build/linux'
+          cmakeArgs: '../.. -DLLVM_INSTALL_DIR=$(System.DefaultWorkingDirectory)/llvmorg-11.1.0-prebuilt-library'
+
+      - task: CMake@1
+        inputs:
+          workingDirectory: 'build/linux'
+          cmakeArgs: '--build . --config Release'
 
       #- script: "ls -la -R"
       #  displayName: "Dump folder hierarchy"
 
-      - script: "./build-bin-linux.sh"
-        displayName: "build-bin-linux.sh"
-        workingDirectory: "script"
+      # - script: "./build-bin-linux.sh"
+      #   displayName: "build-bin-linux.sh"
+      #   workingDirectory: "script"
 
-      - script: make
-        workingDirectory: "build/linux"
+      # - script: make
+      #   workingDirectory: "build/linux"
 
       #- script: "ls -la -R"
       #  displayName: "Dump folder hierarchy"
@@ -161,9 +151,13 @@ jobs:
           replaceExistingArchive: true
           verbose: true
 
+      - script: "./run-test-linux.sh"
+        displayName: "run-test-linux.sh"
+        workingDirectory: "script/release/linux"
+      
       - task: GitHubRelease@1
         inputs:
-          gitHubConnection: 'github.com_dougpuob'
+          gitHubConnection: 'azure-devops-cppnamelint'
           repositoryName: 'dougpuob/cppnamelint'
           action: 'edit'
           target: '$(Build.SourceVersion)'
@@ -176,86 +170,80 @@ jobs:
           changeLogType: 'issueBased'
 
 
-      - script: "./run-test-linux.sh"
-        displayName: "run-test-linux.sh"
-        workingDirectory: "script/release/linux"
+  # Remove it temparately becuase my MacPro is newer than Azure runner.
+  # #==============================================================================
+  # # macOS ("macOS-10.15")
+  # #==============================================================================
+  # - job: BuildOnMacOS
 
+  #   variables:
+  #     - name: CC
+  #       value: clang
+  #     - name: CXX
+  #       value: clang++
 
-  #==============================================================================
-  # macOS ("macOS-10.14")
-  #==============================================================================
-  - job: BuildOnMacOS
+  #   pool:
+  #     vmImage: "macOS-10.15"
 
-    variables:
-      - name: LLVM_DIR_CPPNAMELINT
-        value: $(System.DefaultWorkingDirectory)/llvm_8_0_0_macos_10_14_5_clang_10_rel_64bit
-      - name: BUILD_TYPE
-        value: Release
-      - name: CC
-        value: clang
-      - name: CXX
-        value: clang++
+  #   steps:
+  #     - script: "clang --version"
+  #       displayName: "Show gcc version."
 
-    pool:
-      vmImage: "macOS-10.14"
+  #     - script: "export"
+  #       displayName: "Dump Azure environment variables."
 
-    steps:
-      - script: "clang --version"
-        displayName: "Show gcc version."
+  #     - checkout: self
+  #       displayName: "Checkout git submodules."
+  #       submodules: true
 
-      - script: "export"
-        displayName: "Dump Azure environment variables."
+  #     - task: UniversalPackages@0
+  #       inputs:
+  #         command: 'download'
+  #         downloadDirectory: '$(System.DefaultWorkingDirectory)/llvmorg-11.1.0-prebuilt-library'
+  #         feedsToUse: 'internal'
+  #         vstsFeed: 'fda65372-3b82-4cc7-9460-941932f2b9e1/1a38fd81-aa9c-4d52-994e-4166c8467c06'
+  #         vstsFeedPackage: 'ffae4614-057b-4495-8689-e11543edb830'
+  #         vstsPackageVersion: '0.0.1'
+  #         verbosity: 'Trace'
 
-      - checkout: self
-        displayName: "Checkout git submodules."
-        submodules: true
+  #     - task: CMake@1
+  #       inputs:
+  #         workingDirectory: 'build/macos'
+  #         cmakeArgs: '../.. -DLLVM_INSTALL_DIR=$(System.DefaultWorkingDirectory)/llvmorg-11.1.0-prebuilt-library'
 
-      - task: UniversalPackages@0
-        inputs:
-          command: "download"
-          downloadDirectory: "$(System.DefaultWorkingDirectory)"
-          feedsToUse: "internal"
-          vstsFeed: "78202891-aba0-41ab-952b-2152c4a57470/7bc16282-7635-45e1-821a-373ed55c68c5"
-          vstsFeedPackage: "1ea8f4a8-0c01-4eb1-8fbf-e514f8768b5e"
-          vstsPackageVersion: "0.0.1"
-          verbosity: "Trace"
+  #     - task: CMake@1
+  #       inputs:
+  #         workingDirectory: 'build/macos'
+  #         cmakeArgs: '--build . --config Release'
 
-      - task: Bash@3
-        inputs:
-          filePath: 'script/build-bin-macos.sh'
-          workingDirectory: 'script'
+  #     - task: Bash@3
+  #       inputs:
+  #         filePath: 'script/build-pack-linux.sh'
+  #         workingDirectory: 'script'
 
-      - script: make
-        workingDirectory: "build/macos"
-
-      - task: Bash@3
-        inputs:
-          filePath: 'script/build-pack-linux.sh'
-          workingDirectory: 'script'
-
-      - task: ArchiveFiles@2
-        inputs:
-          rootFolderOrFile: 'script/release/macos'
-          includeRootFolder: false
-          archiveType: 'zip'
-          archiveFile: 'cppnamelint-macos-10.14.7z'
-          replaceExistingArchive: true
-          verbose: true
+  #     - task: ArchiveFiles@2
+  #       inputs:
+  #         rootFolderOrFile: 'script/release/macos'
+  #         includeRootFolder: false
+  #         archiveType: 'zip'
+  #         archiveFile: 'cppnamelint-macos-10.14.7z'
+  #         replaceExistingArchive: true
+  #         verbose: true
           
-      - script: "./run-test-linux.sh"
-        displayName: "run-test-linux.sh"
-        workingDirectory: "script/release/macos"
+  #     - script: "./run-test-linux.sh"
+  #       displayName: "run-test-linux.sh"
+  #       workingDirectory: "script/release/macos"
 
-      - task: GitHubRelease@1
-        inputs:
-          gitHubConnection: 'github.com_dougpuob'
-          repositoryName: 'dougpuob/cppnamelint'
-          action: 'edit'
-          target: '$(Build.SourceVersion)'
-          tag: 'v0.3*'
-          assets: 'cppnamelint-macos-10.14.7z'
-          assetUploadMode: 'replace'
-          isDraft: true
-          isPreRelease: true
-          changeLogCompareToRelease: 'lastFullRelease'
-          changeLogType: 'issueBased'
+  #     # - task: GitHubRelease@1
+  #     #   inputs:
+  #     #     gitHubConnection: 'github.com_dougpuob'
+  #     #     repositoryName: 'dougpuob/cppnamelint'
+  #     #     action: 'edit'
+  #     #     target: '$(Build.SourceVersion)'
+  #     #     tag: 'v0.3*'
+  #     #     assets: 'cppnamelint-macos-10.14.7z'
+  #     #     assetUploadMode: 'replace'
+  #     #     isDraft: true
+  #     #     isPreRelease: true
+  #     #     changeLogCompareToRelease: 'lastFullRelease'
+  #     #     changeLogType: 'issueBased'

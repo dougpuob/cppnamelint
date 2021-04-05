@@ -23,7 +23,7 @@ bool MyASTConsumer::HandleTopLevelDecl(DeclGroupRef DeclGrpRef) {
     const ASTContext &ASTCxt   = pDecl->getASTContext();
     FullSourceLoc FullLocation = ASTCxt.getFullLoc(pDecl->getBeginLoc());
     if (FullLocation.isValid()) {
-      FileName = FullLocation.getFileLoc().getFileEntry()->getName();
+      FileName = FullLocation.getFileLoc().getFileEntry()->getName().str();
     }
 
     const bool bIsInMainFile = ASTCxt.getSourceManager().isInMainFile(pDecl->getLocation());

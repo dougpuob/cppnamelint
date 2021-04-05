@@ -338,7 +338,7 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   if (!bStatus) {
     string EnumTagName = "???1";
     if (AppCxt.MemoBoard.pLastEnumDecl) {
-      EnumTagName = AppCxt.MemoBoard.pLastEnumDecl->getName();
+      EnumTagName = AppCxt.MemoBoard.pLastEnumDecl->getName().str();
     }
     AppCxt.MemoBoard.Error.nEnum++;
     AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(

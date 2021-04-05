@@ -1,51 +1,49 @@
-# How to build Cpp-NameLint (This project)
+# How to build CppNameLint (This project)
 
-This project is integrated with Azure DevOps, so you can read `azure-pipelines.yml` to now how to build. Another way is read the following content.
+This project is based on LLVM's libtooling library, so you have to build llvm first. Then it uses CMake's find_package() function to find LLVM library, this means you don't need to specific libraries in CMakeLists.txt file, all depend on `LLVMConfig.cmake` and `ClangConfig.cmake` files.
 
-Attention! before continue, this project is based on LLVM's libtooling library, so you have prepare library binary files for it. There are two ways:
-1. Download from my cloud (contact me, I will send you the links. I will pack it later because I am planing to use `LLVMConfig.cmake`)
-2. Build LLVM youself. (how-to-build-llvm.md)
+Understand it more details, please read `CMakeLists.txt` and `azure-pipelines.yml`.
  
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 ## Requires Common Tools
 
 1. git
 2. cmake
-3. python3
-4. Compilers
-    - Windows: Visual Studio 2017 Community
-    - Linux : gcc-8
-    - MacOS : llvm-8
+3. ninja
+4. python3
+5. Compilers
+    - Windows: Visual Studio 2019 Community
+    - Linux : gcc
+    - MacOS : clang
 
-➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
-## Prepare essentials
-
-1. **Git clone project to your local**
-`$ git clone https://github.com/dougpuob/cpp-namelint.git cpp-namelint.git`
-
-2. **Set environment variable**  
-   - **Windows** : $ SET LLVM_DIR_CPPNAMELINT    "C:\llvm-project.git"
-   - **Linux**   : $ export LLVM_DIR_CPPNAMELINT "~/llvm-project.git"
-   - **macOS**   : $ export LLVM_DIR_CPPNAMELINT "~/llvm-project.git"
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 ## Build this project
 ### Windows
-   1. `$ cd cpp-namelint.git/script`  
-   1. `$ powershell.exe "./build-bin-win32.ps1"` or `./build-bin-win32-dbg.ps1"` for debugging.  
-   1. Launch & build `build\windows\cppnamelint.sln`.
+``` powershell
+git clone https://github.com/dougpuob/cpp-namelint.git cppnamelint.git
+cd cppnamelint.git
+git submodule init
+git submodule update
 
-### Linux
-   1. `$ cd cpp-namelint.git/script`  
-   1. `$ build-bin-linux.sh` 
-   1. `$ cd cpp-namelint.git/build/linux`
-   1. `$ make`
+mkdir build
+cd build
+cmake .. -DLLVM_INSTALL_DIR="C:\petzone\llvm\llvm-prebuilt\llvmorg-11.1.0-msbuild-vs2019-x64-rel"
+cmake --build . --config Release
+```
 
-### macOS
-   1. `$ cd cpp-namelint.git/script`  
-   1. `$ build-bin-macos.sh`
-   1. `$ cd cpp-namelint.git/build/macos`
-   1. `$ make`
+### Linux & macOS
+``` bash
+git clone https://github.com/dougpuob/cpp-namelint.git cppnamelint.git
+cd cppnamelint.git
+git submodule init
+git submodule update
+
+mkdir build
+cd build
+cmake .. -DLLVM_INSTALL_DIR="~\llvm\llvm-prebuilt\llvmorg-11.1.0-ninja-gcc-x64-rel"
+cmake --build . --config Release
+```
 
 ➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖
 ## Pack & Test this project
