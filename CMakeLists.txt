@@ -47,7 +47,8 @@ include_directories(${CLANG_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 add_definitions(${CLANG_DEFINITIONS})
 
-llvm_map_components_to_libnames(LLVM_LIBS core clang native support irreader)
+set(SELECTED_CLANG_LIBS clangTooling clangBasic clangAST clangFrontend)
+
 message(STATUS "LLVM_INSTALL_DIR         : ${LLVM_INSTALL_DIR}")
 message(STATUS "CLANG_INCLUDE_DIRS       : ${CLANG_INCLUDE_DIRS}")
 message(STATUS "LLVM_INCLUDE_DIRS        : ${LLVM_INCLUDE_DIRS}")
@@ -76,16 +77,11 @@ if(CMAKE_HOST_WIN32)
     set(EXTERNAL_LIB Version)
 elseif(CMAKE_HOST_APPLE)
     set(OUTPUT_OS "macos")
-    #set(CC   "/usr/bin/clang")
-    #set(CXX  "/usr/bin/clang++")
     set(CMAKE_CXX_FLAGS "-frtti")
     set(EXTERNAL_LIB z ncurses)
 elseif(CMAKE_HOST_UNIX)
     set(OUTPUT_OS "linux")
-    #set(CC   "/usr/bin/gcc")
-    #set(CXX  "/usr/bin/g++")
     set(CMAKE_CXX_FLAGS "-fno-rtti -g")
-    set(EXTERNAL_LIB z tinfo)
 endif()
 
 # Output folders
@@ -137,13 +133,14 @@ include_directories(
     submodule/googletest.git/googletest/include
 )
 
+
 target_link_libraries(
     cppnamelint
     gtest
     gtest_main
-    ${LLVM_AVAILABLE_LIBS}      # Defined in LLVMConfig.cmake file.
-    ${CLANG_EXPORTED_TARGETS}   # Defined in ClangConfig.cmake file.
-    ${EXTERNAL_LIB}             # Defined in this project.
+    ${LLVM_AVAILABLE_LIBS}  # Defined in LLVMConfig.cmake file.
+    ${SELECTED_CLANG_LIBS}  # Defined in this project.
+    ${EXTERNAL_LIB}         # Defined in this project.
 )
 
 
