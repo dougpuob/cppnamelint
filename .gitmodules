@@ -10,3 +10,7 @@
 	path = submodule/json.git
 	url = https://github.com/dougpuob/json.git
 	branch = master
+[submodule "submodule/spdlog.git"]
+	path = submodule/spdlog.git
+	url = https://github.com/gabime/spdlog.git
+	branch = master

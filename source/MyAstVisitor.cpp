@@ -2,54 +2,55 @@
 
 #include "Common.h"
 #include "MyAstVisitor.h"
+#include "spdlog/spdlog.h"
 
 using namespace namelint;
 
-LOG_DECISION_DEFAULT(false);
-
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
                            const Config *pConfig) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   this->m_DumpDecl.SetSourceManager(pSM);
   this->m_pSrcMgr = pSM;
   this->m_pAstCxt = (ASTContext *)pAstCxt;
   this->m_pConfig = pConfig->GetData();
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
 }
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
 
   if (!this->m_pConfig->General.Options.bCheckFunctionName) {
-    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFunctionName)");
-    DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+    AppCxt.MemoBoard.SpdLog->info("Skipped, becuase config file is disable. (bCheckFunctionName)");
+    AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
     return true;
   }
 
   string FuncName;
   bool bResult = this->getFunctionInfo(pDecl, FuncName);
   if (!bResult) {
-    DcLib::Log::Out(INFO_ALL, "%s() ==) x Failed to call getFunctionInfo()", __func__);
+    AppCxt.MemoBoard.SpdLog->info("{} ==) x Failed to call getFunctionInfo()", __func__);
     return true;
   }
 
-  AppCxt &AppCxt = AppCxt::getInstance();
   AppCxt.MemoBoard.Checked.nFunction++;
 
   // This FunctionDecl may just an external function.
   if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid FunctionDecl. (%s)", FuncName.c_str());
+    AppCxt.MemoBoard.SpdLog->info("Found an invalid FunctionDecl. ({})", FuncName.c_str());
 
     AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
       return true;
     }
   }
@@ -67,38 +68,39 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     }
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   if (!this->isMainFile(pDecl)) {
-    DcLib::Log::Out(INFO_ALL, "%s() ==)x Is NOT in main file.", __func__);
+    AppCxt.MemoBoard.SpdLog->info("{} ==)x Is NOT in main file.", __func__);
     return true;
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s", __func__);
+  AppCxt.MemoBoard.SpdLog->info("%s", __func__);
 
-  AppCxt &AppCxt = AppCxt::getInstance();
   this->m_DumpDecl.PrintDecl(pDecl);
 
   bool bStatus   = false;
   string VarName = pDecl->getNameAsString();
 
   if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid RecordDecl. (%s)", VarName.c_str());
+    AppCxt.MemoBoard.SpdLog->info("Found an invalid RecordDecl. ({})", VarName.c_str());
 
     AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
       return true;
     }
   }
@@ -106,7 +108,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   switch (pDecl->getTagKind()) {
   case TTK_Struct: {
     if (VarName.empty()) {
-      DcLib::Log::Out(INFO_ALL, "It is an anonymous structure.");
+      AppCxt.MemoBoard.SpdLog->info("It is an anonymous structure.");
       bStatus = true;
     } else {
       AppCxt.MemoBoard.Checked.nStruct++;
@@ -124,7 +126,7 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   }
   case TTK_Union: {
     if (VarName.empty()) {
-      DcLib::Log::Out(INFO_ALL, "It is an anonymous union.");
+      AppCxt.MemoBoard.SpdLog->info("It is an anonymous union.");
       bStatus = true;
     } else {
       AppCxt.MemoBoard.Checked.nUnion++;
@@ -162,60 +164,60 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     VarName = "??";
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
-    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckVariableName)");
-    DcLib::Log::Out(INFO_ALL, "%s() ==)| Skipped.", __func__);
+    AppCxt.MemoBoard.SpdLog->info("Skipped, becuase config file is disable. (bCheckVariableName)");
+    AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped.", __func__);
     return true;
   }
 
   if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid VarDecl. (%s)", pDecl->getName());
+    AppCxt.MemoBoard.SpdLog->info("Found an invalid VarDecl. ({})", pDecl->getName().str());
 
-    AppCxt &AppCxt = AppCxt::getInstance();
     AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
       return true;
     }
   }
 
   if (isa<ParmVarDecl>(pDecl)) {
-    DcLib::Log::Out(INFO_ALL, "%s() ==)|", __func__);
+    AppCxt.MemoBoard.SpdLog->info("{} ==)|", __func__);
     return true;
   }
 
   bool bRet = checkRuleForVariable(pDecl);
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
-    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckVariableName)");
-    DcLib::Log::Out(INFO_ALL, "%s() ==)| Skipped.", __func__);
+    AppCxt.MemoBoard.SpdLog->info("Skipped, becuase config file is disable. (bCheckVariableName)");
+    AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped.", __func__);
     return true;
   }
 
   if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid FieldDecl. (%s)", pDecl->getName());
+    AppCxt.MemoBoard.SpdLog->info("Found an invalid FieldDecl. ({})", pDecl->getName().str());
 
-    AppCxt &AppCxt = AppCxt::getInstance();
     AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
       return true;
     }
   }
@@ -237,26 +239,28 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   }
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
 
   const Expr *pExpr = pRetStmt->getRetValue();
   if (pExpr) {
     clang::QualType MyQualType = pExpr->getType();
     std::string MyTypeStr      = MyQualType.getAsString();
-    DcLib::Log::Out(INFO_ALL, "MyQualType.getAsString() = %s", MyTypeStr.c_str());
+    AppCxt.MemoBoard.SpdLog->info("MyQualType.getAsString() = {}", MyTypeStr.c_str());
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   string VarType;
@@ -267,15 +271,13 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   bool bAnonymous = false;
   bool bResult    = false;
 
-  AppCxt &AppCxt = AppCxt::getInstance();
-
   if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid ParmVarDecl. (%s)", pDecl->getName());
+    AppCxt.MemoBoard.SpdLog->info("Found an invalid ParmVarDecl. ({})", pDecl->getName().str());
 
     AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
       return true;
     }
   }
@@ -299,37 +301,37 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
     }
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
-  this->m_DumpDecl.PrintDecl(pDecl);
-
   AppCxt &AppCxt = AppCxt::getInstance();
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  this->m_DumpDecl.PrintDecl(pDecl);
+
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
-  this->m_DumpDecl.PrintDecl(pDecl);
-
   AppCxt &AppCxt = AppCxt::getInstance();
+
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   AppCxt.MemoBoard.Checked.nEnum++;
 
   string EnumValName = pDecl->getNameAsString();
 
   if (pDecl->isInvalidDecl()) {
-    DcLib::Log::Out(INFO_ALL, "Found an invalid EnumConstantDecl. (%s)", EnumValName.c_str());
+    AppCxt.MemoBoard.SpdLog->info("Found an invalid EnumConstantDecl. ({})", EnumValName.c_str());
 
     AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
     if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-      DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
       return true;
     }
   }
@@ -345,15 +347,15 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
         pDecl, CheckType::CT_EnumVal, NOT_PTR, NOT_ARRAY, EnumTagName, EnumValName, "???2"));
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
-  this->m_DumpDecl.PrintDecl(pDecl);
-
   AppCxt &AppCxt = AppCxt::getInstance();
+
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  this->m_DumpDecl.PrintDecl(pDecl);
 
   AppCxt.MemoBoard.pLastEnumDecl = pDecl;
   AppCxt.MemoBoard.Checked.nEnum++;
@@ -362,12 +364,12 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   if (!EnumTagName.empty()) {
 
     if (pDecl->isInvalidDecl()) {
-      DcLib::Log::Out(INFO_ALL, "Found an invalid EnumDecl. (%s)", EnumTagName.c_str());
+      AppCxt.MemoBoard.SpdLog->info("Found an invalid EnumDecl. ({})", EnumTagName);
 
       AppCxt.MemoBoard.Assert.nInvalidDecl++;
 
       if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
-        DcLib::Log::Out(INFO_ALL, "%s() ==)| Bypass invalid decl.", __func__);
+        AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
         return true;
       }
     }
@@ -381,12 +383,13 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
     }
   }
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitTagTypeLoc(TagTypeLoc TagTypeLocDecl) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
 
   // TagDecl* pDecl = TL.getDecl();
 
@@ -398,29 +401,31 @@ bool MyASTVisitor::VisitTagTypeLoc(TagTypeLoc TagTypeLocDecl) {
   // const char *szCurr = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
   // const char *szEnd = this->m_pSrcMgr->getCharacterData(MyEndLoc);
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitArrayTypeLoc(ArrayTypeLoc TL) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   // SourceLocation MyBeginLoc = TL.getBeginLoc();
   // SourceLocation MyEndLoc = TL.getEndLoc();
   //
   // const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
   // const char *szEnd = this->m_pSrcMgr->getCharacterData(MyEndLoc);
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitFunctionTypeLoc(FunctionTypeLoc TL, bool SkipResultType) {
-  DcLib::Log::Out(INFO_ALL, "%s() (==", __func__);
+  AppCxt &AppCxt = AppCxt::getInstance();
+  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
   SourceLocation MyBeginLoc = TL.getBeginLoc();
   SourceLocation MyEndLoc   = TL.getEndLoc();
 
   const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
   const char *szEnd   = this->m_pSrcMgr->getCharacterData(MyEndLoc);
 
-  DcLib::Log::Out(INFO_ALL, "%s() ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
   return true;
 }

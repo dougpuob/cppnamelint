@@ -28,7 +28,7 @@ git submodule update
 
 mkdir build
 cd build
-cmake .. -DLLVM_INSTALL_DIR="C:\petzone\llvm\llvm-prebuilt\llvmorg-11.1.0-msbuild-vs2019-x64-rel"
+cmake .. -DLLVM_INSTALL_DIR="C:\petzone\llvm\llvm-prebuilt\llvmorg-11.1.0-msbuild-vs2019-x64-rel" -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config Release
 ```
 

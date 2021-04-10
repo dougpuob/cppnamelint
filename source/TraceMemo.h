@@ -1,5 +1,6 @@
 #ifndef __NAMELINT_TRACE_MEMO__H__
 #define __NAMELINT_TRACE_MEMO__H__
+#include "spdlog/spdlog.h"
 #include "clang/AST/Decl.h"
 
 #include "Config.h"
@@ -117,6 +118,8 @@ public:
   vector<ErrorDetail *> ErrorDetailList;
   namelint::Config Config;
   clang::EnumDecl *pLastEnumDecl;
+
+  std::shared_ptr<spdlog::logger> SpdLog;
 
   void Clear() {
     memset(&this->Checked, 0, sizeof(this->Checked));

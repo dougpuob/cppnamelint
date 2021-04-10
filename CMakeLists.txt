@@ -100,8 +100,6 @@ add_executable(
     source/Common.cpp
     source/Config.h
     source/Config.cpp
-    source/Logger.h
-    source/Logger.cpp
     source/DumpDecl.h
     source/DumpDecl.cpp
     source/MyCommandLine.h
@@ -131,6 +129,7 @@ add_executable(
 include_directories(
     submodule/json.git/include
     submodule/googletest.git/googletest/include
+	submodule/spdlog.git/include
 )
 
 
@@ -151,4 +150,5 @@ option(BUILD_TESTING "Turn OFF to build the testing tree (json)." OFF)
 
 add_subdirectory(submodule/googletest.git)
 add_subdirectory(submodule/json.git)
+add_subdirectory(submodule/spdlog.git)
 

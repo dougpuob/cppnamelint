@@ -5,8 +5,6 @@
 
 using namespace namelint;
 
-LOG_DECISION_DEFAULT(false);
-
 bool MyASTVisitor::isMainFile(Decl *pDecl) {
   return this->m_pSrcMgr->isInMainFile(pDecl->getLocation());
 }
@@ -113,6 +111,8 @@ bool MyASTVisitor::getStructVarInfo(ValueDecl *pDecl, string &VarType, string &V
     return false;
   }
 
+  AppCxt &AppCxt = AppCxt::getInstance();
+
   this->m_DumpDecl.PrintDecl(pDecl);
 
   SourceLocation MyBeginLoc = pDecl->getBeginLoc();
@@ -124,7 +124,7 @@ bool MyASTVisitor::getStructVarInfo(ValueDecl *pDecl, string &VarType, string &V
   intptr_t iPtrDiff      = szCurr - szBegin;
   const intptr_t iPtrLen = szCurr - szBegin;
   if (iPtrLen <= 0) {
-    DcLib::Log::Out(INFO_ALL, "iPtrLen value should not be negative.");
+    AppCxt.MemoBoard.SpdLog->info("iPtrLen value should not be negative.");
     return false;
   }
 
@@ -150,6 +150,8 @@ bool MyASTVisitor::getValueInfo(ValueDecl *pDecl, string &ValueType, string &Val
     return false;
   }
 
+  AppCxt &AppCxt = AppCxt::getInstance();
+
   // TODO:
   // This will get var type, but need to overcome some situation:
   // 1. Type "unsigned long long int" will get "unsigned long long"
@@ -174,7 +176,7 @@ bool MyASTVisitor::getValueInfo(ValueDecl *pDecl, string &ValueType, string &Val
   intptr_t iPtrDiff      = szCurr - szBegin;
   const intptr_t iPtrLen = szCurr - szBegin;
   if (iPtrLen < 0) { // Enum possible equals to ZERO.
-    DcLib::Log::Out(INFO_ALL, "iPtrLen value should not be negative.");
+    AppCxt.MemoBoard.SpdLog->info("iPtrLen value should not be negative.");
     return false;
   }
 

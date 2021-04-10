@@ -1,11 +1,10 @@
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
 #include "../Common.h"
 #include "../TraceMemo.h"
-
 
 // clang-format off
 namespace TestIssue {
