@@ -73,7 +73,7 @@ int main(int Argc, const char **Argv) {
 
     int iPos = AppCxt.MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
   } else {
-    AppCxt.MemoBoard.SpdLog = spdlog::basic_logger_mt("", "logfile.log");
+    AppCxt.MemoBoard.SpdLog = spdlog::stderr_logger_mt("");
     AppCxt.MemoBoard.SpdLog->set_level(spdlog::level::off);
   }
 
