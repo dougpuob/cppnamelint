@@ -1,8 +1,6 @@
 #ifndef __LEARN_IT_H__
 #define __LEARN_IT_H__
 
-#include "Logger.h"
-
 #include "clang/AST/Decl.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Tooling/Tooling.h"

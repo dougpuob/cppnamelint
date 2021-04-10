@@ -44,7 +44,6 @@ void Trim(string &Source) {
 }
 } // namespace String
 
-LOG_DECISION_DEFAULT(false);
 int RunCheckFormStream(namelint::MemoBoard &Memo, const string &SourceContent,
                        const string &VirtFileName) {
   //
@@ -73,9 +72,9 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   // Check input parameters.
   //
-  DcLib::Log::Out(INFO_ALL, "Source File = %s", Memo.File.Source.c_str());
-  DcLib::Log::Out(INFO_ALL, "Config File = %s", Memo.File.Config.c_str());
-  DcLib::Log::Out(INFO_ALL, "OutputJson  = %s", Memo.File.OutputJson.c_str());
+  Memo.SpdLog->info("Source File = {}", Memo.File.Source.c_str());
+  Memo.SpdLog->info("Config File = {}", Memo.File.Config.c_str());
+  Memo.SpdLog->info("OutputJson  = {}", Memo.File.OutputJson.c_str());
 
   //
   // Feed header directories from input commands to ClangTools'.
@@ -87,7 +86,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
     vector<string> inc_dir;
     inc_dir.push_back("-I");
     inc_dir.push_back(IncDirPath.c_str());
-    DcLib::Log::Out(INFO_ALL, "-I %s", IncDirPath.c_str());
+    Memo.SpdLog->info("-I %s", IncDirPath.c_str());
     Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster(inc_dir, ArgumentInsertPosition::END));
   }
 
@@ -110,7 +109,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   //
   Tool.appendArgumentsAdjuster(getInsertArgumentAdjuster("--language=c++", // C++
                                                          ArgumentInsertPosition::END));
-  DcLib::Log::Out(INFO_ALL, "--language=c++");
+  Memo.SpdLog->info("--language=c++");
 
   //
   // Bypass DiagnosticConsumer to disable diagnostic feature.
@@ -123,7 +122,7 @@ int RunCheck(namelint::MemoBoard &Memo, ClangTool &Tool) {
   shared_ptr<ConfigData> pConfig = Memo.Config.GetData();
   GeneralOptions *pOptions       = &pConfig->General.Options;
   if (!pOptions->bCheckFileName) {
-    DcLib::Log::Out(INFO_ALL, "Skipped, becuase config file is disable. (bCheckFileName)");
+    Memo.SpdLog->info("Skipped, becuase config file is disable. (bCheckFileName)");
   } else {
     Memo.Checked.nFile++;
     llvm::StringRef SrcPath(Memo.File.Source.c_str());
@@ -273,7 +272,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
   for (size_t nIdx = 0; nIdx < MemoBoard.Dir.Includes.size(); nIdx++) {
     sprintf(szText, " Inc[%2lu] = %s", nIdx + 1, MemoBoard.Dir.Includes[nIdx].c_str());
     printf("%s\n", szText);
-    DcLib::Log::Out(INFO_ALL, szText);
+    MemoBoard.SpdLog->info(szText);
   }
 
   sprintf(szText,
@@ -284,7 +283,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
           MemoBoard.Checked.nParameter, MemoBoard.Checked.nVariable, MemoBoard.Checked.nEnum,
           MemoBoard.Checked.nStruct, MemoBoard.Checked.nUnion, MemoBoard.Checked.nClass);
   printf("%s\n", szText);
-  DcLib::Log::Out(INFO_ALL, szText);
+  MemoBoard.SpdLog->info(szText);
 
   sprintf(szText,
           " Error   = %5lu  [File:%u | Func:%3u | Param:%3u | Var:%3u | Enum:%3u | Struct:%3u | "
@@ -294,10 +293,10 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
           MemoBoard.Error.nParameter, MemoBoard.Error.nVariable, MemoBoard.Error.nEnum,
           MemoBoard.Error.nStruct, MemoBoard.Error.nUnion, MemoBoard.Error.nClass);
   printf("%s\n", szText);
-  DcLib::Log::Out(INFO_ALL, szText);
+  MemoBoard.SpdLog->info(szText);
 
   printf("------------------------------------------------------------\n");
-  DcLib::Log::Out(INFO_ALL, "------------------------------------------------------------");
+  MemoBoard.SpdLog->info("------------------------------------------------------------");
 
   for (const ErrorDetail *pErrDetail : MemoBoard.ErrorDetailList) {
     switch (pErrDetail->Type) {
@@ -311,7 +310,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_Parameter:
@@ -320,7 +319,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               (pErrDetail->bIsPtr ? "*" : ""));
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_Variable:
@@ -329,7 +328,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               (pErrDetail->bIsPtr ? "*" : ""), (pErrDetail->bIsArray ? "[]" : ""));
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_Class:
@@ -337,7 +336,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_EnumTag:
@@ -345,7 +344,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->Pos.nColumn, pErrDetail->TargetName.c_str());
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_EnumVal:
@@ -354,7 +353,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_StructTag:
@@ -363,7 +362,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     case CheckType::CT_StructVal:
@@ -372,7 +371,7 @@ bool PrintTraceMemo(const MemoBoard &MemoBoard) {
               pErrDetail->TypeName.c_str());
 
       printf("%s\n", szText);
-      DcLib::Log::Out(INFO_ALL, szText);
+      MemoBoard.SpdLog->info(szText);
       break;
 
     default:
@@ -420,60 +419,62 @@ void LogHead() {
   AppCxt &AppCxt = AppCxt::getInstance();
   int iPos       = AppCxt.MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
 
-  DcLib::Log::Out(INFO_NONE, "");
-  DcLib::Log::Out(INFO_NONE, "");
-  DcLib::Log::Out(INFO_NONE,
-                  "=============================================================================="
-                  "=========================================================================");
-  DcLib::Log::Out(INFO_NONE,
-                  "0         0         0         0         0         0         0         0       "
-                  "  0        0          1         1         1         1         1         1");
-  DcLib::Log::Out(INFO_NONE,
-                  "012345678911234567892123456789312345678941234567895123456789612345678971234567"
-                  "8981234567899123456789012345678911234567892123456789312345678941234567895");
-  DcLib::Log::Out(INFO_NONE,
-                  "=============================================================================="
-                  "=========================================================================");
-  DcLib::Log::Out(INFO_ALL, "INFO : ContentStartsPosition = %d.", iPos);
-  DcLib::Log::Out(INFO_ALL, "INFO : Log message will print to the file (%s).",
-                  AppCxt.MemoBoard.File.LogFile.c_str());
+  AppCxt.MemoBoard.SpdLog->info("");
+  AppCxt.MemoBoard.SpdLog->info("");
+  AppCxt.MemoBoard.SpdLog->info(
+      "=============================================================================="
+      "=========================================================================");
+  AppCxt.MemoBoard.SpdLog->info(
+      "0         0         0         0         0         0         0         0       "
+      "  0        0          1         1         1         1         1         1");
+  AppCxt.MemoBoard.SpdLog->info(
+      "012345678911234567892123456789312345678941234567895123456789612345678971234567"
+      "8981234567899123456789012345678911234567892123456789312345678941234567895");
+  AppCxt.MemoBoard.SpdLog->info(
+      "=============================================================================="
+      "=========================================================================");
+  AppCxt.MemoBoard.SpdLog->info("INFO : ContentStartsPosition = {}.", iPos);
+  AppCxt.MemoBoard.SpdLog->info("INFO : Log message will print to the file ({}).",
+                                AppCxt.MemoBoard.File.LogFile.c_str());
 }
 
 void LogConfig() {
   AppCxt &AppCxt                  = AppCxt::getInstance();
   shared_ptr<ConfigData> pCfgData = AppCxt.MemoBoard.Config.GetData();
 
-  DcLib::Log::Out(INFO_ALL, "bCheckFileName      = %d", pCfgData->General.Options.bCheckFileName);
-  DcLib::Log::Out(INFO_ALL, "bCheckFunctionName  = %d",
-                  pCfgData->General.Options.bCheckFunctionName);
-  DcLib::Log::Out(INFO_ALL, "bCheckEnum          = %d", pCfgData->General.Options.bCheckEnum);
-  DcLib::Log::Out(INFO_ALL, "bCheckStruct        = %d", pCfgData->General.Options.bCheckStruct);
-  DcLib::Log::Out(INFO_ALL, "bCheckVariableName  = %d",
-                  pCfgData->General.Options.bCheckVariableName);
+  AppCxt.MemoBoard.SpdLog->info("bCheckFileName      = {}",
+                                pCfgData->General.Options.bCheckFileName);
+  AppCxt.MemoBoard.SpdLog->info("bCheckFunctionName  = {}",
+                                pCfgData->General.Options.bCheckFunctionName);
+  AppCxt.MemoBoard.SpdLog->info("bCheckEnum          = {}", pCfgData->General.Options.bCheckEnum);
+  AppCxt.MemoBoard.SpdLog->info("bCheckStruct        = {}", pCfgData->General.Options.bCheckStruct);
+  AppCxt.MemoBoard.SpdLog->info("bCheckVariableName  = {}",
+                                pCfgData->General.Options.bCheckVariableName);
 }
 
 void LogCheckResult() {
   AppCxt &AppCxt = AppCxt::getInstance();
 
-  DcLib::Log::Out(INFO_ALL, "Assert.nErrorOccurred = %d", AppCxt.MemoBoard.Assert.nErrorOccurred);
-  DcLib::Log::Out(INFO_ALL, "Assert.nInvalidDecl   = %d", AppCxt.MemoBoard.Assert.nInvalidDecl);
-  DcLib::Log::Out(INFO_ALL, "Assert.nNumWarnings   = %d", AppCxt.MemoBoard.Assert.nNumWarnings);
+  AppCxt.MemoBoard.SpdLog->info("Assert.nErrorOccurred = {}",
+                                AppCxt.MemoBoard.Assert.nErrorOccurred);
+  AppCxt.MemoBoard.SpdLog->info("Assert.nInvalidDecl   = {}", AppCxt.MemoBoard.Assert.nInvalidDecl);
+  AppCxt.MemoBoard.SpdLog->info("Assert.nNumWarnings   = {}", AppCxt.MemoBoard.Assert.nNumWarnings);
 
-  DcLib::Log::Out(INFO_ALL, "Checked.nClass        = %d", AppCxt.MemoBoard.Checked.nClass);
-  DcLib::Log::Out(INFO_ALL, "Checked.nEnum         = %d", AppCxt.MemoBoard.Checked.nEnum);
-  DcLib::Log::Out(INFO_ALL, "Checked.nFile         = %d", AppCxt.MemoBoard.Checked.nFile);
-  DcLib::Log::Out(INFO_ALL, "Checked.nFunction     = %d", AppCxt.MemoBoard.Checked.nFunction);
-  DcLib::Log::Out(INFO_ALL, "Checked.nParameter    = %d", AppCxt.MemoBoard.Checked.nParameter);
-  DcLib::Log::Out(INFO_ALL, "Checked.nStruct       = %d", AppCxt.MemoBoard.Checked.nStruct);
-  DcLib::Log::Out(INFO_ALL, "Checked.nUnion        = %d", AppCxt.MemoBoard.Checked.nUnion);
-  DcLib::Log::Out(INFO_ALL, "Checked.nVariable     = %d", AppCxt.MemoBoard.Checked.nVariable);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nClass        = {}", AppCxt.MemoBoard.Checked.nClass);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nEnum         = {}", AppCxt.MemoBoard.Checked.nEnum);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nFile         = {}", AppCxt.MemoBoard.Checked.nFile);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nFunction     = {}", AppCxt.MemoBoard.Checked.nFunction);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nParameter    = {}", AppCxt.MemoBoard.Checked.nParameter);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nStruct       = {}", AppCxt.MemoBoard.Checked.nStruct);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nUnion        = {}", AppCxt.MemoBoard.Checked.nUnion);
+  AppCxt.MemoBoard.SpdLog->info("Checked.nVariable     = {}", AppCxt.MemoBoard.Checked.nVariable);
 
-  DcLib::Log::Out(INFO_ALL, "Error.nClass          = %d", AppCxt.MemoBoard.Error.nClass);
-  DcLib::Log::Out(INFO_ALL, "Error.nEnum           = %d", AppCxt.MemoBoard.Error.nEnum);
-  DcLib::Log::Out(INFO_ALL, "Error.nFile           = %d", AppCxt.MemoBoard.Error.nFile);
-  DcLib::Log::Out(INFO_ALL, "Error.nFunction       = %d", AppCxt.MemoBoard.Error.nFunction);
-  DcLib::Log::Out(INFO_ALL, "Error.nParameter      = %d", AppCxt.MemoBoard.Error.nParameter);
-  DcLib::Log::Out(INFO_ALL, "Error.nStruct         = %d", AppCxt.MemoBoard.Error.nStruct);
-  DcLib::Log::Out(INFO_ALL, "Error.nUnion          = %d", AppCxt.MemoBoard.Error.nUnion);
-  DcLib::Log::Out(INFO_ALL, "Error.nVariable       = %d", AppCxt.MemoBoard.Error.nVariable);
+  AppCxt.MemoBoard.SpdLog->info("Error.nClass          = {}", AppCxt.MemoBoard.Error.nClass);
+  AppCxt.MemoBoard.SpdLog->info("Error.nEnum           = {}", AppCxt.MemoBoard.Error.nEnum);
+  AppCxt.MemoBoard.SpdLog->info("Error.nFile           = {}", AppCxt.MemoBoard.Error.nFile);
+  AppCxt.MemoBoard.SpdLog->info("Error.nFunction       = {}", AppCxt.MemoBoard.Error.nFunction);
+  AppCxt.MemoBoard.SpdLog->info("Error.nParameter      = {}", AppCxt.MemoBoard.Error.nParameter);
+  AppCxt.MemoBoard.SpdLog->info("Error.nStruct         = {}", AppCxt.MemoBoard.Error.nStruct);
+  AppCxt.MemoBoard.SpdLog->info("Error.nUnion          = {}", AppCxt.MemoBoard.Error.nUnion);
+  AppCxt.MemoBoard.SpdLog->info("Error.nVariable       = {}", AppCxt.MemoBoard.Error.nVariable);
 }

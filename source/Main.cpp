@@ -18,11 +18,10 @@
 #include "MyAstVisitor.h"
 #include "MyCommandLine.h"
 #include "MyFactory.h"
+#include "spdlog/spdlog.h"
 
 // LLVM
 #include "clang/Tooling/CompilationDatabase.h"
-
-LOG_DECISION_DEFAULT(false);
 
 int main(int Argc, const char **Argv) {
 
@@ -68,14 +67,15 @@ int main(int Argc, const char **Argv) {
 
   if (LogFile.length() > 0) {
     printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
-    printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
+    AppCxt.MemoBoard.SpdLog = spdlog::basic_logger_mt("", LogFile);
+    AppCxt.MemoBoard.SpdLog->set_level(spdlog::level::info);
     LogHead();
 
     int iPos = AppCxt.MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
-    DcLib::Log::Init(LogFile.c_str(), iPos);
+  } else {
+    AppCxt.MemoBoard.SpdLog = spdlog::stderr_logger_mt("");
+    AppCxt.MemoBoard.SpdLog->set_level(spdlog::level::off);
   }
-
-  LOG_DECISION_CHANGE(AppCxt.MemoBoard.Config.GetData()->Debug.Log.bMain);
 
   int iRet = 0;
   if (CheckSubcommand) {
@@ -91,6 +91,6 @@ int main(int Argc, const char **Argv) {
     cl::PrintHelpMessage();
   }
 
-  DcLib::Log::Out(INFO_ALL, "Program is going to close. (iRet=%d)", iRet);
+  AppCxt.MemoBoard.SpdLog->info("Program is going to close. (iRet={})", iRet);
   return iRet;
 }
