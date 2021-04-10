@@ -68,9 +68,13 @@ int main(int Argc, const char **Argv) {
   if (LogFile.length() > 0) {
     printf("INFO : Log message will print to the file (%s).\n\n", LogFile.c_str());
     AppCxt.MemoBoard.SpdLog = spdlog::basic_logger_mt("", LogFile);
+    AppCxt.MemoBoard.SpdLog->set_level(spdlog::level::info);
     LogHead();
 
     int iPos = AppCxt.MemoBoard.Config.GetData()->Debug.Log.iContentStartsPosition;
+  } else {
+    AppCxt.MemoBoard.SpdLog = spdlog::basic_logger_mt("", "logfile.log");
+    AppCxt.MemoBoard.SpdLog->set_level(spdlog::level::off);
   }
 
   int iRet = 0;
