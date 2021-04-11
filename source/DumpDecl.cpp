@@ -208,7 +208,7 @@ void DumpDecl::_PrintEnumDecl(EnumDecl *pDecl) {
 }
 
 void DumpDecl::_PrintDecl(Decl *pDecl) {
-    AppCxt& AppCxt = AppCxt::getInstance();
+  //AppCxt& AppCxt = AppCxt::getInstance();
   // SourceLocation MyBeginLoc = pDecl->getBeginLoc();
   // SourceLocation MyCurrLoc = pDecl->getLocation();
   // SourceLocation MyEndLoc = pDecl->getEndLoc();
@@ -224,7 +224,7 @@ void DumpDecl::_PrintDecl(Decl *pDecl) {
   // szCurr); AppCxt.MemoBoard.SpdLog->info("Decl.getEndLoc().printToString                = {}",
   // pDecl->getEndLoc().printToString(*this->m_pSm).c_str()); AppCxt.MemoBoard.SpdLog->info(" = {}",
   // szEnd);
-  AppCxt.MemoBoard.SpdLog->info("Decl");
+  //AppCxt.MemoBoard.SpdLog->info("Decl");
 }
 
 void DumpDecl::_PrintSrcLocStr(Decl *pDecl) {

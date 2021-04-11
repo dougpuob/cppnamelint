@@ -9,28 +9,32 @@ using namespace namelint;
 MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
                            const Config *pConfig) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.SetSourceManager(pSM);
   this->m_pSrcMgr = pSM;
   this->m_pAstCxt = (ASTContext *)pAstCxt;
   this->m_pConfig = pConfig->GetData();
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
 }
 
 bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
+
+  AppCxt.MemoBoard.SpdLog->info("Name = {}", D->getNameAsString());
+  this->m_DumpDecl.PrintDecl(D);
+
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
 
   if (!this->m_pConfig->General.Options.bCheckFunctionName) {
     AppCxt.MemoBoard.SpdLog->info("Skipped, becuase config file is disable. (bCheckFunctionName)");
-    AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+    AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
     return true;
   }
 
@@ -68,20 +72,24 @@ bool MyASTVisitor::VisitFunctionDecl(clang::FunctionDecl *pDecl) {
     }
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
+
+  AppCxt.MemoBoard.SpdLog->info("Name = {}", pDecl->getNameAsString());
+  this->m_DumpDecl.PrintDecl(pDecl);
+
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   if (!this->isMainFile(pDecl)) {
     AppCxt.MemoBoard.SpdLog->info("{} ==)x Is NOT in main file.", __func__);
     return true;
@@ -164,13 +172,13 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     VarName = "??";
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
@@ -196,13 +204,13 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
   }
 
   bool bRet = checkRuleForVariable(pDecl);
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   if (!this->m_pConfig->General.Options.bCheckVariableName) {
@@ -239,28 +247,27 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   }
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitReturnStmt(ReturnStmt *pRetStmt) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
 
   const Expr *pExpr = pRetStmt->getRetValue();
   if (pExpr) {
     clang::QualType MyQualType = pExpr->getType();
-    std::string MyTypeStr      = MyQualType.getAsString();
-    AppCxt.MemoBoard.SpdLog->info("MyQualType.getAsString() = {}", MyTypeStr.c_str());
+    AppCxt.MemoBoard.SpdLog->info("MyQualType.getAsString() = {}", MyQualType.getAsString());
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   string VarType;
@@ -301,24 +308,24 @@ bool MyASTVisitor::VisitParmVarDecl(ParmVarDecl *pDecl) {
     }
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitTypedefDecl(TypedefDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
 
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
 
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   AppCxt.MemoBoard.Checked.nEnum++;
@@ -347,14 +354,14 @@ bool MyASTVisitor::VisitEnumConstantDecl(EnumConstantDecl *pDecl) {
         pDecl, CheckType::CT_EnumVal, NOT_PTR, NOT_ARRAY, EnumTagName, EnumValName, "???2"));
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
 
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   this->m_DumpDecl.PrintDecl(pDecl);
 
   AppCxt.MemoBoard.pLastEnumDecl = pDecl;
@@ -383,13 +390,13 @@ bool MyASTVisitor::VisitEnumDecl(EnumDecl *pDecl) {
     }
   }
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitTagTypeLoc(TagTypeLoc TagTypeLocDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
 
   // TagDecl* pDecl = TL.getDecl();
 
@@ -401,31 +408,31 @@ bool MyASTVisitor::VisitTagTypeLoc(TagTypeLoc TagTypeLocDecl) {
   // const char *szCurr = this->m_pSrcMgr->getCharacterData(MyCurrLoc);
   // const char *szEnd = this->m_pSrcMgr->getCharacterData(MyEndLoc);
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitArrayTypeLoc(ArrayTypeLoc TL) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   // SourceLocation MyBeginLoc = TL.getBeginLoc();
   // SourceLocation MyEndLoc = TL.getEndLoc();
   //
   // const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
   // const char *szEnd = this->m_pSrcMgr->getCharacterData(MyEndLoc);
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
 
 bool MyASTVisitor::VisitFunctionTypeLoc(FunctionTypeLoc TL, bool SkipResultType) {
   AppCxt &AppCxt = AppCxt::getInstance();
-  AppCxt.MemoBoard.SpdLog->info("{} (==", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
   SourceLocation MyBeginLoc = TL.getBeginLoc();
   SourceLocation MyEndLoc   = TL.getEndLoc();
 
   const char *szBegin = this->m_pSrcMgr->getCharacterData(MyBeginLoc);
   const char *szEnd   = this->m_pSrcMgr->getCharacterData(MyEndLoc);
 
-  AppCxt.MemoBoard.SpdLog->info("{} ==)", __func__);
+  AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
 }
