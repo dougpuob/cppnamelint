@@ -24,7 +24,9 @@ jobs:
 
       - task: CmdLine@2
         inputs:
-          script: 'choco install azurepowershell -YES'
+          script: |
+            choco install powershell-core -YES
+            pwsh --version
 
       - task: UniversalPackages@0
         inputs:
@@ -115,6 +117,7 @@ jobs:
             sudo apt-get update
             sudo add-apt-repository universe
             sudo apt-get install -y powershell
+            pwsh --version
 
       - task: UniversalPackages@0
         inputs:
