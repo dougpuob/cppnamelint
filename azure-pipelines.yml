@@ -22,6 +22,10 @@ jobs:
         displayName: "Checkout git submodules."
         submodules: true
 
+      - task: CmdLine@2
+        inputs:
+          script: 'choco install azurepowershell -YES'
+
       - task: UniversalPackages@0
         inputs:
           command: 'download'
@@ -100,6 +104,10 @@ jobs:
         displayName: "Checkout git submodules."
         submodules: true
 
+      - task: CmdLine@2
+        inputs:
+          script: 'choco install azurepowershell -YES'
+          
       - task: UniversalPackages@0
         inputs:
           command: 'download'
