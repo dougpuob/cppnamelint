@@ -85,9 +85,9 @@ elseif(CMAKE_HOST_UNIX)
 endif()
 
 # Output folders
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${OUTPUT_OS}/output)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${OUTPUT_OS}/output)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${OUTPUT_OS}/output)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_OS}/output)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_OS}/output)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_OS}/output)
 
 add_executable(
     cppnamelint
@@ -113,7 +113,7 @@ add_executable(
     source/test/TestConfig.cpp
     source/test/TestDetection.cpp
     source/test/TestRunCheck.cpp
-    source/test/TestIssue55.cpp
+    source/test/TestIssues.cpp
     source/test/TestRunCheck_UpperCamel.cpp
     source/test/TestRunCheck_LowerCamel.cpp
     source/test/TestRunCheck_UpperSnake.cpp

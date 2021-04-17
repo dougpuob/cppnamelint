@@ -76,8 +76,6 @@ public:
   bool VisitTagTypeLoc(TagTypeLoc TL);
   bool VisitArrayTypeLoc(ArrayTypeLoc TL);
   bool VisitFunctionTypeLoc(FunctionTypeLoc TL, bool SkipResultType = false);
-  ;
-  ;
 };
 
 /*

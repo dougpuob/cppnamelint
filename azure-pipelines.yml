@@ -17,17 +17,17 @@ jobs:
     steps:
       - script: "set"
         displayName: "Dump Azure environment variables."
+        
+      # - task: CmdLine@2
+      #   inputs:
+      #     script: |
+      #       choco install powershell-core -YES
+      #       pwsh --version
 
       - checkout: self
         displayName: "Checkout git submodules."
         submodules: true
-
-      - task: CmdLine@2
-        inputs:
-          script: |
-            choco install powershell-core -YES
-            pwsh --version
-
+        
       - task: UniversalPackages@0
         inputs:
           command: 'download'
@@ -67,6 +67,16 @@ jobs:
           filePath: 'script/run-test-win32.ps1'
           workingDirectory: 'script/release/windows'
 
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            script/test-modern-cpp-tutorial.ps1
+            Get-Content "modern-cpp-tutorial.log"
+          errorActionPreference: 'silentlyContinue'
+          ignoreLASTEXITCODE: true
+          pwsh: true
+
       - task: GitHubRelease@1
         inputs:
           gitHubConnection: 'azure-devops-cppnamelint'
@@ -80,6 +90,7 @@ jobs:
           isPreRelease: true
           changeLogCompareToRelease: 'lastFullRelease'
           changeLogType: 'issueBased'
+
 
   #==============================================================================
   # Linux
@@ -101,12 +112,7 @@ jobs:
 
       - script: "export"
         displayName: "Dump Azure environment variables."
-
-      - checkout: self
-        displayName: "Checkout git submodules."
-        submodules: true
-
-
+        
       - task: CmdLine@2
         inputs:
           script: |
@@ -117,7 +123,23 @@ jobs:
             sudo apt-get update
             sudo add-apt-repository universe
             sudo apt-get install -y powershell
-            pwsh --version
+
+      - checkout: self
+        displayName: "Checkout git submodules."
+        submodules: true
+
+
+      #- task: CmdLine@2
+      #  inputs:
+      #    script: |
+      #      sudo apt-get update
+      #      sudo apt-get install -y wget apt-transport-https software-properties-common            
+      #      wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb            
+      #      sudo dpkg -i packages-microsoft-prod.deb
+      #      sudo apt-get update
+      #      sudo add-apt-repository universe
+      #      sudo apt-get install -y powershell
+      #      pwsh --version
 
       - task: UniversalPackages@0
         inputs:
@@ -173,7 +195,16 @@ jobs:
       - script: "./run-test-linux.sh"
         displayName: "run-test-linux.sh"
         workingDirectory: "script/release/linux"
-      
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            script/test-modern-cpp-tutorial.ps1
+          errorActionPreference: 'silentlyContinue'
+          ignoreLASTEXITCODE: true
+          pwsh: true
+
       - task: GitHubRelease@1
         inputs:
           gitHubConnection: 'azure-devops-cppnamelint'
