@@ -17,12 +17,63 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
 }
 
-bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
+bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl * pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
   AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
+  this->m_DumpDecl.PrintDecl(pDecl);
 
-  AppCxt.MemoBoard.SpdLog->info("Name = {}", D->getNameAsString());
-  this->m_DumpDecl.PrintDecl(D);
+  if (!this->m_pConfig->General.Options.bCheckClass) {
+      AppCxt.MemoBoard.SpdLog->info("Skipped, becuase config file is disable. (bCheckClass)");
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped.", __func__);
+      return true;
+  }
+
+  if (pDecl->isUnion()) {
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped. (Union)", __func__);
+      return true;
+  }
+
+  if (pDecl->isStruct() && !this->m_pConfig->General.Options.bTreatStructAsClass) {
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped. (Struct)", __func__);
+      return true;
+  }
+  
+  string ClassName;
+  bool bResult = this->getClassInfo(pDecl, ClassName);
+  if (!bResult) {
+      AppCxt.MemoBoard.SpdLog->info("{} ==) x Failed to call VisitCXXRecordDecl()", __func__);
+      return true;
+  }
+
+  AppCxt.MemoBoard.Checked.nClass++;
+
+  // This FunctionDecl may just an external function.
+  if (pDecl->isInvalidDecl()) {
+      AppCxt.MemoBoard.SpdLog->info("Found an invalid CXXRecordDecl. ({})", ClassName.c_str());
+
+      AppCxt.MemoBoard.Assert.nInvalidDecl++;
+
+      if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+          AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
+          return true;
+      }
+  }
+
+  if (bResult) {
+      bool bIsPtr = false;
+      bool bIsArray = false;
+      bResult = this->m_Detect.CheckClass(this->m_pConfig->General.Rules.ClassName, ClassName, pDecl->isAbstract());
+
+      if (!bResult) {
+          AppCxt.MemoBoard.Error.nClass++;
+
+          AppCxt.MemoBoard.ErrorDetailList.push_back(
+              this->createErrorDetail(pDecl, CheckType::CT_Class, FALSE, FALSE, ClassName, ""));
+      }
+  }
+
+
+
 
   AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
@@ -150,18 +201,18 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     }
     break;
   }
-  case TTK_Class: {
+  //case TTK_Class: {
 
-    AppCxt.MemoBoard.Checked.nClass++;
+  //  AppCxt.MemoBoard.Checked.nClass++;
 
-    bool bStatus = this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.ClassName, VarName);
-    if (!bStatus) {
-      AppCxt.MemoBoard.Error.nClass++;
-      AppCxt.MemoBoard.ErrorDetailList.push_back(
-          this->createErrorDetail(pDecl, CheckType::CT_Class, NOT_PTR, NOT_ARRAY, "", VarName, ""));
-    }
-    break;
-  }
+  //  bool bStatus = this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.ClassName, VarName);
+  //  if (!bStatus) {
+  //    AppCxt.MemoBoard.Error.nClass++;
+  //    AppCxt.MemoBoard.ErrorDetailList.push_back(
+  //        this->createErrorDetail(pDecl, CheckType::CT_Class, NOT_PTR, NOT_ARRAY, "", VarName, ""));
+  //  }
+  //  break;
+  //}
   case TTK_Interface:
     VarName = "TTK_Interface";
     break;

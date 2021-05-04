@@ -16,6 +16,7 @@ Config::Config() {
   this->m_pConfig->General.Options.bCheckFileName          = false;
   this->m_pConfig->General.Options.bCheckEnum              = true;
   this->m_pConfig->General.Options.bCheckStruct            = true;
+  this->m_pConfig->General.Options.bCheckClass             = true;
   this->m_pConfig->General.Options.bAllowedPrintResult     = true;
   this->m_pConfig->General.Options.bAllowedWriteJsonResult = true;
   this->m_pConfig->General.Options.bAllowedUnderscopeChar  = false;
@@ -157,6 +158,18 @@ bool Config::LoadStream(string ConfigContent, string &ErrorReason) {
   if (pChkStruct && pChkStruct->is<bool>()) {
     this->m_pConfig->General.Options.bCheckStruct = pChkStruct->as<bool>();
   }
+
+  // General.Options.CheckStruct
+  const toml::Value* pChkClass = ParseRsValue.find("General.Options.CheckClass");
+  if (pChkClass && pChkClass->is<bool>()) {
+      this->m_pConfig->General.Options.bCheckClass = pChkClass->as<bool>();
+  }
+
+  // General.Options.TreatStructAsClass
+  const toml::Value* pTreatStructAsClass = ParseRsValue.find("General.Options.TreatStructAsClass");
+  if (pTreatStructAsClass && pTreatStructAsClass->is<bool>()) {
+      this->m_pConfig->General.Options.bTreatStructAsClass = pTreatStructAsClass->as<bool>();
+  }  
 
   // General.Options.AllowedPrintResult
   const toml::Value *pAllowedPrintResult = ParseRsValue.find("General.Options.AllowedPrintResult");

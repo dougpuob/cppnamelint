@@ -43,6 +43,7 @@ private:
                                  const bool &bIsArray, const string &TypeName,
                                  const string &TargetName, const string &Suggestion);
 
+  bool getClassInfo(CXXRecordDecl* pDecl, string& Name);
   bool getFunctionInfo(FunctionDecl *pDecl, string &FuncName);
 
   bool getParmsInfo(ParmVarDecl *pDecl, string &VarType, string &VarName, bool &bIsPtr,
@@ -62,7 +63,7 @@ public:
   // bool VisitCXXRecordDecl(CXXRecordDecl *D);
   // bool VisitCXXConstructorDecl(CXXConstructorDecl *D);
 
-  bool VisitCXXRecordDecl(CXXRecordDecl *D);
+  bool VisitCXXRecordDecl(CXXRecordDecl *pDecl);
   bool VisitFunctionDecl(FunctionDecl *pDecl);
   bool VisitCXXMethodDecl(CXXMethodDecl *pDecl);
   bool VisitRecordDecl(RecordDecl *pDecl);

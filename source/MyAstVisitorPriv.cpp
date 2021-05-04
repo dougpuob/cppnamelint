@@ -51,6 +51,17 @@ bool MyASTVisitor::removeKeywords(string &TyeName) {
   return bStatus;
 }
 
+bool MyASTVisitor::getClassInfo(CXXRecordDecl* pDecl, string& Name) {
+    if (!this->isMainFile(pDecl)) {
+        return false;
+    }
+
+    this->m_DumpDecl.PrintDecl(pDecl);
+
+    Name = pDecl->getDeclName().getAsString();
+    return true;
+}
+
 bool MyASTVisitor::getFunctionInfo(FunctionDecl *pDecl, string &Name) {
   if (!this->isMainFile(pDecl)) {
     return false;

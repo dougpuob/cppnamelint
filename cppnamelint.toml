@@ -9,6 +9,7 @@ CheckStruct             = true    # TODO
 CheckClass              = true    # TODO
 CheckParameter          = true    # TODO
 CheckUnion              = true    # TODO
+TreatStructAsClass      = false
 AllowedWriteJsonResult  = false
 AllowedArrayAffected    = false
 
@@ -30,7 +31,6 @@ AllowedPrintResult      = true  # Default: true
 #  1. Indicate header directory via `-include` option.
 #  2. Set this option to `false`.
 BypassInvalidDecl       = false # Default: false
-                                
 
 
 [General.Rules]
