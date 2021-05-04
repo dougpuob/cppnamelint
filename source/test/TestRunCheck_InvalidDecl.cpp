@@ -15,6 +15,7 @@ const string ConfigToml = "\
       CheckFunctionName       = true                                \n\
       CheckEnum               = true                                \n\
       CheckStruct             = true                                \n\
+      CheckClass              = true                                \n\
       AllowedPrintResult      = false                               \n\
       AllowedWriteJsonResult  = false                               \n\
       AllowedUnderscopeChar   = false                               \n\
@@ -181,26 +182,15 @@ TEST(MFC, IMPLEMENT_SERIAL) {
   string ErrorReason;
   AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
-  //.........................................................................vvvv <-- Test TARGET
+  //......................................................................vvvv <-- Test TARGET
   AppCxt.MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
   EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
   EXPECT_EQ(true, 2 == MemoBoard.Checked.nFunction);
   EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
   EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
-  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
-  EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
+  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
   EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
                                                    //     `bBypassInvalidDecl` is `FALSE`
-
-  //.........................................................................vvvv <-- Test TARGET
-  AppCxt.MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = false;
-  EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
-  EXPECT_EQ(true, 4 == MemoBoard.Checked.nFunction);
-  EXPECT_EQ(true, 8 == MemoBoard.Checked.nParameter);
-  EXPECT_EQ(true, 2 == MemoBoard.Checked.nVariable);
-  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
-  EXPECT_EQ(true, 1 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
-                                                   //     `bBypassInvalidDecl` is `TRUE`
 }
 
 } // namespace RunCheckInvalidDecl
