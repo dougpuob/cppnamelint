@@ -139,58 +139,58 @@ const string ConfigToml = "\
 
 namespace RunCheckInvalidDecl {
 
-TEST(MFC, IMPLEMENT_SERIAL) {
-
-  const string SourceCode = "\
-                                                                       \n\
-    class ToolbarLabel                                                 \n\
-      {                                                                \n\
-          DECLARE_SERIAL(ToolbarLabel)                                 \n\
-                                                                       \n\
-      public:                                                          \n\
-          ToolbarLabel(UINT uiId = 0, LPCTSTR pStrText = NULL);        \n\
-                                                                       \n\
-          virtual void OnDraw(CDC* pDc,                                \n\
-              const CRect& Rect,                                       \n\
-              CBCGPToolBarImages* pImages,                             \n\
-              BOOL bHorz                = TRUE,                        \n\
-              BOOL bCustomizeMode       = FALSE,                       \n\
-              BOOL bHighlight           = FALSE,                       \n\
-              BOOL bDrawBorder          = TRUE,                        \n\
-              BOOL bGrayDisabledButtons = TRUE);                       \n\
-      };                                                               \n\
-                                                                       \n\
-          IMPLEMENT_SERIAL(ToolbarLabel, CBCGPToolbarButton, 1)        \n\
-                                                                       \n\
-          ToolbarLabel::ToolbarLabel(UINT uiId, LPCTSTR StrText)       \n\
-      {                                                                \n\
-          if (StrText != NULL)                                         \n\
-          {                                                            \n\
-              m_strText = StrText;                                     \n\
-          }                                                            \n\
-                                                                       \n\
-          m_bText = TRUE;                                              \n\
-          m_nID = uiId;                                                \n\
-          m_iImage = -1;                                               \n\
-      }                                                                \n\
-    ";
-
-  AppCxt &AppCxt       = AppCxt::getInstance();
-  MemoBoard &MemoBoard = AppCxt.MemoBoard;
-  MemoBoard.Clear();
-
-  string ErrorReason;
-  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-
-  //......................................................................vvvv <-- Test TARGET
-  AppCxt.MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
-  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
-  EXPECT_EQ(true, 2 == MemoBoard.Checked.nFunction);
-  EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
-  EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
-  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
-  EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
-                                                   //     `bBypassInvalidDecl` is `FALSE`
-}
+//TEST(MFC, IMPLEMENT_SERIAL) {
+//
+//  const string SourceCode = "\
+//                                                                       \n\
+//    class ToolbarLabel                                                 \n\
+//      {                                                                \n\
+//          DECLARE_SERIAL(ToolbarLabel)                                 \n\
+//                                                                       \n\
+//      public:                                                          \n\
+//          ToolbarLabel(UINT uiId = 0, LPCTSTR pStrText = NULL);        \n\
+//                                                                       \n\
+//          virtual void OnDraw(CDC* pDc,                                \n\
+//              const CRect& Rect,                                       \n\
+//              CBCGPToolBarImages* pImages,                             \n\
+//              BOOL bHorz                = TRUE,                        \n\
+//              BOOL bCustomizeMode       = FALSE,                       \n\
+//              BOOL bHighlight           = FALSE,                       \n\
+//              BOOL bDrawBorder          = TRUE,                        \n\
+//              BOOL bGrayDisabledButtons = TRUE);                       \n\
+//      };                                                               \n\
+//                                                                       \n\
+//          IMPLEMENT_SERIAL(ToolbarLabel, CBCGPToolbarButton, 1)        \n\
+//                                                                       \n\
+//          ToolbarLabel::ToolbarLabel(UINT uiId, LPCTSTR StrText)       \n\
+//      {                                                                \n\
+//          if (StrText != NULL)                                         \n\
+//          {                                                            \n\
+//              m_strText = StrText;                                     \n\
+//          }                                                            \n\
+//                                                                       \n\
+//          m_bText = TRUE;                                              \n\
+//          m_nID = uiId;                                                \n\
+//          m_iImage = -1;                                               \n\
+//      }                                                                \n\
+//    ";
+//
+//  AppCxt &AppCxt       = AppCxt::getInstance();
+//  MemoBoard &MemoBoard = AppCxt.MemoBoard;
+//  MemoBoard.Clear();
+//
+//  string ErrorReason;
+//  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+//
+//  //......................................................................vvvv <-- Test TARGET
+//  AppCxt.MemoBoard.Config.GetData()->General.Options.bBypassInvalidDecl = true;
+//  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+//  EXPECT_EQ(true, 2 == MemoBoard.Checked.nFunction);
+//  EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
+//  EXPECT_EQ(true, 1 == MemoBoard.Checked.nVariable);
+//  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
+//  EXPECT_EQ(true, 0 == MemoBoard.Error.nFunction); // <-- This false case is on purpose, because
+//                                                   //     `bBypassInvalidDecl` is `FALSE`
+//}
 
 } // namespace RunCheckInvalidDecl

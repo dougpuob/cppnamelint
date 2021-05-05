@@ -32,20 +32,16 @@ bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl * pDecl) {
       AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped. (Union)", __func__);
       return true;
   }
+ 
 
-  if (pDecl->isStruct() && !this->m_pConfig->General.Options.bTreatStructAsClass) {
-      AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped. (Struct)", __func__);
-      return true;
-  }
-  
+  //if (pDecl->isStruct() && !this->m_pConfig->General.Options.bTreatStructAsClass) {
+  //    AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped. (Struct)", __func__);
+  //    return true;
+  //}
+
+
   string ClassName;
   bool bResult = this->getClassInfo(pDecl, ClassName);
-  if (!bResult) {
-      AppCxt.MemoBoard.SpdLog->info("{} ==) x Failed to call VisitCXXRecordDecl()", __func__);
-      return true;
-  }
-
-  AppCxt.MemoBoard.Checked.nClass++;
 
   // This FunctionDecl may just an external function.
   if (pDecl->isInvalidDecl()) {
@@ -59,18 +55,41 @@ bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl * pDecl) {
       }
   }
 
-  if (bResult) {
-      bool bIsPtr = false;
-      bool bIsArray = false;
-      bResult = this->m_Detect.CheckClass(this->m_pConfig->General.Rules.ClassName, ClassName, pDecl->isAbstract());
+  // struct
+  if (pDecl->isStruct() && pDecl->methods().empty()) {
+    //AppCxt.MemoBoard.Checked.nStruct++;
 
+    //RULETYPE RuleType = this->m_pConfig->General.Rules.StructTagName;
+
+    //bResult = this->m_Detect.CheckStructVal(RuleType, "" /*no type*/, ClassName, NOT_PTR);
+    //if (!bResult) {
+	   // AppCxt.MemoBoard.Error.nStruct++;
+	   // AppCxt.MemoBoard.ErrorDetailList.push_back(this->createErrorDetail(
+		  //  pDecl, CheckType::CT_StructTag, NOT_PTR, NOT_ARRAY, "", ClassName, ""));
+    //}
+  }
+  // class or struct(class) 
+  else {
       if (!bResult) {
-          AppCxt.MemoBoard.Error.nClass++;
+          AppCxt.MemoBoard.SpdLog->info("{} ==) x Failed to call VisitCXXRecordDecl()", __func__);
+          return true;
+      }
 
-          AppCxt.MemoBoard.ErrorDetailList.push_back(
-              this->createErrorDetail(pDecl, CheckType::CT_Class, FALSE, FALSE, ClassName, ""));
+      AppCxt.MemoBoard.Checked.nClass++;
+      if (bResult) {
+          bool bIsPtr = false;
+          bool bIsArray = false;
+          bResult = this->m_Detect.CheckClass(this->m_pConfig->General.Rules.ClassName, ClassName, pDecl->isAbstract());
+
+          if (!bResult) {
+              AppCxt.MemoBoard.Error.nClass++;
+
+              AppCxt.MemoBoard.ErrorDetailList.push_back(
+                  this->createErrorDetail(pDecl, CheckType::CT_Class, FALSE, FALSE, ClassName, ""));
+          }
       }
   }
+
 
 
 
@@ -293,8 +312,8 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   case TTK_Union:
     bRet = checkRuleForUnionValue(pDecl);
     break;
-  default:
-    bRet = checkRuleForStructValue(pDecl);
+  //default:
+    //bRet = checkRuleForStructValue(pDecl);
   }
   }
 

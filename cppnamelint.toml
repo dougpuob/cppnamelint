@@ -9,7 +9,7 @@ CheckStruct             = true    # TODO
 CheckClass              = true    # TODO
 CheckParameter          = true    # TODO
 CheckUnion              = true    # TODO
-TreatStructAsClass      = false
+TreatStructAsClass      = true
 AllowedWriteJsonResult  = false
 AllowedArrayAffected    = false
 

@@ -283,6 +283,8 @@ bool MyASTVisitor::checkRuleForStructValue(ValueDecl *pDecl) {
   string ValueType;
   string ValueName;
 
+  AppCxt& AppCxt = AppCxt::getInstance();
+
   bool bStatus = this->getStructVarInfo(pDecl, ValueType, ValueName, bIsPtr);
   if (!bStatus) {
     return false;
@@ -290,9 +292,6 @@ bool MyASTVisitor::checkRuleForStructValue(ValueDecl *pDecl) {
 
   bool bResult = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructValueName,
                                                ValueType, ValueName, bIsPtr);
-
-  AppCxt &AppCxt = AppCxt::getInstance();
-
   AppCxt.MemoBoard.Checked.nStruct++;
   if (!bResult) {
     AppCxt.MemoBoard.Error.nStruct++;
