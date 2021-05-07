@@ -69,7 +69,7 @@ bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl * pDecl) {
               AppCxt.MemoBoard.Error.nClass++;
 
               AppCxt.MemoBoard.ErrorDetailList.push_back(
-                  this->createErrorDetail(pDecl, CheckType::CT_Class, FALSE, FALSE, ClassName, ""));
+                  this->createErrorDetail(pDecl, CheckType::CT_Class, false, false, ClassName, ""));
           }
       }
   }
