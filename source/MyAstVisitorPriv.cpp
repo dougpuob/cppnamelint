@@ -51,6 +51,17 @@ bool MyASTVisitor::removeKeywords(string &TyeName) {
   return bStatus;
 }
 
+bool MyASTVisitor::getClassInfo(CXXRecordDecl* pDecl, string& Name) {
+    if (!this->isMainFile(pDecl)) {
+        return false;
+    }
+
+    this->m_DumpDecl.PrintDecl(pDecl);
+
+    Name = pDecl->getDeclName().getAsString();
+    return true;
+}
+
 bool MyASTVisitor::getFunctionInfo(FunctionDecl *pDecl, string &Name) {
   if (!this->isMainFile(pDecl)) {
     return false;
@@ -272,6 +283,8 @@ bool MyASTVisitor::checkRuleForStructValue(ValueDecl *pDecl) {
   string ValueType;
   string ValueName;
 
+  AppCxt& AppCxt = AppCxt::getInstance();
+
   bool bStatus = this->getStructVarInfo(pDecl, ValueType, ValueName, bIsPtr);
   if (!bStatus) {
     return false;
@@ -279,9 +292,6 @@ bool MyASTVisitor::checkRuleForStructValue(ValueDecl *pDecl) {
 
   bool bResult = this->m_Detect.CheckStructVal(this->m_pConfig->General.Rules.StructValueName,
                                                ValueType, ValueName, bIsPtr);
-
-  AppCxt &AppCxt = AppCxt::getInstance();
-
   AppCxt.MemoBoard.Checked.nStruct++;
   if (!bResult) {
     AppCxt.MemoBoard.Error.nStruct++;

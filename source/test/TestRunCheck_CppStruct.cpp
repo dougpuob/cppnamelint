@@ -15,6 +15,7 @@ const string ConfigToml = "\
       CheckFunctionName       = true                        \n\
       CheckEnum               = true                        \n\
       CheckStruct             = true                        \n\
+      CheckClass              = true                        \n\
       AllowedPrintResult      = false                       \n\
       AllowedWriteJsonResult  = false                       \n\
       AllowedUnderscopeChar   = false                       \n\
@@ -160,6 +161,35 @@ TEST(ooo, OOO) {
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
   EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
+}
+
+TEST(DataStruct, Normal) {
+
+    const string SourceCode = "\
+    struct Person { \n\
+       int Age = 0; \n\
+    };              \n\
+    ";
+
+    AppCxt& AppCxt = AppCxt::getInstance();
+    MemoBoard& MemoBoard = AppCxt.MemoBoard;
+    MemoBoard.Clear();
+
+    string ErrorReason;
+    AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+
+    EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
+    EXPECT_EQ(true, 2 == MemoBoard.GetTotalChecked());
+    EXPECT_EQ(true, 1 == MemoBoard.GetTotalError());
+    EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+    EXPECT_EQ(true, 2 == MemoBoard.Checked.nStruct);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nClass);
 }
 
 } // namespace RunCheckCppStruct

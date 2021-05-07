@@ -15,6 +15,7 @@ const string ConfigToml = "\
       CheckFunctionName       = true                        \n\
       CheckEnum               = true                        \n\
       CheckStruct             = true                        \n\
+      CheckClass              = true                        \n\
       AllowedPrintResult      = false                       \n\
       AllowedWriteJsonResult  = false                       \n\
       AllowedUnderscopeChar   = false                       \n\
@@ -143,7 +144,7 @@ const string ConfigToml = "\
 
 namespace RunCheckCppClass {
 
-TEST(ooo, 1) {
+TEST(Class, SimpleClass) {
 
   const string SourceCode = "     \n\
     class PlayGround {            \n\
@@ -163,39 +164,48 @@ TEST(ooo, 1) {
   AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
 
   EXPECT_EQ(true, 1 == RunCheckFormStream(MemoBoard, SourceCode));
-  // EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
-  // EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
-  // EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
+  EXPECT_EQ(true, 5 == MemoBoard.GetTotalChecked());
+  EXPECT_EQ(true, 1 == MemoBoard.GetTotalError());
+  EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+  EXPECT_EQ(true, 3 == MemoBoard.Checked.nFunction);
+  EXPECT_EQ(true, 1 == MemoBoard.Checked.nParameter);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+  EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
+  EXPECT_EQ(true, 1 == MemoBoard.Checked.nClass);
 }
 
-// TEST(ooo, 2) {
-//
-//  const string SourceCode = "   \n\
-//    #include \"aa.h\"             \n\
-//    PlayGround::PlayGround() {}   \n\
-//    ";
-//
-//  const string HeaderCode = "   \n\
-//    class PlayGround {            \n\
-//    public:                       \n\
-//        PlayGround();             \n\
-//        bool IsVal2(int InputC);  \n\
-//    };                            \n\
-//    ";
-//
-//  APP_CONTEXT &AppCxt = APP_CONTEXT::getInstance();
-//  MemoBoard &MemoBoard = AppCxt.MemoBoard;
-//  MemoBoard.Clear();
-//
-//  string ErrorReason;
-//  AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
-//
-//  vector<string> SrcList = {SourceCode, HeaderCode};
-//
-//  EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SrcList));
-//  EXPECT_EQ(true, 0 == MemoBoard.GetTotalChecked());
-//  EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
-//  EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
-//}
+
+TEST(Class, InheritedClass) {
+
+    const string SourceCode = "         \n\
+    class PlayGround {                  \n\
+    };                                  \n\
+    class SuperPlayGround : PlayGround {\n\
+    };                                  \n\
+    ";
+
+    AppCxt& AppCxt = AppCxt::getInstance();
+    MemoBoard& MemoBoard = AppCxt.MemoBoard;
+    MemoBoard.Clear();
+
+    string ErrorReason;
+    AppCxt.MemoBoard.Config.LoadStream(ConfigToml, ErrorReason);
+
+    EXPECT_EQ(true, 0 == RunCheckFormStream(MemoBoard, SourceCode));
+    EXPECT_EQ(true, 2 == MemoBoard.GetTotalChecked());
+    EXPECT_EQ(true, 0 == MemoBoard.GetTotalError());
+    EXPECT_EQ(true, 0 == MemoBoard.GetTotalAssert());
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFile);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nFunction);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nParameter);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nVariable);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nEnum);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nStruct);
+    EXPECT_EQ(true, 0 == MemoBoard.Checked.nUnion);
+    EXPECT_EQ(true, 2 == MemoBoard.Checked.nClass);
+}
 
 } // namespace RunCheckCppClass

@@ -17,6 +17,7 @@ const string ConfigToml = "\
       CheckFunctionName       = true                        \n\
       CheckEnum               = true                        \n\
       CheckStruct             = true                        \n\
+      CheckClass              = true                        \n\
       AllowedPrintResult      = false                       \n\
       AllowedWriteJsonResult  = false                       \n\
       AllowedUnderscopeChar   = false                       \n\

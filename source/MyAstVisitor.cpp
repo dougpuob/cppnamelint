@@ -17,12 +17,66 @@ MyASTVisitor::MyASTVisitor(const SourceManager *pSM, const ASTContext *pAstCxt,
   AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
 }
 
-bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl *D) {
+// Iterator that traverses the base classes of a class.
+bool MyASTVisitor::VisitCXXRecordDecl(CXXRecordDecl * pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
   AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
+  this->m_DumpDecl.PrintDecl(pDecl);
 
-  AppCxt.MemoBoard.SpdLog->info("Name = {}", D->getNameAsString());
-  this->m_DumpDecl.PrintDecl(D);
+  if (!this->m_pConfig->General.Options.bCheckClass) {
+      AppCxt.MemoBoard.SpdLog->info("Skipped, becuase config file is disable. (bCheckClass)");
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped.", __func__);
+      return true;
+  }
+
+  if (pDecl->isUnion()) {
+      AppCxt.MemoBoard.SpdLog->info("{} ==)| Skipped. (Union)", __func__);
+      return true;
+  }
+ 
+  string ClassName;
+  bool bResult = this->getClassInfo(pDecl, ClassName);
+
+  // This FunctionDecl may just an external function.
+  if (pDecl->isInvalidDecl()) {
+      AppCxt.MemoBoard.SpdLog->info("Found an invalid CXXRecordDecl. ({})", ClassName.c_str());
+
+      AppCxt.MemoBoard.Assert.nInvalidDecl++;
+
+      if (true == this->m_pConfig->General.Options.bBypassInvalidDecl) {
+          AppCxt.MemoBoard.SpdLog->info("{} ==)| Bypass invalid decl.", __func__);
+          return true;
+      }
+  }
+
+  // struct
+  if (pDecl->isStruct() && pDecl->methods().empty()) {
+  }
+  // class or struct(class) 
+  else {
+      if (!bResult) {
+          AppCxt.MemoBoard.SpdLog->info("{} ==) x Failed to call VisitCXXRecordDecl()", __func__);
+          return true;
+      }
+
+      AppCxt.MemoBoard.Checked.nClass++;
+      if (bResult) {
+          bool bIsPtr = false;
+          bool bIsArray = false;
+          bResult = this->m_Detect.CheckClass(this->m_pConfig->General.Rules.ClassName, ClassName, pDecl->isAbstract());
+
+          if (!bResult) {
+              AppCxt.MemoBoard.Error.nClass++;
+
+              AppCxt.MemoBoard.ErrorDetailList.push_back(
+                  this->createErrorDetail(pDecl, CheckType::CT_Class, false, false, ClassName, ""));
+          }
+      }
+  }
+
+
+
+
 
   AppCxt.MemoBoard.SpdLog->info("[{}] ==)", __func__);
   return true;
@@ -87,6 +141,7 @@ bool MyASTVisitor::VisitCXXMethodDecl(CXXMethodDecl *pDecl) {
   return true;
 }
 
+// Represents a struct/union/class.
 bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
   AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
@@ -150,18 +205,6 @@ bool MyASTVisitor::VisitRecordDecl(RecordDecl *pDecl) {
     }
     break;
   }
-  case TTK_Class: {
-
-    AppCxt.MemoBoard.Checked.nClass++;
-
-    bool bStatus = this->m_Detect.CheckEnumVal(this->m_pConfig->General.Rules.ClassName, VarName);
-    if (!bStatus) {
-      AppCxt.MemoBoard.Error.nClass++;
-      AppCxt.MemoBoard.ErrorDetailList.push_back(
-          this->createErrorDetail(pDecl, CheckType::CT_Class, NOT_PTR, NOT_ARRAY, "", VarName, ""));
-    }
-    break;
-  }
   case TTK_Interface:
     VarName = "TTK_Interface";
     break;
@@ -208,6 +251,7 @@ bool MyASTVisitor::VisitVarDecl(VarDecl *pDecl) {
   return true;
 }
 
+// Represents a member of a struct/union/class.
 bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   AppCxt &AppCxt = AppCxt::getInstance();
   AppCxt.MemoBoard.SpdLog->info("[{}] (==", __func__);
@@ -231,7 +275,7 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   }
 
   bool bRet = false;
-  auto aaa  = pDecl->getParent()->getTagKind();
+  auto ParentTag = pDecl->getParent()->getTagKind();
   switch (pDecl->getParent()->getTagKind()) {
   case TTK_Struct: {
     bRet = checkRuleForStructValue(pDecl);
@@ -242,8 +286,6 @@ bool MyASTVisitor::VisitFieldDecl(FieldDecl *pDecl) {
   case TTK_Union:
     bRet = checkRuleForUnionValue(pDecl);
     break;
-  default:
-    bRet = checkRuleForStructValue(pDecl);
   }
   }
 

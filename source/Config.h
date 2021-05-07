@@ -32,6 +32,8 @@ struct GeneralOptions {
   bool bCheckFileName;
   bool bCheckEnum;
   bool bCheckStruct;
+  bool bCheckClass;
+  bool bTreatStructAsClass;
   bool bAllowedPrintResult;
   bool bAllowedWriteJsonResult;
   bool bAllowedUnderscopeChar;

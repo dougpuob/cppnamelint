@@ -448,6 +448,7 @@ void LogConfig() {
                                 pCfgData->General.Options.bCheckFunctionName);
   AppCxt.MemoBoard.SpdLog->info("bCheckEnum          = {}", pCfgData->General.Options.bCheckEnum);
   AppCxt.MemoBoard.SpdLog->info("bCheckStruct        = {}", pCfgData->General.Options.bCheckStruct);
+  AppCxt.MemoBoard.SpdLog->info("bCheckClass         = {}", pCfgData->General.Options.bCheckClass);
   AppCxt.MemoBoard.SpdLog->info("bCheckVariableName  = {}",
                                 pCfgData->General.Options.bCheckVariableName);
 }

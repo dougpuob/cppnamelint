@@ -383,6 +383,38 @@ bool Detection::CheckFile(const RULETYPE Rule, const string &Name) {
   return bStatus;
 }
 
+bool Detection::CheckClass(const RULETYPE Rule, const string& Name, bool IsAbstract) {
+    if (Name.length() == 0) {
+        return false;
+    }
+
+    shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
+    vector<string> EmptyIgnorePrefixs;
+
+    bool bStatus = false;
+    switch (Rule) {
+    case RULETYPE_DEFAULT:
+    case RULETYPE_UPPER_CAMEL: {
+        bStatus = this->_IsUpperCamelCaseString(Name, EmptyIgnorePrefixs,
+            pCfgData->Camels.Options.AllowUnderscope);
+        break;
+    }
+    case RULETYPE_LOWER_CAMEL: {
+        bStatus = this->_IsLowerCamelCaseString(Name, EmptyIgnorePrefixs);
+        break;
+    }
+    case RULETYPE_UPPER_SNAKE: {
+        bStatus = this->_IsSnakeString(Name, SNAKETYPE_UPPER, EmptyIgnorePrefixs);
+        break;
+    }
+    case RULETYPE_LOWER_SNAKE: {
+        bStatus = this->_IsSnakeString(Name, SNAKETYPE_LOWER, EmptyIgnorePrefixs);
+        break;
+    }
+    }
+    return bStatus;
+}
+
 bool Detection::CheckFunction(const RULETYPE Rule, const string &Name) {
   if (Name.length() == 0) {
     return false;

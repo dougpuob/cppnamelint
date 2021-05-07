@@ -38,6 +38,7 @@ private:
   bool _SkipIgnoreFunctions(const string &Name, const vector<string> &IgnoreList);
 
 public:
+  bool CheckClass(const RULETYPE Rule, const string& Name, bool IsAbstract);
   bool CheckFile(const RULETYPE Rule, const string &Name);
   bool CheckFunction(const RULETYPE Rule, const string &Name);
   bool CheckVariable(const RULETYPE Rule, const string &Type, const string &Name,
