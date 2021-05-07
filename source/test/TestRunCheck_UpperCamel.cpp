@@ -350,7 +350,7 @@ TEST(Class, DataClass) {
             int m_Year;                                     \n\
             int m_Month;                                    \n\
             int m_Dday;                                     \n\
-            int m_Dday1;                                     \n\
+            int m_Dday1;                                    \n\
                                                             \n\
         public:                                             \n\
             DateClass(int Year, int Month, int Day)         \n\

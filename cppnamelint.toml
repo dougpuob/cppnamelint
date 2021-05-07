@@ -5,11 +5,9 @@ CheckFileName           = false
 CheckVariableName       = true
 CheckFunctionName       = true
 CheckEnum               = true
-CheckStruct             = true    # TODO
-CheckClass              = true    # TODO
+CheckStruct             = true
+CheckClass              = true
 CheckParameter          = true    # TODO
-CheckUnion              = true    # TODO
-TreatStructAsClass      = true
 AllowedWriteJsonResult  = false
 AllowedArrayAffected    = false
 
@@ -31,6 +29,7 @@ AllowedPrintResult      = true  # Default: true
 #  1. Indicate header directory via `-include` option.
 #  2. Set this option to `false`.
 BypassInvalidDecl       = false # Default: false
+                                
 
 
 [General.Rules]

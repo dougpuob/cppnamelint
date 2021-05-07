@@ -388,8 +388,6 @@ bool Detection::CheckClass(const RULETYPE Rule, const string& Name, bool IsAbstr
         return false;
     }
 
-
-
     shared_ptr<ConfigData> pCfgData = AppCxt::getInstance().MemoBoard.Config.GetData();
     vector<string> EmptyIgnorePrefixs;
 
