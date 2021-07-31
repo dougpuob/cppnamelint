@@ -340,7 +340,7 @@ def run_util_checkdir_files(exec_file_path, py_args, paired_samples:[], print_ou
 
         args_list: [] = ['check', paired['src'], '-config='+paired['cfg']]
         if py_args.json:
-            args_list.append('-jsonfile=' + py_args.json)
+            args_list.append('-jsonout=' + py_args.json)
 
         if py_args.inc:
             for file in py_args.inc:
