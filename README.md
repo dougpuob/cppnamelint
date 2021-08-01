@@ -14,7 +14,7 @@ The project is a naming convention checking tool executing on Windows/Linux/MacO
 1. Load config file format with TOML.
 1. Output results to console or save an a JSON file.
 1. Support rules with `UpperCamelCase`, `lowerCamelCase`, `UPPER_SNAKE_CASE`, `lower_snake_case`, and `szHungarainNotion`.
-1. Integrat with [Azure DevOps(CI/CD)](https://dev.azure.com/CppNameLint/cpp-namelint/_build?definitionId=3).
+1. Integrate with [Azure DevOps(CI/CD)](https://dev.azure.com/CppNameLint/cpp-namelint/_build?definitionId=3).
 
 ⭐If you like this project or this project gives you some help, please also give me a **STAR** on GitHub, let me know I am not alone.
 
@@ -232,4 +232,5 @@ MIT
 
 ## ● Author
 Douglas Chen <dougpuob@gmail.com>
+
 
